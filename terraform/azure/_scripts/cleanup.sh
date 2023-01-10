@@ -15,15 +15,15 @@ nameAvailable=$( jq -r  '.nameAvailable' <<< "${STORAGE_SEARCH}" )
 
 echo "Storage account name is available ${nameAvailable}"
 
-if !$nameAvailable
+if $nameAvailable
 then
-  echo "Delete storage account --name $STORAGE_ACCOUNT_NAME"
-  az storage account delete --name $STORAGE_ACCOUNT_NAME --yes
-
-  echo "Delete resource group ${RESOURCE_GROUP_NAME}"
-  az group delete --name $RESOURCE_GROUP_NAME --yes
-else
   echo "No Storage account was deleted"
+else
+  echo "Delete storage account --name $STORAGE_ACCOUNT_NAME"
+    az storage account delete --name $STORAGE_ACCOUNT_NAME --yes
+
+    echo "Delete resource group ${RESOURCE_GROUP_NAME}"
+    az group delete --name $RESOURCE_GROUP_NAME --yes
 fi
 
 

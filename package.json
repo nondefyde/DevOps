@@ -25,6 +25,7 @@
     "azure:apply": "cd ./terraform/azure/_scripts && ./apply.sh vm localdevops",
     "azure:destroy": "cd ./terraform/azure/_scripts && ./destroy.sh vm localdevops",
     "azure:execute": "yarn azure:setup && yarn azure:prepare && yarn azure:apply",
-    "azure:tear": "yarn azure:destroy && yarn azure:cleanup"
+    "azure:tear": "yarn azure:destroy && yarn azure:cleanup",
+    "azure:cicle": "yarn azure:execute && yarn azure:tear"
   }
 }
