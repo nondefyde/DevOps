@@ -26,6 +26,15 @@
     "azure:destroy": "cd ./terraform/azure/_scripts && ./destroy.sh vm localdevops",
     "azure:execute": "yarn azure:setup && yarn azure:prepare && yarn azure:apply",
     "azure:tear": "yarn azure:destroy && yarn azure:cleanup",
-    "azure:cicle": "yarn azure:execute && yarn azure:tear"
+    "azure:cicle": "yarn azure:execute && yarn azure:tear",
+
+
+    "aws:clean": "rm -rf ./terraform/aws/_state && rm -rf ./terraform/azure/**/.terraform",
+    "aws:prepare": "cd ./terraform/aws/_scripts && ./prepare.sh kube localdevops",
+    "aws:apply": "cd ./terraform/aws/_scripts && ./apply.sh kube localdevops",
+    "aws:destroy": "cd ./terraform/aws/_scripts && ./destroy.sh kube localdevops",
+    "aws:execute": "yarn aws:prepare && yarn aws:apply",
+    "aws:tear": "yarn aws:destroy",
+    "aws:cicle": "yarn aws:execute && yarn aws:tear"
   }
 }
