@@ -15,29 +15,25 @@ provider "aws" {
   secret_key = var.aws_key_secret
 }
 
-resource "aws_vpc" "k8_vpc" {
-  cidr_block = "10.0.0.0/16"
+locals {
+  eks_vpc_name = "${var.app_project_prefix}-vpc"
+  eks_cluster_name = "${var.app_project_prefix}-k8-cluster"
+  eks_nodegroup_one_name = "${var.app_project_prefix}-nodegroup-one"
 }
 
-resource "aws_iam_role" "k8_role" {
-  name = "${var.app_project_prefix}-iam-role"
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
+module "module_vpc" {
+  source      = "./modules/aws_vpc"
+
+  vpc_name = local.eks_vpc_name
+  tag_cluster_name = local.eks_cluster_name
 }
 
-resource "aws_iam_role_policy_attachment" "test-attach" {
-  role       = aws_iam_role.k8_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+
+module "aws_eks_cluster" {
+  source = "./modules/aws_eks_cluster"
+
+  prefix     = var.app_project_prefix
+  eks_cluster_name = local.eks_cluster_name
+  eks_nodegroup_one_name = local.eks_nodegroup_one_name
+  vpc_subnet_ids = module.module_vpc.vpc_private_subnet_ids
 }
