@@ -87,42 +87,15 @@ jobs:
           cp -a ${{ inputs.repository }}/. ./
           rm -r ${{ inputs.repository }}
           ls -a
-      - name: Install Azure Cli
-        uses: elstudio/action-install-azure-cli@v1
-      - name: Login Azure
-        id: login
+      - name: Install AWS Cli
+        uses: unfor19/install-aws-cli-action@v1
+      - run: aws --version
+        shell: bash
+      - name: Setup Dependencies
         run: |
-          echo "input from inputs ${{inputs.project}} and env ${{ env.project }}"
-          az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
-      - name: Setup Storage Account
-        run: |
-          cd terraform/_scripts
+          cd terraform/aws/_scripts
           chmod +x setup.sh
           ./setup.sh ${{ env.project }}
-      - name: Get current Virtual Machine
-        id: vm
-        run: |
-          GROUP_EXIST=$(az group exists --name ${{env.project}}-group)
-          echo "GROUP_EXIST=$GROUP_EXIST" >> "$GITHUB_ENV"
-          echo "GROUP EXIST - $GROUP_EXIST"
-          if $GROUP_EXIST
-          then
-            VM_NAME=$(az vm show --name ${{env.project}}-vm --resource-group ${{env.project}}-group --query 'name' --output tsv)
-            echo "VM EXIST - $VM_NAME"
-            CURRENT_VM=${{ env.project }}-vm
-            if [[ $VM_NAME == $CURRENT_VM ]]; then
-                echo "HAS_VM=true" >> "$GITHUB_ENV"
-            else
-                echo "HAS_VM=false" >> "$GITHUB_ENV"
-            fi
-          else
-              echo "HAS_VM=false" >> "$GITHUB_ENV"
-          fi
-      - name: Set Variables
-        id: variables
-        run: |
-          echo "HAS_VM=${{ env.HAS_VM }}" >> $GITHUB_OUTPUT
-
 
   setup-cloud:
     name: 'Build Cloud Infrastructure'
