@@ -3,7 +3,7 @@ name: Infrastructure
 on:
   push:
     branches:
-      - 'main'
+      - 'feat/**'
   workflow_dispatch:
     inputs:
       TFAction:
@@ -37,7 +37,7 @@ permissions:
 
 env:
   current_dns_domain: dev.stemuli.net
-  current_project: stmxdev
+  current_project: localstgops
 
 jobs:
   envs:
@@ -148,80 +148,80 @@ jobs:
         with:
           name: cloud-scripts
           path: ${{ inputs.repository }}
-      - name: Copy Script files to context
-        if: ${{ inputs.is_workflow == true }}
-        run: |
-          ls
-          cp -a "${{ inputs.repository }}/." ./
-          rm -r "${{ inputs.repository }}"
-          ls -a
-      - name: Install Azure Cli
-        uses: elstudio/action-install-azure-cli@v1
-      - name: Login Azure
-        id: login
-        run: |
-          echo "has vm ${{ needs.setups.outputs.HAS_VM }}"
-          az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          # terraform_version: 0.13.0
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-      - name: Terraform Init
-        id: init
-        run: |
-          echo "Environment - ${{ env.project }}"
-          mkdir -p terraform/_state
-          terraform -chdir=terraform/ init \
-          -backend-config="resource_group_name=${{ env.project }}-tfstate" \
-          -backend-config="storage_account_name=${{ env.project }}storage" \
-          -backend-config="container_name=${{ env.project }}tfstate" \
-          -backend-config="key=${{ env.project }}.terraform.tfstate" \
-          -backend-config="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
-          -backend-config="tenant_id=${{ secrets.ARM_TENANT_ID }}" \
-          -backend-config="client_id=${{ secrets.ARM_CLIENT_ID }}" \
-          -backend-config="client_secret=${{ secrets.ARM_CLIENT_SECRET }}"
-        continue-on-error: false
-
-      - name: Terraform Plan
-        id: plan
-        run: |
-          mkdir -p terraform/_state
-          terraform -chdir=terraform/ plan -no-color -input=false \
-            -var=app_project_prefix="${{ env.project}}" \
-            -var=subscription_id="${{ secrets.ARM_SUBSCRIPTION_ID }}" \
-            -var=tenant_id="${{ secrets.ARM_TENANT_ID }}" \
-            -var=client_id="${{ secrets.ARM_CLIENT_ID }}" \
-            -var=client_secret="${{ secrets.ARM_CLIENT_SECRET }}" \
-            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
-            -var=dns_domain="${{ env.dns_domain }}" \
-            -out ./_state/${{ env.project }}.tfplan \
-            -lock=false
-        continue-on-error: false
-
-      - name: Terraform Apply
-        id: apply
-        run: |
-          echo "Terraform Application in progress ${{ env.project }}"
-          terraform -chdir=terraform/ apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
-          echo "Terraform Application was successful ${{ env.project }}"
-        continue-on-error: false
-
-      - name: Terraform Destroy
-        if: ${{ inputs.TFAction == 'destroy'}}
-        id: destroy
-        run: |
-          echo "Terraform Destruction in progress ${{ env.project }}"
-          terraform -chdir=terraform/ plan -destroy -no-color -input=false \
-            -var=app_project_prefix="${{ env.project}}" \
-            -var=subscription_id="${{ secrets.ARM_SUBSCRIPTION_ID }}" \
-            -var=tenant_id="${{ secrets.ARM_TENANT_ID }}" \
-            -var=client_id="${{ secrets.ARM_CLIENT_ID }}" \
-            -var=client_secret="${{ secrets.ARM_CLIENT_SECRET }}" \
-            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
-            -var=dns_domain="${{ env.dns_domain }}" \
-            -out ./_state/${{ env.project }}.destroy.tfplan \
-            -lock=false
-          terraform -chdir=terraform/ apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
-          echo "Terraform Destruction in successful ${{ env.project }}"
-        continue-on-error: false
+#      - name: Copy Script files to context
+#        if: ${{ inputs.is_workflow == true }}
+#        run: |
+#          ls
+#          cp -a "${{ inputs.repository }}/." ./
+#          rm -r "${{ inputs.repository }}"
+#          ls -a
+#      - name: Install Azure Cli
+#        uses: elstudio/action-install-azure-cli@v1
+#      - name: Login Azure
+#        id: login
+#        run: |
+#          echo "has vm ${{ needs.setups.outputs.HAS_VM }}"
+#          az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
+#      - name: Setup Terraform
+#        uses: hashicorp/setup-terraform@v2
+#        with:
+#          # terraform_version: 0.13.0
+#          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+#      - name: Terraform Init
+#        id: init
+#        run: |
+#          echo "Environment - ${{ env.project }}"
+#          mkdir -p terraform/_state
+#          terraform -chdir=terraform/ init \
+#          -backend-config="resource_group_name=${{ env.project }}-tfstate" \
+#          -backend-config="storage_account_name=${{ env.project }}storage" \
+#          -backend-config="container_name=${{ env.project }}tfstate" \
+#          -backend-config="key=${{ env.project }}.terraform.tfstate" \
+#          -backend-config="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
+#          -backend-config="tenant_id=${{ secrets.ARM_TENANT_ID }}" \
+#          -backend-config="client_id=${{ secrets.ARM_CLIENT_ID }}" \
+#          -backend-config="client_secret=${{ secrets.ARM_CLIENT_SECRET }}"
+#        continue-on-error: false
+#
+#      - name: Terraform Plan
+#        id: plan
+#        run: |
+#          mkdir -p terraform/_state
+#          terraform -chdir=terraform/ plan -no-color -input=false \
+#            -var=app_project_prefix="${{ env.project}}" \
+#            -var=subscription_id="${{ secrets.ARM_SUBSCRIPTION_ID }}" \
+#            -var=tenant_id="${{ secrets.ARM_TENANT_ID }}" \
+#            -var=client_id="${{ secrets.ARM_CLIENT_ID }}" \
+#            -var=client_secret="${{ secrets.ARM_CLIENT_SECRET }}" \
+#            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
+#            -var=dns_domain="${{ env.dns_domain }}" \
+#            -out ./_state/${{ env.project }}.tfplan \
+#            -lock=false
+#        continue-on-error: false
+#
+#      - name: Terraform Apply
+#        id: apply
+#        run: |
+#          echo "Terraform Application in progress ${{ env.project }}"
+#          terraform -chdir=terraform/ apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
+#          echo "Terraform Application was successful ${{ env.project }}"
+#        continue-on-error: false
+#
+#      - name: Terraform Destroy
+#        if: ${{ inputs.TFAction == 'destroy'}}
+#        id: destroy
+#        run: |
+#          echo "Terraform Destruction in progress ${{ env.project }}"
+#          terraform -chdir=terraform/ plan -destroy -no-color -input=false \
+#            -var=app_project_prefix="${{ env.project}}" \
+#            -var=subscription_id="${{ secrets.ARM_SUBSCRIPTION_ID }}" \
+#            -var=tenant_id="${{ secrets.ARM_TENANT_ID }}" \
+#            -var=client_id="${{ secrets.ARM_CLIENT_ID }}" \
+#            -var=client_secret="${{ secrets.ARM_CLIENT_SECRET }}" \
+#            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
+#            -var=dns_domain="${{ env.dns_domain }}" \
+#            -out ./_state/${{ env.project }}.destroy.tfplan \
+#            -lock=false
+#          terraform -chdir=terraform/ apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
+#          echo "Terraform Destruction in successful ${{ env.project }}"
+#        continue-on-error: false
