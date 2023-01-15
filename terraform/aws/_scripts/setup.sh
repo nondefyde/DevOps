@@ -2,7 +2,6 @@
 
 REGION=us-west-2
 BUCKET_NAME=${1}-tfstate
-REGISTRY_NAME=${1}-ecr
 
 echo "Setting up bucket ${BUCKET_NAME} within region ${REGION}"
 

@@ -24,7 +24,7 @@ data "aws_caller_identity" "current" {}
 locals {
   eks_vpc_name           = "${var.app_project_prefix}-vpc"
   eks_cluster_name       = "${var.app_project_prefix}-k8-cluster"
-  eks_nodegroup_one_name = "${var.app_project_prefix}-nodegroup-one"
+  eks_nodegroup_one_name = "${var.app_project_prefix}-nodegroup"
 }
 
 module "module_vpc" {
@@ -48,4 +48,5 @@ resource "aws_ecr_repository" "foo" {
   image_scanning_configuration {
     scan_on_push = false
   }
+  force_delete = true
 }
