@@ -30,11 +30,13 @@
 
 
     "aws:clean": "rm -rf ./terraform/aws/_state && rm -rf ./terraform/azure/**/.terraform",
+    "aws:setup": "cd ./terraform/aws/_scripts && ./setup.sh localdevops",
     "aws:prepare": "cd ./terraform/aws/_scripts && ./prepare.sh kube localdevops",
     "aws:apply": "cd ./terraform/aws/_scripts && ./apply.sh kube localdevops",
     "aws:destroy": "cd ./terraform/aws/_scripts && ./destroy.sh kube localdevops",
-    "aws:execute": "yarn aws:prepare && yarn aws:apply",
+    "aws:execute": "yarn aws:setup && yarn aws:prepare && yarn aws:apply",
     "aws:tear": "yarn aws:destroy",
-    "aws:cicle": "yarn aws:execute && yarn aws:tear"
+    "aws:cicle": "yarn aws:execute && yarn aws:tear",
+    "aws:permission": "cd ./terraform/aws/kube && kubectl apply -f eks-console-full-access.yaml"
   }
 }

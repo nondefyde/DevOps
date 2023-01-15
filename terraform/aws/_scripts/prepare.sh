@@ -3,12 +3,12 @@
 cd ../${1}
 echo "Environment AWS: ${1} - ${2}"
 mkdir -p _state
+#terraform import kubernetes_config_map.aws-auth kube-system/aws-auth -var-file=../../_env/${2}.aws.tfvars
 #terraform providers lock -platform=windows_amd64 -platform=darwin_amd64 -platform=linux_amd64
-terraform init -input=false
-#-backend-config="resource_group_name=${2}-tfstate" \
-#-backend-config="storage_account_name=${2}storage" \
-#-backend-config="container_name=${2}tfstate" \
-#-backend-config="key=${2}.terraform.tfstate"
+terraform init -input=false \
+-backend-config="bucket=${2}-tfstate" \
+-backend-config="region=us-west-2" \
+-backend-config="key=${2}.terraform.tfstate"
 
 terraform plan -input=false -var-file=../../_env/${2}.aws.tfvars -out ./_state/${2}.tfplan
 cd ../_scripts
