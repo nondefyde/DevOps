@@ -91,6 +91,11 @@ jobs:
         uses: unfor19/install-aws-cli-action@v1
       - run: aws --version
         shell: bash
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::838617927585:user/adminuser
+          aws-region: us-east-2
       - name: Setup Dependencies
         run: |
           cd terraform/aws/_scripts
@@ -121,6 +126,7 @@ jobs:
         with:
           name: cloud-scripts
           path: ${{ inputs.repository }}
+
 #      - name: Copy Script files to context
 #        if: ${{ inputs.is_workflow == true }}
 #        run: |
