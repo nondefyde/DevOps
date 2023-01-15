@@ -95,7 +95,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::838617927585:role/s3-role
-          aws-region: ${{ secret.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
       - name: Setup Dependencies
         run: |
           cd terraform/aws/_scripts
