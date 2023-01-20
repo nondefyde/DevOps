@@ -128,41 +128,22 @@ jobs:
           name: cloud-scripts
           path: ${{ inputs.repository }}
 
-#      - name: Copy Script files to context
-#        if: ${{ inputs.is_workflow == true }}
-#        run: |
-#          ls
-#          cp -a "${{ inputs.repository }}/." ./
-#          rm -r "${{ inputs.repository }}"
-#          ls -a
-#      - name: Install Azure Cli
-#        uses: elstudio/action-install-azure-cli@v1
-#      - name: Login Azure
-#        id: login
-#        run: |
-#          echo "has vm ${{ needs.setups.outputs.HAS_VM }}"
-#          az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
-#      - name: Setup Terraform
-#        uses: hashicorp/setup-terraform@v2
-#        with:
-#          # terraform_version: 0.13.0
-#          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-#      - name: Terraform Init
-#        id: init
-#        run: |
-#          echo "Environment - ${{ env.project }}"
-#          mkdir -p terraform/_state
-#          terraform -chdir=terraform/ init \
-#          -backend-config="resource_group_name=${{ env.project }}-tfstate" \
-#          -backend-config="storage_account_name=${{ env.project }}storage" \
-#          -backend-config="container_name=${{ env.project }}tfstate" \
-#          -backend-config="key=${{ env.project }}.terraform.tfstate" \
-#          -backend-config="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
-#          -backend-config="tenant_id=${{ secrets.ARM_TENANT_ID }}" \
-#          -backend-config="client_id=${{ secrets.ARM_CLIENT_ID }}" \
-#          -backend-config="client_secret=${{ secrets.ARM_CLIENT_SECRET }}"
-#        continue-on-error: false
-#
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a "${{ inputs.repository }}/." ./
+          rm -r "${{ inputs.repository }}"
+          ls -a
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          # terraform_version: 0.13.0
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Terraform Init
+        id: init
+        run: cd ./terraform/aws/_scripts && ./prepare.sh kube ${{ env.project}}
+
 #      - name: Terraform Plan
 #        id: plan
 #        run: |
