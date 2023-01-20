@@ -53,7 +53,7 @@ env:
 
 jobs:
   envs:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true }}
+    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true) }}
     name: 'Validate Env Variables'
     runs-on: ubuntu-latest
     outputs:
@@ -89,7 +89,7 @@ jobs:
           echo "docker-context=${{ env.docker-context }}" >> $GITHUB_OUTPUT
 
   config:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true }}
+    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true) }}
     name: 'Setup Config Variables'
     needs: [envs]
     permissions: write-all
@@ -149,7 +149,7 @@ jobs:
           echo "event_name      ${{ github.event_name }}"
 
   push-image:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true }}
+    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true) }}
     name: 'Push Image to Cloud Registry'
     needs: [envs, config]
     runs-on: ubuntu-latest
@@ -186,7 +186,7 @@ jobs:
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}:${{ needs.config.outputs.docker-tag }}
 
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true }}
+    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true) }}
     needs: [ push-image, config ]
     name: 'Push and deploy to GCP'
     runs-on: ubuntu-latest
