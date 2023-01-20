@@ -114,13 +114,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Set Env
-        run: |
-          IP="${{inputs.project}}"
-          EP="${{env.project}}"
-          PROJECT="${IP:-$EP}"
-          echo "FINAL PROJECT NAME ${PROJECT}"
-          echo "project=${PROJECT}" >> "$GITHUB_ENV"
       - name: Download Repo to Artifact
         if: ${{ inputs.is_workflow == true }}
         uses: actions/download-artifact@master
@@ -150,6 +143,7 @@ jobs:
       - name: Terraform Init
         id: init
         run: |
+          echo "Setting up ${{ env.project }}"
           cd terraform/aws/_scripts
           chmod +x prepare.sh
           ./setup.sh kube ${{ env.project }}
