@@ -146,7 +146,7 @@ jobs:
           echo "Setting up ${{ env.project }}"
           cd terraform/aws/_scripts
           chmod +x prepare.sh
-          ./setup.sh kube ${{ env.project }}
+          ./prepare.sh kube ${{ env.project }}
 
 #      - name: Terraform Plan
 #        id: plan
