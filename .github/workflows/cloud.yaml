@@ -157,7 +157,7 @@ jobs:
         run: |
           echo "Environment AWS: kube - ${{ env.project}}"
           mkdir -p terraform/aws/kube/_state
-          terraform -chdir=terraform/ plan -no-color -input=false \
+          terraform -chdir=terraform/aws/kube plan -no-color -input=false \
             -var=app_project_prefix="${{ env.project}}" \
             -var=aws_region="${{ secrets.AWS_REGION }}" \
             -var=aws_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
