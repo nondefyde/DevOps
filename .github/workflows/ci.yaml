@@ -216,27 +216,21 @@ jobs:
         run: |
           echo "aws eks update-kubeconfig --name ${{ env.project }}-k8-cluster --region ${{ secrets.AWS_REGION }}"
           aws eks update-kubeconfig --name ${{ env.project }}-k8-cluster --region ${{ secrets.AWS_REGION }}
-#
-#      - uses: actions-hub/kubectl@master
-#        env:
-#          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
-#        with:
-#          args: get pods
-#
-#      - name: Deploy image to kubernetes cluster
-#        env:
-#          APP_NAME:  ${{ env.project }}
-#          IMAGE_TAG: ${{ needs.config.outputs.docker-tag }}
-#          NAMESPACE: ${{ env.namespace }}
-#          INGRESS_HOSTNAME: ${{ env.hostname }}
-#          REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
-#          PORT: ${{ env.current_port }}
-#        run: |
-#          cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -
-#          cat ./_kubernetes/deployment.yml | envsubst | kubectl apply -f -
-#          cat ./_kubernetes/ingress.yml | envsubst | kubectl apply -f -
-#
-#      - name: Restart Pods
-#        id: restart-pods
-#        run: kubectl rollout restart deployment ${{ env.image-name }}-dpl --namespace=${{ env.namespace }}
-#        continue-on-error: true # will fail on first deploy
+
+      - name: Deploy image to kubernetes cluster
+        env:
+          APP_NAME:  ${{ env.project }}
+          IMAGE_TAG: ${{ needs.config.outputs.docker-tag }}
+          NAMESPACE: ${{ env.namespace }}
+          INGRESS_HOSTNAME: ${{ env.hostname }}
+          REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
+          PORT: ${{ env.current_port }}
+        run: |
+          cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -
+          cat ./_kubernetes/deployment.yml | envsubst | kubectl apply -f -
+          cat ./_kubernetes/ingress.yml | envsubst | kubectl apply -f -
+
+      - name: Restart Pods
+        id: restart-pods
+        run: kubectl rollout restart deployment ${{ env.image-name }}-dpl --namespace=${{ env.namespace }}
+        continue-on-error: true # will fail on first deploy
