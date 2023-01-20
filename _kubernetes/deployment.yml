@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${APP_NAME}-dpl
+  namespace: ${NAMESPACE}
+  labels:
+    #Project ID
+    app: ${APP_NAME}
+spec:
+  #Run one instances of our application
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${APP_NAME}-pod
+  template:
+    metadata:
+      labels:
+        app: ${APP_NAME}-pod
+    spec:
+      #Container details
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+      containers:
+        - name: ${APP_NAME}
+          image: ${REPOSITORY}:${IMAGE_TAG}
+          imagePullPolicy: Always
+          #Ports to expose
+          ports:
+            - containerPort: ${PORT}
+              protocol: TCP
