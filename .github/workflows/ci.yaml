@@ -185,7 +185,6 @@ jobs:
           context: ${{ env.docker-context }}
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}:${{ needs.config.outputs.docker-tag }}
 
-
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true }}
     needs: [ push-image, config ]
