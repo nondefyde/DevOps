@@ -155,6 +155,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
+          echo "Environment AWS: kube - ${{ env.project}}"
           mkdir -p terraform/aws/kube/_state
           terraform -chdir=terraform/ plan -no-color -input=false \
             -var=app_project_prefix="${{ env.project}}" \
