@@ -142,7 +142,10 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
       - name: Terraform Init
         id: init
-        run: cd ./terraform/aws/_scripts && ./prepare.sh kube ${{ env.project}}
+        run: |
+          cd terraform/aws/_scripts
+          chmod +x prepare.sh
+          ./setup.sh kube ${{ env.project }}
 
 #      - name: Terraform Plan
 #        id: plan
