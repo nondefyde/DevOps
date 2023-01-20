@@ -46,7 +46,7 @@ env:
   current_project: localstgops
   current_port: 8080
   current_hostname_format: "pr-{0}.voomsway.com"
-  namespace: "dev-stg"
+  namespace: stg
   image-name: stmx
   hostname: 'voomsway'
   docker-context: './app'
@@ -208,9 +208,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+      - uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: get pods
 
       - name: Deploy image to kubernetes cluster
         env:
