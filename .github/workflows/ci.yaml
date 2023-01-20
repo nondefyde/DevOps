@@ -182,7 +182,7 @@ jobs:
         with:
           push: true
           context: ${{ env.docker-context }}
-          tags: 838617927585.dkr.ecr.us-west-2.amazonaws.com/${{ env.project }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
+          tags: ${{ secrets.AWS_USER_ID }}.dkr.ecr.us-west-2.amazonaws.com/${{ env.project }}/${{ env.current_service }}:${{ needs.config.outputs.docker-tag }}
 
 #  deploy:
 #    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true }}
