@@ -192,7 +192,11 @@ jobs:
     needs: [ push-image, config ]
     name: 'Push and deploy to GCP'
     runs-on: ubuntu-latest
-    environment: dev
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      port: ${{ needs.envs.outputs.port }}
+      hostname-format: ${{ needs.envs.outputs.hostname-format }}
+      docker-context: ${{ needs.envs.outputs.docker-context }}
     steps:
       - name: --- For debugging ---
         id: debug-context
