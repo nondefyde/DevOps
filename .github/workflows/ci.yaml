@@ -40,7 +40,7 @@ permissions:
   contents: read
 
 env:
-  current_project: "stmxdev"
+  current_project: localstgops
   current_service: quest
   current_port: 8080
   current_hostname_format: "pr-{0}.voomsway.com"
@@ -169,56 +169,56 @@ jobs:
           echo "hostname        ${{ needs.config.outputs.hostname }}"
           echo "docker-tag      ${{ needs.config.outputs.docker-tag }}"
           echo "project         ${{ env.project }}"
-
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Login Azure
-        id: login
-        run: |
-          az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
-          az acr login --name "${{env.project}}acr.azurecr.io"
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
       - name: Build & Push
         uses: docker/build-push-action@v2
         with:
           push: true
           context: ${{ env.docker-context }}
-          tags: ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
+          tags: 838617927585.dkr.ecr.us-west-2.amazonaws.com/${{ env.project }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
 
-  deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true }}
-    name: 'Deploy Image to Container in VM'
-    needs: [ envs, config, deploy-image ]
-    runs-on: ubuntu-latest
-    env:
-      project: ${{ needs.envs.outputs.project }}
-      service: ${{ needs.envs.outputs.service }}
-      port: ${{ needs.envs.outputs.port }}
-      hostname-format: ${{ needs.envs.outputs.hostname-format }}
-      docker-context: ${{ needs.envs.outputs.docker-context }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Download Repo to Artifact
-        if: ${{ inputs.is_workflow == true }}
-        uses: actions/download-artifact@master
-        with:
-          name: cloud-scripts
-          path: ${{ inputs.repository }}
-      - name: Copy Script files to context
-        if: ${{ inputs.is_workflow == true }}
-        run: |
-          ls
-          cp -a "${{ inputs.repository }}/." ./
-          rm -r "${{ inputs.repository }}"
-          ls -a
-      - name: Login Azure
-        id: login
-        run: |
-          az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
-      - name: Deploy Image to container
-        run: |
-          image=${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
-          cd terraform/_scripts 
-          chmod +x deploy.sh
-          echo "deployment inputs ${{ env.project }} $image ${{ needs.config.outputs.hostname }} ${{ needs.config.outputs.docker-tag }} ${{ env.port }}"
-          ./deploy.sh ${{ env.project }} $image ${{ needs.config.outputs.hostname }} ${{ needs.config.outputs.docker-tag }} ${{ env.port }}
+#  deploy:
+#    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true }}
+#    name: 'Deploy Image to Container in VM'
+#    needs: [ envs, config, deploy-image ]
+#    runs-on: ubuntu-latest
+#    env:
+#      project: ${{ needs.envs.outputs.project }}
+#      service: ${{ needs.envs.outputs.service }}
+#      port: ${{ needs.envs.outputs.port }}
+#      hostname-format: ${{ needs.envs.outputs.hostname-format }}
+#      docker-context: ${{ needs.envs.outputs.docker-context }}
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#      - name: Download Repo to Artifact
+#        if: ${{ inputs.is_workflow == true }}
+#        uses: actions/download-artifact@master
+#        with:
+#          name: cloud-scripts
+#          path: ${{ inputs.repository }}
+#      - name: Copy Script files to context
+#        if: ${{ inputs.is_workflow == true }}
+#        run: |
+#          ls
+#          cp -a "${{ inputs.repository }}/." ./
+#          rm -r "${{ inputs.repository }}"
+#          ls -a
+#      - name: Login Azure
+#        id: login
+#        run: |
+#          az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
+#      - name: Deploy Image to container
+#        run: |
+#          image=${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
+#          cd terraform/_scripts
+#          chmod +x deploy.sh
+#          echo "deployment inputs ${{ env.project }} $image ${{ needs.config.outputs.hostname }} ${{ needs.config.outputs.docker-tag }} ${{ env.port }}"
+#          ./deploy.sh ${{ env.project }} $image ${{ needs.config.outputs.hostname }} ${{ needs.config.outputs.docker-tag }} ${{ env.port }}
