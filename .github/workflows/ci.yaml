@@ -189,7 +189,7 @@ jobs:
 
   deploy:
     if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == false) }}
-    needs: [ push-image, config ]
+    needs: [ envs, push-image, config ]
     name: 'Push and deploy to GCP'
     runs-on: ubuntu-latest
     env:
@@ -214,6 +214,7 @@ jobs:
 
       - name: Update kubernetes config
         run: |
+          echo "aws eks update-kubeconfig --name ${{ env.project }}-k8-cluster --region ${{ secrets.AWS_REGION }}"
           aws eks update-kubeconfig --name ${{ env.project }}-k8-cluster --region ${{ secrets.AWS_REGION }}
 #
 #      - uses: actions-hub/kubectl@master
