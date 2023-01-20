@@ -3,7 +3,7 @@ name: Infrastructure
 on:
   push:
     branches:
-      - 'feat/**'
+      - 'main'
   workflow_dispatch:
     inputs:
       TFAction:

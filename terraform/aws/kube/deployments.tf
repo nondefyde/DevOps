@@ -23,19 +23,6 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.cluster.token
   }
 }
-#
-#resource "helm_release" "nginx-ingress-controller" {
-#  name       = "nginx-ingress-controller"
-#  repository = "https://charts.bitnami.com/bitnami"
-#  chart      = "nginx-ingress-controller"
-#
-#
-#  set {
-#    name  = "service.type"
-#    value = "LoadBalancer"
-#  }
-#
-#}
 
 module "nginx-controller" {
   source  = "terraform-iaac/nginx-controller/helm"
