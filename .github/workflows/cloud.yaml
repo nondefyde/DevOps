@@ -38,6 +38,7 @@ permissions:
 env:
   current_dns_domain: dev.stemuli.net
   current_project: localstgops
+  namespace: stg
 
 jobs:
   envs:
@@ -143,26 +144,27 @@ jobs:
       - name: Terraform Init
         id: init
         run: |
-          echo "Setting up ${{ env.project }}"
-          cd terraform/aws/_scripts
-          chmod +x prepare.sh
-          ./prepare.sh kube ${{ env.project }}
+          echo "Environment AWS: kube - ${{ env.project}}"
+          mkdir -p terraform/aws/kube/_state
+          terraform -chdir=terraform/aws/kube init \
+            -backend-config="bucket=${{ env.project }}-tfstate" \
+            -backend-config="region=us-west-2" \
+            -backend-config="key=${{ env.project }}.terraform.tfstate"
+        continue-on-error: false
 
-#      - name: Terraform Plan
-#        id: plan
-#        run: |
-#          mkdir -p terraform/_state
-#          terraform -chdir=terraform/ plan -no-color -input=false \
-#            -var=app_project_prefix="${{ env.project}}" \
-#            -var=subscription_id="${{ secrets.ARM_SUBSCRIPTION_ID }}" \
-#            -var=tenant_id="${{ secrets.ARM_TENANT_ID }}" \
-#            -var=client_id="${{ secrets.ARM_CLIENT_ID }}" \
-#            -var=client_secret="${{ secrets.ARM_CLIENT_SECRET }}" \
-#            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
-#            -var=dns_domain="${{ env.dns_domain }}" \
-#            -out ./_state/${{ env.project }}.tfplan \
-#            -lock=false
-#        continue-on-error: false
+      - name: Terraform Plan
+        id: plan
+        run: |
+          mkdir -p terraform/aws/kube/_state
+          terraform -chdir=terraform/ plan -no-color -input=false \
+            -var=app_project_prefix="${{ env.project}}" \
+            -var=aws_region="${{ secrets.AWS_REGION }}" \
+            -var=aws_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            -var=aws_key_secret="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            -var=namespace="${{ env.namespace }}" \
+            -out ./_state/${{ env.project }}.aws.tfplan \
+            -lock=false
+        continue-on-error: false
 #
 #      - name: Terraform Apply
 #        id: apply
