@@ -1,7 +1,6 @@
 variable "prefix" {
   type        = string
   description = "The prefix for deployment"
-  default     = "stmx"
 }
 
 variable "eks_nodegroup_one_name" {

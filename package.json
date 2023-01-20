@@ -19,22 +19,23 @@
     "execute": "yarn setup && yarn prepare && yarn apply && yarn deploy",
 
     "azure:clean": "rm -rf ./terraform/azure/_state && rm -rf ./terraform/azure/**/.terraform",
-    "azure:cleanup": "cd ./terraform/azure/_scripts && ./cleanup.sh localdevops",
-    "azure:setup": "cd ./terraform/azure/_scripts && ./setup.sh localdevops",
-    "azure:prepare": "cd ./terraform/azure/_scripts && ./prepare.sh vm localdevops",
-    "azure:apply": "cd ./terraform/azure/_scripts && ./apply.sh vm localdevops",
-    "azure:destroy": "cd ./terraform/azure/_scripts && ./destroy.sh vm localdevops",
+    "azure:cleanup": "cd ./terraform/azure/_scripts && ./cleanup.sh localstgops",
+    "azure:setup": "cd ./terraform/azure/_scripts && ./setup.sh localstgops",
+    "azure:prepare": "cd ./terraform/azure/_scripts && ./prepare.sh vm localstgops",
+    "azure:apply": "cd ./terraform/azure/_scripts && ./apply.sh vm localstgops",
+    "azure:destroy": "cd ./terraform/azure/_scripts && ./destroy.sh vm localstgops",
     "azure:execute": "yarn azure:setup && yarn azure:prepare && yarn azure:apply",
     "azure:tear": "yarn azure:destroy && yarn azure:cleanup",
     "azure:cicle": "yarn azure:execute && yarn azure:tear",
 
-
     "aws:clean": "rm -rf ./terraform/aws/_state && rm -rf ./terraform/azure/**/.terraform",
-    "aws:prepare": "cd ./terraform/aws/_scripts && ./prepare.sh kube localdevops",
-    "aws:apply": "cd ./terraform/aws/_scripts && ./apply.sh kube localdevops",
-    "aws:destroy": "cd ./terraform/aws/_scripts && ./destroy.sh kube localdevops",
-    "aws:execute": "yarn aws:prepare && yarn aws:apply",
+    "aws:setup": "cd ./terraform/aws/_scripts && ./setup.sh localstgops",
+    "aws:prepare": "cd ./terraform/aws/_scripts && ./prepare.sh kube localstgops",
+    "aws:apply": "cd ./terraform/aws/_scripts && ./apply.sh kube localstgops",
+    "aws:destroy": "cd ./terraform/aws/_scripts && ./destroy.sh kube localstgops",
+    "aws:execute": "yarn aws:setup && yarn aws:prepare && yarn aws:apply",
     "aws:tear": "yarn aws:destroy",
-    "aws:cicle": "yarn aws:execute && yarn aws:tear"
+    "aws:cicle": "yarn aws:execute && yarn aws:tear",
+    "aws:permission": "cd ./terraform/aws/kube && kubectl apply -f eks-console-full-access.yaml"
   }
 }

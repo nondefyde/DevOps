@@ -1,0 +1,193 @@
+name: Infrastructure
+
+on:
+  push:
+    branches:
+      - 'main'
+  workflow_dispatch:
+    inputs:
+      TFAction:
+        description: "Destroy Infrastructure"
+        type: boolean
+        default: "false"
+  workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      HAS_VM:
+        description: "If a virtual machine already exist"
+        value: ${{ jobs.setups.outputs.HAS_VM }}
+    inputs:
+      is_workflow:
+        required: true
+        type: boolean
+        default: false
+      project:
+        required: true
+        type: string
+      repository:
+        required: true
+        type: string
+      dns:
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  current_dns_domain: dev.stemuli.net
+  current_project: localstgops
+  namespace: stg
+
+jobs:
+  envs:
+    name: 'Validate Env Variables'
+    runs-on: ubuntu-latest
+    outputs:
+      project: ${{ steps.variables.outputs.project }}
+      dns_domain: ${{ steps.variables.outputs.dns_domain }}
+    steps:
+      - name: Initialize environments
+        run: |
+          EP="${{inputs.project}}"
+          DNS="${{inputs.dns}}"
+          
+          PROJECT="${EP:-${{ env.current_project }}}"
+          DNSNAME="${DNS:-${{ env.current_dns_domain }}}"
+          echo "project=${PROJECT}" >> "$GITHUB_ENV"
+          echo "dns_domain=${DNSNAME}" >> "$GITHUB_ENV"
+      - name: Set Env
+        id: variables
+        run: |
+          echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
+          echo "dns_domain=${{ env.dns_domain }}" >> $GITHUB_OUTPUT
+
+  setups:
+    name: 'Setup dependencies'
+    needs: [envs]
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      dns_domain: ${{ needs.envs.outputs.dns_domain }}
+    outputs:
+      HAS_VM: ${{ steps.variables.outputs.HAS_VM }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download Repo to Artifact
+        if: ${{ inputs.is_workflow == true }}
+        uses: actions/download-artifact@master
+        with:
+          name: cloud-scripts
+          path: ${{ inputs.repository }}
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a ${{ inputs.repository }}/. ./
+          rm -r ${{ inputs.repository }}
+          ls -a
+      - name: Install AWS Cli
+        uses: unfor19/install-aws-cli-action@v1
+      - run: aws --version
+        shell: bash
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Setup Dependencies
+        run: |
+          cd terraform/aws/_scripts
+          chmod +x setup.sh
+          ./setup.sh ${{ env.project }}
+
+  setup-cloud:
+    name: 'Build Cloud Infrastructure'
+    needs: [ envs, setups ]
+#    if: needs.setups.outputs.HAS_VM == false || inputs.TFAction == 'apply'
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      dns_domain: ${{ needs.envs.outputs.dns_domain }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download Repo to Artifact
+        if: ${{ inputs.is_workflow == true }}
+        uses: actions/download-artifact@master
+        with:
+          name: cloud-scripts
+          path: ${{ inputs.repository }}
+
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a "${{ inputs.repository }}/." ./
+          rm -r "${{ inputs.repository }}"
+          ls -a
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          # terraform_version: 0.13.0
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Terraform Init
+        id: init
+        run: |
+          echo "Environment AWS: kube - ${{ env.project}}"
+          mkdir -p terraform/aws/kube/_state
+          terraform -chdir=terraform/aws/kube init \
+            -backend-config="bucket=${{ env.project }}-tfstate" \
+            -backend-config="region=us-west-2" \
+            -backend-config="key=${{ env.project }}.terraform.tfstate"
+        continue-on-error: false
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          echo "Environment AWS: kube - ${{ env.project}}"
+          mkdir -p terraform/aws/kube/_state
+          terraform -chdir=terraform/aws/kube plan -no-color -input=false \
+            -var=app_project_prefix="${{ env.project}}" \
+            -var=aws_region="${{ secrets.AWS_REGION }}" \
+            -var=aws_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            -var=aws_key_secret="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            -var=namespace="${{ env.namespace }}" \
+            -out ./_state/${{ env.project }}.tfplan \
+            -lock=false
+        continue-on-error: false
+
+      - name: Terraform Apply
+        id: apply
+        run: |
+          echo "Terraform Application in progress ${{ env.project }}"
+          terraform -chdir=terraform/aws/kube apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
+          echo "Terraform Application was successful ${{ env.project }}"
+        continue-on-error: false
+
+      - name: Terraform Destroy
+        if: ${{ inputs.TFAction == 'destroy'}}
+        id: destroy
+        run: |
+          echo "Terraform Destruction in progress ${{ env.project }}"
+          terraform -chdir=terraform/aws/kube plan -destroy -no-color -input=false \
+            -var=app_project_prefix="${{ env.project}}" \
+            -var=aws_region="${{ secrets.AWS_REGION }}" \
+            -var=aws_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            -var=aws_key_secret="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            -var=namespace="${{ env.namespace }}" \
+            -out ./_state/${{ env.project }}.destroy.tfplan \
+            -lock=false
+          terraform -chdir=terraform/aws/kube apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
+          echo "Terraform Destruction in successful ${{ env.project }}"
+        continue-on-error: false

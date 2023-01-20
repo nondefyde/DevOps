@@ -1,7 +1,6 @@
 variable "app_project_prefix" {
   type        = string
   description = "The prefix for deployment"
-  default     = "stmx"
 }
 
 variable "aws_region" {
@@ -19,8 +18,9 @@ variable "aws_key_secret" {
   default = "Aws access key secret"
 }
 
-variable "private_subnets" {
-  type = list(string)
-  default = ["10.0.1.0/24", "10.0.2.0/24"]
-  description = "Subnet array"
+///////////////// Deployment Variables /////////////////////////
+
+variable "namespace" {
+  type = string
+  description = "The deployment namespace"
 }

@@ -5,7 +5,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 3.0"
 
-  name                 = var.vpc_name
+  name                 = "${var.prefix}-k8-vps"
   cidr                 = "10.0.0.0/16"
   azs                  = data.aws_availability_zones.available.names
   private_subnets      = var.private_subnets
