@@ -48,7 +48,7 @@ module "aws_eks_cluster" {
 }
 
 resource "aws_ecr_repository" "foo" {
-  name = var.app_project_prefix
+  name = var.repository
   image_scanning_configuration {
     scan_on_push = false
   }
