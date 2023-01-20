@@ -1,9 +1,6 @@
 name: CI
 
 on:
-#  push:
-#    branches:
-#      - 'main'
   workflow_run:
     workflows: ["Infrastructure"]
     types:
@@ -46,7 +43,7 @@ env:
   current_project: localstgops
   current_port: 8080
   current_hostname_format: "pr-{0}.voomsway.com"
-  current_repository: stmx
+  image-name: stmx
   docker-context: './app'
 
 jobs:
@@ -56,7 +53,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       project: ${{ steps.variables.outputs.project }}
-      repository: ${{ steps.variables.outputs.repository }}
       port: ${{ steps.variables.outputs.port }}
       hostname-format: ${{ steps.variables.outputs.hostname-format }}
       docker-context: ${{ steps.variables.outputs.docker-context }}
@@ -64,21 +60,18 @@ jobs:
       - name: Initialize environments
         run: |
           EP="${{inputs.project}}"
-          ES="${{inputs.repository}}"
           PRT="${{inputs.port}}"
           HOST_FMT="${{inputs.hostname-format}}"
           ENV_HOST_FMT="${{env.current_hostname_format}}"
           DOCTX="${{ inputs.docker-context }}"
 
           PROJECT="${EP:-${{env.current_project}}}"
-          REPOSITORY="${ES:-${{env.current_repository}}}"
           PORT="${PRT:-${{env.current_port}}}"
           
           HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
           DOCKER_CONTEXT="${DOCTX:-${{ env.docker-context }}}"
 
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
-          echo "repository=${REPOSITORY}" >> "$GITHUB_ENV"
           echo "port=${PORT}" >> "$GITHUB_ENV"
           echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
           echo "docker-context=${DOCKER_CONTEXT}" >> "$GITHUB_ENV"
@@ -86,7 +79,6 @@ jobs:
         id: variables
         run: |
           echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
-          echo "repository=${{ env.repository }}" >> $GITHUB_OUTPUT
           echo "port=${{ env.port }}" >> $GITHUB_OUTPUT
           echo "hostname-format=${{env.hostname-format}}" >> $GITHUB_OUTPUT
           echo "docker-context=${{ env.docker-context }}" >> $GITHUB_OUTPUT
@@ -99,7 +91,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      repository: ${{ needs.envs.outputs.repository }}
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
       docker-context: ${{ needs.envs.outputs.docker-context }}
@@ -159,7 +150,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      repository: ${{ needs.envs.outputs.repository }}
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
       docker-context: ${{ needs.envs.outputs.docker-context }}
@@ -188,7 +178,7 @@ jobs:
         with:
           push: true
           context: ${{ env.docker-context }}
-          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.repository }}:${{ needs.config.outputs.docker-tag }}
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}:${{ needs.config.outputs.docker-tag }}
 
 #  deploy:
 #    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true }}
@@ -197,7 +187,6 @@ jobs:
 #    runs-on: ubuntu-latest
 #    env:
 #      project: ${{ needs.envs.outputs.project }}
-#      repository: ${{ needs.envs.outputs.repository }}
 #      port: ${{ needs.envs.outputs.port }}
 #      hostname-format: ${{ needs.envs.outputs.hostname-format }}
 #      docker-context: ${{ needs.envs.outputs.docker-context }}
@@ -223,7 +212,7 @@ jobs:
 #          az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
 #      - name: Deploy Image to container
 #        run: |
-#          image=${{ env.project }}acr.azurecr.io/${{ env.repository }}:${{ needs.config.outputs.docker-tag }}
+#          image=${{ env.project }}acr.azurecr.io/${{ env.project }}:${{ needs.config.outputs.docker-tag }}
 #          cd terraform/_scripts
 #          chmod +x deploy.sh
 #          echo "deployment inputs ${{ env.project }} $image ${{ needs.config.outputs.hostname }} ${{ needs.config.outputs.docker-tag }} ${{ env.port }}"

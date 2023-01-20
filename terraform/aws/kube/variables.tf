@@ -24,9 +24,3 @@ variable "namespace" {
   type = string
   description = "The deployment namespace"
 }
-
-variable "repository" {
-  type = string
-  description = "The default repository"
-  default = "localdev",
-}
