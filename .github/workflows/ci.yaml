@@ -188,7 +188,7 @@ jobs:
 
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true }}
-    needs: [ build, config ]
+    needs: [ push-image, config ]
     name: 'Push and deploy to GCP'
     runs-on: ubuntu-latest
     environment: dev
