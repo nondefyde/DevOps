@@ -153,8 +153,6 @@ jobs:
     name: 'Push Image to Cloud Registry'
     needs: [envs, config]
     runs-on: ubuntu-latest
-    outputs:
-      registry: ${{ steps.resolved.outputs.registry }}
     env:
       project: ${{ needs.envs.outputs.project }}
       port: ${{ needs.envs.outputs.port }}
@@ -189,13 +187,6 @@ jobs:
           context: ${{ env.docker-context }}
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}:${{ needs.config.outputs.docker-tag }}
 
-      - name: Resolve outputs
-        id: resolved
-        run: |
-          REGISTRY=${{ steps.login-ecr.outputs.registry }}
-          echo "registry=$REGISTRY" >> $GITHUB_OUTPUT
-          echo "registry >>>> $REGISTRY"
-
   deploy:
     if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == false) }}
     needs: [ envs, push-image, config ]
@@ -206,21 +197,18 @@ jobs:
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
       docker-context: ${{ needs.envs.outputs.docker-context }}
-      registry: ${{ needs.push-image.outputs.registry }}
     steps:
-      - name: --- For debugging ---
-        id: debug-context
-        run: |
-          echo "feat-name        ${{ needs.config.outputs.docker-tag }}"
-          echo "registry        ${{ needs.push-image.outputs.registry }}"
       - uses: actions/checkout@v2
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
       - name: Update kubernetes config
         run: |
@@ -233,7 +221,7 @@ jobs:
           IMAGE_TAG: ${{ needs.config.outputs.docker-tag }}
           NAMESPACE: ${{ env.namespace }}
           INGRESS_HOSTNAME: ${{ env.hostname }}
-          REPOSITORY: ${{ env.registry }}
+          REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
           PORT: ${{ env.current_port }}
         run: |
           cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -
