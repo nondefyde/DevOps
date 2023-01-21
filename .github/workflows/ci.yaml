@@ -234,3 +234,7 @@ jobs:
         id: restart-pods
         run: kubectl rollout restart deployment ${{ env.image-name }}-dpl --namespace=${{ env.namespace }}
         continue-on-error: true # will fail on first deploy
+
+      - name: Cleanups
+        run: |
+          rm -r /home/runner/.kube/config
