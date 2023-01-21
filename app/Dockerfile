@@ -2,5 +2,5 @@ FROM --platform=linux/amd64 ubuntu
 RUN apt-get update
 RUN apt-get install nginx -y
 COPY . /var/www/html/
-EXPOSE 7000
+EXPOSE 8000
 CMD ["nginx","-g","daemon off;"]
