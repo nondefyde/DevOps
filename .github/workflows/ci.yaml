@@ -203,7 +203,7 @@ jobs:
       - name: --- For debugging ---
         id: debug-context
         run: |
-          echo "feat-name        ${{ needs.config.outputs.feat-name }}"
+          echo "feat-name        ${{ needs.config.outputs.docker-tag }}"
           echo "repository        ${{ needs.push-image.outputs.repository }}"
       - uses: actions/checkout@v2
 
