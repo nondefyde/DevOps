@@ -16,7 +16,7 @@ on:
         value: ${{ jobs.setups.outputs.HAS_VM }}
     inputs:
       is_workflow:
-        required: true
+        required: false
         type: boolean
         default: false
       project:
