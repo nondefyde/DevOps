@@ -50,6 +50,14 @@ resource "kubectl_manifest" "targetgroupbindings" {
   wait = true
 }
 
+provider "helm" {
+  provider "kubernetes" {
+    host                   = module.aws_eks_cluster.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.aws_eks_cluster.kubeconfig_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.cluster.token
+  }
+}
+
 # V 2.4.1
 # https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/deploy/installation/
 # helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=<cluster-name>
