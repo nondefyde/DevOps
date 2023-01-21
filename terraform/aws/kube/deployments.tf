@@ -24,6 +24,10 @@ provider "helm" {
   }
 }
 
+data "aws_eks_cluster" "example" {
+  name = local.eks_cluster_name
+}
+
 module "lb_role" {
   source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
 
@@ -32,7 +36,7 @@ module "lb_role" {
 
   oidc_providers = {
     main = {
-      provider_arn               = module.eks.oidc_provider_arn
+      provider_arn               = try(replace(data.aws_eks_cluster.example.identity[0].oidc[0].issuer, "https://", ""), null)
       namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
     }
   }
@@ -89,6 +93,6 @@ resource "helm_release" "lb" {
 
   set {
     name  = "clusterName"
-    value = var.eks_name
+    value = local.eks_cluster_name
   }
 }

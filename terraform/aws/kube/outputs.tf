@@ -27,3 +27,8 @@ output "caller_user" {
 output "caller_id" {
   value = data.aws_caller_identity.current.id
 }
+
+output "oidc_provider" {
+  description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
+  value       = try(replace(data.aws_eks_cluster.example.identity[0].oidc[0].issuer, "https://", ""), null)
+}
