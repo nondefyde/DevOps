@@ -4,7 +4,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/target-type: ip
   name: ${APP_NAME}-ingress
   namespace: ${NAMESPACE}
   labels:
