@@ -3,10 +3,10 @@ FROM node:16
 # Create app directory
 WORKDIR /app
 
-COPY package*.json /app
-COPY yarn.lock /app
+COPY package*.json ./
+COPY yarn.lock ./
 
-COPY ./app/app.js /app
+COPY ./app/app.js ./
 
 # Install app dependencies
 RUN yarn install
