@@ -8,5 +8,5 @@ spec:
     app: ${APP_NAME}-pod
   ports:
     - protocol: TCP
-      port: 80
+      port: ${PORT}
       targetPort: ${PORT}
