@@ -153,6 +153,8 @@ jobs:
     name: 'Push Image to Cloud Registry'
     needs: [envs, config]
     runs-on: ubuntu-latest
+    outputs:
+      repository: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
     env:
       project: ${{ needs.envs.outputs.project }}
       port: ${{ needs.envs.outputs.port }}
@@ -202,7 +204,7 @@ jobs:
         id: debug-context
         run: |
           echo "feat-name        ${{ needs.config.outputs.feat-name }}"
-
+          echo "repository        ${{ needs.push-image.outputs.repository }}"
       - uses: actions/checkout@v2
 
       - name: Configure AWS Credentials
@@ -223,7 +225,7 @@ jobs:
           IMAGE_TAG: ${{ needs.config.outputs.docker-tag }}
           NAMESPACE: ${{ env.namespace }}
           INGRESS_HOSTNAME: ${{ env.hostname }}
-          REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
+          REPOSITORY: ${{ needs.push-image.outputs.repository }}
           PORT: ${{ env.current_port }}
         run: |
           cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -
