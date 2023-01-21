@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - 'main'
+  workflow_dispatch:
+    inputs:
+      TFAction:
+        description: "Destroy Infrastructure"
+        type: boolean
+        default: "false"
   workflow_run:
     workflows: [ "Infrastructure" ]
     types:
@@ -16,7 +22,7 @@ on:
         value: ${{ jobs.setups.outputs.HAS_VM }}
     inputs:
       is_workflow:
-        required: false
+        required: true
         type: boolean
         default: false
       project:
