@@ -8,7 +8,11 @@
     "Devops"
   ],
   "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
   "scripts": {
+    "start": "node ./app/index.js",
     "clean": "rm -rf ./terraform/_state && rm -rf ./terraform/.terraform",
     "build": "yarn clean && cd ./terraform && terraform init",
     "setup": "cd ./terraform/_scripts && ./setup.sh stmxlocal",
@@ -17,7 +21,6 @@
     "apply": "cd ./terraform/_scripts && ./apply.sh stmxlocal",
     "destroy": "cd ./terraform/_scripts && ./destroy.sh stmxlocal",
     "execute": "yarn setup && yarn prepare && yarn apply && yarn deploy",
-
     "azure:clean": "rm -rf ./terraform/azure/_state && rm -rf ./terraform/azure/**/.terraform",
     "azure:cleanup": "cd ./terraform/azure/_scripts && ./cleanup.sh localstgops",
     "azure:setup": "cd ./terraform/azure/_scripts && ./setup.sh localstgops",
@@ -27,7 +30,6 @@
     "azure:execute": "yarn azure:setup && yarn azure:prepare && yarn azure:apply",
     "azure:tear": "yarn azure:destroy && yarn azure:cleanup",
     "azure:cicle": "yarn azure:execute && yarn azure:tear",
-
     "aws:clean": "rm -rf ./terraform/aws/_state && rm -rf ./terraform/azure/**/.terraform",
     "aws:setup": "cd ./terraform/aws/_scripts && ./setup.sh localstgops",
     "aws:prepare": "cd ./terraform/aws/_scripts && ./prepare.sh kube localstgops",
