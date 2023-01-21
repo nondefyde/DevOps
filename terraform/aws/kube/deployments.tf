@@ -51,7 +51,7 @@ resource "kubectl_manifest" "targetgroupbindings" {
 }
 
 provider "helm" {
-  provider "kubernetes" {
+  kubernetes {
     host                   = module.aws_eks_cluster.cluster_endpoint
     cluster_ca_certificate = base64decode(module.aws_eks_cluster.kubeconfig_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.cluster.token
