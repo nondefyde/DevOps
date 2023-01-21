@@ -3,8 +3,8 @@
 cd ../${1}
 echo "Environment AWS: ${1} - ${2}"
 mkdir -p _state
-terraform providers lock -platform=windows_amd64 -platform=darwin_amd64 -platform=linux_amd64
-terraform init -input=false \
+#terraform providers lock -platform=windows_amd64 -platform=darwin_amd64 -platform=linux_amd64
+terraform init -input=false -migrate-state \
 -backend-config="bucket=${2}-tfstate" \
 -backend-config="region=us-west-2" \
 -backend-config="key=${2}.terraform.tfstate"

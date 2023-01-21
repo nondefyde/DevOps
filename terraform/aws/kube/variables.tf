@@ -18,9 +18,7 @@ variable "aws_key_secret" {
   default = "Aws access key secret"
 }
 
-///////////////// Deployment Variables /////////////////////////
-
-variable "namespace" {
-  type = string
-  description = "The deployment namespace"
+variable "alb_force_update" {
+  type = bool
+  default = false
 }

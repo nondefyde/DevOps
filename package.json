@@ -35,7 +35,6 @@
     "aws:destroy": "cd ./terraform/aws/_scripts && ./destroy.sh kube localstgops",
     "aws:execute": "yarn aws:setup && yarn aws:prepare && yarn aws:apply",
     "aws:tear": "yarn aws:destroy",
-    "aws:cicle": "yarn aws:execute && yarn aws:tear",
-    "aws:permission": "cd ./terraform/aws/kube && kubectl apply -f eks-console-full-access.yaml"
+    "aws:cicle": "yarn aws:execute && yarn aws:tear"
   }
 }

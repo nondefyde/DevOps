@@ -21,3 +21,12 @@ output "iam_role" {
 output "iam_node_group" {
   value       = aws_iam_role.k8_nodegroup_role.id
 }
+
+output "eks_oidc_url" {
+  value = aws_eks_cluster.k8_cluster.identity.0.oidc.0.issuer
+}
+
+output "eks_provider" {
+  description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
+  value       = try(replace(aws_eks_cluster.k8_cluster.identity.0.oidc.0.issuer, "https://", ""), null)
+}
