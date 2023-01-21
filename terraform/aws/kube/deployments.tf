@@ -1,46 +1,46 @@
 data "aws_eks_cluster_auth" "cluster" {
   name = local.eks_cluster_name
 }
-
-provider "kubernetes" {
-  alias                  = "eks"
-  host                   = module.aws_eks_cluster.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.aws_eks_cluster.kubeconfig_certificate_authority_data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-}
-
-resource "kubernetes_namespace_v1" "namespace" {
-  metadata {
-    name = var.namespace
-  }
-  depends_on = [module.aws_eks_cluster]
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = module.aws_eks_cluster.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.aws_eks_cluster.kubeconfig_certificate_authority_data)
-    token                  = data.aws_eks_cluster_auth.cluster.token
-  }
-}
-
-data "aws_eks_cluster" "example" {
-  name = local.eks_cluster_name
-}
-
-module "lb_role" {
-  source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-
-  role_name = "${var.app_project_prefix}_eks_lb"
-  attach_load_balancer_controller_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = try(replace(data.aws_eks_cluster.example.identity[0].oidc[0].issuer, "https://", ""), null)
-      namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
-    }
-  }
-}
+#
+#provider "kubernetes" {
+#  alias                  = "eks"
+#  host                   = module.aws_eks_cluster.cluster_endpoint
+#  cluster_ca_certificate = base64decode(module.aws_eks_cluster.kubeconfig_certificate_authority_data)
+#  token                  = data.aws_eks_cluster_auth.cluster.token
+#}
+#
+#resource "kubernetes_namespace_v1" "namespace" {
+#  metadata {
+#    name = var.namespace
+#  }
+#  depends_on = [module.aws_eks_cluster]
+#}
+#
+#provider "helm" {
+#  kubernetes {
+#    host                   = module.aws_eks_cluster.cluster_endpoint
+#    cluster_ca_certificate = base64decode(module.aws_eks_cluster.kubeconfig_certificate_authority_data)
+#    token                  = data.aws_eks_cluster_auth.cluster.token
+#  }
+#}
+#
+#data "aws_eks_cluster" "example" {
+#  name = local.eks_cluster_name
+#}
+#
+#module "lb_role" {
+#  source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+#
+#  role_name = "${var.app_project_prefix}_eks_lb"
+#  attach_load_balancer_controller_policy = true
+#
+#  oidc_providers = {
+#    main = {
+#      provider_arn               = try(replace(data.aws_eks_cluster.example.identity[0].oidc[0].issuer, "https://", ""), null)
+#      namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
+#    }
+#  }
+#}
 #
 #resource "kubernetes_service_account" "service-account" {
 #  metadata {
