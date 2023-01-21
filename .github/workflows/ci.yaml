@@ -205,6 +205,7 @@ jobs:
         run: |
           echo "feat-name        ${{ needs.config.outputs.docker-tag }}"
           echo "repository        ${{ needs.push-image.outputs.repository }}"
+          echo "repository        ${{ needs.push-image.steps.login-ecr.outputs.registry }}"
       - uses: actions/checkout@v2
 
       - name: Configure AWS Credentials
