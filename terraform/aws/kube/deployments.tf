@@ -16,7 +16,6 @@ resource "kubernetes_namespace_v1" "namespace" {
   depends_on = [module.aws_eks_cluster]
 }
 
-#--------------Ingress Controller----------------------
 provider "helm" {
   kubernetes {
     host                   = module.aws_eks_cluster.cluster_endpoint
@@ -25,35 +24,71 @@ provider "helm" {
   }
 }
 
-module "alb_ingress_controller" {
-  source  = "iplabs/alb-ingress-controller/kubernetes"
-  version = "3.1.0"
+module "lb_role" {
+  source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
 
-  providers = {
-    kubernetes = "kubernetes.eks"
+  role_name = "${var.app_project_prefix}_eks_lb"
+  attach_load_balancer_controller_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.aws_eks_cluster.odic
+      namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
+    }
   }
-
-  k8s_cluster_type = "eks"
-  k8s_namespace    = "kube-system"
-
-  aws_region_name  = data.aws_region.current.name
-  k8s_cluster_name = data.aws_eks_cluster.target.name
 }
 
-#module "nginx-controller" {
-#  source = "terraform-iaac/nginx-controller/helm"
-#
-#  additional_set = [
-#    {
-#      name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
-#      value = "nlb"
-#      type  = "string"
-#    },
-#    {
-#      name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-cross-zone-load-balancing-enabled"
-#      value = "true"
-#      type  = "string"
-#    }
-#  ]
-#}
-#--------------------------------------------------------
+resource "kubernetes_service_account" "service-account" {
+  metadata {
+    name = "aws-load-balancer-controller"
+    namespace = "kube-system"
+    labels = {
+      "app.kubernetes.io/name"= "aws-load-balancer-controller"
+      "app.kubernetes.io/component"= "controller"
+    }
+    annotations = {
+      "eks.amazonaws.com/role-arn" = module.lb_role.arn
+      "eks.amazonaws.com/sts-regional-endpoints" = "true"
+    }
+  }
+}
+
+resource "helm_release" "lb" {
+  name       = "aws-load-balancer-controller"
+  repository = "https://aws.github.io/eks-charts"
+  chart      = "aws-load-balancer-controller"
+  namespace  = "kube-system"
+  depends_on = [
+    kubernetes_service_account.service-account
+  ]
+
+  set {
+    name  = "region"
+    value = "eu-west-2"
+  }
+
+  set {
+    name  = "vpcId"
+    value = module.module_vpc.vpc_id
+  }
+
+  set {
+    name  = "image.repository"
+    value = "602401143452.dkr.ecr.eu-west-2.amazonaws.com/amazon/aws-load-balancer-controller"
+  }
+
+  set {
+    name  = "serviceAccount.create"
+    value = "false"
+  }
+
+  set {
+    name  = "serviceAccount.name"
+    value = "aws-load-balancer-controller"
+  }
+
+  set {
+    name  = "clusterName"
+    value = var.eks_name
+  }
+}

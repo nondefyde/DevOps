@@ -21,3 +21,13 @@ output "iam_role" {
 output "iam_node_group" {
   value       = aws_iam_role.k8_nodegroup_role.id
 }
+
+output "oidc" {
+  description = "The identity oidc"
+  value       = aws_eks_cluster.k8_cluster.identity.oidc
+}
+
+output "identity_oidc" {
+  description = "The identity oidc"
+  value       = aws_eks_cluster.k8_cluster.identity[0].oidc
+}
