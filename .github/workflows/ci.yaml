@@ -48,7 +48,6 @@ env:
   current_hostname_format: "pr-{0}.voomsway.com"
   namespace: stg
   image-name: stmx
-  hostname: 'voomsway'
   docker-context: './app'
 
 jobs:
@@ -156,7 +155,7 @@ jobs:
     env:
       project: ${{ needs.envs.outputs.project }}
       port: ${{ needs.envs.outputs.port }}
-      hostname-format: ${{ needs.envs.outputs.hostname-format }}
+      hostname: ${{ needs.config.outputs.hostname }}
       docker-context: ${{ needs.envs.outputs.docker-context }}
     steps:
       - name: --- For debugging ---
@@ -195,7 +194,7 @@ jobs:
     env:
       project: ${{ needs.envs.outputs.project }}
       port: ${{ needs.envs.outputs.port }}
-      hostname-format: ${{ needs.envs.outputs.hostname-format }}
+      hostname: ${{ needs.config.outputs.hostname }}
       docker-context: ${{ needs.envs.outputs.docker-context }}
     steps:
       - uses: actions/checkout@v2
