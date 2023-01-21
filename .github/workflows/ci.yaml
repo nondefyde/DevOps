@@ -88,7 +88,7 @@ jobs:
           echo "docker-context=${{ env.docker-context }}" >> $GITHUB_OUTPUT
 
   config:
-    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true) }}
+    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push') }}
     name: 'Setup Config Variables'
     needs: [envs]
     permissions: write-all
@@ -148,7 +148,7 @@ jobs:
           echo "event_name      ${{ github.event_name }}"
 
   push-image:
-    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true) }}
+    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push') }}
     name: 'Push Image to Cloud Registry'
     needs: [envs, config]
     runs-on: ubuntu-latest
