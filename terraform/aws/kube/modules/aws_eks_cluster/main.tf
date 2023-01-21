@@ -1,18 +1,3 @@
-
-module "lb_role" {
-  source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-
-  role_name = "${var.env_name}_eks_lb"
-  attach_load_balancer_controller_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
-    }
-  }
-}
-
 resource "aws_eks_cluster" "k8_cluster" {
   name     = var.eks_cluster_name
   role_arn = aws_iam_role.k8_cluster_role.arn
