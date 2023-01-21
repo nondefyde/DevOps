@@ -136,6 +136,7 @@ jobs:
         run: |
           echo "aws eks update-kubeconfig --name ${{ env.project }}-cluster --region ${{ secrets.AWS_REGION }}"
           aws eks update-kubeconfig --name ${{ env.project }}-cluster --region ${{ secrets.AWS_REGION }}
+          export KUBE_CONFIG_PATH=~/.kube/config
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
