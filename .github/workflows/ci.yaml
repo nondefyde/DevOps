@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - 'main'
-  workflow_dispatch:
-    inputs:
-      TFAction:
-        description: "Destroy Infrastructure"
-        type: boolean
-        default: "false"
   workflow_run:
     workflows: [ "Infrastructure" ]
     types:
@@ -58,7 +52,7 @@ env:
 
 jobs:
   envs:
-    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true) }}
+    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event === 'push') }}
     name: 'Validate Env Variables'
     runs-on: ubuntu-latest
     outputs:
