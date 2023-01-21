@@ -132,12 +132,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Update kubernetes config
-        run: |
-          echo "aws eks update-kubeconfig --name ${{ env.project }}-cluster --region ${{ secrets.AWS_REGION }}"
-          aws eks update-kubeconfig --name ${{ env.project }}-cluster --region ${{ secrets.AWS_REGION }}
-          export KUBERNETES_MASTER=~/.kube/config
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
