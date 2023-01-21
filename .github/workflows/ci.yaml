@@ -44,7 +44,7 @@ permissions:
 
 env:
   current_project: localstgops
-  current_port: 8000
+  current_port: 80
   current_hostname_format: "pr-{0}.voomsway.com"
   namespace: stg
   image-name: stmx
@@ -183,6 +183,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
+#          platforms: linux/amd64,linux/arm64
           context: ${{ env.docker-context }}
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}:${{ needs.config.outputs.docker-tag }}
 
