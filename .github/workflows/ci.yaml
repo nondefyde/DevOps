@@ -194,7 +194,7 @@ jobs:
         run: |
           REGISTRY=${{ steps.login-ecr.outputs.registry }}
           echo "registry=$REGISTRY" >> $GITHUB_OUTPUT
-          echo "registry $REGISTRY"
+          echo "registry >>>> $REGISTRY"
 
   deploy:
     if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == false) }}
