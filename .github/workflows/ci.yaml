@@ -187,7 +187,7 @@ jobs:
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}:${{ needs.config.outputs.docker-tag }}
 
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
     needs: [ envs, push-image, config ]
     name: 'deploy to AWS EKS'
     runs-on: ubuntu-latest
