@@ -192,8 +192,9 @@ jobs:
       - name: Resolve outputs
         id: resolved
         run: |
-          echo "registry=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_OUTPUT
-          echo "registry ${{ steps.login-ecr.outputs.registry }}"
+          REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          echo "registry=$REGISTRY" >> $GITHUB_OUTPUT
+          echo "registry $REGISTRY"
 
   deploy:
     if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == false) }}
