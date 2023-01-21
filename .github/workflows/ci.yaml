@@ -154,7 +154,7 @@ jobs:
     needs: [envs, config]
     runs-on: ubuntu-latest
     outputs:
-      repository: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
+      registry: ${{ steps.resolved.outputs.registry }}
     env:
       project: ${{ needs.envs.outputs.project }}
       port: ${{ needs.envs.outputs.port }}
@@ -189,23 +189,29 @@ jobs:
           context: ${{ env.docker-context }}
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}:${{ needs.config.outputs.docker-tag }}
 
+      - name: Resolve outputs
+        id: resolved
+        run: |
+          echo "registry=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_OUTPUT
+          echo "registry ${{ steps.login-ecr.outputs.registry }}"
+
   deploy:
     if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == false) }}
     needs: [ envs, push-image, config ]
-    name: 'Push and deploy to GCP'
+    name: 'deploy to AWS EKS'
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
       docker-context: ${{ needs.envs.outputs.docker-context }}
+      registry: ${{ needs.push-image.outputs.registry }}
     steps:
       - name: --- For debugging ---
         id: debug-context
         run: |
           echo "feat-name        ${{ needs.config.outputs.docker-tag }}"
-          echo "repository        ${{ needs.push-image.outputs.repository }}"
-          echo "repository        ${{ needs.push-image.steps.login-ecr.outputs.registry }}"
+          echo "registry        ${{ needs.push-image.outputs.registry }}"
       - uses: actions/checkout@v2
 
       - name: Configure AWS Credentials
@@ -226,7 +232,7 @@ jobs:
           IMAGE_TAG: ${{ needs.config.outputs.docker-tag }}
           NAMESPACE: ${{ env.namespace }}
           INGRESS_HOSTNAME: ${{ env.hostname }}
-          REPOSITORY: ${{ needs.push-image.outputs.repository }}
+          REPOSITORY: ${{ env.registry }}
           PORT: ${{ env.current_port }}
         run: |
           cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -
