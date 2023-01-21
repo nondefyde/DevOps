@@ -36,7 +36,6 @@ permissions:
   contents: read
 
 env:
-  current_dns_domain: dev.stemuli.net
   current_project: localstgops
   namespace: stg
 
@@ -50,11 +49,8 @@ jobs:
     steps:
       - name: Initialize environments
         run: |
-          EP="${{inputs.project}}"
-          DNS="${{inputs.dns}}"
-          
+          EP="${{inputs.project}}"          
           PROJECT="${EP:-${{ env.current_project }}}"
-          DNSNAME="${DNS:-${{ env.current_dns_domain }}}"
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
           echo "dns_domain=${DNSNAME}" >> "$GITHUB_ENV"
       - name: Set Env
