@@ -3,20 +3,10 @@ locals {
 }
 
 module "eks_cluster" {
-  source = "modules/eks_cluster"
+  source = "./modules/eks_cluster"
 
   prefix           = var.app_project_prefix
   eks_cluster_name = "${var.app_project_prefix}-cluster"
-
-#  map_roles = [
-#    {
-#      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/adminuser"
-#      username = "adminuser"
-#      groups   = ["system:masters"]
-#    },
-#  ]
-  map_users    = var.map_users
-  map_accounts = var.map_accounts
 }
 
 #

@@ -3,19 +3,9 @@ variable "prefix" {
   description = "The prefix for deployment"
 }
 
-variable "eks_nodegroup_one_name" {
-  type        = string
-  description = "Node group name"
-}
-
 variable "eks_cluster_name" {
   type        = string
   description = "Cluster name"
-}
-
-variable "vpc_subnet_ids" {
-  description = "VPC Subnet IDs for cluster nodes"
-  type        = set(string)
 }
 
 variable "vpc_name" {
@@ -40,20 +30,69 @@ variable "public_subnets" {
   description = "Subnet array"
 }
 
+
+variable "map_accounts" {
+  description = "Additional AWS account numbers to add to the aws-auth configmap."
+  type        = list(string)
+
+  default = [
+    "777777777777",
+    "888888888888",
+  ]
+}
+
 variable "map_roles" {
-  type = list(string)
-  description = "List of role maps to add to the aws-auth configmap"
-  default = []
+  description = "Additional IAM roles to add to the aws-auth configmap."
+  type = list(object({
+    rolearn  = string
+    username = string
+    groups   = list(string)
+  }))
+
+  default = [
+    {
+      rolearn  = "arn:aws:iam::66666666666:role/role1"
+      username = "role1"
+      groups   = ["system:masters"]
+    },
+  ]
 }
 
 variable "map_users" {
-  type = list(string)
-  description = "List of users maps to add to the aws-auth configmap"
-  default = []
+  description = "Additional IAM users to add to the aws-auth configmap."
+  type = list(object({
+    userarn  = string
+    username = string
+    groups   = list(string)
+  }))
+
+  default = [
+    {
+      userarn  = "arn:aws:iam::66666666666:user/user1"
+      username = "user1"
+      groups   = ["system:masters"]
+    },
+    {
+      userarn  = "arn:aws:iam::66666666666:user/user2"
+      username = "user2"
+      groups   = ["system:masters"]
+    },
+  ]
 }
 
-variable "map_accounts" {
-  type = list(string)
-  description = "List of account maps to add to the aws-auth configmap"
-  default = []
+variable "roles" {
+  description = "Array of RBAC roles to secrets in a specific namespace that the lb controller needs access to"
+  type = list(object({
+    name          = string
+    namespace     = string
+    resourcenames = list(string)
+  }))
+
+  default = [
+    {
+      name          = "role-name"
+      namespace     = "default"
+      resourcenames = ["secret1", "secret2"]
+    }
+  ]
 }
