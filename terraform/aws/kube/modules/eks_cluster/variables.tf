@@ -36,8 +36,7 @@ variable "map_accounts" {
   type        = list(string)
 
   default = [
-    "777777777777",
-    "888888888888",
+    "838617927585"
   ]
 }
 
@@ -49,13 +48,7 @@ variable "map_roles" {
     groups   = list(string)
   }))
 
-  default = [
-    {
-      rolearn  = "arn:aws:iam::66666666666:role/role1"
-      username = "role1"
-      groups   = ["system:masters"]
-    },
-  ]
+  default = []
 }
 
 variable "map_users" {
@@ -68,15 +61,10 @@ variable "map_users" {
 
   default = [
     {
-      userarn  = "arn:aws:iam::66666666666:user/user1"
-      username = "user1"
+      userarn  = "arn:aws:iam::838617927585:user/adminuser"
+      username = "adminuser"
       groups   = ["system:masters"]
-    },
-    {
-      userarn  = "arn:aws:iam::66666666666:user/user2"
-      username = "user2"
-      groups   = ["system:masters"]
-    },
+    }
   ]
 }
 
@@ -87,12 +75,5 @@ variable "roles" {
     namespace     = string
     resourcenames = list(string)
   }))
-
-  default = [
-    {
-      name          = "role-name"
-      namespace     = "default"
-      resourcenames = ["secret1", "secret2"]
-    }
-  ]
+  default = []
 }
