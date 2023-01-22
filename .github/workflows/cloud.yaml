@@ -171,7 +171,7 @@ jobs:
         continue-on-error: false
 
       - name: Terraform Destroy
-        if: ${{ inputs.TFAction == 'destroy'}}
+        if: ${{ inputs.TFAction == true}}
         id: destroy
         run: |
           echo "Terraform Destruction in progress ${{ env.project }}"
