@@ -28,15 +28,6 @@ output "caller_id" {
   value = data.aws_caller_identity.current.id
 }
 
-output "oidc_url" {
-  value = module.aws_eks_cluster.eks_oidc_url
-}
-
-output "oidc_provider" {
-  description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
-  value       = try(replace(module.aws_eks_cluster.eks_oidc_url, "https://", ""), null)
-}
-
 output "module_path" {
   value = path.module
 }

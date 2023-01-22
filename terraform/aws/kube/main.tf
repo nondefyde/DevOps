@@ -1,38 +1,41 @@
-provider "aws" {
-  region     = var.aws_region
-  access_key = var.aws_key_id
-  secret_key = var.aws_key_secret
-}
-
-data "aws_caller_identity" "current" {}
-
 locals {
-  eks_vpc_name           = "${var.app_project_prefix}-vpc"
-  eks_cluster_name       = "${var.app_project_prefix}-cluster"
-  eks_nodegroup_one_name = "${var.app_project_prefix}-nodegroup"
+  eks_cluster_name = "${var.app_project_prefix}-cluster"
 }
 
-module "module_vpc" {
-  source = "./modules/aws_vpc"
+module "eks_cluster" {
+  source = "modules/eks_cluster"
 
-  vpc_name = local.eks_vpc_name
-  tag_cluster_name = local.eks_cluster_name
+  prefix           = var.app_project_prefix
+  eks_cluster_name = "${var.app_project_prefix}-cluster"
+
+#  map_roles = [
+#    {
+#      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/adminuser"
+#      username = "adminuser"
+#      groups   = ["system:masters"]
+#    },
+#  ]
+  map_users    = var.map_users
+  map_accounts = var.map_accounts
 }
 
-module "aws_eks_cluster" {
-  source = "./modules/aws_eks_cluster"
-
-  prefix                 = var.app_project_prefix
-  eks_cluster_name       = local.eks_cluster_name
-  eks_nodegroup_one_name = local.eks_nodegroup_one_name
-  vpc_subnet_ids         = module.module_vpc.vpc_private_subnet_ids
-}
-
-
-resource "aws_ecr_repository" "app_registry" {
-  name = var.app_project_prefix
-  image_scanning_configuration {
-    scan_on_push = false
-  }
-  force_delete = true
-}
+#
+#module "load_balancer_controller" {
+#  source = "git::https://github.com/DNXLabs/terraform-aws-eks-lb-controller.git"
+#
+#  enabled = true
+#
+#  cluster_identity_oidc_issuer     = module.eks_cluster.cluster_oidc_issuer_url
+#  cluster_identity_oidc_issuer_arn = module.eks_cluster.oidc_provider_arn
+#  cluster_name                     = module.eks_cluster.cluster_id
+#
+#  depends_on = [module.eks]
+#}
+#
+#resource "aws_ecr_repository" "app_registry" {
+#  name = var.app_project_prefix
+#  image_scanning_configuration {
+#    scan_on_push = false
+#  }
+#  force_delete = true
+#}
