@@ -12,7 +12,7 @@ resource "aws_iam_role" "alb-ingress-controller-iam-role" {
           Action = "sts:AssumeRoleWithWebIdentity"
           Condition = {
             StringEquals = {
-              "${var.oidc_host_path}:aud" = "system:serviceaccount:kube-system:alb-ingress-controller"
+              "${var.oidc_host_path}:aud" = "system:serviceaccount:kube-system:${kubernetes_service_account.alb_ingress_controller.metadata[0].name}"
             }
           }
           Effect = "Allow",
