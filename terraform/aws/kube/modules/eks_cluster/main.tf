@@ -93,7 +93,6 @@ module "eks" {
 
   vpc_id = module.vpc.vpc_id
 
-  manage_aws_auth_configmap = true
   worker_groups = [
     {
       name                          = "worker-group-1"
