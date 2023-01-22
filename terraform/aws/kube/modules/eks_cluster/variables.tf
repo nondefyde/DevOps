@@ -59,13 +59,14 @@ variable "map_users" {
     groups   = list(string)
   }))
 
-  default = [
-    {
-      userarn  = "arn:aws:iam::838617927585:user/adminuser"
-      username = "adminuser"
-      groups   = ["system:masters"]
-    }
-  ]
+  default = []
+#  default = [
+#    {
+#      userarn  = "arn:aws:iam::838617927585:user/adminuser"
+#      username = "adminuser"
+#      groups   = ["system:masters"]
+#    }
+#  ]
 }
 
 variable "roles" {
