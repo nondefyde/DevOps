@@ -57,30 +57,30 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.cluster.token
   }
 }
-#
-## V 2.4.1
-## https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/deploy/installation/
-## helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=<cluster-name>
-#resource "helm_release" "aws-load-balancer-controller" {
-#  depends_on = [kubectl_manifest.ingessclassparams, kubectl_manifest.targetgroupbindings]
-#  name       = "aws-load-balancer-controller"
-#  namespace  = "kube-system"
-#  repository = "https://aws.github.io/eks-charts"
-#  chart      = "aws-load-balancer-controller"
-#  version    = "1.4.5"
-#  # appVersion: v2.4.1
-#  #This defaults to false, recreation is required when upgrading the module from version 2.1 and lower
-#  force_update = var.alb_force_update
-#
-#  values = [
-#    templatefile(
-#      "${path.module}/yamls/loadbalancer-values.yaml",
-#      {
-#        cluster_name         = local.eks_cluster_name
-#        vpc_id               = module.module_vpc.vpc_id
-#        region               = var.aws_region
-#        service_account_name = module.aws_lb.service_account_name
-#      }
-#    )
-#  ]
-#}
+
+# V 2.4.1
+# https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/deploy/installation/
+# helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=<cluster-name>
+resource "helm_release" "aws-load-balancer-controller" {
+  depends_on = [kubectl_manifest.ingessclassparams, kubectl_manifest.targetgroupbindings]
+  name       = "aws-load-balancer-controller"
+  namespace  = "kube-system"
+  repository = "https://aws.github.io/eks-charts"
+  chart      = "aws-load-balancer-controller"
+  version    = "1.4.5"
+  # appVersion: v2.4.1
+  #This defaults to false, recreation is required when upgrading the module from version 2.1 and lower
+  force_update = var.alb_force_update
+
+  values = [
+    templatefile(
+      "${path.module}/yamls/loadbalancer-values.yaml",
+      {
+        cluster_name         = local.eks_cluster_name
+        vpc_id               = module.module_vpc.vpc_id
+        region               = var.aws_region
+        service_account_name = module.aws_lb.service_account_name
+      }
+    )
+  ]
+}

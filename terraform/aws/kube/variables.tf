@@ -20,5 +20,5 @@ variable "aws_key_secret" {
 
 variable "alb_force_update" {
   type = bool
-  default = false
+  default = true
 }
