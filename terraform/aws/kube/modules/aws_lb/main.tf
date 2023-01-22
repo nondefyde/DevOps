@@ -4,7 +4,7 @@ resource "aws_iam_policy" "alb-ingress-controller-iam-policy" {
 }
 
 resource "aws_iam_role" "alb-ingress-controller-iam-role" {
-  name = "ALBIngressControllerIAMRole"
+  name = "AmazonEKSLoadBalancerControllerRole"
   assume_role_policy = jsonencode(
     {
       Statement = [
