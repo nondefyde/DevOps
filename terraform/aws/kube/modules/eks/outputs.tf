@@ -14,3 +14,7 @@ output "cluster_endpoint" {
 output "cluster_name" {
   value = aws_eks_cluster.eks.name
 }
+
+output "aws_iam_role" {
+  value = aws_iam_role.eks-iam-role.arn
+}

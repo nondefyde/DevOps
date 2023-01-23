@@ -1,5 +1,5 @@
 locals {
-  eks_cluster_name = "${var.app_project_prefix}-cluster"
+  eks_cluster_name = "${var.app_project_prefix}-k8-cluster"
   eks_node_group_name = "${var.app_project_prefix}-node-group"
 }
 
@@ -33,7 +33,7 @@ module "eks" {
   scaling_desired_size    = 2
   scaling_max_size        = 4
   scaling_min_size        = 1
-  instance_types          = ["t3.medium"]
+  instance_types          = ["t3.large"]
   key_pair                = aws_key_pair.deployer.key_name
 }
 
@@ -43,20 +43,4 @@ resource "aws_ecr_repository" "app_registry" {
     scan_on_push = false
   }
   force_delete = true
-}
-
-module "alb_controller" {
-  source  = "iplabs/alb-controller/kubernetes"
-  version = "3.4.0"
-
-  providers = {
-    kubernetes = "kubernetes.eks",
-    helm       = "helm.eks"
-  }
-
-  k8s_cluster_type = "eks"
-  k8s_namespace    = "kube-system"
-
-  aws_region_name  = var.aws_region
-  k8s_cluster_name = local.eks_cluster_name
 }
