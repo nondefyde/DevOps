@@ -20,7 +20,8 @@ resource "null_resource" "service_account" {
     null_resource.associate_iam_oidc_provider
   ]
 }
-///////////////// Cert Manager //////////////////////
+
+////////////////////////////////// Cert Manager //////////////////////////////////////////////
 data "kubectl_file_documents" "cert-manager-yml" {
   content = file("${path.module}/yamls/cert-manager.yaml")
 }
