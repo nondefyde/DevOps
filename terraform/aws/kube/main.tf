@@ -44,3 +44,19 @@ resource "aws_ecr_repository" "app_registry" {
   }
   force_delete = true
 }
+
+module "alb_controller" {
+  source  = "iplabs/alb-controller/kubernetes"
+  version = "3.4.0"
+
+  providers = {
+    kubernetes = "kubernetes.eks",
+    helm       = "helm.eks"
+  }
+
+  k8s_cluster_type = "eks"
+  k8s_namespace    = "kube-system"
+
+  aws_region_name  = var.aws_region
+  k8s_cluster_name = local.eks_cluster_name
+}
