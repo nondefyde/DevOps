@@ -226,7 +226,7 @@ jobs:
           kubectl create namespace ${{ env.namespace }} --dry-run=client -o yaml | kubectl apply -f -
           cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -
           cat ./_kubernetes/deployment.yml | envsubst | kubectl apply -f -
-          cat ./_kubernetes/aws/ingress.yml | envsubst | kubectl apply -f -
+          cat ./_kubernetes/ingress.yml | envsubst | kubectl apply -f -
 
       - name: Restart Pods
         id: restart-pods

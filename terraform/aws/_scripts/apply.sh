@@ -2,7 +2,7 @@
 
 cd ../${1}
 terraform apply -auto-approve ./_state/${2}.tfplan
-cd _scripts
+cd ../_scripts
 
 echo "Application completed"
 exit 0
