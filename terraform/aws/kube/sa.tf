@@ -280,7 +280,6 @@ resource "kubernetes_service_account" "service_account" {
 
   depends_on = [
     module.eks,
-    null_resource.associate_iam_oidc_provider,
     aws_iam_role_policy_attachment.policy_attachment_service_account
   ]
 }
