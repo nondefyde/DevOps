@@ -1,13 +1,14 @@
-resource "null_resource" "associate_iam_oidc_provider" {
-  provisioner "local-exec" {
-    command = "eksctl utils associate-iam-oidc-provider --region=${var.aws_region} --cluster=${local.eks_cluster_name} --approve"
-  }
+#resource "null_resource" "associate_iam_oidc_provider" {
+#  provisioner "local-exec" {
+#    command = "eksctl utils associate-iam-oidc-provider --region=${var.aws_region} --cluster=${local.eks_cluster_name} --approve"
+#  }
+#
+#  depends_on = [
+#    module.eks,
+#    aws_iam_policy.elb-policy
+#  ]
+#}
 
-  depends_on = [
-    module.eks,
-    aws_iam_policy.elb-policy
-  ]
-}
 
 resource "aws_iam_role" "role_service_account" {
   name = "AmazonEKSLoadBalancerControllerRole"
