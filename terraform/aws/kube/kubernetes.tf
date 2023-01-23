@@ -1,25 +1,25 @@
-#resource "null_resource" "associate_iam_oidc_provider" {
-#  provisioner "local-exec" {
-#    command = "eksctl utils associate-iam-oidc-provider --region=${var.aws_region} --cluster=${local.eks_cluster_name} --approve"
-#  }
-#
-#  depends_on = [
-#    module.eks,
-#    aws_iam_policy.elb-policy
-#  ]
-#}
-#
-#resource "null_resource" "service_account" {
-#  provisioner "local-exec" {
-#    command = "eksctl create iamserviceaccount --cluster=${local.eks_cluster_name} --namespace=kube-system --name=aws-load-balancer-controller --role-name AmazonEKSLoadBalancerControllerRole --attach-policy-arn=arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/AWSLoadBalancerControllerIAMPolicy --override-existing-serviceaccounts --approve"
-#  }
-#
-#  depends_on = [
-#    module.eks,
-#    aws_iam_policy.elb-policy,
-#    null_resource.associate_iam_oidc_provider
-#  ]
-#}
+resource "null_resource" "associate_iam_oidc_provider" {
+  provisioner "local-exec" {
+    command = "eksctl utils associate-iam-oidc-provider --region=${var.aws_region} --cluster=${local.eks_cluster_name} --approve"
+  }
+
+  depends_on = [
+    module.eks,
+    aws_iam_policy.elb-policy
+  ]
+}
+
+resource "null_resource" "service_account" {
+  provisioner "local-exec" {
+    command = "eksctl create iamserviceaccount --cluster=${local.eks_cluster_name} --namespace=kube-system --name=aws-load-balancer-controller --role-name AmazonEKSLoadBalancerControllerRole --attach-policy-arn=arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/AWSLoadBalancerControllerIAMPolicy --override-existing-serviceaccounts --approve"
+  }
+
+  depends_on = [
+    module.eks,
+    aws_iam_policy.elb-policy,
+    null_resource.associate_iam_oidc_provider
+  ]
+}
 
 ////////////////////////////////// Cert Manager //////////////////////////////////////////////
 data "kubectl_file_documents" "cert-manager-yml" {
@@ -34,7 +34,7 @@ resource "kubectl_manifest" "cert-manager" {
 
   depends_on = [
     module.eks,
-    kubernetes_service_account.service_account
+    null_resource.service_account
   ]
 }
 

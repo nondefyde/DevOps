@@ -1,37 +1,3 @@
-#resource "null_resource" "associate_iam_oidc_provider" {
-#  provisioner "local-exec" {
-#    command = "eksctl utils associate-iam-oidc-provider --region=${var.aws_region} --cluster=${local.eks_cluster_name} --approve"
-#  }
-#
-#  depends_on = [
-#    module.eks,
-#    aws_iam_policy.elb-policy
-#  ]
-#}
-
-
-resource "aws_iam_role" "role_service_account" {
-  name = "AmazonEKSLoadBalancerControllerRole"
-  assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement" : [
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Federated": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${module.eks.issuer}"
-        },
-        "Action": "sts:AssumeRoleWithWebIdentity",
-        "Condition": {
-          "StringEquals": {
-            "${module.eks.issuer}:aud": "sts.amazonaws.com",
-            "${module.eks.issuer}:sub": "system:serviceaccount:${var.sa_namespace}:${var.sa_name}"
-          }
-        }
-      }
-    ]
-  })
-}
-
 resource "aws_iam_policy" "elb-policy" {
   name        = "AWSLoadBalancerControllerIAMPolicy"
   path        = "/"
@@ -261,25 +227,5 @@ resource "aws_iam_policy" "elb-policy" {
 
   depends_on = [
     module.eks
-  ]
-}
-
-resource "aws_iam_role_policy_attachment" "policy_attachment_service_account" {
-  policy_arn = aws_iam_policy.elb-policy.arn
-  role = aws_iam_role.role_service_account.name
-}
-
-resource "kubernetes_service_account" "service_account" {
-  metadata {
-    name = "aws-load-balancer-controller"
-    annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.role_service_account.arn
-    }
-    namespace = var.sa_namespace
-  }
-
-  depends_on = [
-    module.eks,
-    aws_iam_role_policy_attachment.policy_attachment_service_account
   ]
 }
