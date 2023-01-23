@@ -28,6 +28,10 @@ output "caller_id" {
   value = data.aws_caller_identity.current.id
 }
 
+output "issuer" {
+  value = module.eks.issuer
+}
+
 output "module_path" {
   value = path.module
 }

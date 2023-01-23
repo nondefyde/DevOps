@@ -18,3 +18,7 @@ output "cluster_name" {
 output "aws_iam_role" {
   value = aws_iam_role.eks-iam-role.arn
 }
+
+output "issuer" {
+  value = trimprefix (aws_eks_cluster.eks.identity.0.oidc.0.issuer, "https://")
+}

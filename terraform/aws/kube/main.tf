@@ -1,5 +1,5 @@
 locals {
-  eks_cluster_name = "${var.app_project_prefix}-k8-cluster"
+  eks_cluster_name = "${var.app_project_prefix}-cluster"
   eks_node_group_name = "${var.app_project_prefix}-node-group"
 }
 
