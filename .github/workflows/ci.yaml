@@ -43,7 +43,7 @@ permissions:
   contents: read
 
 env:
-  current_project: clouddevstg
+  current_project: cloudstgdev
   current_port: 8000
   current_hostname_format: "pr-{0}.voomsway.com"
   namespace: stg
