@@ -25,7 +25,7 @@ resource "helm_release" "lb" {
   set {
     name  = "serviceAccount.name"
     value = "aws-load-balancer-controller"
-  }
+  }kubectl get all -n ingress-nginx --selector app.kubernetes.io/instance=ingress-nginx
 
   set {
     name  = "clusterName"
