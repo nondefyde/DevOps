@@ -10,11 +10,11 @@ on:
       - completed
   workflow_call:
     # Map the workflow outputs to job outputs
-    outputs:
-      HAS_VM:
-        description: "If a virtual machine already exist"
-        value: ${{ jobs.setups.outputs.HAS_VM }}
     inputs:
+      TFAction:
+        description: "Destroy Infrastructure"
+        type: boolean
+        default: false
       is_workflow:
         required: true
         type: boolean
