@@ -141,7 +141,7 @@ jobs:
     needs: [envs, config]
     runs-on: ubuntu-latest
     env:
-      project: ${{ needs.envs.outputs.project }}
+#      project: ${{ needs.envs.outputs.project }}
       port: ${{ needs.envs.outputs.port }}
       hostname: ${{ needs.config.outputs.hostname }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
