@@ -127,16 +127,11 @@ jobs:
           ls -a
 
       - name: Install eksctl
-        if: ${{ inputs.is_workflow == true }}
         run: |
           curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_arm64.tar.gz" | tar xz -C /tmp
           sudo mv /tmp/eksctl /usr/local/bin
           echo "--- eksctl version ----"
           echo eksctl version
-          ls
-          cp -a "${{ inputs.repository }}/." ./
-          rm -r "${{ inputs.repository }}"
-          ls -a
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
