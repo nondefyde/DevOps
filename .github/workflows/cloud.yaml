@@ -50,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       project: ${{ steps.variables.outputs.project }}
-      dns_domain: ${{ steps.variables.outputs.dns_domain }}
+      instance_types: ${{ steps.variables.outputs.instance_types }}
     steps:
       - name: Initialize environments
         run: |
