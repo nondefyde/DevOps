@@ -35,7 +35,6 @@ resource "kubectl_manifest" "elb-controller" {
   wait = true
 
   depends_on = [
-    module.eks,
     kubectl_manifest.cert-manager
   ]
 }
