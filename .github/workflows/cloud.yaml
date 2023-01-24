@@ -43,6 +43,7 @@ env:
   current_project: cloudstgdev
   namespace: stg
   current_instance_types: "t3.medium"
+  region: ${{secrets.AWS_REGION}}
 
 jobs:
   envs:
