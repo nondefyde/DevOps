@@ -40,10 +40,6 @@ env:
   namespace: stg
   current_instance_type: "t3.medium"
 
-  ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  REGION: ${{ secrets.AWS_REGION }}
-
 jobs:
   envs:
     name: 'Validate Env Variables'
