@@ -36,7 +36,7 @@ permissions:
   contents: read
 
 env:
-  current_project: bytegumdev
+  current_project: bytegumstg
   namespace: stg
 
 jobs:
