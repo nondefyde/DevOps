@@ -25,9 +25,6 @@ on:
       repository:
         required: true
         type: string
-      service:
-        required: true
-        type: string
       hostname-format:
         required: true
         type: string
@@ -48,7 +45,7 @@ env:
   current_hostname_format: "pr-{0}.voomsway.com"
   namespace: stg
   image-name: stmx
-  docker-context: '.'
+  dockerfile: './app/Dockerfile'
 
 jobs:
   envs:
@@ -58,8 +55,8 @@ jobs:
     outputs:
       project: ${{ steps.variables.outputs.project }}
       port: ${{ steps.variables.outputs.port }}
+      dockerfile: ${{ steps.variables.outputs.dockerfile }}
       hostname-format: ${{ steps.variables.outputs.hostname-format }}
-      docker-context: ${{ steps.variables.outputs.docker-context }}
     steps:
       - name: Initialize environments
         run: |
@@ -67,25 +64,25 @@ jobs:
           PRT="${{inputs.port}}"
           HOST_FMT="${{inputs.hostname-format}}"
           ENV_HOST_FMT="${{env.current_hostname_format}}"
-          DOCTX="${{ inputs.docker-context }}"
+          DOCFILE="${{ inputs.dockerfile }}"
 
           PROJECT="${EP:-${{env.current_project}}}"
           PORT="${PRT:-${{env.current_port}}}"
           
           HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
-          DOCKER_CONTEXT="${DOCTX:-${{ env.docker-context }}}"
+          DOCKER_FILE="${DOCFILE:-${{ env.dockerfile }}}"
 
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
           echo "port=${PORT}" >> "$GITHUB_ENV"
           echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
-          echo "docker-context=${DOCKER_CONTEXT}" >> "$GITHUB_ENV"
+          echo "dockerfile=${DOCKER_FILE}" >> "$GITHUB_ENV"
       - name: Set Env
         id: variables
         run: |
           echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
           echo "port=${{ env.port }}" >> $GITHUB_OUTPUT
           echo "hostname-format=${{env.hostname-format}}" >> $GITHUB_OUTPUT
-          echo "docker-context=${{ env.docker-context }}" >> $GITHUB_OUTPUT
+          echo "dockerfile=${{ env.dockerfile }}" >> $GITHUB_OUTPUT
 
   config:
     if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
@@ -97,7 +94,7 @@ jobs:
       project: ${{ needs.envs.outputs.project }}
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
-      docker-context: ${{ needs.envs.outputs.docker-context }}
+      dockerfile: ${{ needs.envs.outputs.dockerfile }}
     outputs:
       hostname:       ${{ steps.resolved.outputs.hostname }}
       git-sha:        ${{ steps.resolved.outputs.git-sha }}
@@ -156,7 +153,7 @@ jobs:
       project: ${{ needs.envs.outputs.project }}
       port: ${{ needs.envs.outputs.port }}
       hostname: ${{ needs.config.outputs.hostname }}
-      docker-context: ${{ needs.envs.outputs.docker-context }}
+      dockerfile: ${{ needs.envs.dockerfile }}
     steps:
       - name: --- For debugging ---
         id: debug-context
@@ -165,6 +162,7 @@ jobs:
           echo "hostname        ${{ needs.config.outputs.hostname }}"
           echo "docker-tag      ${{ needs.config.outputs.docker-tag }}"
           echo "project         ${{ env.project }}"
+          echo "dockerfile      ${{ env.dockerfile }}"
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -183,7 +181,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          file: ./app/Dockerfile
+          file: ${{ env.dockerfile }}
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}:${{ needs.config.outputs.docker-tag }}
 
   deploy:
@@ -195,7 +193,7 @@ jobs:
       project: ${{ needs.envs.outputs.project }}
       port: ${{ needs.envs.outputs.port }}
       hostname: ${{ needs.config.outputs.hostname }}
-      docker-context: ${{ needs.envs.outputs.docker-context }}
+      dockerfile: ${{ needs.envs.outputs.dockerfile }}
     steps:
       - uses: actions/checkout@v2
       - name: Configure AWS Credentials
