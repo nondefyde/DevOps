@@ -139,58 +139,58 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-#
-#      - name: Setup Terraform
-#        uses: hashicorp/setup-terraform@v2
-#        with:
-#          # terraform_version: 0.13.0
-#          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-#      - name: Terraform Init
-#        id: init
-#        run: |
-#          echo "Environment AWS: kube - ${{ env.project}}"
-#          mkdir -p terraform/aws/kube/_state
-#          terraform -chdir=terraform/aws/kube init \
-#            -backend-config="bucket=${{ env.project }}-tfstate" \
-#            -backend-config="region=us-west-2" \
-#            -backend-config="key=${{ env.project }}.terraform.tfstate"
-#        continue-on-error: false
-#
-#      - name: Terraform Plan
-#        id: plan
-#        run: |
-#          echo "Environment AWS: kube - ${{ env.project}}"
-#          mkdir -p terraform/aws/kube/_state
-#          terraform -chdir=terraform/aws/kube plan -no-color -input=false \
-#            -var=app_project_prefix="${{ env.project}}" \
-#            -var=aws_region="${{ secrets.AWS_REGION }}" \
-#            -var=aws_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
-#            -var=aws_key_secret="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-#            -out ./_state/${{ env.project }}.tfplan \
-#            -lock=false
-#        continue-on-error: false
-#
-#      - name: Terraform Apply
-#        if: ${{ inputs.TFAction == false}}
-#        id: apply
-#        run: |
-#          echo "Terraform Application in progress ${{ env.project }}"
-#          terraform -chdir=terraform/aws/kube apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
-#          echo "Terraform Application was successful ${{ env.project }}"
-#        continue-on-error: false
-#
-#      - name: Terraform Destroy
-#        if: ${{ inputs.TFAction == true}}
-#        id: destroy
-#        run: |
-#          echo "Terraform Destruction in progress ${{ env.project }}"
-#          terraform -chdir=terraform/aws/kube plan -destroy -no-color -input=false \
-#            -var=app_project_prefix="${{ env.project}}" \
-#            -var=aws_region="${{ secrets.AWS_REGION }}" \
-#            -var=aws_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
-#            -var=aws_key_secret="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-#            -out ./_state/${{ env.project }}.destroy.tfplan \
-#            -lock=false
-#          terraform -chdir=terraform/aws/kube apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
-#          echo "Terraform Destruction in successful ${{ env.project }}"
-#        continue-on-error: false
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          # terraform_version: 0.13.0
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Terraform Init
+        id: init
+        run: |
+          echo "Environment AWS: kube - ${{ env.project}}"
+          mkdir -p terraform/aws/kube/_state
+          terraform -chdir=terraform/aws/kube init \
+            -backend-config="bucket=${{ env.project }}-tfstate" \
+            -backend-config="region=us-west-2" \
+            -backend-config="key=${{ env.project }}.terraform.tfstate"
+        continue-on-error: false
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          echo "Environment AWS: kube - ${{ env.project}}"
+          mkdir -p terraform/aws/kube/_state
+          terraform -chdir=terraform/aws/kube plan -no-color -input=false \
+            -var=app_project_prefix="${{ env.project}}" \
+            -var=aws_region="${{ secrets.AWS_REGION }}" \
+            -var=aws_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            -var=aws_key_secret="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            -out ./_state/${{ env.project }}.tfplan \
+            -lock=false
+        continue-on-error: false
+
+      - name: Terraform Apply
+        if: ${{ inputs.TFAction == false}}
+        id: apply
+        run: |
+          echo "Terraform Application in progress ${{ env.project }}"
+          terraform -chdir=terraform/aws/kube apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
+          echo "Terraform Application was successful ${{ env.project }}"
+        continue-on-error: false
+
+      - name: Terraform Destroy
+        if: ${{ inputs.TFAction == true}}
+        id: destroy
+        run: |
+          echo "Terraform Destruction in progress ${{ env.project }}"
+          terraform -chdir=terraform/aws/kube plan -destroy -no-color -input=false \
+            -var=app_project_prefix="${{ env.project}}" \
+            -var=aws_region="${{ secrets.AWS_REGION }}" \
+            -var=aws_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            -var=aws_key_secret="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            -out ./_state/${{ env.project }}.destroy.tfplan \
+            -lock=false
+          terraform -chdir=terraform/aws/kube apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
+          echo "Terraform Destruction in successful ${{ env.project }}"
+        continue-on-error: false

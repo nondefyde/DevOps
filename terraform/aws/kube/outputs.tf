@@ -35,7 +35,3 @@ output "issuer" {
 output "module_path" {
   value = path.module
 }
-
-output "thumbprint" {
-  value = data.external.thumbprint.result.thumbprint
-}
