@@ -230,7 +230,7 @@ jobs:
 
       - name: Restart Pods
         id: restart-pods
-        run: kubectl rollout restart deployment ${{ env.image-name }}-dpl --namespace=${{ env.namespace }}
+        run: kubectl rollout restart deployment ${{ env.project }}-dpl --namespace=${{ env.namespace }}
         continue-on-error: true # will fail on first deploy
 
       - name: Cleanups
