@@ -18,11 +18,6 @@ resource "helm_release" "lb" {
   }
 
   set {
-    name  = "image.repository"
-    value = "${var.aws_region}.dkr.ecr.${var.aws_region}.amazonaws.com/amazon/aws-load-balancer-controller"
-  }
-
-  set {
     name  = "serviceAccount.create"
     value = "false"
   }
