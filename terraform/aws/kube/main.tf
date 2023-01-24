@@ -18,6 +18,19 @@ module "eks" {
   node_group_name = local.eks_node_group_name
 }
 
+module "elb" {
+  source       = "./modules/elb"
+  project      = var.app_project_prefix
+  vpc_id       = module.vpc.vpc_id
+  cluster_name = local.eks_cluster_name
+  issuer       = module.eks.issuer
+  account_id   = data.aws_caller_identity.current.account_id
+  aws_region   = var.aws_region
+  depends_on   = [
+    module.eks
+  ]
+}
+
 resource "aws_ecr_repository" "app_registry" {
   name = var.app_project_prefix
   image_scanning_configuration {
@@ -28,21 +41,6 @@ resource "aws_ecr_repository" "app_registry" {
     module.eks
   ]
 }
-
-module "elb" {
-  source                 = "./modules/elb"
-  project                = var.app_project_prefix
-  vpc_id                 = module.vpc.vpc_id
-  cluster_name           = local.eks_cluster_name
-  issuer                 = module.eks.issuer
-  account_id             = data.aws_caller_identity.current.account_id
-  aws_region             = var.aws_region
-
-  depends_on = [
-    module.eks
-  ]
-}
-
 
 data "kubectl_file_documents" "nginx-ingress-yml" {
   content = file("${path.module}/yamls/nginx.yaml")
