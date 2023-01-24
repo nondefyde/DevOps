@@ -1,5 +1,5 @@
 resource "aws_iam_role" "role_service_account" {
-  name = "AmazonEKSLoadBalancerControllerRole"
+  name = "${var.app_project_prefix}-AmazonEKSLoadBalancerControllerRole"
   assume_role_policy = jsonencode({
     "Version": "2012-10-17",
     "Statement" : [
@@ -21,7 +21,7 @@ resource "aws_iam_role" "role_service_account" {
 }
 
 resource "aws_iam_policy" "elb-policy" {
-  name        = "AWSLoadBalancerControllerIAMPolicy"
+  name        = "${var.app_project_prefix}-AWSLoadBalancerControllerIAMPolicy"
   path        = "/"
   description = "ALB eks iam policy"
 

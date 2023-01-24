@@ -12,7 +12,7 @@ module "vpc" {
 module "eks" {
   source          = "./modules/eks"
   project         = var.app_project_prefix
-  subnet_ids      = concat(module.vpc.public_subnet, module.vpc.private_subnet)
+  subnet_ids      = module.vpc.public_subnets
   vpc_id          = module.vpc.vpc_id
   cluster_name    = local.eks_cluster_name
   node_group_name = local.eks_node_group_name
