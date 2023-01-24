@@ -3,9 +3,9 @@ variable "app_project_prefix" {
   description = "The prefix for deployment"
 }
 
-variable "instance_types" {
-  type = list(string)
-  default = ["t3.large"]
+variable "instance_type" {
+  type = string
+  default = "t3.large"
 }
 
 variable "destroy" {

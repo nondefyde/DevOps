@@ -16,7 +16,7 @@ module "eks" {
   vpc_id          = module.vpc.vpc_id
   cluster_name    = local.eks_cluster_name
   node_group_name = local.eks_node_group_name
-  instance_types  = var.instance_types
+  instance_types  = [var.instance_type]
 }
 
 module "elb" {

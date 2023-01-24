@@ -31,7 +31,7 @@ on:
       repository:
         required: true
         type: string
-      instance_types:
+      instance_type:
         required: true
         type: string
 
@@ -42,7 +42,7 @@ permissions:
 env:
   current_project: cloudstgdev
   namespace: stg
-  current_instance_types: "t3.medium"
+  current_instance_type: "t3.medium"
   region: ${{secrets.AWS_REGION}}
 
 jobs:
@@ -51,21 +51,21 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       project: ${{ steps.variables.outputs.project }}
-      instance_types: ${{ steps.variables.outputs.instance_types }}
+      instance_type: ${{ steps.variables.outputs.instance_type }}
     steps:
       - name: Initialize environments
         run: |
           EP="${{inputs.project}}"          
-          CIT="${{inputs.instance_types}}"          
+          CIT="${{inputs.instance_type}}"          
           PROJECT="${EP:-${{ env.current_project }}}"
-          INSTANCE_TYPES="${CIT:-${{ env.current_instance_types }}}"
+          instance_type="${CIT:-${{ env.current_instance_type }}}"
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
-          echo "instance_types=${INSTANCE_TYPES}" >> "$GITHUB_ENV"
+          echo "instance_type=${instance_type}" >> "$GITHUB_ENV"
       - name: Set Env
         id: variables
         run: |
           echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
-          echo "instance_types=${{ env.instance_types }}" >> $GITHUB_OUTPUT
+          echo "instance_type=${{ env.instance_type }}" >> $GITHUB_OUTPUT
 
   setups:
     name: 'Setup dependencies'
@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      instance_types: ${{ needs.envs.outputs.instance_types }}
+      instance_type: ${{ needs.envs.outputs.instance_type }}
     outputs:
       HAS_VM: ${{ steps.variables.outputs.HAS_VM }}
     steps:
@@ -115,7 +115,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      instance_types: ${{ needs.envs.outputs.instance_types }}
+      instance_type: ${{ needs.envs.outputs.instance_type }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -174,7 +174,7 @@ jobs:
             -var=aws_region="${{ secrets.AWS_REGION }}" \
             -var=aws_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
             -var=aws_key_secret="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-            -var=instance_types=["${{ env.instance_types }}"] \
+            -var=instance_type=["${{ env.instance_type }}"] \
             -out ./_state/${{ env.project }}.tfplan \
             -lock=false
         continue-on-error: false
@@ -198,7 +198,7 @@ jobs:
             -var=aws_region="${{ secrets.AWS_REGION }}" \
             -var=aws_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
             -var=aws_key_secret="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-            -var=instance_types="${{ secrets.instance_types }}" \
+            -var=instance_type="${{ env.instance_type }}" \
             -out ./_state/${{ env.project }}.destroy.tfplan \
             -lock=false
           terraform -chdir=terraform/aws/kube apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
