@@ -13,14 +13,14 @@ on:
   workflow_call:
     secrets:
       AWS_ACCESS_KEY_ID:
+        description: 'AWS access key id'
         required: true
-        type: string
       AWS_SECRET_ACCESS_KEY:
+        description: 'AWS secret access key'
         required: true
-        type: string
       AWS_REGION:
+        description: 'AWS region'
         required: true
-        type: string
     inputs:
       TFAction:
         description: "Destroy Infrastructure"
