@@ -9,7 +9,7 @@ on:
       TFAction:
         description: "Destroy Infrastructure"
         type: boolean
-        default: "false"
+        default: false
   workflow_call:
     # Map the workflow outputs to job outputs
     outputs:
@@ -17,6 +17,10 @@ on:
         description: "If a virtual machine already exist"
         value: ${{ jobs.setups.outputs.HAS_VM }}
     inputs:
+      TFAction:
+        description: "Destroy Infrastructure"
+        type: boolean
+        default: false
       is_workflow:
         required: true
         type: boolean
@@ -25,9 +29,6 @@ on:
         required: true
         type: string
       repository:
-        required: true
-        type: string
-      dns:
         required: true
         type: string
 
