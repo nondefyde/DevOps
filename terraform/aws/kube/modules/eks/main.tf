@@ -3,7 +3,7 @@ resource "aws_eks_cluster" "eks" {
   role_arn = aws_iam_role.eks-iam-role.arn
 
   vpc_config {
-    subnet_ids              = var.aws_public_subnet
+    subnet_ids              = var.subnet_ids
     endpoint_public_access  = var.endpoint_public_access
     endpoint_private_access = var.endpoint_private_access
     public_access_cidrs     = var.public_access_cidrs
@@ -16,16 +16,22 @@ resource "aws_eks_cluster" "eks" {
   ]
 }
 
+resource "aws_key_pair" "deployer" {
+  key_name   = "deployer-key"
+  public_key = var.ssh_public_key
+}
+
+
 resource "aws_eks_node_group" "eks-node_group" {
   cluster_name    = aws_eks_cluster.eks.name
   node_group_name = var.node_group_name
   node_role_arn   = aws_iam_role.eks-node-group-iam-role.arn
-  subnet_ids      = var.aws_public_subnet
+  subnet_ids      = var.subnet_ids
   instance_types  = var.instance_types
 
   remote_access {
     source_security_group_ids = [aws_security_group.node_group_one.id]
-    ec2_ssh_key               = var.key_pair
+    ec2_ssh_key               = aws_key_pair.deployer.key_name
   }
 
   scaling_config {
