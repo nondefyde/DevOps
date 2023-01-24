@@ -78,7 +78,6 @@ jobs:
     env:
       project: ${{ needs.envs.outputs.project }}
       instance_type: ${{ needs.envs.outputs.instance_type }}
-      access_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     outputs:
       HAS_VM: ${{ steps.variables.outputs.HAS_VM }}
     steps:
@@ -93,7 +92,6 @@ jobs:
       - name: Copy Script files to context
         if: ${{ inputs.is_workflow == true }}
         run: |
-          echo "access_id ${{ access_id }}"
           ls
           cp -a ${{ inputs.repository }}/. ./
           rm -r ${{ inputs.repository }}
