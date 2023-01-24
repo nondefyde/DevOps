@@ -271,12 +271,23 @@ resource "kubernetes_service_account" "service_account" {
   ]
 }
 
+resource "null_resource" "update-kubeconfig" {
+  provisioner "local-exec" {
+    command = "aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.aws_region}"
+  }
+
+  depends_on = [
+    aws_iam_policy.elb-policy
+  ]
+}
+
 resource "null_resource" "associate_iam_oidc_provider" {
   provisioner "local-exec" {
     command = "eksctl utils associate-iam-oidc-provider --region=${var.aws_region} --cluster=${var.cluster_name} --approve"
   }
 
   depends_on = [
+    null_resource.update-kubeconfig,
     aws_iam_policy.elb-policy
   ]
 }
