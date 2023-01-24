@@ -31,7 +31,7 @@ on:
       port:
         required: true
         type: string
-      docker-context:
+      dockerfile:
         required: true
         type: string
 
