@@ -9,7 +9,16 @@ on:
     types:
       - completed
   workflow_call:
-    # Map the workflow outputs to job outputs
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        description: 'AWS access key id'
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        description: 'AWS secret access key'
+        required: true
+      AWS_REGION:
+        description: 'AWS region'
+        required: true
     inputs:
       TFAction:
         description: "Destroy Infrastructure"
