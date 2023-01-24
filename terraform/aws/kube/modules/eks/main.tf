@@ -17,7 +17,7 @@ resource "aws_eks_cluster" "eks" {
 }
 
 resource "aws_key_pair" "deployer" {
-  key_name   = "deployer-key"
+  key_name   = "${var.project}-deployer-key"
   public_key = var.ssh_public_key
 }
 
