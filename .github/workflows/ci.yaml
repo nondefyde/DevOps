@@ -45,7 +45,7 @@ env:
   current_hostname_format: "pr-{0}.voomsway.com"
   namespace: stg
   image-name: stmx
-  dockerfile: './app/Dockerfile'
+  current_dockerfile: './app/Dockerfile'
 
 jobs:
   envs:
@@ -70,7 +70,7 @@ jobs:
           PORT="${PRT:-${{env.current_port}}}"
           
           HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
-          DOCKER_FILE="${DOCFILE:-${{ env.dockerfile }}}"
+          DOCKER_FILE="${DOCFILE:-${{ env.current_dockerfile }}}"
 
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
           echo "port=${PORT}" >> "$GITHUB_ENV"
@@ -153,7 +153,7 @@ jobs:
       project: ${{ needs.envs.outputs.project }}
       port: ${{ needs.envs.outputs.port }}
       hostname: ${{ needs.config.outputs.hostname }}
-      dockerfile: ${{ needs.envs.dockerfile }}
+      dockerfile: ${{ needs.envs.outputs.dockerfile }}
     steps:
       - name: --- For debugging ---
         id: debug-context
