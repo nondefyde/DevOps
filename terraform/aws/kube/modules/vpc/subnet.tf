@@ -7,7 +7,7 @@ resource "aws_subnet" "public_subnet" {
   availability_zone       = random_shuffle.az_list.result[count.index]
   map_public_ip_on_launch = true
   tags                    = {
-    Name        = var.project
+    Name        = "${var.project}-public-subnet"
     Environment = var.environment
     Type        = "public_subnet"
   }
@@ -31,7 +31,7 @@ resource "aws_ec2_tag" "public_subnet_tag" {
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.vpc.id
   tags   = {
-    Name        = var.project,
+    Name        = "${var.project}-public-route-table"
     Environment = var.environment
   }
 }

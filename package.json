@@ -29,7 +29,7 @@
     "aws:prepare": "cd ./terraform/aws/_scripts && ./prepare.sh kube cloudstgdev",
     "aws:apply": "cd ./terraform/aws/_scripts && ./apply.sh kube cloudstgdev",
     "aws:destroy": "cd ./terraform/aws/_scripts && ./destroy.sh kube cloudstgdev",
-    "aws:execute": "yarn aws:setup && yarn aws:prepare && yarn aws:apply",
+    "aws:execute": "yarn aws:setup && yarn aws:prepare",
     "aws:tear": "yarn aws:destroy",
     "aws:cicle": "yarn aws:execute && yarn aws:tear"
   }

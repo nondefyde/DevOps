@@ -1,18 +1,18 @@
 resource "aws_iam_role" "role_service_account" {
-  name = "${var.app_project_prefix}-AmazonEKSLoadBalancerControllerRole"
+  name = "${var.project}-aws-elb-role"
   assume_role_policy = jsonencode({
     "Version": "2012-10-17",
     "Statement" : [
       {
         "Effect": "Allow",
         "Principal": {
-          "Federated": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${module.eks.issuer}"
+          "Federated": "arn:aws:iam::${var.account_id}:oidc-provider/${var.issuer}"
         },
         "Action": "sts:AssumeRoleWithWebIdentity",
         "Condition": {
           "StringEquals": {
-            "${module.eks.issuer}:aud": "sts.amazonaws.com",
-            "${module.eks.issuer}:sub": "system:serviceaccount:${var.sa_namespace}:${var.sa_name}"
+            "${var.issuer}:aud": "sts.amazonaws.com",
+            "${var.issuer}:sub": "system:serviceaccount:${var.sa_namespace}:${var.sa_name}"
           }
         }
       }
@@ -21,7 +21,7 @@ resource "aws_iam_role" "role_service_account" {
 }
 
 resource "aws_iam_policy" "elb-policy" {
-  name        = "${var.app_project_prefix}-AWSLoadBalancerControllerIAMPolicy"
+  name        = "${var.project}-aws-elb-policy"
   path        = "/"
   description = "ALB eks iam policy"
 
@@ -246,10 +246,6 @@ resource "aws_iam_policy" "elb-policy" {
       }
     ]
   })
-
-  depends_on = [
-    module.eks
-  ]
 }
 
 resource "aws_iam_role_policy_attachment" "policy_attachment_service_account" {
@@ -259,6 +255,10 @@ resource "aws_iam_role_policy_attachment" "policy_attachment_service_account" {
 
 resource "kubernetes_service_account" "service_account" {
   metadata {
+    labels = {
+      "app.kubernetes.io/name"= "aws-load-balancer-controller"
+      "app.kubernetes.io/component"= "controller"
+    }
     name = "aws-load-balancer-controller"
     annotations = {
       "eks.amazonaws.com/role-arn" = aws_iam_role.role_service_account.arn
@@ -267,18 +267,16 @@ resource "kubernetes_service_account" "service_account" {
   }
 
   depends_on = [
-    module.eks,
     aws_iam_role_policy_attachment.policy_attachment_service_account
   ]
 }
 
 resource "null_resource" "associate_iam_oidc_provider" {
   provisioner "local-exec" {
-    command = "eksctl utils associate-iam-oidc-provider --region=${var.aws_region} --cluster=${local.eks_cluster_name} --approve"
+    command = "eksctl utils associate-iam-oidc-provider --region=${var.aws_region} --cluster=${var.cluster_name} --approve"
   }
 
   depends_on = [
-    module.eks,
     aws_iam_policy.elb-policy
   ]
 }

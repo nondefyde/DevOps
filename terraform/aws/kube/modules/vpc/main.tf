@@ -5,7 +5,7 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
   instance_tenancy = var.instance_tenancy
   tags = {
-    Name        = var.project
+    Name        = "${var.project}-vpc"
     Environment = var.environment
   }
 }
@@ -14,7 +14,7 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name        = var.project
+    Name        = "${var.project}-gateway"
     Environment = var.environment
   }
 }
@@ -29,7 +29,7 @@ resource "aws_nat_gateway" "nat" {
   subnet_id     = element(aws_subnet.public_subnet.*.id, 0)
   depends_on    = [aws_internet_gateway.gw]
   tags = {
-    Name        = "nat"
+    Name        = "${var.project}-nat"
     Environment = var.environment
   }
 }

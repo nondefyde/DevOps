@@ -16,11 +16,6 @@ resource "aws_eks_cluster" "eks" {
   ]
 }
 
-resource "aws_key_pair" "deployer" {
-  key_name   = "${var.project}-deployer-key"
-  public_key = var.ssh_public_key
-}
-
 
 resource "aws_eks_node_group" "eks-node_group" {
   cluster_name    = aws_eks_cluster.eks.name
@@ -28,11 +23,6 @@ resource "aws_eks_node_group" "eks-node_group" {
   node_role_arn   = aws_iam_role.eks-node-group-iam-role.arn
   subnet_ids      = var.subnet_ids
   instance_types  = var.instance_types
-
-  remote_access {
-    source_security_group_ids = [aws_security_group.node_group_one.id]
-    ec2_ssh_key               = aws_key_pair.deployer.key_name
-  }
 
   scaling_config {
     desired_size = var.scaling_desired_size
@@ -90,8 +80,6 @@ resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEKSClusterPolicy
   role       = aws_iam_role.eks-iam-role.name
 }
 
-# Optionally, enable Security Groups for Pods
-# Reference: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html
 resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEKSVPCResourceController" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
   role       = aws_iam_role.eks-iam-role.name

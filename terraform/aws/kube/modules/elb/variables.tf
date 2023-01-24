@@ -1,26 +1,14 @@
-variable "app_project_prefix" {
+variable "project" {
   type        = string
   description = "The prefix for deployment"
 }
 
-variable "destroy" {
-  type = bool
-  default = false
-}
-
 variable "aws_region" {
   type = string
-  default = "AWS region"
 }
 
-variable "aws_key_id" {
+variable "cluster_name" {
   type = string
-  default = "Aws access key id"
-}
-
-variable "aws_key_secret" {
-  type = string
-  default = "Aws access key secret"
 }
 
 variable "sa_namespace" {
@@ -31,4 +19,16 @@ variable "sa_namespace" {
 variable "sa_name" {
   type = string
   default = "aws-load-balancer-controller"
+}
+
+variable "issuer" {
+  type = string
+}
+
+variable "account_id" {
+  type = string
+}
+
+variable "vpc_id" {
+  type = string
 }

@@ -16,7 +16,6 @@ module "eks" {
   vpc_id          = module.vpc.vpc_id
   cluster_name    = local.eks_cluster_name
   node_group_name = local.eks_node_group_name
-  ssh_public_key  = var.ssh_public_key
 }
 
 resource "aws_ecr_repository" "app_registry" {
@@ -25,4 +24,37 @@ resource "aws_ecr_repository" "app_registry" {
     scan_on_push = false
   }
   force_delete = true
+  depends_on   = [
+    module.eks
+  ]
+}
+
+module "elb" {
+  source                 = "./modules/elb"
+  project                = var.app_project_prefix
+  vpc_id                 = module.vpc.vpc_id
+  cluster_name           = local.eks_cluster_name
+  issuer                 = module.eks.issuer
+  account_id             = data.aws_caller_identity.current.account_id
+  aws_region             = var.aws_region
+
+  depends_on = [
+    module.eks
+  ]
+}
+
+
+data "kubectl_file_documents" "nginx-ingress-yml" {
+  content = file("${path.module}/yamls/nginx.yaml")
+}
+
+resource "kubectl_manifest" "nginx-ingress" {
+  count     = length(data.kubectl_file_documents.nginx-ingress-yml.documents)
+  yaml_body = element(data.kubectl_file_documents.nginx-ingress-yml.documents, count.index)
+
+  wait = true
+
+  depends_on = [
+    module.elb,
+  ]
 }

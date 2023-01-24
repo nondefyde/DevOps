@@ -6,10 +6,6 @@ variable "subnet_ids" {
   type = list(string)
 }
 
-variable "ssh_public_key" {
-  type = string
-}
-
 variable "vpc_id" {}
 
 variable "cluster_name" {}
