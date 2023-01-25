@@ -28,6 +28,9 @@ on:
       project:
         required: true
         type: string
+      service:
+        required: true
+        type: string
       repository:
         required: true
         type: string
@@ -50,6 +53,7 @@ env:
   current_port: 8000
   current_hostname_format: "pr-{0}.voomsway.com"
   namespace: stg
+  current_service: cloudstgdev-app
   image-name: stmx
   current_dockerfile: './app/Dockerfile'
 
@@ -62,6 +66,7 @@ jobs:
       project: ${{ steps.variables.outputs.project }}
       port: ${{ steps.variables.outputs.port }}
       dockerfile: ${{ steps.variables.outputs.dockerfile }}
+      service: ${{ steps.variables.outputs.service }}
       hostname-format: ${{ steps.variables.outputs.hostname-format }}
     steps:
       - name: Initialize environments
@@ -69,18 +74,22 @@ jobs:
           EP="${{inputs.project}}"
           PRT="${{inputs.port}}"
           HOST_FMT="${{inputs.hostname-format}}"
-          ENV_HOST_FMT="${{env.current_hostname_format}}"
           DOCFILE="${{ inputs.dockerfile }}"
+          SRV="${{ inputs.service }}"
+          
+          ENV_HOST_FMT="${{env.current_hostname_format}}"
 
           PROJECT="${EP:-${{env.current_project}}}"
           PORT="${PRT:-${{env.current_port}}}"
           
           HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
           DOCKER_FILE="${DOCFILE:-${{ env.current_dockerfile }}}"
+          SERVICE="${SRV:-${{ env.current_service }}}"
 
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
           echo "port=${PORT}" >> "$GITHUB_ENV"
           echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
+          echo "service-format=${SERVICE}" >> "$GITHUB_ENV"
           echo "dockerfile=${DOCKER_FILE}" >> "$GITHUB_ENV"
       - name: Set Env
         id: variables
@@ -89,6 +98,7 @@ jobs:
           echo "port=${{ env.port }}" >> $GITHUB_OUTPUT
           echo "hostname-format=${{env.hostname-format}}" >> $GITHUB_OUTPUT
           echo "dockerfile=${{ env.dockerfile }}" >> $GITHUB_OUTPUT
+          echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
 
   config:
     if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
@@ -101,6 +111,7 @@ jobs:
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
+      service: ${{ needs.envs.outputs.service }}
     outputs:
       hostname:       ${{ steps.resolved.outputs.hostname }}
       git-sha:        ${{ steps.resolved.outputs.git-sha }}
@@ -151,6 +162,7 @@ jobs:
       port: ${{ needs.envs.outputs.port }}
       hostname: ${{ needs.config.outputs.hostname }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
+      service: ${{ needs.envs.outputs.service }}
     steps:
       - name: --- For debugging ---
         id: debug-context
@@ -160,6 +172,7 @@ jobs:
           echo "docker-tag      ${{ needs.config.outputs.docker-tag }}"
           echo "project         ${{ env.project }}"
           echo "dockerfile      ${{ env.dockerfile }}"
+          echo "service      ${{ env.service }}"
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -179,7 +192,7 @@ jobs:
         with:
           push: true
           file: ${{ env.dockerfile }}
-          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}:${{ needs.config.outputs.docker-tag }}
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}:${{ needs.config.outputs.docker-tag }}-${{ env.service}}
 
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
@@ -192,6 +205,7 @@ jobs:
       port: ${{ needs.envs.outputs.port }}
       hostname: ${{ needs.config.outputs.hostname }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
+      service: ${{ needs.envs.outputs.service }}
     steps:
       - uses: actions/checkout@v2
       - name: Download Repo to Artifact
@@ -227,8 +241,8 @@ jobs:
 
       - name: Deploy image to kubernetes cluster
         env:
-          APP_NAME:  ${{ env.project }}
-          IMAGE_TAG: ${{ needs.config.outputs.docker-tag }}
+          APP_NAME:  ${{ env.project }}-${{ env.service}}
+          IMAGE_TAG: ${{ needs.config.outputs.docker-tag }}-${{ env.service}}
           NAMESPACE: ${{ env.namespace }}
           INGRESS_HOSTNAME: ${{ env.hostname }}
           REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
@@ -241,7 +255,7 @@ jobs:
 
       - name: Restart Pods
         id: restart-pods
-        run: kubectl rollout restart deployment ${{ env.project }}-dpl --namespace=${{ env.namespace }}
+        run: kubectl rollout restart deployment ${{ env.project }}-${{ env.service}}-dpl --namespace=${{ env.namespace }}
         continue-on-error: true # will fail on first deploy
 
       - name: Cleanups
