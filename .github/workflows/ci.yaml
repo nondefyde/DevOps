@@ -273,5 +273,8 @@ jobs:
 
       - name: Cleanups
         run: |
-          rm -r env.yml
+          if [ -f "$FILE" ]; then
+            echo secret file removed
+             rm -r env.yml
+          fi
           rm -r /home/runner/.kube/config
