@@ -56,6 +56,7 @@ env:
   current_service: cloudstgdev-app
   image-name: stmx
   current_dockerfile: './app/Dockerfile'
+  appSecret: ${{ secrets.APP_SECRET }}
 
 jobs:
   envs:
@@ -240,7 +241,7 @@ jobs:
           aws eks update-kubeconfig --name ${{ env.project }}-cluster --region ${{ secrets.AWS_REGION }}
 
       - name: Decode Secret
-        if: ${{ secrets.APP_SECRET }}
+        if: ${{ env.appSecret }}
         run: |
           DECODED=$(echo ${BASE64} | base64 --decode > env.yml)
           echo "secret ${DECODED}"
@@ -267,4 +268,5 @@ jobs:
 
       - name: Cleanups
         run: |
+          rm -r .env.yml
           rm -r /home/runner/.kube/config
