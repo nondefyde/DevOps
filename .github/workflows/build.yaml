@@ -1,6 +1,11 @@
 name: Build App
 
 on:
+  workflow_run:
+    workflows: [ "Infrastructure" ]
+    types:
+      - completed
+
   workflow_call:
     inputs:
       project:
