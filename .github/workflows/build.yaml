@@ -49,7 +49,7 @@ jobs:
         run: ${{ inputs.e2eTestCommand }}
 
   docker:
-    name: 'Docker'
+    name: 'Docker build'
     runs-on: ubuntu-latest
     needs: [ build-ci ]
     steps:
