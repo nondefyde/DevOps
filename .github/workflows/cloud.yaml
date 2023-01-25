@@ -21,6 +21,9 @@ on:
       AWS_REGION:
         description: 'AWS region'
         required: true
+      APP_SECRET:
+        description: 'APP Secret'
+        required: true
     inputs:
       TFAction:
         description: "Destroy Infrastructure"
