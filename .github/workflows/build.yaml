@@ -13,7 +13,6 @@ on:
         type: string
       e2eTestCommand:
         type: string
-
 jobs:
   build-ci:
     name: "Build CI"

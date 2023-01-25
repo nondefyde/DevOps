@@ -548,7 +548,7 @@ spec:
         - create
         - --host=ingress-nginx-controller-admission,ingress-nginx-controller-admission.$(POD_NAMESPACE).svc
         - --namespace=$(POD_NAMESPACE)
-        - --secret-name=ingress-nginx-admission
+        - --base64.sh-name=ingress-nginx-admission
         env:
         - name: POD_NAMESPACE
           valueFrom:
@@ -596,7 +596,7 @@ spec:
         - --webhook-name=ingress-nginx-admission
         - --namespace=$(POD_NAMESPACE)
         - --patch-mutating=false
-        - --secret-name=ingress-nginx-admission
+        - --base64.sh-name=ingress-nginx-admission
         - --patch-failure-policy=Fail
         env:
         - name: POD_NAMESPACE

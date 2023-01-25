@@ -11,7 +11,7 @@ on:
         description: 'AWS access key id'
         required: true
       AWS_SECRET_ACCESS_KEY:
-        description: 'AWS secret access key'
+        description: 'AWS base64.sh access key'
         required: true
       AWS_REGION:
         description: 'AWS region'
@@ -239,6 +239,12 @@ jobs:
           echo "aws eks update-kubeconfig --name ${{ env.project }}-cluster --region ${{ secrets.AWS_REGION }}"
           aws eks update-kubeconfig --name ${{ env.project }}-cluster --region ${{ secrets.AWS_REGION }}
 
+      - name: Decode Secret
+        if: ${{ secrets.APP_SECRET }}
+        run: |
+          DECODED=$(echo ${BASE64} | base64 --decode > env.yml)
+          echo "secret ${DECODED}"
+
       - name: Deploy image to kubernetes cluster
         env:
           APP_NAME:  ${{ env.project }}-${{ env.service}}
@@ -249,7 +255,7 @@ jobs:
           PORT: ${{ env.current_port }}
         run: |
           kubectl create namespace ${{ env.namespace }} --dry-run=client -o yaml | kubectl apply -f -
-          cat ./_env/env.yml | envsubst | kubectl apply -f -
+          cat ./env.yml | envsubst | kubectl apply -f -
           cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -
           cat ./_kubernetes/deployment.yml | envsubst | kubectl apply -f -
           cat ./_kubernetes/ingress.yml | envsubst | kubectl apply -f -
