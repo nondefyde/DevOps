@@ -47,8 +47,13 @@ jobs:
           npm i
           fi
       - run: npm run build --if-present
-      - run: ${{ inputs.unitTestCommand }}
-      - run: ${{ inputs.e2eTestCommand }}
+      - name: Run Unit Test
+        if: ${{ inputs.unitTestCommand }}
+        run: ${{ inputs.unitTestCommand }}
+
+      - name: Run e2e Test
+        if: ${{ inputs.e2eTestCommand }}
+        run: ${{ inputs.e2eTestCommand }}
 
   docker:
     name: 'Docker'
