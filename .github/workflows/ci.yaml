@@ -59,6 +59,7 @@ env:
   current_service: cloudstgdev-app
   image-name: stmx
   current_dockerfile: './app/Dockerfile'
+  appSecret: ${{ secrets.APP_SECRET }}
 
 jobs:
   envs:
