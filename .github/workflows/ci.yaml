@@ -264,7 +264,7 @@ jobs:
           cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -
           cat ./_kubernetes/deployment.yml | envsubst | kubectl apply -f -
           cat ./_kubernetes/ingress.yml | envsubst | kubectl apply -f -
-#          cat ./env.yml | envsubst | kubectl apply -f -
+          cat ./env.yml | envsubst | kubectl apply -f -
 
       - name: Restart Pods
         id: restart-pods
