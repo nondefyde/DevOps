@@ -43,17 +43,22 @@ resource "aws_ecr_repository" "app_registry" {
   ]
 }
 
-data "kubectl_file_documents" "nginx-ingress-yml" {
-  content = file("${path.module}/yamls/nginx.yaml")
-}
-
-resource "kubectl_manifest" "nginx-ingress" {
-  count     = length(data.kubectl_file_documents.nginx-ingress-yml.documents)
-  yaml_body = element(data.kubectl_file_documents.nginx-ingress-yml.documents, count.index)
-
-  wait = true
+module "nginx-controller" {
+  source  = "terraform-iaac/nginx-controller/helm"
+  additional_set = [
+    {
+      name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
+      value = "nlb"
+      type  = "string"
+    },
+    {
+      name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-cross-zone-load-balancing-enabled"
+      value = "true"
+      type  = "string"
+    }
+  ]
 
   depends_on = [
-    module.elb,
+    aws_ecr_repository.app_registry
   ]
 }
