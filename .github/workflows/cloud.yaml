@@ -110,7 +110,7 @@ jobs:
         run: |
           cd terraform/aws/_scripts
           chmod +x setup.sh
-          ./setup.sh ${{ env.project }} us-west-1
+          ./setup.sh ${{ env.project }} ${{ secrets.AWS_REGION }}
 
   setup-cloud:
     name: 'Build Cloud Infrastructure'
