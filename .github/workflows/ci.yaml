@@ -247,7 +247,7 @@ jobs:
         if: ${{ env.appSecret }}
         run: |
           DECODED=$(echo ${{ secrets.APP_SECRET }} | base64 --decode > env.yml)
-          echo "secret ${DECODED}"
+          cat ./env.yml
           ls
 
       - name: Deploy image to kubernetes cluster
