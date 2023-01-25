@@ -15,10 +15,8 @@ on:
         required: true
         type: string
       unitTestCommand:
-        required: true
         type: string
       e2eTestCommand:
-        required: true
         type: string
 
 jobs:
