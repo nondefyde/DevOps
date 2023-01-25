@@ -27,7 +27,7 @@
     "azure:tear": "yarn azure:destroy && yarn azure:cleanup",
     "azure:cicle": "yarn azure:execute && yarn azure:tear",
     "aws:clean": "rm -rf ./terraform/aws/_state && rm -rf ./terraform/azure/**/.terraform",
-    "aws:setup": "cd ./terraform/aws/_scripts && ./setup.sh cloudstgdev us-west-2",
+    "aws:setup": "cd ./terraform/aws/_scripts && ./setup.sh cloudstgdev us-west-1",
     "aws:prepare": "cd ./terraform/aws/_scripts && ./prepare.sh kube cloudstgdev",
     "aws:apply": "cd ./terraform/aws/_scripts && ./apply.sh kube cloudstgdev",
     "aws:destroy": "cd ./terraform/aws/_scripts && ./destroy.sh kube cloudstgdev",
