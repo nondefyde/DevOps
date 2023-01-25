@@ -247,7 +247,7 @@ jobs:
         if: ${{ env.appSecret }}
         run: |
           DECODED=$(echo ${BASE64} | base64 --decode > env.yml)
-          echo secret $DECODED
+          echo "secret ${DECODED}"
           ls
 
       - name: Deploy image to kubernetes cluster
@@ -261,7 +261,7 @@ jobs:
         run: |
           ls
           kubectl create namespace ${{ env.namespace }} --dry-run=client -o yaml | kubectl apply -f -
-          cat ./env.yml | envsubst | kubectl apply -f -
+          cat env.yml | envsubst | kubectl apply -f -
           cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -
           cat ./_kubernetes/deployment.yml | envsubst | kubectl apply -f -
           cat ./_kubernetes/ingress.yml | envsubst | kubectl apply -f -
