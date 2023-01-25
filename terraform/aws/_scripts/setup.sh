@@ -1,7 +1,7 @@
 #!/bin/bash
 
-REGION=us-west-2
 BUCKET_NAME=${1}-tfstate
+REGION=${2}
 
 echo "Setting up bucket ${BUCKET_NAME} within region ${REGION}"
 
