@@ -56,7 +56,7 @@ env:
   current_port: 8000
   current_hostname_format: "pr-{0}.voomsway.com"
   namespace: stg
-  current_service: cloudstgdev-app
+  current_service: cloud-app
   image-name: stmx
   current_dockerfile: './app/Dockerfile'
   appSecret: ${{ secrets.APP_SECRET }}
