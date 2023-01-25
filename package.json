@@ -13,6 +13,8 @@
   },
   "scripts": {
     "start": "node app/app.js",
+    "secret:chv": "cd ./scripts && cat ../_env/chowville.yml | ./base64.sh",
+
     "clean": "rm -rf ./terraform/_state && rm -rf ./terraform/.terraform",
     "buildup": "yarn clean && cd ./terraform && terraform init",
     "azure:clean": "rm -rf ./terraform/azure/_state && rm -rf ./terraform/azure/**/.terraform",
