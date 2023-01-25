@@ -167,7 +167,7 @@ jobs:
           mkdir -p terraform/aws/kube/_state
           terraform -chdir=terraform/aws/kube init \
             -backend-config="bucket=${{ env.project }}-tfstate" \
-            -backend-config="region=us-west-2" \
+            -backend-config="region="${{ secrets.AWS_REGION }}" \
             -backend-config="key=${{ env.project }}.terraform.tfstate"
         continue-on-error: false
 
