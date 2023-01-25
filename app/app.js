@@ -4,13 +4,13 @@ const port = 8000
 
 
 app.get('/v1/ping', (req, res) => {
-	res.status(200).send(`Ping Successful ${new Date().toISOString()}`)
+	res.status(200).send(`Ping Successful ${new Date().toISOString()} --- environment --- ${process.env.NODE_ENV}`);
 })
 
 app.get('/', (req, res) => {
-	res.send('Hello World! I did it again')
+	res.send('Hello World! I did it again');
 })
 
 app.listen(port, () => {
-	console.log(`Example app listening on port >>>>>> update ${port}  --- environment --- ${process.env.NODE_ENV}`)
+	console.log(`Example app listening on port >>>>>> update ${port}  --- environment --- ${process.env.NODE_ENV}`);
 })
