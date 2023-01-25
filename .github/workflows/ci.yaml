@@ -63,7 +63,7 @@ env:
 
 jobs:
   envs:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
+    if: ${{ inputs.TFAction == false && github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
     name: 'Validate Env Variables'
     runs-on: ubuntu-latest
     outputs:
@@ -105,7 +105,7 @@ jobs:
           echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
 
   config:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
+    if: ${{ inputs.TFAction == false && github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
     name: 'Setup Config Variables'
     needs: [envs]
     permissions: write-all
@@ -157,7 +157,7 @@ jobs:
           echo "dockerfile      ${{ env.dockerfile }}"
 
   push-image:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
+    if: ${{ inputs.TFAction == false && github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
     name: 'Push Image to Cloud Registry'
     needs: [envs, config]
     runs-on: ubuntu-latest
@@ -199,7 +199,7 @@ jobs:
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}:${{ needs.config.outputs.docker-tag }}-${{ env.service}}
 
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
+    if: ${{ inputs.TFAction == false  && github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
     needs: [ envs, push-image, config ]
     name: 'deploy to AWS EKS'
     permissions: write-all
