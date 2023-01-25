@@ -197,6 +197,21 @@ jobs:
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
     steps:
       - uses: actions/checkout@v2
+      - name: Download Repo to Artifact
+        if: ${{ inputs.is_workflow == true }}
+        uses: actions/download-artifact@master
+        with:
+          name: cloud-scripts
+          path: ${{ inputs.repository }}
+
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a "${{ inputs.repository }}/." ./
+          rm -r "${{ inputs.repository }}"
+          ls -a
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
