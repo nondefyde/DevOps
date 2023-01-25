@@ -254,7 +254,7 @@ jobs:
           NAMESPACE: ${{ env.namespace }}
           INGRESS_HOSTNAME: ${{ env.hostname }}
           REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
-          PORT: ${{ env.current_port }}
+          PORT: ${{ env.port }}
         run: |
           kubectl create namespace ${{ env.namespace }} --dry-run=client -o yaml | kubectl apply -f -
           cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -

@@ -1,0 +1,73 @@
+name: Attach Feature Link to PR.
+
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - 'develop'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  prefix:             chv-app
+  cluster-name:       cluster-dev
+  hostname-format:    pr-{0}.bytegum.com
+  image-name:         chv-app-dev
+
+jobs:
+  config:
+    permissions: write-all
+    name: 'Setup Variables'
+    runs-on: ubuntu-latest
+    outputs:
+      hostname:       ${{ steps.resolved.outputs.hostname }}
+
+    steps:
+      - id: debug-context
+        run: |
+          echo "event_name      ${{ github.event_name }}"
+
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
+      - name: Slugify Value
+        uses: rlespinasse/slugify-value@v1.4.0
+        with:
+          slug-maxlength: 30
+          key: feat-name
+          value: ${{ steps.branch-name.outputs.current_branch }}
+
+      - name: Set variables
+        id: variables
+        run: |
+          echo "hostname=${{ format(env.hostname-format, env.FEAT-NAME_SLUG_URL ) }}" >> $GITHUB_ENV
+
+      - name: Resolve outputs
+        id: resolved
+        run: |
+          echo "hostname=${{ env.hostname }}" >> $GITHUB_OUTPUT
+
+  attach-feature-link:
+    permissions: write-all
+    needs: [ config ]
+    name: Attach Url
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: -- For debugging --
+        run: echo "feature url  - ${{ needs.config.outputs.hostname }}"
+      - name: PR Comment For Feature Link
+        uses: actions/github-script@v5
+        with:
+          result-encoding: string
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "UI REVIEW  [FEATURE LINK](https://${{ needs.config.outputs.hostname }})."
+            })
