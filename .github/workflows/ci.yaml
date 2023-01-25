@@ -273,5 +273,5 @@ jobs:
 
       - name: Cleanups
         run: |
-          rm -r .env.yml
+          rm -r env.yml
           rm -r /home/runner/.kube/config
