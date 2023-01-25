@@ -29,3 +29,18 @@ spec:
           ports:
             - containerPort: ${PORT}
               protocol: TCP
+          envFrom:
+            - secretRef:
+                name: ${APP_NAME}-${NAMESPACE}
+          readinessProbe:
+            initialDelaySeconds: 15
+            httpGet:
+              path: /v1/ping
+              port: ${PORT}
+            periodSeconds: 30
+          livenessProbe:
+            initialDelaySeconds: 15
+            httpGet:
+              path: /v1/ping
+              port: ${PORT}
+            periodSeconds: 30
