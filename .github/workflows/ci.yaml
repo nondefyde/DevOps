@@ -259,6 +259,7 @@ jobs:
           REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
           PORT: ${{ env.current_port }}
         run: |
+          ls
           kubectl create namespace ${{ env.namespace }} --dry-run=client -o yaml | kubectl apply -f -
           cat ./env.yml | envsubst | kubectl apply -f -
           cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -
