@@ -1,5 +1,3 @@
-
-
 resource "azurerm_virtual_network" "vm_network" {
   name                = "${var.prefix}-network"
   address_space       = ["10.0.0.0/16"]
@@ -14,19 +12,6 @@ resource "azurerm_subnet" "vm_subnet" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
-resource "azurerm_dns_zone" "vm_dns_zone" {
-  name                = var.dns_domain
-  resource_group_name = "${var.prefix}-group"
-}
-
-resource "azurerm_dns_a_record" "vm_dns_record" {
-  name                = "*"
-  zone_name           = azurerm_dns_zone.vm_dns_zone.name
-  resource_group_name = "${var.prefix}-group"
-  ttl                 = 300
-  target_resource_id  = azurerm_public_ip.public_ip.id
-}
-
 resource "azurerm_public_ip" "public_ip" {
   name                = "${var.prefix}-public-id"
   resource_group_name = "${var.prefix}-group"
@@ -38,7 +23,7 @@ resource "azurerm_public_ip" "public_ip" {
   }
 }
 
-resource "azurerm_network_interface" "network_interface" {
+resource "azurerm_network_interface" "vm_network_interface" {
   name                = "${var.prefix}-nic"
   location            = var.location
   resource_group_name = "${var.prefix}-group"
@@ -70,6 +55,6 @@ resource "azurerm_network_security_group" "vm_security_group" {
 }
 
 resource "azurerm_network_interface_security_group_association" "net_isga" {
-  network_interface_id      = azurerm_network_interface.network_interface.id
+  network_interface_id      = azurerm_network_interface.vm_network_interface.id
   network_security_group_id = azurerm_network_security_group.vm_security_group.id
 }

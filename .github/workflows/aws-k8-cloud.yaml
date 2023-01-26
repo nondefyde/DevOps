@@ -1,9 +1,11 @@
-name: Infrastructure
+name: AWS K8 Cloud
 
 on:
   push:
     branches:
       - 'main'
+    paths:
+      - '.github/workflows/.**-k8-cloud.yaml'
   workflow_dispatch:
     inputs:
       TFAction:

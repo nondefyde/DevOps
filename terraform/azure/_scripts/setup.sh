@@ -1,7 +1,7 @@
 #!/bin/bash
 
 RESOURCE_GROUP_NAME=${1}-tfstate
-RESOURCE_LOCATION=centralus
+RESOURCE_LOCATION=${2}
 STORAGE_ACCOUNT_NAME=${1}storage
 CONTAINER_NAME=${1}tfstate
 

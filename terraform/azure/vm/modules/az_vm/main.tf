@@ -1,25 +1,3 @@
-terraform {
-  required_version = ">=0.12"
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "3.37.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "~>3.0"
-    }
-    tls = {
-      source  = "hashicorp/tls"
-      version = "~>4.0"
-    }
-    template = {
-      source = "hashicorp/template"
-      version = "2.2.0"
-    }
-  }
-}
-
 # Generate random text for a unique storage account name
 resource "random_id" "random_id" {
   keepers = {
@@ -63,7 +41,7 @@ resource "azurerm_linux_virtual_machine" "virtual_machine" {
   admin_password                  = var.admin_password
   disable_password_authentication = false
   network_interface_ids           = [
-    azurerm_network_interface.network_interface.id,
+    azurerm_network_interface.vm_network_interface.id,
   ]
 
   custom_data = base64encode(data.template_file.vm_init.rendered)

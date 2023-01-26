@@ -1,0 +1,227 @@
+name: AZR K8 Cloud
+
+on:
+  push:
+    branches:
+      - 'main'
+  workflow_dispatch:
+    inputs:
+      TFAction:
+        description: "Destroy Infrastructure"
+        type: boolean
+        default: "false"
+  workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      HAS_VM:
+        description: "If a virtual machine already exist"
+        value: ${{ jobs.setups.outputs.HAS_VM }}
+    inputs:
+      TFAction:
+        type: boolean
+        default: false
+      is_workflow:
+        required: true
+        type: boolean
+        default: false
+      project:
+        required: true
+        type: string
+      repository:
+        required: true
+        type: string
+      dns:
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  current_dns_domain: stemulidev.net
+  current_project: cloudstgdev
+
+jobs:
+  envs:
+    name: 'Validate Env Variables'
+    runs-on: ubuntu-latest
+    outputs:
+      project: ${{ steps.variables.outputs.project }}
+      dns_domain: ${{ steps.variables.outputs.dns_domain }}
+    steps:
+      - name: Initialize environments
+        run: |
+          EP="${{inputs.project}}"
+          DNS="${{inputs.dns}}"
+          
+          PROJECT="${EP:-${{ env.current_project }}}"
+          DNSNAME="${DNS:-${{ env.current_dns_domain }}}"
+          echo "project=${PROJECT}" >> "$GITHUB_ENV"
+          echo "dns_domain=${DNSNAME}" >> "$GITHUB_ENV"
+      - name: Set Env
+        id: variables
+        run: |
+          echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
+          echo "dns_domain=${{ env.dns_domain }}" >> $GITHUB_OUTPUT
+
+  setups:
+    name: 'Setup dependencies'
+    needs: [envs]
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      dns_domain: ${{ needs.envs.outputs.dns_domain }}
+    outputs:
+      HAS_VM: ${{ steps.variables.outputs.HAS_VM }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download Repo to Artifact
+        if: ${{ inputs.is_workflow == true }}
+        uses: actions/download-artifact@master
+        with:
+          name: cloud-scripts
+          path: ${{ inputs.repository }}
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a ${{ inputs.repository }}/. ./
+          rm -r ${{ inputs.repository }}
+          ls -a
+      - name: Install Azure Cli
+        uses: elstudio/action-install-azure-cli@v1
+      - name: Login Azure
+        id: login
+        run: |
+          echo "input from inputs ${{inputs.project}} and env ${{ env.project }}"
+          az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
+      - name: Setup Storage Account
+        run: |
+          cd terraform/_scripts
+          chmod +x setup.sh
+          ./setup.sh ${{ env.project }}
+      - name: Get current Virtual Machine
+        id: vm
+        run: |
+          GROUP_EXIST=$(az group exists --name ${{env.project}}-group)
+          echo "GROUP_EXIST=$GROUP_EXIST" >> "$GITHUB_ENV"
+          echo "GROUP EXIST - $GROUP_EXIST"
+          if $GROUP_EXIST
+          then
+            VM_NAME=$(az vm show --name ${{env.project}}-vm --resource-group ${{env.project}}-group --query 'name' --output tsv)
+            echo "VM EXIST - $VM_NAME"
+            CURRENT_VM=${{ env.project }}-vm
+            if [[ $VM_NAME == $CURRENT_VM ]]; then
+                echo "HAS_VM=true" >> "$GITHUB_ENV"
+            else
+                echo "HAS_VM=false" >> "$GITHUB_ENV"
+            fi
+          else
+              echo "HAS_VM=false" >> "$GITHUB_ENV"
+          fi
+      - name: Set Variables
+        id: variables
+        run: |
+          echo "HAS_VM=${{ env.HAS_VM }}" >> $GITHUB_OUTPUT
+
+
+  setup-cloud:
+    name: 'Build Cloud Infrastructure'
+    needs: [ envs, setups ]
+#    if: needs.setups.outputs.HAS_VM == false || inputs.TFAction == 'apply'
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      dns_domain: ${{ needs.envs.outputs.dns_domain }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set Env
+        run: |
+          IP="${{inputs.project}}"
+          EP="${{env.project}}"
+          PROJECT="${IP:-$EP}"
+          echo "FINAL PROJECT NAME ${PROJECT}"
+          echo "project=${PROJECT}" >> "$GITHUB_ENV"
+      - name: Download Repo to Artifact
+        if: ${{ inputs.is_workflow == true }}
+        uses: actions/download-artifact@master
+        with:
+          name: cloud-scripts
+          path: ${{ inputs.repository }}
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a "${{ inputs.repository }}/." ./
+          rm -r "${{ inputs.repository }}"
+          ls -a
+      - name: Install Azure Cli
+        uses: elstudio/action-install-azure-cli@v1
+      - name: Login Azure
+        id: login
+        run: |
+          echo "has vm ${{ needs.setups.outputs.HAS_VM }}"
+          az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          # terraform_version: 0.13.0
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Terraform Init
+        id: init
+        run: |
+          echo "Environment AZR: vm - ${{ env.project }}"
+          mkdir -p terraform/azure/vm/_state
+          terraform -chdir=terraform/azure/vm init \
+          -backend-config="resource_group_name=${{ env.project }}-tfstate" \
+          -backend-config="storage_account_name=${{ env.project }}storage" \
+          -backend-config="container_name=${{ env.project }}tfstate" \
+          -backend-config="key=${{ env.project }}.terraform.tfstate" \
+        continue-on-error: false
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          echo "Environment AZR: vm - ${{ env.project}}"
+          mkdir -p terraform/azure/vm/_state
+          terraform -chdir=terraform/aws/vm plan -no-color -input=false \
+            -var=app_project_prefix="${{ env.project}}" \
+            -var=subscription_id="${{ secrets.ARM_SUBSCRIPTION_ID }}" \
+            -var=tenant_id="${{ secrets.ARM_TENANT_ID }}" \
+            -var=client_id="${{ secrets.ARM_CLIENT_ID }}" \
+            -var=client_secret="${{ secrets.ARM_CLIENT_SECRET }}" \
+            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
+            -var=dns_domain="${{ env.dns_domain }}" \
+            -out ./_state/${{ env.project }}.tfplan \
+            -lock=false
+        continue-on-error: false
+
+      - name: Terraform Apply
+        id: apply
+        run: |
+          echo "Terraform Application in progress ${{ env.project }}"
+          terraform -chdir=terraform/azure/kube apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
+          echo "Terraform Application was successful ${{ env.project }}"
+        continue-on-error: false
+
+      - name: Terraform Destroy
+        if: ${{ inputs.TFAction == true }}
+        id: destroy
+        run: |
+          echo "Terraform Destruction in progress ${{ env.project }}"
+          terraform -chdir=terraform/azure/vm plan -destroy -no-color -input=false \
+            -var=app_project_prefix="${{ env.project}}" \
+            -var=subscription_id="${{ secrets.ARM_SUBSCRIPTION_ID }}" \
+            -var=tenant_id="${{ secrets.ARM_TENANT_ID }}" \
+            -var=client_id="${{ secrets.ARM_CLIENT_ID }}" \
+            -var=client_secret="${{ secrets.ARM_CLIENT_SECRET }}" \
+            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
+            -var=dns_domain="${{ env.dns_domain }}" \
+            -out ./_state/${{ env.project }}.destroy.tfplan \
+            -lock=false
+          terraform -chdir=terraform/azure/vm apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
+          echo "Terraform Destruction in successful ${{ env.project }}"
+        continue-on-error: false
