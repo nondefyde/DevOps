@@ -1,4 +1,4 @@
-name: AZR K8 Cloud
+name: AZR VM Cloud
 
 on:
   push:
