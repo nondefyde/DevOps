@@ -167,9 +167,7 @@ jobs:
           az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
-        with:
-          # terraform_version: 0.13.0
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
       - name: Terraform Init
         id: init
         run: |
