@@ -6,4 +6,8 @@ provider "azurerm" {
   client_secret   = var.client_secret
 }
 
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
+}
+
 data "azurerm_client_config" "current" {}

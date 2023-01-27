@@ -3,7 +3,7 @@ resource "azurerm_resource_group" "vm_group" {
   location = var.location
 }
 
-module "az_create_vm" {
+module "az_vm" {
   source = "./modules/az_vm"
 
   prefix          = var.app_project_prefix
@@ -15,10 +15,23 @@ module "az_create_vm" {
   cloud_init_file = var.init_file
   admin_username  = var.admin_username
   admin_password  = var.admin_password
-  environment  = var.environment
-  dns_domain  = var.dns_domain
+  environment     = var.environment
+  dns_domain      = var.dns_domain
 
   depends_on = [azurerm_resource_group.vm_group]
+}
+
+module "az_dns" {
+  source = "./modules/az_dns"
+
+  prefix             = var.app_project_prefix
+  public_ip          = module.az_vm.public_ip_address
+  public_ip_dns_name = module.az_vm.public_dns_name
+  dns_domain         = var.dns_domain
+  cloudflare_zone_id = var.cloudflare_zone_id
+
+
+  depends_on         = [module.az_vm]
 }
 
 resource "azurerm_container_registry" "vm_acr" {

@@ -4,6 +4,21 @@ variable "app_project_prefix" {
   default     = "stmx"
 }
 
+variable "cloudflare_api_token" {
+  type = string
+  description = "Cloudflare api token"
+}
+
+variable "cloudflare_zone_id" {
+  type = string
+  description = "Cloudflare zone id"
+}
+
+variable "cloudflare_account_id" {
+  type = string
+  description = "Cloudflare account id"
+}
+
 variable "location" {
   type        = string
   default     = "Central US"

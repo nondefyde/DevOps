@@ -18,7 +18,8 @@ resource "azurerm_public_ip" "public_ip" {
   location            = var.location
   allocation_method   = "Static"
   ip_version          = "IPv4"
-  tags = {
+  domain_name_label   = "${var.prefix}-dns"
+  tags                = {
     environment = var.environment
   }
 }

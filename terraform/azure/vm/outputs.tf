@@ -1,5 +1,9 @@
 output "public_ip_address" {
-  value = module.az_create_vm.public_ip_address
+  value = module.az_vm.public_ip_address
+}
+
+output "public_dns_name" {
+  value = module.az_vm.public_dns_name
 }
 
 output "client_id" {
@@ -15,12 +19,12 @@ output "tenant_id" {
 }
 
 output "tls_private_key" {
-  value     = module.az_create_vm.tls_private_key
+  value     = module.az_vm.tls_private_key
   sensitive = true
 }
 
 output "admin_username" {
-  value = module.az_create_vm.admin_username
+  value = module.az_vm.admin_username
 }
 
 output "init_file" {
@@ -28,6 +32,6 @@ output "init_file" {
 }
 
 output "admin_ssh_key" {
-  value = module.az_create_vm.admin_ssh_key
+  value = module.az_vm.admin_ssh_key
   sensitive = true
 }
