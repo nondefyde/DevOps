@@ -221,7 +221,7 @@ jobs:
       - name: Deploy Image to container
         run: |
           image=${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
-          cd terraform/_scripts 
+          cd terraform/azure/_scripts 
           chmod +x deploy.sh
           echo "deployment inputs ${{ env.project }} $image ${{ needs.config.outputs.hostname }} ${{ needs.config.outputs.docker-tag }} ${{ env.port }}"
           ./deploy.sh ${{ env.project }} $image ${{ needs.config.outputs.hostname }} ${{ needs.config.outputs.docker-tag }} ${{ env.port }}
