@@ -67,7 +67,7 @@ env:
   current_port: 8080
   current_hostname_format: "stm-{0}.stemuli.net"
   image-name: stmx-quest
-  dockerfile: './app/DockerFile'
+  dockerfile: './app/Dockerfile'
 
 jobs:
   envs:
