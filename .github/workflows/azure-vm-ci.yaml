@@ -37,7 +37,7 @@ on:
       port:
         required: true
         type: string
-      docker-context:
+      dockerfile:
         required: true
         type: string
 
@@ -51,7 +51,7 @@ env:
   current_port: 8080
   current_hostname_format: "stm-{0}.stemuli.net"
   image-name: stmx-quest
-  docker-context: './app'
+  dockerfile: './app/DockerFile'
 
 jobs:
   envs:
@@ -63,7 +63,7 @@ jobs:
       service: ${{ steps.variables.outputs.service }}
       port: ${{ steps.variables.outputs.port }}
       hostname-format: ${{ steps.variables.outputs.hostname-format }}
-      docker-context: ${{ steps.variables.outputs.docker-context }}
+      dockerfile: ${{ steps.variables.outputs.dockerfile }}
     steps:
       - name: Initialize environments
         run: |
@@ -72,20 +72,20 @@ jobs:
           PRT="${{inputs.port}}"
           HOST_FMT="${{inputs.hostname-format}}"
           ENV_HOST_FMT="${{env.current_hostname_format}}"
-          DOCTX="${{ inputs.docker-context }}"
+          DOCFILE="${{ inputs.dockerfile }}"
 
           PROJECT="${EP:-${{env.current_project}}}"
           SERVICE="${ES:-${{env.current_service}}}"
           PORT="${PRT:-${{env.current_port}}}"
           
           HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
-          DOCKER_CONTEXT="${DOCTX:-${{ env.docker-context }}}"
+          DOCKER_FILE="${DOCFILE:-${{ env.dockerfile }}}"
 
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
           echo "service=${SERVICE}" >> "$GITHUB_ENV"
           echo "port=${PORT}" >> "$GITHUB_ENV"
           echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
-          echo "docker-context=${DOCKER_CONTEXT}" >> "$GITHUB_ENV"
+          echo "dockerfile=${DOCKER_FILE}" >> "$GITHUB_ENV"
       - name: Set Env
         id: variables
         run: |
@@ -93,7 +93,7 @@ jobs:
           echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
           echo "port=${{ env.port }}" >> $GITHUB_OUTPUT
           echo "hostname-format=${{env.hostname-format}}" >> $GITHUB_OUTPUT
-          echo "docker-context=${{ env.docker-context }}" >> $GITHUB_OUTPUT
+          echo "dockerfile=${{ env.dockerfile }}" >> $GITHUB_OUTPUT
 
   config:
     name: 'Setup Config Variables'
@@ -105,7 +105,7 @@ jobs:
       service: ${{ needs.envs.outputs.service }}
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
-      docker-context: ${{ needs.envs.outputs.docker-context }}
+      dockerfile: ${{ needs.envs.outputs.dockerfile }}
     outputs:
       hostname:       ${{ steps.resolved.outputs.hostname }}
       git-sha:        ${{ steps.resolved.outputs.git-sha }}
@@ -164,7 +164,7 @@ jobs:
       service: ${{ needs.envs.outputs.service }}
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
-      docker-context: ${{ needs.envs.outputs.docker-context }}
+      dockerfile: ${{ needs.envs.outputs.dockerfile }}
     steps:
       - name: --- For debugging ---
         id: debug-context
@@ -185,7 +185,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          context: ${{ env.docker-context }}
+          file: ${{ env.dockerfile }}
+          context: ${{ env.dockerfile }}
           tags: ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
 
   deploy:
@@ -197,7 +198,7 @@ jobs:
       service: ${{ needs.envs.outputs.service }}
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
-      docker-context: ${{ needs.envs.outputs.docker-context }}
+      dockerfile: ${{ needs.envs.outputs.dockerfile }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
