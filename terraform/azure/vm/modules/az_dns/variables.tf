@@ -8,6 +8,10 @@ variable "public_ip" {
   description = "Azure Resource Manager Subscription ID"
 }
 
+variable "public_ip_id" {
+  type = string
+}
+
 variable "public_ip_dns_name" {
   type        = string
   description = "public dns for cname"

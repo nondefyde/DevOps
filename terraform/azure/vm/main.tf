@@ -26,6 +26,7 @@ module "az_dns" {
 
   prefix             = var.app_project_prefix
   public_ip          = module.az_vm.public_ip_address
+  public_ip_id       = module.az_vm.public_ip_id
   public_ip_dns_name = module.az_vm.public_dns_name
   dns_domain         = var.dns_domain
   cloudflare_zone_id = var.cloudflare_zone_id

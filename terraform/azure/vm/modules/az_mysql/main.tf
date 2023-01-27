@@ -22,7 +22,7 @@ resource "random_password" "password" {
 }
 
 # Manages the MySQL Flexible Server
-resource "azurerm_mysql_flexible_server" "default" {
+resource "azurerm_mysql_flexible_server" "mysql_server" {
   location                     = var.location
   name                         = "${var.prefix}_mysqlfs-${random_string.name.result}"
   resource_group_name          = "${var.prefix}-group"
@@ -50,14 +50,14 @@ resource "azurerm_mysql_flexible_server" "default" {
     size_gb = 20
   }
 
-  depends_on = [azurerm_private_dns_zone_virtual_network_link.default]
+  depends_on = [azurerm_private_dns_zone_virtual_network_link.mysql_dns_zone_vnl]
 }
 
 # Manages the MySQL Flexible Server Database
-resource "azurerm_mysql_flexible_database" "default" {
+resource "azurerm_mysql_flexible_database" "mysql_database" {
   charset             = "utf8"
   collation           = "utf8_unicode_ci"
   name                = "${var.prefix}_mysqlfsdb_${random_string.name.result}"
   resource_group_name = "${var.prefix}-group"
-  server_name         = azurerm_mysql_flexible_server.default.name
+  server_name         = azurerm_mysql_flexible_server.mysql_server.name
 }

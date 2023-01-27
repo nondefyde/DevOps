@@ -43,7 +43,6 @@ variable "client_id" {
 variable "client_secret" {
   type        = string
   description = "Client ID"
-  sensitive   = true
 }
 
 

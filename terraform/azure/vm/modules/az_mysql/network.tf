@@ -33,7 +33,7 @@ resource "azurerm_private_dns_zone" "mysql_private_dns_zone" {
 }
 
 # Enables you to manage Private DNS zone Virtual Network Links
-resource "azurerm_private_dns_zone_virtual_network_link" "default" {
+resource "azurerm_private_dns_zone_virtual_network_link" "mysql_dns_zone_vnl" {
   name                  = "${var.prefix}_mysqlfsVnetZone${random_string.name.result}.com"
   private_dns_zone_name = azurerm_private_dns_zone.mysql_private_dns_zone.name
   resource_group_name   = "${var.prefix}-group"

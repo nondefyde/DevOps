@@ -8,7 +8,7 @@ resource "azurerm_dns_cname_record" "vm_dns_record" {
   zone_name           = azurerm_dns_zone.vm_dns_zone.name
   resource_group_name = "${var.prefix}-group"
   ttl                 = 300
-  target_resource_id  = var.public_ip
+  record              = var.public_ip_dns_name
 }
 
 resource "cloudflare_record" "cf_vm_a_record" {
@@ -25,4 +25,5 @@ resource "cloudflare_record" "cf_vm_cname_record" {
   value   = var.public_ip_dns_name
   type    = "CNAME"
   ttl     = 3600
+  allow_overwrite = true
 }

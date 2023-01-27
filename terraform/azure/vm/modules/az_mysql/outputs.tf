@@ -1,20 +1,23 @@
-output "public_ip_address" {
-  value = azurerm_linux_virtual_machine.virtual_machine.public_ip_address
+output "mysql_server_zone" {
+  value     = azurerm_mysql_flexible_server.mysql_server.zone
 }
 
-output "public_dns_name" {
-  value = azurerm_public_ip.public_ip.fqdn
+output "mysql_server_connection" {
+  value     = azurerm_mysql_flexible_server.mysql_server.connection
 }
 
-output "tls_private_key" {
-  value     = tls_private_key.vm_ssh.private_key_pem
-  sensitive = true
+output "mysql_server_name" {
+  value     = azurerm_mysql_flexible_server.mysql_server.name
 }
 
-output "admin_username" {
-  value     = azurerm_linux_virtual_machine.virtual_machine.admin_username
+output "mysql_server_fqdn" {
+  value     = azurerm_mysql_flexible_server.mysql_server.fqdn
 }
 
-output "admin_ssh_key" {
-  value = azurerm_linux_virtual_machine.virtual_machine.admin_ssh_key
+output "mysql_database_name" {
+  value = azurerm_mysql_flexible_database.mysql_database.name
+}
+
+output "mysql_database_server_name" {
+  value = azurerm_mysql_flexible_database.mysql_database.server_name
 }
