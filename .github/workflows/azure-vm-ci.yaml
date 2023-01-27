@@ -202,7 +202,6 @@ jobs:
         with:
           push: true
           file: ${{ env.dockerfile }}
-          context: ${{ env.dockerfile }}
           tags: ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
 
   deploy:
