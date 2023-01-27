@@ -9,6 +9,22 @@ on:
     types:
       - completed
   workflow_call:
+    secrets:
+      AZR_CLIENT_ID:
+        description: 'Azure client id'
+        required: true
+      AZR_CLIENT_SECRET:
+        description: 'Azure secret key'
+        required: true
+      AZR_TENANT_ID:
+        description: 'Azure tenant id'
+        required: true
+      AZR_SUBSCRIPTION_ID:
+        description: 'Azure subscription id'
+        required: true
+      AZURE_VM_APP_SECRET:
+        description: 'Azure vm secret'
+        required: true
     # Map the workflow outputs to job outputs
     outputs:
       HAS_VM:
