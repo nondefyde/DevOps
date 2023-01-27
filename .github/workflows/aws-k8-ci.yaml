@@ -16,7 +16,7 @@ on:
       AWS_REGION:
         description: 'AWS region'
         required: true
-      APP_SECRET:
+      AWS_K8_APP_SECRET:
         description: 'APP Secret'
         required: true
     inputs:
@@ -59,7 +59,7 @@ env:
   current_service: cloud-app
   image-name: stmx
   current_dockerfile: './app/Dockerfile'
-  appSecret: ${{ secrets.APP_SECRET }}
+  appSecret: ${{ secrets.AWS_K8_APP_SECRET }}
 
 jobs:
   envs:
@@ -245,7 +245,7 @@ jobs:
 
       - name: Decode Secret
         if: ${{ env.appSecret }}
-        run: DECODED=$(echo ${{ secrets.APP_SECRET }} | base64 --decode > env.yml)
+        run: DECODED=$(echo ${{ secrets.AWS_K8_APP_SECRET }} | base64 --decode > env.yml)
 
       - name: Deploy image to kubernetes cluster
         env:

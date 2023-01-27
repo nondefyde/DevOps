@@ -23,7 +23,7 @@ on:
       AWS_REGION:
         description: 'AWS region'
         required: true
-      APP_SECRET:
+      AWS_K8_APP_SECRET:
         description: 'APP Secret'
         required: true
     inputs:
