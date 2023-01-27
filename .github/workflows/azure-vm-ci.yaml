@@ -96,7 +96,6 @@ jobs:
           echo "docker-context=${{ env.docker-context }}" >> $GITHUB_OUTPUT
 
   config:
-    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true) }}
     name: 'Setup Config Variables'
     needs: [envs]
     permissions: write-all
@@ -157,7 +156,6 @@ jobs:
           echo "event_name      ${{ github.event_name }}"
 
   deploy-image:
-    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true) }}
     name: 'Push Image to Cloud Registry'
     needs: [envs, config]
     runs-on: ubuntu-latest
@@ -191,7 +189,6 @@ jobs:
           tags: ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
 
   deploy:
-    if: ${{ inputs.TFAction == false && (github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true) }}
     name: 'Deploy Image to Container in VM'
     needs: [ envs, config, deploy-image ]
     runs-on: ubuntu-latest
