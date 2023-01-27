@@ -1,4 +1,4 @@
-name: CI
+name: AZR VM CI
 
 on:
   workflow_run:

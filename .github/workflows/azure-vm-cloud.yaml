@@ -96,7 +96,7 @@ jobs:
         id: login
         run: |
           echo "input from inputs ${{inputs.project}} and env ${{ env.project }}"
-          az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
+          az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
       - name: Setup Storage Account
         run: |
           cd terraform/_scripts
@@ -164,7 +164,7 @@ jobs:
         id: login
         run: |
           echo "has vm ${{ needs.setups.outputs.HAS_VM }}"
-          az login --service-principal --username ${{secrets.ARM_CLIENT_ID}} --password ${{secrets.ARM_CLIENT_SECRET}} --tenant ${{secrets.ARM_TENANT_ID}}
+          az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
@@ -187,10 +187,10 @@ jobs:
           mkdir -p terraform/azure/vm/_state
           terraform -chdir=terraform/aws/vm plan -no-color -input=false \
             -var=app_project_prefix="${{ env.project}}" \
-            -var=subscription_id="${{ secrets.ARM_SUBSCRIPTION_ID }}" \
-            -var=tenant_id="${{ secrets.ARM_TENANT_ID }}" \
-            -var=client_id="${{ secrets.ARM_CLIENT_ID }}" \
-            -var=client_secret="${{ secrets.ARM_CLIENT_SECRET }}" \
+            -var=subscription_id="${{ secrets.AZR_SUBSCRIPTION_ID }}" \
+            -var=tenant_id="${{ secrets.AZR_TENANT_ID }}" \
+            -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
+            -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
             -var=admin_password="${{ secrets.VM_PASSWORD }}" \
             -var=dns_domain="${{ env.dns_domain }}" \
             -out ./_state/${{ env.project }}.tfplan \
@@ -212,10 +212,10 @@ jobs:
           echo "Terraform Destruction in progress ${{ env.project }}"
           terraform -chdir=terraform/azure/vm plan -destroy -no-color -input=false \
             -var=app_project_prefix="${{ env.project}}" \
-            -var=subscription_id="${{ secrets.ARM_SUBSCRIPTION_ID }}" \
-            -var=tenant_id="${{ secrets.ARM_TENANT_ID }}" \
-            -var=client_id="${{ secrets.ARM_CLIENT_ID }}" \
-            -var=client_secret="${{ secrets.ARM_CLIENT_SECRET }}" \
+            -var=subscription_id="${{ secrets.AZR_SUBSCRIPTION_ID }}" \
+            -var=tenant_id="${{ secrets.AZR_TENANT_ID }}" \
+            -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
+            -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
             -var=admin_password="${{ secrets.VM_PASSWORD }}" \
             -var=dns_domain="${{ env.dns_domain }}" \
             -out ./_state/${{ env.project }}.destroy.tfplan \

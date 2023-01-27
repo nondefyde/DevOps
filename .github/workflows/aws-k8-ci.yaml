@@ -1,4 +1,4 @@
-name: CI
+name: AWS K8 CI
 
 on:
   workflow_run:
