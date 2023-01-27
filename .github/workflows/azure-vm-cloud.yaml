@@ -205,7 +205,7 @@ jobs:
         id: apply
         run: |
           echo "Terraform Application in progress ${{ env.project }}"
-          terraform -chdir=terraform/azure/kube apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
+          terraform -chdir=terraform/azure/vm apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
           echo "Terraform Application was successful ${{ env.project }}"
         continue-on-error: false
 
