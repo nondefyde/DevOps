@@ -189,7 +189,7 @@ jobs:
         run: |
           echo "Environment AZR: vm - ${{ env.project}}"
           mkdir -p terraform/azure/vm/_state
-          terraform -chdir=terraform/aws/vm plan -no-color -input=false \
+          terraform -chdir=terraform/azure/vm plan -no-color -input=false \
             -var=app_project_prefix="${{ env.project}}" \
             -var=subscription_id="${{ secrets.AZR_SUBSCRIPTION_ID }}" \
             -var=tenant_id="${{ secrets.AZR_TENANT_ID }}" \
