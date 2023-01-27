@@ -1,6 +1,9 @@
 name: AZR VM CI
 
 on:
+  push:
+    branches:
+      - 'main'
   workflow_run:
     workflows: ["AZR VM Cloud"]
     types:
