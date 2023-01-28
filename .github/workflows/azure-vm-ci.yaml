@@ -281,8 +281,8 @@ jobs:
         run: |
           echo "Spin/Update container with latest image"
           
-          echo "Login to container registry ${1}acr"
-          LOGIN_SERVER=$(az acr login -n ${1}acr --expose-token)
+          echo "Login to container registry ${{env.project}}acr"
+          LOGIN_SERVER=$(az acr login -n ${{env.project}}acr --expose-token)
           accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
           server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
           
