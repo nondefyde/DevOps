@@ -209,6 +209,7 @@ jobs:
           NODE_ENV: ${{ env.environment }}
         run: |
           cat ./vm/docker-compose.yml | envsubst > ./vm/docker-compose.yml
+          ls
           cat ./vm/docker-compose.yml
       - name: Push File to
         uses: appleboy/scp-action@master
@@ -266,5 +267,5 @@ jobs:
             -g ${{env.project}}-group \
             -n ${{env.project}}-vm \
             --command-id RunShellScript \
-            --scripts 'cd app && chmod +x deploy.sh && ./deploy.sh'
+            --scripts 'cd app/vm && chmod +x deploy.sh && ./deploy.sh'
           echo "Successfully Deployed to ${{ needs.config.outputs.hostname }}"
