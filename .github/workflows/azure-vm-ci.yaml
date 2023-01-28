@@ -306,6 +306,5 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           commands: |
-            ls
-            cd app/vm
+            cd ./app/vm
             ls
