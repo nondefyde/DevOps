@@ -11,19 +11,33 @@ resource "azurerm_dns_cname_record" "vm_dns_record" {
   record              = var.public_ip_dns_name
 }
 
-resource "cloudflare_record" "cf_vm_a_record" {
-  zone_id = var.cloudflare_zone_id
-  name    = "${var.prefix}-vm"
-  value   = var.public_ip
-  type    = "A"
-  ttl     = 3600
+resource "cloudflare_record" "cf_vm_cname_record" {
+  zone_id         = var.cloudflare_zone_id
+  name            = "*"
+  value           = var.public_ip_dns_name
+  type            = "CNAME"
+  proxied         = true
+  allow_overwrite = true
+  comment         = "Added by terraform"
 }
 
-resource "cloudflare_record" "cf_vm_cname_record" {
-  zone_id = var.cloudflare_zone_id
-  name    = "*"
-  value   = var.public_ip_dns_name
-  type    = "CNAME"
-  ttl     = 3600
+
+resource "cloudflare_record" "cf_vm_www_record" {
+  zone_id         = var.cloudflare_zone_id
+  name            = "www"
+  value           = var.dns_domain
+  type            = "CNAME"
+  proxied         = true
   allow_overwrite = true
+  comment         = "Added by terraform"
+}
+
+resource "cloudflare_record" "cf_vm_a_record" {
+  zone_id         = var.cloudflare_zone_id
+  name            = var.dns_domain
+  value           = var.public_ip
+  type            = "A"
+  proxied         = true
+  allow_overwrite = true
+  comment         = "Added by terraform"
 }

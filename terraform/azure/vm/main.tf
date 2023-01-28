@@ -21,20 +21,6 @@ module "az_vm" {
   depends_on = [azurerm_resource_group.vm_group]
 }
 
-module "az_dns" {
-  source = "./modules/az_dns"
-
-  prefix             = var.app_project_prefix
-  public_ip          = module.az_vm.public_ip_address
-  public_ip_id       = module.az_vm.public_ip_id
-  public_ip_dns_name = module.az_vm.public_dns_name
-  dns_domain         = var.dns_domain
-  cloudflare_zone_id = var.cloudflare_zone_id
-
-
-  depends_on         = [module.az_vm]
-}
-
 resource "azurerm_container_registry" "vm_acr" {
   name                = "${var.app_project_prefix}acr"
   resource_group_name = azurerm_resource_group.vm_group.name
@@ -46,6 +32,20 @@ resource "azurerm_container_registry" "vm_acr" {
     location = "East US"
   }
 
-  depends_on = [azurerm_resource_group.vm_group]
+  depends_on = [module.az_vm]
+}
+
+module "az_dns" {
+  source = "./modules/az_dns"
+
+  prefix             = var.app_project_prefix
+  public_ip          = module.az_vm.public_ip_address
+  public_ip_id       = module.az_vm.public_ip_id
+  public_ip_dns_name = module.az_vm.public_dns_name
+  dns_domain         = var.dns_domain
+  cloudflare_zone_id = var.cloudflare_zone_id
+
+
+  depends_on         = [azurerm_resource_group.vm_group]
 }
 
