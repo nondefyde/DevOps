@@ -273,6 +273,7 @@ jobs:
 
       - name: Cleanups
         run: |
+          FILE=./env.yml
           if [ -f "$FILE" ]; then
             echo secret file removed
              rm -r env.yml

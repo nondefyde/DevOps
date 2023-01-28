@@ -211,6 +211,9 @@ jobs:
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
           ls
           cat ./vm/docker-compose.yml
+      - name: Decode Secret
+        if: ${{ env.appSecret }}
+        run: DECODED=$(echo ${{ secrets.AZR_VM_APP_SECRET }} | base64 --decode > env)
       - name: Push File to
         uses: appleboy/scp-action@master
         with:
@@ -218,8 +221,8 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           rm: true
-          source: "vm/."
-          target: "app"
+          source: "vm/., env"
+          target: "app/"
       - name: Build & Push
         uses: docker/build-push-action@v2
         with:
@@ -227,6 +230,15 @@ jobs:
           platforms: linux/amd64
           file: ${{ env.dockerfile }}
           tags: ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
+
+      - name: Cleanups
+        run: |
+          FILE=./env
+          if [ -f "$FILE" ]; then
+            echo secret file removed
+             rm -r env
+          fi
+          rm -r /home/runner/.kube/config
 
   deploy:
     name: 'Deploy Image to Container in VM'
