@@ -289,8 +289,8 @@ jobs:
           echo "Login to docker"
           
           az vm run-command invoke \
-            -g ${RESOURCE_GROUP_NAME} \
-            -n ${VM_NAME} \
+            -g ${{env.project}}-group \
+            -n ${{env.project}}-vm \
             --command-id RunShellScript \
             --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
             --parameters ${server} ${accessToken}
