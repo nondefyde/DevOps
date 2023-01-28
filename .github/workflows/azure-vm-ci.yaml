@@ -204,7 +204,7 @@ jobs:
           IMAGE: node-server:latest
           COMMAND: yarn start
         run: |
-          cat ./vm/docker-compose.yml | envsubst | docker-compose.yml
+          cat ./vm/docker-compose.yml | envsubst > docker-compose.yml
           ls
 #      - name: Push File to
 #        uses: appleboy/scp-action@master
@@ -215,7 +215,7 @@ jobs:
 #          rm: true
 #          source: "docker-compose.yml,scripts/deploy.sh"
 #          target: "app"
-
+#
 #      - name: Build & Push
 #        uses: docker/build-push-action@v2
 #        with:
