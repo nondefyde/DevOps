@@ -205,8 +205,8 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           rm: true
-          source: "app/.,docker-compose.yml"
-          target: "app"
+          source: "docker-compose.yml"
+          target: "./"
 
 #      - name: Build & Push
 #        uses: docker/build-push-action@v2
