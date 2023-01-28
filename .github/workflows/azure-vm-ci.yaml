@@ -218,7 +218,7 @@ jobs:
           cat ./vm/docker-compose.yml
       - name: Decode Secret
         if: ${{ env.appSecret }}
-        run: DECODED=$(echo ${{ secrets.AZR_VM_APP_SECRET }} | base64 --decode > env)
+        run: DECODED=$(echo ${{ secrets.AZR_VM_APP_SECRET }} | base64 --decode > vm/env)
       - name: Push File to
         uses: appleboy/scp-action@master
         with:
@@ -226,7 +226,7 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           rm: true
-          source: "vm/*, env"
+          source: "vm/."
           target: "app/"
       - name: Build & Push
         uses: docker/build-push-action@v2
