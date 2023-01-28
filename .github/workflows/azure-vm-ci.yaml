@@ -68,6 +68,7 @@ env:
   current_hostname_format: "stm-{0}.stemulidev.com"
   image-name: stm-quest
   dockerfile: './app/Dockerfile'
+  location: 'centralus'
 
 jobs:
   envs:
@@ -197,24 +198,24 @@ jobs:
         run: |
           az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
           az acr login --name "${{env.project}}acr.azurecr.io"
-      - name: Build & Push
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          platforms: linux/amd64
-          file: ${{ env.dockerfile }}
-          tags: ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
-
       - name: Push File to
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.HOST }}
+          host: ${{ env.cloudstgdev}}-dns.${{ env.location }}.cloudapp.azure.com
           username: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           rm: true
           source: "app/,docker-compose.yml"
           target: "app"
-#
+
+#      - name: Build & Push
+#        uses: docker/build-push-action@v2
+#        with:
+#          push: true
+#          platforms: linux/amd64
+#          file: ${{ env.dockerfile }}
+#          tags: ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
+
 #  deploy:
 #    name: 'Deploy Image to Container in VM'
 #    needs: [ envs, config, deploy-image ]
