@@ -1,11 +1,5 @@
 #! /bin/bash
 
-echo "Login to container registry ${1}acr"
-LOGIN_SERVER=$(az acr login -n ${1}acr --expose-token)
-accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}")
-server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
-echo "Login Successful"
-
 IMAGE_COUNT=$(sudo docker ps | grep node-server:latest | wc -l)
 IMAGES=$(sudo docker ps --format '{{.Names}}')
 ZERO=0
