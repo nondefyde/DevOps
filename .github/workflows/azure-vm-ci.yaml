@@ -127,7 +127,7 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           commands: |
-            cd ./app/vm
+            cd app/vm
             ls
       - name: Multiple commands over multiple hosts with custom SSH config
         uses: docker://evaneos/ssh-action:0.1.0
@@ -138,7 +138,7 @@ jobs:
           commands: |
             echo "I can run..."
             ls
-            cd /app/vm
+            cd app/vm
             ls -a
             echo "...multiple commands"
 #
