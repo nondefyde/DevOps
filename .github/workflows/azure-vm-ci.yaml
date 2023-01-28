@@ -280,13 +280,9 @@ jobs:
         id: deploy
         run: |
           echo "Spin/Update container with latest image"
-          
-          echo "Login to container registry ${{env.project}}acr"
           LOGIN_SERVER=$(az acr login -n ${{env.project}}acr --expose-token)
           accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
           server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
-          
-          echo "Login to docker"
           
           az vm run-command invoke \
             -g ${{env.project}}-group \
@@ -299,6 +295,6 @@ jobs:
             -g ${{env.project}}-group \
             -n ${{env.project}}-vm \
             --command-id RunShellScript \
-            --scripts 'cd app/vm && sudo chmod +x ./$1 && sudo ./$1'
+            --scripts 'd app/vm && sudo chmod +x ./$1 && sudo ./$1'
             --parameters deploy.sh
           echo "Successfully Deployed to ${{ needs.config.outputs.hostname }}"
