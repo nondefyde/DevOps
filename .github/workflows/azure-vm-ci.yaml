@@ -204,9 +204,7 @@ jobs:
           IMAGE: node-server:latest
           COMMAND: yarn start
         run: |
-          tmpfile=$(mktemp)
-          cp --attributes-only --preserve $originalfile $tmpfile
-          cat ./vm/docker-compose.yml | envsubst > $tmpfile && mv $tmpfile ./app/docker-compose.yml
+          cat ./vm/docker-compose.yml | envsubst > ./app/docker-compose.yml
           ls
           cat ./app/docker-compose.yml
 #      - name: Push File to
