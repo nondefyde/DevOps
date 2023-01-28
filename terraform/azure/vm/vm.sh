@@ -10,6 +10,8 @@ echo "I have network";
 sudo apt update
 sudo apt install apt-transport-https ca-certificates curl software-properties-common
 
+sudo apt-get install docker-compose-plugin
+
 # Add Docker’s official GPG key
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
