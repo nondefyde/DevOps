@@ -71,6 +71,7 @@ env:
   startCommand: yarn start
   location: 'centralus'
   environment: 'stg'
+  appSecret: ${{ secrets.AWS_K8_APP_SECRET }}
 
 jobs:
   envs:
