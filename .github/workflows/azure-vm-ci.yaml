@@ -276,21 +276,21 @@ jobs:
         run: |
           az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
 
-      - name: Deploy latest image
-        id: deploy
-        run: |
-          echo "Spin/Update container with latest image"
-          LOGIN_SERVER=$(az acr login -n ${{env.project}}acr --expose-token)
-          accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
-          server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
-          
-          az vm run-command invoke \
-            -g ${{env.project}}-group \
-            -n ${{env.project}}-vm \
-            --command-id RunShellScript \
-            --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
-            --parameters ${server} ${accessToken}
-        
+#      - name: Deploy latest image
+#        id: deploy
+#        run: |
+#          echo "Spin/Update container with latest image"
+#          LOGIN_SERVER=$(az acr login -n ${{env.project}}acr --expose-token)
+#          accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
+#          server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
+#
+#          az vm run-command invoke \
+#            -g ${{env.project}}-group \
+#            -n ${{env.project}}-vm \
+#            --command-id RunShellScript \
+#            --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
+#            --parameters ${server} ${accessToken}
+#
 #          az vm run-command invoke \
 #            -g ${{env.project}}-group \
 #            -n ${{env.project}}-vm \
