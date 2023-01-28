@@ -283,20 +283,12 @@ jobs:
           LOGIN_SERVER=$(az acr login -n ${{env.project}}acr --expose-token)
           accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
           server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
-
           az vm run-command invoke \
             -g ${{env.project}}-group \
             -n ${{env.project}}-vm \
             --command-id RunShellScript \
             --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
             --parameters ${server} ${accessToken}
-
-          az vm run-command invoke \
-            -g ${{env.project}}-group \
-            -n ${{env.project}}-vm \
-            --command-id RunShellScript \
-            --scripts "app/vm/deploy.sh"
-          echo "Successfully Deployed to ${{ needs.config.outputs.hostname }}"
 
       - name: Run deployment script
         uses: docker://evaneos/ssh-action:0.1.0
