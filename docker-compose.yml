@@ -1,0 +1,13 @@
+version: '3.4'
+services:
+  app:
+    image: node-server:latest
+    command: yarn start
+    restart: always
+    volumes:
+      - ./:/app
+    environment:
+      NODE_ENV: staging
+      VIRTUAL_HOST: testing.voomsway.com
+    ports:
+      - "8000-8020:8000"

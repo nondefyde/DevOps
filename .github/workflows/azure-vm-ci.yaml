@@ -205,6 +205,16 @@ jobs:
           file: ${{ env.dockerfile }}
           tags: ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
 
+      - name: Push File to
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          password: ${{ secrets.VM_PASSWORD }}
+          rm: true
+          source: "app/,docker-compose.yml"
+          target: "app"
+
   deploy:
     name: 'Deploy Image to Container in VM'
     needs: [ envs, config, deploy-image ]

@@ -1,0 +1,12 @@
+version: '3.4'
+services:
+  app:
+    image: ${IMAGE}
+    command: ${COMMAND}
+    restart: always
+    volumes:
+      - ./:/app
+    environment:
+      NODE_ENV: staging
+    ports:
+      - "8000-8020:8000"
