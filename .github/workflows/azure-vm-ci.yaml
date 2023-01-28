@@ -291,9 +291,21 @@ jobs:
             --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
             --parameters ${server} ${accessToken}
         
-          az vm run-command invoke \
-            -g ${{env.project}}-group \
-            -n ${{env.project}}-vm \
-            --command-id RunShellScript \
-            --scripts "app/vm/deploy.sh"
-          echo "Successfully Deployed to ${{ needs.config.outputs.hostname }}"
+#          az vm run-command invoke \
+#            -g ${{env.project}}-group \
+#            -n ${{env.project}}-vm \
+#            --command-id RunShellScript \
+#            --scripts "app/vm/deploy.sh"
+#          echo "Successfully Deployed to ${{ needs.config.outputs.hostname }}"
+
+      - name: Run SSH Commands
+        id: ssh
+        uses: arthurvanl/action-exec-ssh@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          password: ${{ secrets.PASSWORD }}
+          commands: |
+            ls
+            cd app/vm
+            ls
