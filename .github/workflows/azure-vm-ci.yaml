@@ -302,9 +302,9 @@ jobs:
         id: ssh
         uses: arthurvanl/action-exec-ssh@v1
         with:
-          host: ${{ secrets.HOST }}
-          username: root
-          password: ${{ secrets.PASSWORD }}
+          host: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
+          username: ${{ secrets.VM_USERNAME }}
+          password: ${{ secrets.VM_PASSWORD }}
           commands: |
             ls
             cd app/vm
