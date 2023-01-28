@@ -68,6 +68,7 @@ env:
   current_hostname_format: "stm-{0}.stemulidev.com"
   image-name: stm-quest
   dockerfile: './app/Dockerfile'
+  startCommand: yarn start
   location: 'centralus'
 
 jobs:
@@ -201,64 +202,67 @@ jobs:
 
       - name: Update Docker Compose File
         env:
-          IMAGE: node-server:latest
-          COMMAND: yarn start
+          IMAGE: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
+          COMMAND: ${{ env.startCommand }}
+          VIRTUAL_HOST: ${{ needs.config.outputs.hostname }}
         run: |
           cat ./vm/docker-compose.yml | envsubst > ./app/docker-compose.yml
-          ls
           cat ./app/docker-compose.yml
-#      - name: Push File to
-#        uses: appleboy/scp-action@master
-#        with:
-#          host: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
-#          username: ${{ secrets.VM_USERNAME }}
-#          password: ${{ secrets.VM_PASSWORD }}
-#          rm: true
-#          source: "docker-compose.yml,scripts/deploy.sh"
-#          target: "app"
-#
-#      - name: Build & Push
-#        uses: docker/build-push-action@v2
-#        with:
-#          push: true
-#          platforms: linux/amd64
-#          file: ${{ env.dockerfile }}
-#          tags: ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
+      - name: Push File to
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
+          username: ${{ secrets.VM_USERNAME }}
+          password: ${{ secrets.VM_PASSWORD }}
+          rm: true
+          source: "app/docker-compose.yml,vm/deploy.sh"
+          target: "app"
+      - name: Build & Push
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          platforms: linux/amd64
+          file: ${{ env.dockerfile }}
+          tags: ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
 
-#  deploy:
-#    name: 'Deploy Image to Container in VM'
-#    needs: [ envs, config, deploy-image ]
-#    runs-on: ubuntu-latest
-#    env:
-#      project: ${{ needs.envs.outputs.project }}
-#      service: ${{ needs.envs.outputs.service }}
-#      port: ${{ needs.envs.outputs.port }}
-#      hostname-format: ${{ needs.envs.outputs.hostname-format }}
-#      dockerfile: ${{ needs.envs.outputs.dockerfile }}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Download Repo to Artifact
-#        if: ${{ inputs.is_workflow == true }}
-#        uses: actions/download-artifact@master
-#        with:
-#          name: cloud-scripts
-#          path: ${{ inputs.repository }}
-#      - name: Copy Script files to context
-#        if: ${{ inputs.is_workflow == true }}
-#        run: |
-#          ls
-#          cp -a "${{ inputs.repository }}/." ./
-#          rm -r "${{ inputs.repository }}"
-#          ls -a
-#      - name: Login Azure
-#        id: login
-#        run: |
-#          az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
-#      - name: Deploy Image to container
-#        run: |
-#          image=${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
-#          cd terraform/azure/_scripts
-#          chmod +x deploy.sh
-#          echo "deployment inputs ${{ env.project }} $image ${{ needs.config.outputs.hostname }} ${{ needs.config.outputs.docker-tag }} ${{ env.port }}"
-#          ./deploy.sh ${{ env.project }} $image ${{ needs.config.outputs.hostname }} ${{ needs.config.outputs.docker-tag }} ${{ env.port }}
+  deploy:
+    name: 'Deploy Image to Container in VM'
+    needs: [ envs, config, deploy-image ]
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      service: ${{ needs.envs.outputs.service }}
+      port: ${{ needs.envs.outputs.port }}
+      hostname-format: ${{ needs.envs.outputs.hostname-format }}
+      dockerfile: ${{ needs.envs.outputs.dockerfile }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download Repo to Artifact
+        if: ${{ inputs.is_workflow == true }}
+        uses: actions/download-artifact@master
+        with:
+          name: cloud-scripts
+          path: ${{ inputs.repository }}
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a "${{ inputs.repository }}/." ./
+          rm -r "${{ inputs.repository }}"
+          ls -a
+      - name: Login Azure
+        id: login
+        run: |
+          az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
+
+      - name: Deploy latest image
+        id: deploy
+        run: |
+          echo "Spin/Update container with latest image"
+          az vm run-command invoke \
+            -g ${{env.location}} \
+            -n ${{ env.project }}-vm \
+            --command-id RunShellScript \
+            --scripts 'cd app && chmod +x deploy.sh && ./deploy.sh'
+          echo "Successfully Deployed"
