@@ -119,27 +119,17 @@ jobs:
           echo "hostname-format=${{env.hostname-format}}" >> $GITHUB_OUTPUT
           echo "dockerfile=${{ env.dockerfile }}" >> $GITHUB_OUTPUT
 
-      - name: Run SSH Commands
-        id: ssh
-        uses: arthurvanl/action-exec-ssh@v1
-        with:
-          host: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
-          username: ${{ secrets.VM_USERNAME }}
-          password: ${{ secrets.VM_PASSWORD }}
-          commands: |
-            cd app/vm
-            ls
-      - name: Multiple commands over multiple hosts with custom SSH config
+      - name: Run deployment script
         uses: docker://evaneos/ssh-action:0.1.0
         with:
           hosts: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
           user: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           commands: |
-            echo "I can run..."
-            ls
+            echo "Running scripts..."
             cd app/vm
             ls -a
+            ./deploy.sh
             echo "...multiple commands"
 #
 #  config:
