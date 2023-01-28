@@ -204,9 +204,11 @@ jobs:
           IMAGE: node-server:latest
           COMMAND: yarn start
         run: |
-          cat ./vm/docker-compose.yml | envsubst > docker-compose.yml
+          tmpfile=$(mktemp)
+          cp --attributes-only --preserve $originalfile $tmpfile
+          cat ./vm/docker-compose.yml | envsubst > $tmpfile && mv $tmpfile ./app/docker-compose.yml
           ls
-          cat ./vm/docker-compose.yml
+          cat ./app/docker-compose.yml
 #      - name: Push File to
 #        uses: appleboy/scp-action@master
 #        with:
