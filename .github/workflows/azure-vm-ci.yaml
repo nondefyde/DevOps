@@ -208,7 +208,7 @@ jobs:
           VIRTUAL_HOST: ${{ needs.config.outputs.hostname }}
           NODE_ENV: ${{ env.environment }}
         run: |
-          cat ./vm/docker-compose.yml | envsubst > ./vm/docker-compose.yml
+          cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
           ls
           cat ./vm/docker-compose.yml
       - name: Push File to
