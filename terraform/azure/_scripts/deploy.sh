@@ -54,7 +54,7 @@ az vm run-command invoke \
   -g ${RESOURCE_GROUP_NAME} \
   -n ${VM_NAME} \
   --command-id RunShellScript \
-  --scripts 'sudo docker run --name=$3 --restart=always -p $4:80 -e VIRTUAL_HOST=$1 -d $2' \
+  --scripts 'sudo docker run --name=$3 --restart=always -p $4:$4 -e VIRTUAL_HOST=$1 -d $2' \
   --parameters ${HOST} ${IMAGE} ${CONTAINER_NAME} ${PORT}
 
 echo "Successfully Deployed"

@@ -8,9 +8,9 @@ app.get('/v1/ping', (req, res) => {
 })
 
 app.get('/', (req, res) => {
-	res.send('Hello World! Deployed');
+	res.send('Hello World! Deployed again');
 })
 
 app.listen(port, () => {
-	console.log(`Example app listening on port >>>>>> update ${port}  --- environment --- ${process.env.NODE_ENV}`);
+	console.log(`Example app listening on port >>>>>> update ${port}  --- env --- ${process.env.NODE_ENV}`);
 })
