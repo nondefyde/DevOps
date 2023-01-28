@@ -208,8 +208,8 @@ jobs:
           VIRTUAL_HOST: ${{ needs.config.outputs.hostname }}
           NODE_ENV: ${{ env.environment }}
         run: |
-          cat ./vm/docker-compose.yml | envsubst > ./app/docker-compose.yml
-          cat ./app/docker-compose.yml
+          cat ./vm/docker-compose.yml | envsubst > ./vm/docker-compose.yml
+          cat ./vm/docker-compose.yml
       - name: Push File to
         uses: appleboy/scp-action@master
         with:
@@ -217,7 +217,7 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           rm: true
-          source: "app/docker-compose.yml,vm/deploy.sh"
+          source: "vm/."
           target: "app"
       - name: Build & Push
         uses: docker/build-push-action@v2
