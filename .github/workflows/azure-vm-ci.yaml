@@ -218,7 +218,7 @@ jobs:
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
           ls
           cat ./vm/docker-compose.yml
-          cat ./vm/env
+          cat ./vm/.env
       - name: Push File to
         uses: appleboy/scp-action@master
         with:

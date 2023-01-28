@@ -9,5 +9,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV}
       VIRTUAL_HOST: ${VIRTUAL_HOST}
+    env_file:
+      - ./env
     ports:
       - "8000-8020:8000"
