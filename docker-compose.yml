@@ -10,4 +10,4 @@ services:
       NODE_ENV: staging
       VIRTUAL_HOST: testing.voomsway.com
     ports:
-      - "8000-8020:8000"
+      - "8000-8100:8000"

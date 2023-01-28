@@ -198,15 +198,23 @@ jobs:
         run: |
           az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
           az acr login --name "${{env.project}}acr.azurecr.io"
-      - name: Push File to
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
-          username: ${{ secrets.VM_USERNAME }}
-          password: ${{ secrets.VM_PASSWORD }}
-          rm: true
-          source: "docker-compose.yml,scripts/deploy.sh"
-          target: "app"
+
+      - name: Update Docker Compose File
+        env:
+          IMAGE: node-server:latest
+          COMMAND: yarn start
+        run: |
+          cat ./vm/docker-compose.yml | envsubst | docker-compose.yml
+          ls
+#      - name: Push File to
+#        uses: appleboy/scp-action@master
+#        with:
+#          host: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
+#          username: ${{ secrets.VM_USERNAME }}
+#          password: ${{ secrets.VM_PASSWORD }}
+#          rm: true
+#          source: "docker-compose.yml,scripts/deploy.sh"
+#          target: "app"
 
 #      - name: Build & Push
 #        uses: docker/build-push-action@v2
