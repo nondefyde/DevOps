@@ -195,8 +195,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          file: ${{ .env.dockerfile }}
-          tags: ${{ steps.login-ecr.outputs.registry }}/${{ .env.project }}:${{ needs.config.outputs.docker-tag }}-${{ .env.service}}
+          file: ${{ env.dockerfile }}
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}:${{ needs.config.outputs.docker-tag }}-${{ env.service}}
 
   deploy:
     if: ${{ inputs.TFAction == false  && github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
@@ -244,17 +244,17 @@ jobs:
           aws eks update-kubeconfig --name ${{ env.project }}-cluster --region ${{ secrets.AWS_REGION }}
 
       - name: Decode Secret
-        if: ${{ .env.appSecret }}
-        run: DECODED=$(echo ${{ secrets.AWS_K8_APP_SECRET }} | base64 --decode > .env.yml)
+        if: ${{ env.appSecret }}
+        run: DECODED=$(echo ${{ secrets.AWS_K8_APP_SECRET }} | base64 --decode > env.yml)
 
       - name: Deploy image to kubernetes cluster
         env:
-          APP_NAME:  ${{ .env.service}}
-          IMAGE_TAG: ${{ needs.config.outputs.docker-tag }}-${{ .env.service}}
-          NAMESPACE: ${{ .env.namespace }}
-          INGRESS_HOSTNAME: ${{ .env.hostname }}
-          REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/${{ .env.project }}
-          PORT: ${{ .env.port }}
+          APP_NAME:  ${{ env.service}}
+          IMAGE_TAG: ${{ needs.config.outputs.docker-tag }}-${{ env.service}}
+          NAMESPACE: ${{ env.namespace }}
+          INGRESS_HOSTNAME: ${{ env.hostname }}
+          REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
+          PORT: ${{ env.port }}
         run: |
           kubectl create namespace ${{ env.namespace }} --dry-run=client -o yaml | kubectl apply -f -
           cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -
@@ -268,7 +268,7 @@ jobs:
 
       - name: Restart Pods
         id: restart-pods
-        run: kubectl rollout restart deployment ${{ .env.service}}-dpl --namespace=${{ .env.namespace }}
+        run: kubectl rollout restart deployment ${{ env.service}}-dpl --namespace=${{ env.namespace }}
         continue-on-error: true # will fail on first deploy
 
       - name: Cleanups

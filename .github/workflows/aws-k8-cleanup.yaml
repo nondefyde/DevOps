@@ -58,7 +58,7 @@ jobs:
         id: string-input
         uses: ASzc/change-string-case-action@v5
         with:
-          string: ${{ .env.feat-name }}
+          string: ${{ env.feat-name }}
 
       - name: Set variables
         id: variables
@@ -101,24 +101,24 @@ jobs:
         id: kube-auth
         uses: google-github-actions/get-gke-credentials@v1
         with:
-          cluster_name: ${{ .env.cluster-name }}
-          location: ${{ .env.cluster-region }}
+          cluster_name: ${{ env.cluster-name }}
+          location: ${{ env.cluster-region }}
 
       - name: 'DELETE Deployment '
         id: remove-deployment
         env:
           IMAGE_TAG: ${{ needs.config.outputs.docker-tag }}
-          NAMESPACE: ${{ .env.k8s-namespace }}
-          APP_NAME: ${{ .env.prefix }}-${{ needs.config.outputs.docker-tag }}
+          NAMESPACE: ${{ env.k8s-namespace }}
+          APP_NAME: ${{ env.prefix }}-${{ needs.config.outputs.docker-tag }}
           INGRESS_HOSTNAME: ${{ needs.config.outputs.hostname }}
-          BASE_TAG: ${{ .env.registry }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ .env.image-name }}
-          PORT: ${{ .env.dev-port }}
+          BASE_TAG: ${{ env.registry }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.image-name }}
+          PORT: ${{ env.dev-port }}
         run: |
           cat ./_kubernetes/deployment.yml | envsubst | kubectl delete -f - --ignore-not-found=true
           cat ./_kubernetes/service.yml | envsubst | kubectl delete -f - --ignore-not-found=true
           cat ./_kubernetes/ingress.yml | envsubst | kubectl delete -f - --ignore-not-found=true
 
-      - name: DELETE Docker Image from ${{ .env.registry }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ .env.image-name }}
+      - name: DELETE Docker Image from ${{ env.registry }}/${{ secrets.GOOGLE_PROJECT_ID }}/${{ env.image-name }}
         id: remove-images
         run: |
           chmod +x ./_scripts/cleanup.sh
