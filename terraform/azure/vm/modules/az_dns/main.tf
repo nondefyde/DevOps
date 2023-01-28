@@ -20,7 +20,6 @@ resource "cloudflare_record" "cf_vm_www_record" {
   proxied         = true
   allow_overwrite = true
   comment         = "Added by terraform"
-  tags            = ["dev2"]
 
   depends_on = [azurerm_dns_cname_record.vm_dns_record]
 }
@@ -34,7 +33,6 @@ resource "cloudflare_record" "cf_vm_cname_record" {
   proxied         = true
   allow_overwrite = true
   comment         = "Added by terraform"
-  tags            = ["dev1"]
 
   depends_on = [cloudflare_record.cf_vm_www_record]
 }
@@ -47,7 +45,6 @@ resource "cloudflare_record" "cf_vm_a_record" {
   proxied         = true
   allow_overwrite = true
   comment         = "Added by terraform"
-  tags            = ["dev3"]
 
   depends_on = [cloudflare_record.cf_vm_cname_record]
 }
