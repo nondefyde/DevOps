@@ -205,7 +205,7 @@ jobs:
         run: |
           az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
           az acr login --name "${{env.project}}acr.azurecr.io"
-      - name: Decode Secret
+      - name: Env setup
         if: ${{ env.appSecret }}
         run: DECODED=$(echo ${{ secrets.AZR_VM_APP_SECRET }} | base64 --decode > vm/.env)
       - name: Update Docker Compose File
@@ -226,8 +226,19 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           rm: true
+          source: "~/.azure/config"
+          target: /home/${{ secrets.VM_USERNAME }}/config
+
+      - name: Push config file
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
+          username: ${{ secrets.VM_USERNAME }}
+          password: ${{ secrets.VM_PASSWORD }}
+          rm: true
           source: "vm/."
           target: "app"
+
       - name: Build & Push
         uses: docker/build-push-action@v2
         with:
