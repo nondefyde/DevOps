@@ -213,7 +213,7 @@ jobs:
           IMAGE: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
           COMMAND: ${{ env.startCommand }}
           VIRTUAL_HOST: ${{ needs.config.outputs.hostname }}
-          NODE_ENV: ${{ envenvironment }}
+          NODE_ENV: ${{ env.environment }}
         run: |
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
           ls
