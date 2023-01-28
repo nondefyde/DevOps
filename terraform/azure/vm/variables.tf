@@ -14,11 +14,6 @@ variable "cloudflare_zone_id" {
   description = "Cloudflare zone id"
 }
 
-variable "cloudflare_account_id" {
-  type = string
-  description = "Cloudflare account id"
-}
-
 variable "location" {
   type        = string
   default     = "Central US"

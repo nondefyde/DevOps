@@ -199,6 +199,8 @@ jobs:
             -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
             -var=admin_password="${{ secrets.VM_PASSWORD }}" \
             -var=dns_domain="${{ env.dns_domain }}" \
+            -var=cloudflare_api_token="${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -var=cloudflare_zone_id="${{ secrets.CLOUDFLARE_ZONE_ID }}" \
             -out ./_state/${{ env.project }}.tfplan \
             -lock=false
         continue-on-error: false
@@ -224,6 +226,8 @@ jobs:
             -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
             -var=admin_password="${{ secrets.VM_PASSWORD }}" \
             -var=dns_domain="${{ env.dns_domain }}" \
+            -var=cloudflare_api_token="${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -var=cloudflare_zone_id="${{ secrets.CLOUDFLARE_ZONE_ID }}" \
             -out ./_state/${{ env.project }}.destroy.tfplan \
             -lock=false
           terraform -chdir=terraform/azure/vm apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
