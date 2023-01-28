@@ -19,6 +19,7 @@ resource "cloudflare_record" "cf_vm_cname_record" {
   proxied         = true
   allow_overwrite = true
   comment         = "Added by terraform"
+  tags = 'dev'
 }
 
 
@@ -30,6 +31,7 @@ resource "cloudflare_record" "cf_vm_www_record" {
   proxied         = true
   allow_overwrite = true
   comment         = "Added by terraform"
+  tags = 'dev'
 }
 
 resource "cloudflare_record" "cf_vm_a_record" {
@@ -40,4 +42,5 @@ resource "cloudflare_record" "cf_vm_a_record" {
   proxied         = true
   allow_overwrite = true
   comment         = "Added by terraform"
+  tags = 'dev'
 }

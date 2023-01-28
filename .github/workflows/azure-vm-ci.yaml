@@ -206,14 +206,14 @@ jobs:
           az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
           az acr login --name "${{env.project}}acr.azurecr.io"
       - name: Decode Secret
-        if: ${{ env.appSecret }}
-        run: DECODED=$(echo ${{ secrets.AZR_VM_APP_SECRET }} | base64 --decode > vm/env)
+        if: ${{ .env.appSecret }}
+        run: DECODED=$(echo ${{ secrets.AZR_VM_APP_SECRET }} | base64 --decode > vm/.env)
       - name: Update Docker Compose File
         env:
-          IMAGE: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
-          COMMAND: ${{ env.startCommand }}
+          IMAGE: ${{ .env.project }}acr.azurecr.io/${{ .env.service }}/${{ .env.image-name }}:${{ needs.config.outputs.docker-tag }}
+          COMMAND: ${{ .env.startCommand }}
           VIRTUAL_HOST: ${{ needs.config.outputs.hostname }}
-          NODE_ENV: ${{ env.environment }}
+          NODE_ENV: ${{ .env.environment }}
         run: |
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
           ls
@@ -222,7 +222,7 @@ jobs:
       - name: Push File to
         uses: appleboy/scp-action@master
         with:
-          host: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
+          host: ${{ .env.project }}-dns.${{ .env.location }}.cloudapp.azure.com
           username: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           rm: true
@@ -233,8 +233,8 @@ jobs:
         with:
           push: true
           platforms: linux/amd64
-          file: ${{ env.dockerfile }}
-          tags: ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
+          file: ${{ .env.dockerfile }}
+          tags: ${{.env.project}}acr.azurecr.io/${{ .env.service }}/${{ .env.image-name }}:${{ needs.config.outputs.docker-tag }}
 
       - name: Cleanups
         run: |
@@ -283,5 +283,5 @@ jobs:
             -g ${{env.project}}-group \
             -n ${{env.project}}-vm \
             --command-id RunShellScript \
-            --scripts 'chmod +x ./app/vm/deploy.sh | ./app/vm/deploy.sh'
+            --scripts 'sudo chmod +x ./app/vm/deploy.sh && sudo ./app/vm/deploy.sh'
           echo "Successfully Deployed to ${{ needs.config.outputs.hostname }}"

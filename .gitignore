@@ -2,6 +2,7 @@
 commad.txt
 commands
 /_env
+.env
 
 # Iaas Folder
 /terraform/_env/**
