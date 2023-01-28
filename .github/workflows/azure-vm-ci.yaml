@@ -295,5 +295,5 @@ jobs:
             -g ${{env.project}}-group \
             -n ${{env.project}}-vm \
             --command-id RunShellScript \
-            --scripts @vm/deploy.sh
+            --scripts @test/deploy.sh
           echo "Successfully Deployed to ${{ needs.config.outputs.hostname }}"
