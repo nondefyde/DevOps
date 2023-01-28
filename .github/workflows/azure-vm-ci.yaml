@@ -265,4 +265,4 @@ jobs:
             -n ${{ env.project }}-vm \
             --command-id RunShellScript \
             --scripts 'cd app && chmod +x deploy.sh && ./deploy.sh'
-          echo "Successfully Deployed"
+          echo "Successfully Deployed to ${{ needs.config.outputs.hostname }}"
