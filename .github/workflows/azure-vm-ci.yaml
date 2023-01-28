@@ -295,6 +295,5 @@ jobs:
             -g ${{env.project}}-group \
             -n ${{env.project}}-vm \
             --command-id RunShellScript \
-            --scripts 'd app/vm && sudo chmod +x ./$1 && sudo ./$1'
-            --parameters deploy.sh
+            --scripts 'd app/vm && sudo chmod +x ./deploy.sh && sudo ./deploy.sh'
           echo "Successfully Deployed to ${{ needs.config.outputs.hostname }}"
