@@ -201,7 +201,7 @@ jobs:
       - name: Push File to
         uses: appleboy/scp-action@master
         with:
-          host: ${{ env.cloudstgdev}}-dns.${{ env.location }}.cloudapp.azure.com
+          host: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
           username: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           rm: true
