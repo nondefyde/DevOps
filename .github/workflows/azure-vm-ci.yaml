@@ -261,8 +261,8 @@ jobs:
         run: |
           echo "Spin/Update container with latest image"
           az vm run-command invoke \
-            -g ${{env.location}} \
-            -n ${{ env.project }}-vm \
+            -g ${{env.project}}-group \
+            -n ${{env.project}}-vm \
             --command-id RunShellScript \
             --scripts 'cd app && chmod +x deploy.sh && ./deploy.sh'
           echo "Successfully Deployed to ${{ needs.config.outputs.hostname }}"
