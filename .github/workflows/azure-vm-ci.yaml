@@ -296,6 +296,8 @@ jobs:
             -n ${{env.project}}-vm \
             --command-id RunShellScript \
             --scripts '
+                cd ./app/vm
+          
                 IMAGE_COUNT=$(sudo docker ps | grep node-server:latest | wc -l)
                 IMAGES=$(sudo docker ps --format '{{.Names}}')
                 ZERO=0
