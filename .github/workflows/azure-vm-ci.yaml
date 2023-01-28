@@ -283,5 +283,5 @@ jobs:
             -g ${{env.project}}-group \
             -n ${{env.project}}-vm \
             --command-id RunShellScript \
-            --scripts 'chmod +x app/vm/deploy.sh | ./app/vm/deploy.sh'
+            --scripts 'chmod +x ./app/vm/deploy.sh | ./app/vm/deploy.sh'
           echo "Successfully Deployed to ${{ needs.config.outputs.hostname }}"
