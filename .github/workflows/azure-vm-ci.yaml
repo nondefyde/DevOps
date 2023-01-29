@@ -209,7 +209,7 @@ jobs:
         run: DECODED=$(echo ${{ secrets.AZR_VM_APP_SECRET }} | base64 --decode > vm/.env)
       - name: Update Docker Compose File
         env:
-          IMAGE: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
+          IMAGE: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
           VIRTUAL_HOST: ${{ needs.config.outputs.hostname }}
           NODE_ENV: ${{ env.environment }}
         run: |
@@ -233,7 +233,7 @@ jobs:
           push: true
           platforms: linux/amd64
           file: ${{ env.dockerfile }}
-          tags: ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
+          tags: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
 
       - name: Cleanups
         run: |
@@ -291,5 +291,5 @@ jobs:
             echo "Login docker"
             sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
             cd app/vm
-            ./deploy.sh ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
+            ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
             echo "...done....."
