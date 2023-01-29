@@ -27,8 +27,6 @@ data "template_file" "vm_init" {
   vars     = {
     prefix               = var.prefix
     user                 = var.admin_username
-    resource_group_name  = "${var.prefix}-group"
-    storage_account_name = azurerm_storage_account.vm_storage_account.name
   }
 }
 

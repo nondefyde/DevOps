@@ -26,7 +26,8 @@ sudo docker volume create app-volume
 sudo docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro --name reverse_proxy --net nginx-proxy jwilder/nginx-proxy
 
 #Install Docker compose
-DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+
+DOCKER_CONFIG=${DOCKER_CONFIG:-/home/$user/.docker}
 sudo mkdir -p $DOCKER_CONFIG/cli-plugins
 sudo curl -SL https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
 sudo chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
