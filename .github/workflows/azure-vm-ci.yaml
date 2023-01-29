@@ -22,9 +22,6 @@ on:
       AZR_SUBSCRIPTION_ID:
         description: 'Azure subscription id'
         required: true
-      AZURE_VM_APP_SECRET:
-        description: 'Azure vm secret'
-        required: true
     # Map the workflow outputs to job outputs
     outputs:
       HAS_VM:
@@ -68,7 +65,7 @@ concurrency:
 env:
   current_project: cloudstgdev
   current_service: quest
-  current_port: 8000:8000
+  current_port: 8000
   current_hostname_format: "stm-{0}.stemulidev.com"
   image-name: stm-quest
   dockerfile: './app/Dockerfile'
@@ -198,6 +195,7 @@ jobs:
         env:
           IMAGE: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
           VIRTUAL_HOST: ${{ needs.config.outputs.hostname }}
+          PORT: ${{ env.port }}
           NODE_ENV: ${{ env.environment }}
         run: |
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
