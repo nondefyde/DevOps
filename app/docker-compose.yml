@@ -2,12 +2,18 @@ version: '3.8'
 services:
   app:
     image: ${IMAGE}
+    volumes:
+      - app-volume:/var/lib/app/content
     environment:
       NODE_ENV: ${NODE_ENV}
       VIRTUAL_HOST: ${VIRTUAL_HOST}
     ports:
       - "8000-8300:8000"
     restart: always
+
+volumes:
+  app-volume:
+    external: true
 
 networks:
   default:
