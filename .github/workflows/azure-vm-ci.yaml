@@ -279,14 +279,12 @@ jobs:
       - name: Deploy latest image
         id: deploy
         run: |
-          echo "Spin/Update container with latest image"
+          echo "Get registry server and accessToken"
           LOGIN_SERVER=$(az acr login -n ${{env.project}}acr --expose-token)
           accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
           server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
-      
           echo "server=${server}" >> $GITHUB_ENV
-          echo "git-sha=${accessToken}" >> $GITHUB_ENV
-
+          echo "accessToken=${accessToken}" >> $GITHUB_ENV
       - name: Run deployment script
         uses: docker://evaneos/ssh-action:0.1.0
         with:
@@ -294,7 +292,7 @@ jobs:
           user: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           commands: |
-            echo "Running scripts..."
+            echo "Running scripts to update and spin up container with latest image"
             echo "Login docker"
             sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
             cd app/vm
