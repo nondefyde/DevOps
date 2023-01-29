@@ -14,7 +14,7 @@ if [ "$IMAGE_COUNT" -gt 0 ]; then
   sudo docker-compose up -d --scale app=$NEWCOUNT --no-recreate
 
   UPDATED_IMAGE_COUNT=$(sudo docker ps | grep $1 | wc -l)
-  if [ "$UPDATED_IMAGE_COUNT" -e "$NEWCOUNT" ]; then
+  if [ "$UPDATED_IMAGE_COUNT" -eq "$NEWCOUNT" ]; then
     for id in $IDS; do
       echo "Destroy old container running id ${id}"
       sudo docker stop $id
