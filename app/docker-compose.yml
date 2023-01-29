@@ -1,9 +1,8 @@
-version: '3.4'
+version: '3.8'
 services:
   app:
     image: ${IMAGE}
     command: ${COMMAND}
-    restart: always
     volumes:
       - ./:/app
     environment:
@@ -11,3 +10,10 @@ services:
       VIRTUAL_HOST: ${VIRTUAL_HOST}
     ports:
       - "8000:8000"
+    restart: always
+    networks:
+      - net
+
+networks:
+  net:
+    external: true
