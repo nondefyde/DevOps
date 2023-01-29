@@ -15,7 +15,7 @@ if [ "$IMAGE_COUNT" -gt 0 ]; then
 
   UPDATED_IMAGE_COUNT=$(sudo docker ps | grep $1 | wc -l)
   echo "UPDATED_IMAGE_COUNT >>>>> ${UPDATED_IMAGE_COUNT}"
-  if [ $UPDATED_IMAGE_COUNT -eq $NEWCOUNT ]; then
+  if [ $UPDATED_IMAGE_COUNT -ge $NEWCOUNT ]; then
     for id in $IDS; do
       echo "Destroy old container running id ${id}"
       sudo docker stop $id
