@@ -10,6 +10,7 @@ if [ "$IMAGE_COUNT" -gt 0 ]; then
   NEWCOUNT=$((IMAGE_COUNT+1))
   echo "Spin up new container with updated image to scale up to ${NEWCOUNT}"
 
+  sudo docker-compose pull app
   sudo docker-compose up -d --scale app=$NEWCOUNT --no-recreate
 
   UPDATED_IMAGE_COUNT=$(sudo docker ps | grep $1 | wc -l)
@@ -21,5 +22,6 @@ if [ "$IMAGE_COUNT" -gt 0 ]; then
   fi
 else
   echo "Spin up new container"
+  sudo docker-compose pull app
   sudo docker-compose up -d --scale app=1 --no-recreate
 fi
