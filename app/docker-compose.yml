@@ -7,16 +7,12 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV}
       VIRTUAL_HOST: ${VIRTUAL_HOST}
-    env_file:
-      - ./.env
     ports:
       - "8000-8400:8000"
     restart: always
-
 volumes:
   app-volume:
     external: true
-
 networks:
   default:
     external:
