@@ -64,7 +64,7 @@ permissions:
   contents: read
 
 env:
-  current_dns_domain: bytegum.come
+  current_dns_domain: bytegum.com
   current_project: cloudstgdev
   current_location: centralus
 
