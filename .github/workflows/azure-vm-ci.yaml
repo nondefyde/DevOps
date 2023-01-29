@@ -264,11 +264,11 @@ jobs:
           server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
           echo "server=${server}" >> $GITHUB_ENV
           echo "accessToken=${accessToken}" >> $GITHUB_ENV
-      - name: Env setup
-        if: ${{ env.appSecret }}
-        run: |
-          DECODED=$(echo ${{ secrets.AZR_VM_APP_SECRET }} | base64 --decode)
-          echo "Decode $DECODED"
+      steps:
+        - name: Make envfile
+          uses: SpicyPizza/create-envfile@v1.3
+          with:
+            envkey_SECRET: ${{secrets.AZR_VM_APP_SECRET}}
       - name: Run deployment script
         uses: docker://evaneos/ssh-action:0.1.0
         with:
