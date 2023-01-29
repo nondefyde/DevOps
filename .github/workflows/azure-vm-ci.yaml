@@ -133,21 +133,12 @@ jobs:
       hostname:       ${{ steps.resolved.outputs.hostname }}
       git-sha:        ${{ steps.resolved.outputs.git-sha }}
       docker-tag:     ${{ steps.resolved.outputs.docker-tag }}
-      isPr:           ${{ steps.PR.outputs.pr_found }}
     steps:
       - id: debug-context
         run: |
           echo "event_name      ${{ github.event_name }}"
           echo "project        ${{ env.project }}"
           echo "hostname-format    ${{ env.hostname-format }}"
-
-      - uses: 8BitJonny/gh-get-current-pr@2.2.0
-        id: PR
-      - name: "Pull Request ${{ steps.PR.outputs.number }}"
-        if: steps.PR.outputs.pr_found == 'true'
-        run: |
-          echo "Source branch ${{ fromJSON(steps.PR.outputs.pr).head.ref }}"
-          echo "Destination branch ${{ fromJSON(steps.PR.outputs.pr).base.ref }}"
 
       - name: Get branch name
         id: branch-name
