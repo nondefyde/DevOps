@@ -12,11 +12,13 @@ if [ "$IMAGE_COUNT" -gt 0 ]; then
 
   sudo docker-compose up -d --scale app=$NEWCOUNT --no-recreate
 
-  for image in $IMAGES; do
-    echo "Destroy old container running image ${image}"
-    sudo docker rm -f $image
-  done
-
+  UPDATED_IMAGE_COUNT=$(sudo docker ps | grep $1 | wc -l)
+  if [ "$UPDATED_IMAGE_COUNT" -e "$NEWCOUNT" ]; then
+    for image in $IMAGES; do
+      echo "Destroy old container running image ${image}"
+      sudo docker rm -f $image
+    done
+  fi
 else
   echo "Spin up new container"
   sudo docker-compose up -d --scale app=1 --no-recreate
