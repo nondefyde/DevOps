@@ -290,6 +290,7 @@ jobs:
             echo "Running scripts to update and spin up container with latest image"
             echo "Login docker"
             sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
+            DECODED=$(echo ${{ secrets.AZR_VM_APP_SECRET }} | base64 --decode > app/vm/.env)
             cd app/vm
             ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
             echo "...done....."
