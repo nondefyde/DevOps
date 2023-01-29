@@ -269,6 +269,8 @@ jobs:
           echo "accessToken=${accessToken}" >> $GITHUB_ENV
       - name: Run deployment script
         uses: docker://evaneos/ssh-action:0.1.0
+        env:
+          AZR_VM_APP_SECRET: ${{secrets.AZR_VM_APP_SECRET}}
         with:
           hosts: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
           user: ${{ secrets.VM_USERNAME }}
@@ -278,6 +280,6 @@ jobs:
             echo "Login docker"
             sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
             cd app/vm
-            ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest ${{ secrets.AZR_VM_APP_SECRET }}
+            ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest $AZR_VM_APP_SECRET
             cat .env
             echo "...done....."
