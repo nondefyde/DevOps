@@ -1,5 +1,5 @@
 resource "azurerm_dns_zone" "vm_dns_zone" {
-  name                = var.dns_domain
+  name                = "dev.${var.dns_domain}"
   resource_group_name = "${var.prefix}-group"
 }
 
