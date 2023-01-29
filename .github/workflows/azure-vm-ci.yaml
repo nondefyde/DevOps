@@ -293,5 +293,5 @@ jobs:
             echo "Login docker"
             sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
             cd app/vm
-            ./deploy.sh
+            ./deploy.sh ${{env.project}}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
             echo "...done....."
