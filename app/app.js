@@ -8,7 +8,7 @@ app.get('/v1/ping', (req, res) => {
 })
 
 app.get('/', (req, res) => {
-	res.send(`Hello World! Deployed image 5 check again`);
+	res.send(`Hello World! Deployed image 6 now`);
 })
 
 app.listen(port, () => {
