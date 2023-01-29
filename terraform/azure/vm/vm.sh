@@ -29,3 +29,10 @@ sudo groupadd docker
 
 newgrp docker
 
+#Install Docker compose
+DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+sudo mkdir -p $DOCKER_CONFIG/cli-plugins
+sudo curl -SL https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose \
+sudo chmod +x $DOCKER_CONFIG/cli-plugins/docker-compose
+sudo docker compose version
+
