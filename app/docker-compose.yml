@@ -10,4 +10,4 @@ services:
       NODE_ENV: ${NODE_ENV}
       VIRTUAL_HOST: ${VIRTUAL_HOST}
     ports:
-      - "8000-8100:8000"
+      - "8000:8000"
