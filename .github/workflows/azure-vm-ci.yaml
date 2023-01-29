@@ -74,7 +74,6 @@ env:
   dockerfile: './app/Dockerfile'
   location: 'centralus'
   environment: 'stg'
-  appSecret: ${{ secrets.AWS_K8_APP_SECRET }}
 
 jobs:
   envs:

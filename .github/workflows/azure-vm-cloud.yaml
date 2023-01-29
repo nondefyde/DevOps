@@ -32,7 +32,10 @@ on:
       repository:
         required: true
         type: string
-      dns:
+      instance_type:
+        required: true
+        type: string
+      dns_domain:
         required: true
         type: string
 
@@ -55,7 +58,7 @@ jobs:
       - name: Initialize environments
         run: |
           EP="${{inputs.project}}"
-          DNS="${{inputs.dns}}"
+          DNS="${{inputs.dns_domain}}"
           
           PROJECT="${EP:-${{ env.current_project }}}"
           DNSNAME="${DNS:-${{ env.current_dns_domain }}}"
