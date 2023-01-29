@@ -8,3 +8,8 @@ services:
     ports:
       - "8000-8300:8000"
     restart: always
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
