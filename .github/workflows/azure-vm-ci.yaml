@@ -275,7 +275,11 @@ jobs:
         id: login
         run: |
           az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
-
+      - name: Get ACR credentials
+        id: acr-credentials
+        uses: azure/container-registry-login@v1
+        with:
+          registry: ${{ steps.acr-build-and-push.outputs.registry }}
       - name: Deploy latest image
         id: deploy
         run: |
