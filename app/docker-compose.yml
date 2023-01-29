@@ -2,8 +2,6 @@ version: '3.8'
 services:
   app:
     image: ${IMAGE}
-    volumes:
-      - ./:/app
     environment:
       NODE_ENV: ${NODE_ENV}
       VIRTUAL_HOST: ${VIRTUAL_HOST}
