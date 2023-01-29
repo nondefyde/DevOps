@@ -2,7 +2,6 @@ version: '3.8'
 services:
   app:
     image: ${IMAGE}
-    command: ${COMMAND}
     volumes:
       - ./:/app
     environment:
