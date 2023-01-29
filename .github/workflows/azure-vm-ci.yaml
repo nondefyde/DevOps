@@ -273,17 +273,11 @@ jobs:
           ls -a
       - name: Login Azure
         id: login
-        run: |
-          az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
+        run: az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
       - name: Get ACR credentials
         id: acr-credentials
         uses: azure/container-registry-login@v1
-        with:
-          registry: ${{ steps.acr-build-and-push.outputs.registry }}
-      - name: Deploy latest image
-        id: deploy
         run: |
-          echo "Get registry server and accessToken"
           LOGIN_SERVER=$(az acr login -n ${{env.project}}acr --expose-token)
           accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
           server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
