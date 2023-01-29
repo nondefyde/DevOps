@@ -134,25 +134,6 @@ jobs:
           cd terraform/azure/_scripts
           chmod +x setup.sh
           ./setup.sh ${{ env.project }} ${{ env.location }}
-      - name: Get current Virtual Machine
-        id: vm
-        run: |
-          GROUP_EXIST=$(az group exists --name ${{env.project}}-group)
-          echo "GROUP_EXIST=$GROUP_EXIST" >> "$GITHUB_ENV"
-          echo "GROUP EXIST - $GROUP_EXIST"
-          if $GROUP_EXIST
-          then
-            VM_NAME=$(az vm show --name ${{env.project}}-vm --resource-group ${{env.project}}-group --query 'name' --output tsv)
-            echo "VM EXIST - $VM_NAME"
-            CURRENT_VM=${{ env.project }}-vm
-            if [[ $VM_NAME == $CURRENT_VM ]]; then
-                echo "HAS_VM=true" >> "$GITHUB_ENV"
-            else
-                echo "HAS_VM=false" >> "$GITHUB_ENV"
-            fi
-          else
-              echo "HAS_VM=false" >> "$GITHUB_ENV"
-          fi
       - name: Set Variables
         id: variables
         run: |
