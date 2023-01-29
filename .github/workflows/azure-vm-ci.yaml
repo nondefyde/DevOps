@@ -276,7 +276,6 @@ jobs:
         run: az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
       - name: Get ACR credentials
         id: acr-credentials
-        uses: azure/container-registry-login@v1
         run: |
           LOGIN_SERVER=$(az acr login -n ${{env.project}}acr --expose-token)
           accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
