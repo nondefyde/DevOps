@@ -3,6 +3,9 @@
 echo "Remove unused images as part of cleaning up"
 sudo docker image prune -a -f
 
+echo "acr $1"
+echo "secret $2"
+
 echo "Generate secret .env file"
 DECODED=$(echo $2 | base64 --decode > .env)
 
