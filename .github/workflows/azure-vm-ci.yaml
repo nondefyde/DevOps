@@ -195,9 +195,6 @@ jobs:
         run: |
           az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
           az acr login --name "${{env.project}}acr.azurecr.io"
-      - name: Env setup
-        if: ${{ env.appSecret }}
-        run: DECODED=$(echo ${{ secrets.AZR_VM_APP_SECRET }} | base64 --decode > vm/.env)
       - name: Update Docker Compose File
         env:
           IMAGE: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
@@ -207,7 +204,6 @@ jobs:
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
           ls
           cat ./vm/docker-compose.yml
-          cat ./vm/.env
       - name: Push File to
         uses: appleboy/scp-action@master
         with:
@@ -283,4 +279,5 @@ jobs:
             sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
             cd app/vm
             ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest ${{ secrets.AZR_VM_APP_SECRET }}
+            cat app/vm/.env
             echo "...done....."

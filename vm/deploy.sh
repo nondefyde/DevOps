@@ -4,7 +4,7 @@ echo "Remove unused images as part of cleaning up"
 sudo docker image prune -a -f
 
 echo "Generate secret .env file"
-DECODED=$(echo $2 | base64 --decode > app/vm/.env)
+DECODED=$(echo $2 | base64 --decode > .env)
 
 IMAGE_COUNT=$(sudo docker ps | grep $1 | wc -l)
 IDS=$(sudo docker ps --filter ancestor=$1 --format '{{.ID}}')
