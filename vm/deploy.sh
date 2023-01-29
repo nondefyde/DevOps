@@ -19,9 +19,9 @@ if [ "$IMAGE_COUNT" -gt 0 ]; then
       echo "Destroy old container running image ${image}"
       sudo docker rm -f $image
     done
+    sudo docker-compose up -d --scale app=1 --no-recreate
   fi
 else
   echo "Spin up new container"
-  sudo docker-compose pull app
   sudo docker-compose up -d --scale app=1 --no-recreate
 fi
