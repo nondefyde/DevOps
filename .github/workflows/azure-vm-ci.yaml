@@ -204,7 +204,7 @@ jobs:
           PORT: ${{ env.port }}
           NODE_ENV: ${{ env.environment }}
         run: |
-          touch .env
+          touch ./vm/.env
           echo API_KEY=${{ secrets.AZR_VM_APP_SECRET }} >> ./vm/.env
           cat ./vm/.env
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
