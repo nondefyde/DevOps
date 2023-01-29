@@ -14,10 +14,28 @@ on:
         default: "false"
   workflow_call:
     # Map the workflow outputs to job outputs
-    outputs:
-      HAS_VM:
-        description: "If a virtual machine already exist"
-        value: ${{ jobs.setups.outputs.HAS_VM }}
+    secrets:
+      AZR_CLIENT_ID:
+        description: 'Azure client id'
+        required: true
+      AZR_CLIENT_SECRET:
+        description: 'Azure secret key'
+        required: true
+      AZR_TENANT_ID:
+        description: 'Azure tenant id'
+        required: true
+      AZR_SUBSCRIPTION_ID:
+        description: 'Azure subscription id'
+        required: true
+      CLOUDFLARE_API_TOKEN:
+        description: 'Cloudflare api token'
+        required: true
+      CLOUDFLARE_ZONE_ID:
+        description: 'Cloudflare zone id'
+        required: true
+      VM_PASSWORD:
+        description: 'Vm ssh password'
+        required: true
     inputs:
       TFAction:
         type: boolean
