@@ -20,15 +20,7 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 sudo apt update
 sudo apt install -y docker-ce
 
-#Install Docker compose
-DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
-sudo mkdir -p "$DOCKER_CONFIG/cli-plugins"
-sudo curl -SL "https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose"
-sudo chmod +x "$DOCKER_CONFIG/cli-plugins/docker-compose"
-sudo docker compose version
-
 sudo docker pull jwilder/nginx-proxy:latest
-
 sudo docker network create nginx-proxy
 sudo docker volume create app-volume
 sudo docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro --name reverse_proxy --net nginx-proxy jwilder/nginx-proxy
