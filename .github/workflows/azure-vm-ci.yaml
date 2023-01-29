@@ -283,7 +283,7 @@ jobs:
           LOGIN_SERVER=$(az acr login -n ${{env.project}}acr --expose-token)
           accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
           server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
-          
+      
           echo "server=${server}" >> $GITHUB_ENV
           echo "git-sha=${accessToken}" >> $GITHUB_ENV
 
@@ -295,9 +295,8 @@ jobs:
           password: ${{ secrets.VM_PASSWORD }}
           commands: |
             echo "Running scripts..."
-            Login
+            echo "Login docker"
             sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
             cd app/vm
-            ls -a
             ./deploy.sh
-            echo "...multiple commands"
+            echo "...done....."
