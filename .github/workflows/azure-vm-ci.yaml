@@ -267,10 +267,13 @@ jobs:
           server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
           echo "server=${server}" >> $GITHUB_ENV
           echo "accessToken=${accessToken}" >> $GITHUB_ENV
+      - name: Env setup
+        if: ${{ env.appSecret }}
+        run: |
+          DECODED=$(echo ${{ secrets.AZR_VM_APP_SECRET }} | base64 --decode)
+          echo "Decode $DECODED"
       - name: Run deployment script
         uses: docker://evaneos/ssh-action:0.1.0
-        env:
-          AZR_VM_APP_SECRET: ${{secrets.AZR_VM_APP_SECRET}}
         with:
           hosts: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
           user: ${{ secrets.VM_USERNAME }}
