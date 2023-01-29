@@ -19,8 +19,8 @@ resource "cloudflare_record" "cf_vm_www_record" {
   type            = "CNAME"
   proxied         = true
   allow_overwrite = true
-  comment         = "Added by terraform"
-  tags    = ["www"]
+#  comment         = "Added by terraform"
+#  tags    = ["${var.cloudflare_zone_id}-www"]
 
   depends_on = [azurerm_dns_cname_record.vm_dns_record]
 }
@@ -33,8 +33,8 @@ resource "cloudflare_record" "cf_vm_cname_record" {
   type            = "CNAME"
   proxied         = true
   allow_overwrite = true
-  comment         = "Added by terraform"
-  tags    = ["sub_cname_domain"]
+#  comment         = "Added by terraform"
+#  tags    = ["${var.cloudflare_zone_id}-sub_cname_domain"]
 
   depends_on = [cloudflare_record.cf_vm_www_record]
 }
@@ -46,8 +46,8 @@ resource "cloudflare_record" "cf_vm_a_record" {
   type            = "A"
   proxied         = true
   allow_overwrite = true
-  comment         = "Added by terraform"
-  tags    = ["sub_a_domain"]
+#  comment         = "Added by terraform"
+#  tags    = ["${var.cloudflare_zone_id}-sub_a_domain"]
 
   depends_on = [cloudflare_record.cf_vm_cname_record]
 }
