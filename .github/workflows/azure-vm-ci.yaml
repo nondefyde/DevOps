@@ -211,7 +211,6 @@ jobs:
       - name: Update Docker Compose File
         env:
           IMAGE: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ env.image-name }}:${{ needs.config.outputs.docker-tag }}
-          COMMAND: ${{ env.startCommand }}
           VIRTUAL_HOST: ${{ needs.config.outputs.hostname }}
           NODE_ENV: ${{ env.environment }}
         run: |
