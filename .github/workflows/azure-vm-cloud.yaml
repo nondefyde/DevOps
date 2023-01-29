@@ -81,13 +81,14 @@ jobs:
         run: |
           EP="${{inputs.project}}"
           DNS="${{inputs.dns_domain}}"
+          DNS="${{inputs.location}}"
           
           PROJECT="${EP:-${{ env.current_project }}}"
           DNSNAME="${DNS:-${{ env.current_dns_domain }}}"
-          LOCA="${DNS:-${{ env.current_location }}}"
+          LOCATION="${DNS:-${{ env.current_location }}}"
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
           echo "dns_domain=${DNSNAME}" >> "$GITHUB_ENV"
-          echo "location=${LOCA}" >> "$GITHUB_ENV"
+          echo "location=${LOCATION}" >> "$GITHUB_ENV"
       - name: Set Env
         id: variables
         run: |
@@ -166,6 +167,7 @@ jobs:
     env:
       project: ${{ needs.envs.outputs.project }}
       dns_domain: ${{ needs.envs.outputs.dns_domain }}
+      location: ${{ needs.envs.outputs.location }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
