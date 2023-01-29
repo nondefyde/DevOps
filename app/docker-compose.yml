@@ -10,10 +10,13 @@ services:
     ports:
       - 8000-8400:${PORT}
     restart: always
+    networks:
+      - app-network
 volumes:
   app-volume:
     external: true
+
 networks:
-  default:
+  app-network:
     external:
       name: nginx-proxy
