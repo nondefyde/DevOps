@@ -275,7 +275,7 @@ jobs:
           user: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           commands: |
-            cat .env
+            cat ./github/workspace/.env
             echo "Running scripts to update and spin up container with latest image"
             echo "Login docker"
             sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
