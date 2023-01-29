@@ -191,12 +191,6 @@ jobs:
         run: |
           az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
           az acr login --name "${{env.project}}acr.azurecr.io"
-      - name: 'Create env file'
-        run: |
-          touch .env
-          echo API_ENDPOINT="https://xxx.execute-api.us-west-2.amazonaws.com" >> .env
-          echo API_KEY=${{ secrets.API_KEY }} >> .env
-          cat .env
       - name: Update Docker Compose File
         env:
           IMAGE: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
@@ -208,8 +202,7 @@ jobs:
           echo AZR_VM_APP_SECRET=${{ secrets.AZR_VM_APP_SECRET }} >> ./vm/.env
           cat ./vm/.env
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
-          ls
-          cat ./vm/docker-compose.yml
+          ls -a
       - name: Push File to
         uses: appleboy/scp-action@master
         with:
