@@ -56,6 +56,8 @@ on:
       dns_domain:
         required: true
         type: string
+      location:
+        type: string
 
 permissions:
   id-token: write
@@ -64,6 +66,7 @@ permissions:
 env:
   current_dns_domain: stemulidev.net
   current_project: cloudstgdev
+  current_location: centralus
 
 jobs:
   envs:
@@ -72,6 +75,7 @@ jobs:
     outputs:
       project: ${{ steps.variables.outputs.project }}
       dns_domain: ${{ steps.variables.outputs.dns_domain }}
+      location: ${{ steps.variables.outputs.location }}
     steps:
       - name: Initialize environments
         run: |
@@ -80,13 +84,16 @@ jobs:
           
           PROJECT="${EP:-${{ env.current_project }}}"
           DNSNAME="${DNS:-${{ env.current_dns_domain }}}"
+          LOCA="${DNS:-${{ env.current_location }}}"
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
           echo "dns_domain=${DNSNAME}" >> "$GITHUB_ENV"
+          echo "location=${LOCA}" >> "$GITHUB_ENV"
       - name: Set Env
         id: variables
         run: |
           echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
           echo "dns_domain=${{ env.dns_domain }}" >> $GITHUB_OUTPUT
+          echo "location=${{ env.location }}" >> $GITHUB_OUTPUT
 
   setups:
     name: 'Setup dependencies'
@@ -95,6 +102,7 @@ jobs:
     env:
       project: ${{ needs.envs.outputs.project }}
       dns_domain: ${{ needs.envs.outputs.dns_domain }}
+      location: ${{ needs.envs.outputs.location }}
     outputs:
       HAS_VM: ${{ steps.variables.outputs.HAS_VM }}
     steps:
@@ -124,7 +132,7 @@ jobs:
         run: |
           cd terraform/azure/_scripts
           chmod +x setup.sh
-          ./setup.sh ${{ env.project }}
+          ./setup.sh ${{ env.project }} ${{ env.location }}
       - name: Get current Virtual Machine
         id: vm
         run: |
