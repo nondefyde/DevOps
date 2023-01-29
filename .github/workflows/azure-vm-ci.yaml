@@ -233,7 +233,7 @@ jobs:
           push: true
           platforms: linux/amd64
           file: ${{ env.dockerfile }}
-          tags: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
+          tags: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}
 
       - name: Cleanups
         run: |
