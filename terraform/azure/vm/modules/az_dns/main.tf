@@ -4,7 +4,7 @@ resource "azurerm_dns_zone" "vm_dns_zone" {
 }
 
 resource "azurerm_dns_cname_record" "vm_dns_record" {
-  name                = "*"
+  name                = "*-${var.service}"
   zone_name           = azurerm_dns_zone.vm_dns_zone.name
   resource_group_name = "${var.prefix}-group"
   ttl                 = 300
@@ -25,7 +25,7 @@ resource "azurerm_dns_cname_record" "vm_dns_record" {
 
 resource "cloudflare_record" "cf_vm_cname_record" {
   zone_id         = var.cloudflare_zone_id
-  name            = "*.${var.service}"
+  name            = "*-${var.service}"
   value           = var.public_ip_dns_name
   type            = "CNAME"
   proxied         = true
