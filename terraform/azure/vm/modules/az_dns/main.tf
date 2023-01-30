@@ -27,7 +27,7 @@ resource "cloudflare_record" "cf_vm_sub_domain_cname_record" {
   zone_id         = var.cloudflare_zone_id
   name            = "*.${var.service}"
   value           = var.public_ip_dns_name
-  type            = "CNAME"
+  type            = "TXT"
   proxied         = true
   allow_overwrite = true
 
