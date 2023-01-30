@@ -27,7 +27,7 @@ resource "azurerm_mysql_flexible_server" "mysql_server" {
   location                     = var.location
   name                         = "${var.prefix}_mysqlfs-${var.service}"
   resource_group_name          = "${var.prefix}-group"
-  administrator_login          = random_string.name.result
+  administrator_login          = var.admin_username
   administrator_password       = random_password.password.result
   backup_retention_days        = 7
   delegated_subnet_id          = azurerm_subnet.mysql_subnet.id

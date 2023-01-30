@@ -56,7 +56,6 @@ module "az_mysql" {
   prefix         = var.app_project_prefix
   location       = var.location
   admin_username = var.admin_username
-  admin_password = var.admin_password
   service        = var.service
 
   depends_on = [module.az_dns]
