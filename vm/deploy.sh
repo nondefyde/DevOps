@@ -3,6 +3,7 @@
 echo "Remove unused images as part of cleaning up"
 sudo docker image prune -a -f
 
+
 echo "acr $1"
 
 IMAGE_COUNT=$(sudo docker ps --filter="name=vm_app_*" | grep vm_app_ | wc -l)
