@@ -17,7 +17,6 @@ on:
         type: string
 jobs:
   build-ci:
-    if: ${{ inputs.buildCommand }}
     name: "Build CI"
     runs-on: ${{ matrix.os }}
     strategy:
@@ -28,11 +27,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
+        if: ${{ inputs.buildCommand }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - name: Install dependencies
+        if: ${{ inputs.buildCommand }}
         run: |
           if [ -e yarn.lock ]; then
           yarn install --frozen-lockfile
