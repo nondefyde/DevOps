@@ -59,6 +59,7 @@ env:
   current_service: cloud-app
   image-name: stmx
   current_dockerfile: './app/Dockerfile'
+  current_probe_url: '/v1/ping'
   appSecret: ${{ secrets.AWS_K8_APP_SECRET }}
 
 jobs:
@@ -71,6 +72,7 @@ jobs:
       port: ${{ steps.variables.outputs.port }}
       dockerfile: ${{ steps.variables.outputs.dockerfile }}
       service: ${{ steps.variables.outputs.service }}
+      probe_url: ${{ steps.variables.outputs.probe_url }}
       hostname-format: ${{ steps.variables.outputs.hostname-format }}
     steps:
       - name: Initialize environments
@@ -79,12 +81,14 @@ jobs:
           PRT="${{inputs.port}}"
           HOST_FMT="${{inputs.hostname-format}}"
           DOCFILE="${{ inputs.dockerfile }}"
+          PRB_URL="${{ inputs.probe_url }}"
           SRV="${{ inputs.service }}"
           
           ENV_HOST_FMT="${{env.current_hostname_format}}"
 
           PROJECT="${EP:-${{env.current_project}}}"
           PORT="${PRT:-${{env.current_port}}}"
+          PRB_URL="${PRT:-${{env.current_probe_url}}}"
           
           HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
           DOCKER_FILE="${DOCFILE:-${{ env.current_dockerfile }}}"
@@ -94,6 +98,7 @@ jobs:
           echo "port=${PORT}" >> "$GITHUB_ENV"
           echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
           echo "service=${SERVICE}" >> "$GITHUB_ENV"
+          echo "probe_url=${PRB_URL}" >> "$GITHUB_ENV"
           echo "dockerfile=${DOCKER_FILE}" >> "$GITHUB_ENV"
       - name: Set Env
         id: variables
@@ -103,6 +108,7 @@ jobs:
           echo "hostname-format=${{env.hostname-format}}" >> $GITHUB_OUTPUT
           echo "dockerfile=${{ env.dockerfile }}" >> $GITHUB_OUTPUT
           echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
+          echo "probe_url=${{ env.probe_url }}" >> $GITHUB_OUTPUT
 
   config:
     if: ${{ inputs.TFAction == false && github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
@@ -210,6 +216,7 @@ jobs:
       hostname: ${{ needs.config.outputs.hostname }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
       service: ${{ needs.envs.outputs.service }}
+      probe_url: ${{ needs.envs.outputs.probe_url }}
     steps:
       - uses: actions/checkout@v2
       - name: Download Repo to Artifact
@@ -253,6 +260,7 @@ jobs:
           IMAGE_TAG: ${{ needs.config.outputs.docker-tag }}-${{ env.service}}
           NAMESPACE: ${{ env.namespace }}
           INGRESS_HOSTNAME: ${{ env.hostname }}
+          PROBE_URL: ${{ env.probe_url }}
           REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
           PORT: ${{ env.port }}
         run: |

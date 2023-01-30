@@ -35,12 +35,12 @@ spec:
           readinessProbe:
             initialDelaySeconds: 15
             httpGet:
-              path: /v1/ping
+              path: ${PROBE_URL}
               port: ${PORT}
             periodSeconds: 30
           livenessProbe:
             initialDelaySeconds: 15
             httpGet:
-              path: /v1/ping
+              path: ${PROBE_URL}
               port: ${PORT}
             periodSeconds: 30
