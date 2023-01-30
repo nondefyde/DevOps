@@ -3,10 +3,9 @@
 echo "Remove unused images as part of cleaning up"
 sudo docker image prune -a -f
 
-
 echo "acr $1"
 
-IMAGE_COUNT=$(sudo docker ps --filter="name=vm_app_*" | grep vm_app_ | wc -l)
+IMAGE_COUNT=$(sudo docker ps --filter="name=vm-app-*" | grep vm-app- | wc -l)
 IDS=$(sudo docker ps --filter ancestor=$1 --format '{{.ID}}')
 ZERO=0
 
@@ -19,7 +18,7 @@ if [ $IMAGE_COUNT -gt 0 ]; then
   sudo docker compose pull app
   sudo docker compose up -d --scale app=$NEWCOUNT --no-recreate
 
-  UPDATED_IMAGE_COUNT=$(sudo docker ps --filter="name=vm_app_*" | grep vm_app_ | wc -l)
+  UPDATED_IMAGE_COUNT=$(sudo docker ps --filter="name=vm-app-*" | grep vm-app- | wc -l)
   echo "Updated image >>>>> ${UPDATED_IMAGE_COUNT} >>>>> new Image count ${NEWCOUNT}"
   if [ $UPDATED_IMAGE_COUNT -ge $NEWCOUNT ]; then
     for id in $IDS; do
