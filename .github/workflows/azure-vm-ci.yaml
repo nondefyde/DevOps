@@ -262,7 +262,7 @@ jobs:
     env:
       project: ${{ needs.envs.outputs.project }}
       service: ${{ needs.envs.outputs.service }}
-      hostname: ${{ needs.envs.config.hostname }}
+      hostname: ${{ needs.config.outputs.hostname }}
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
