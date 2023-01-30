@@ -44,6 +44,7 @@ module "az_dns" {
   public_ip_dns_name = module.az_vm.public_dns_name
   dns_domain         = var.dns_domain
   cloudflare_zone_id = var.cloudflare_zone_id
+  service            = var.service
 
 
   depends_on         = [azurerm_resource_group.vm_group]
