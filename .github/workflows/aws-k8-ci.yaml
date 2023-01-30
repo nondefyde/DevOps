@@ -83,24 +83,24 @@ jobs:
           PRT="${{inputs.port}}"
           HOST_FMT="${{inputs.hostname-format}}"
           DOCFILE="${{ inputs.dockerfile }}"
-          PRB_URL="${{ inputs.probe_url }}"
+          PBURL="${{ inputs.probe_url }}"
           SRV="${{ inputs.service }}"
           
           ENV_HOST_FMT="${{env.current_hostname_format}}"
 
           PROJECT="${EP:-${{env.current_project}}}"
           PORT="${PRT:-${{env.current_port}}}"
-          PRB_URL="${PRT:-${{env.current_probe_url}}}"
-          
           HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
           DOCKER_FILE="${DOCFILE:-${{ env.current_dockerfile }}}"
           SERVICE="${SRV:-${{ env.current_service }}}"
+          PROBE_URL="${PBURL:-${{env.current_probe_url}}}"
+    
 
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
           echo "port=${PORT}" >> "$GITHUB_ENV"
           echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
           echo "service=${SERVICE}" >> "$GITHUB_ENV"
-          echo "probe_url=${PRB_URL}" >> "$GITHUB_ENV"
+          echo "probe_url=${PROBE_URL}" >> "$GITHUB_ENV"
           echo "dockerfile=${DOCKER_FILE}" >> "$GITHUB_ENV"
       - name: Set Env
         id: variables
