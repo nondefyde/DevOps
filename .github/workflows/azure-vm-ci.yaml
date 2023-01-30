@@ -24,6 +24,10 @@ on:
         required: true
       AZR_VM_APP_SECRET:
         description: 'Azure Vm env secrets'
+      VM_USERNAME:
+        description: 'Azure Vm ssh username'
+      VM_PASSWORD:
+        description: 'Azure Vm ssh password'
     # Map the workflow outputs to job outputs
     outputs:
       HAS_VM:
