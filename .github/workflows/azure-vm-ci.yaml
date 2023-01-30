@@ -70,7 +70,7 @@ env:
   current_port: 8000
   current_hostname_format: "stm-{0}.bytegum.com"
   image-name: stm-quest
-  dockerfile: './app/Dockerfile'
+  dockerfile: './ci/Dockerfile'
   location: 'centralus'
   environment: 'stg'
   appSecret: ${{ secrets.AZR_VM_APP_SECRET }}
