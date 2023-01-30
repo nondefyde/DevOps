@@ -197,9 +197,10 @@ jobs:
           VIRTUAL_HOST: ${{ needs.config.outputs.hostname }}
           PORT: ${{ env.port }}
           NODE_ENV: ${{ env.environment }}
+          MY_SECRET: ${{secrets.AZR_VM_APP_SECRET}}
         run: |
           touch .secret
-          echo AZR_VM_APP_SECRET=${{ secrets.AZR_VM_APP_SECRET }} >> .secret
+          echo AZR_VM_APP_SECRET=${{ env.MY_SECRET }} >> .secret
           echo TEST="any value" >> .secret
           mv .secret ./vm
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
