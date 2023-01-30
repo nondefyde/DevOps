@@ -190,6 +190,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Download Repo to Artifact
+        if: ${{ inputs.is_workflow == true }}
+        uses: actions/download-artifact@master
+        with:
+          name: cloud-scripts
+          path: ${{ inputs.repository }}
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a "${{ inputs.repository }}/." ./
+          rm -r "${{ inputs.repository }}"
+          ls -a
+
       - name: Login Azure
         id: login
         run: |
