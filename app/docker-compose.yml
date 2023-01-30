@@ -20,5 +20,5 @@ volumes:
 
 networks:
   app-network:
-    external:
       name: nginx-proxy
+      external: true
