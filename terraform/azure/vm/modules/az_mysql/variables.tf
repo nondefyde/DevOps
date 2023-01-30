@@ -7,6 +7,10 @@ variable "vpn_id" {
   type = string
 }
 
+variable "service" {
+  type = string
+}
+
 variable "location" {
   type = string
 }
