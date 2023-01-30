@@ -198,9 +198,9 @@ jobs:
           PORT: ${{ env.port }}
           NODE_ENV: ${{ env.environment }}
         run: |
-          touch .secret
-          echo AZR_VM_APP_SECRET=${{ secrets.AZR_VM_APP_SECRET }} >> .secret
-          mv .secret ./app/vm
+          touch secret
+          echo AZR_VM_APP_SECRET=${{ secrets.AZR_VM_APP_SECRET }} >> secret
+          mv secret ./app/vm
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
           ls -a
       - name: Push File to
@@ -278,7 +278,6 @@ jobs:
             sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
             cd app/vm
             ls -a
-            echo "DECODED ${DECODED}"
             ./env.sh
             ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
             echo "...done....."
