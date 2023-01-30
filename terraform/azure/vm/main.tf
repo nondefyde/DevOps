@@ -32,7 +32,7 @@ resource "azurerm_container_registry" "vm_acr" {
     location = "East US"
   }
 
-  depends_on = [module.az_vm]
+  depends_on = [azurerm_resource_group.vm_group]
 }
 
 module "az_dns" {
@@ -47,7 +47,7 @@ module "az_dns" {
   service            = var.service
 
 
-  depends_on         = [azurerm_resource_group.vm_group]
+  depends_on = [module.az_vm]
 }
 
 module "az_mysql" {
@@ -57,8 +57,8 @@ module "az_mysql" {
   location       = var.location
   admin_username = var.admin_username
   admin_password = var.admin_password
+  service        = var.service
 
-
-  depends_on = [azurerm_resource_group.vm_group]
+  depends_on = [module.az_dns]
 }
 

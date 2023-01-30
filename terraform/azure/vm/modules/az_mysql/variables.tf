@@ -3,10 +3,6 @@ variable "prefix" {
   description = "The prefix for deployment"
 }
 
-variable "vpn_id" {
-  type = string
-}
-
 variable "service" {
   type = string
 }

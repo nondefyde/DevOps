@@ -37,5 +37,5 @@ resource "azurerm_private_dns_zone_virtual_network_link" "mysql_dns_zone_vnl" {
   name                  = "${var.prefix}_mysqlfsVnetZone${var.service}.com"
   private_dns_zone_name = azurerm_private_dns_zone.mysql_private_dns_zone.name
   resource_group_name   = "${var.prefix}-group"
-  virtual_network_id    = var.vpn_id
+  virtual_network_id    = azurerm_virtual_network.mysql_vpn.id
 }
