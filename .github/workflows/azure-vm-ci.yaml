@@ -22,6 +22,8 @@ on:
       AZR_SUBSCRIPTION_ID:
         description: 'Azure subscription id'
         required: true
+      AZR_VM_APP_SECRET:
+        description: 'Azure Vm env secrets'
     # Map the workflow outputs to job outputs
     outputs:
       HAS_VM:
