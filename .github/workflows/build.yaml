@@ -11,7 +11,6 @@ on:
         type: string
       buildCommand:
         type: string
-        default: "npm run build --if-present"
       unitTestCommand:
         type: string
       e2eTestCommand:
@@ -41,7 +40,10 @@ jobs:
           else
           npm i
           fi
-      - run: ${{ inputs.buildCommand }}
+      - name: Build App
+        if: ${{ inputs.buildCommand }}
+        run: ${{ inputs.buildCommand }}
+
       - name: Run Unit Test
         if: ${{ inputs.unitTestCommand }}
         run: ${{ inputs.unitTestCommand }}
