@@ -42,7 +42,6 @@ jobs:
           npm i
           fi
       - name: Build App
-        if: ${{ inputs.buildCommand }}
         run: ${{ inputs.buildCommand }}
 
       - name: Run Unit Test
