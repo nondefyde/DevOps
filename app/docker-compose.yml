@@ -8,8 +8,6 @@ services:
       NODE_ENV: ${NODE_ENV}
       VIRTUAL_HOST: ${VIRTUAL_HOST}
       SERVICE: ${service}
-    env_file:
-      - ./.env
     ports:
       - 8000-8400:${PORT}
     restart: always

@@ -199,9 +199,6 @@ jobs:
           PORT: ${{ env.port }}
           NODE_ENV: ${{ env.environment }}
         run: |
-          touch .secret
-          echo AZR_VM_APP_SECRET=${{ env.appSecret }} >> .secret
-          mv .secret ./vm
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
           ls -a
       - name: Push File to
