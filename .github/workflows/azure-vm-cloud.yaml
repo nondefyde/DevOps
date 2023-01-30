@@ -81,11 +81,11 @@ jobs:
         run: |
           EP="${{inputs.project}}"
           DNS="${{inputs.dns_domain}}"
-          DNS="${{inputs.location}}"
+          LOC="${{inputs.location}}"
           
           PROJECT="${EP:-${{ env.current_project }}}"
           DNSNAME="${DNS:-${{ env.current_dns_domain }}}"
-          LOCATION="${DNS:-${{ env.current_location }}}"
+          LOCATION="${LOC:-${{ env.current_location }}}"
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
           echo "dns_domain=${DNSNAME}" >> "$GITHUB_ENV"
           echo "location=${LOCATION}" >> "$GITHUB_ENV"
