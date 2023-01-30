@@ -200,7 +200,7 @@ jobs:
         run: |
           touch secret
           echo AZR_VM_APP_SECRET=${{ secrets.AZR_VM_APP_SECRET }} >> secret
-          mv secret ./app/vm
+          mv secret ./vm
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
           ls -a
       - name: Push File to
