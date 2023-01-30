@@ -71,7 +71,6 @@ env:
   dockerfile: './app/Dockerfile'
   location: 'centralus'
   environment: 'stg'
-  appSecret: ${{ secrets.AZR_VM_APP_SECRET }}
 
 jobs:
   envs:
