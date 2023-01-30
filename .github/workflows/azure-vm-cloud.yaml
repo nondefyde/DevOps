@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - '.github/workflows/.**-vm-cloud.yaml'
+#    paths:
+#      - '.github/workflows/.**-vm-cloud.yaml'
   workflow_dispatch:
     inputs:
       TFAction:
@@ -45,6 +45,9 @@ on:
         required: true
         type: boolean
         default: false
+      service:
+        required: true
+        type: string
       project:
         required: true
         type: string
@@ -68,6 +71,7 @@ env:
   current_dns_domain: bytegum.com
   current_project: cloudstgdev
   current_location: centralus
+  current_service: dev
 
 jobs:
   envs:
@@ -83,19 +87,23 @@ jobs:
           EP="${{inputs.project}}"
           DNS="${{inputs.dns_domain}}"
           LOC="${{inputs.location}}"
+          SRV="${{inputs.service}}"
           
           PROJECT="${EP:-${{ env.current_project }}}"
           DNSNAME="${DNS:-${{ env.current_dns_domain }}}"
           LOCATION="${LOC:-${{ env.current_location }}}"
+          SERVICE="${SRV:-${{ env.current_service }}}"
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
           echo "dns_domain=${DNSNAME}" >> "$GITHUB_ENV"
           echo "location=${LOCATION}" >> "$GITHUB_ENV"
+          echo "service=${SERVICE}" >> "$GITHUB_ENV"
       - name: Set Env
         id: variables
         run: |
           echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
           echo "dns_domain=${{ env.dns_domain }}" >> $GITHUB_OUTPUT
           echo "location=${{ env.location }}" >> $GITHUB_OUTPUT
+          echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
 
   setups:
     name: 'Setup dependencies'
@@ -105,6 +113,7 @@ jobs:
       project: ${{ needs.envs.outputs.project }}
       dns_domain: ${{ needs.envs.outputs.dns_domain }}
       location: ${{ needs.envs.outputs.location }}
+      service: ${{ needs.envs.outputs.service }}
     outputs:
       HAS_VM: ${{ steps.variables.outputs.HAS_VM }}
     steps:
@@ -144,12 +153,12 @@ jobs:
   setup-cloud:
     name: 'Build Cloud Infrastructure'
     needs: [ envs, setups ]
-#    if: needs.setups.outputs.HAS_VM == false || inputs.TFAction == 'apply'
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
       dns_domain: ${{ needs.envs.outputs.dns_domain }}
       location: ${{ needs.envs.outputs.location }}
+      service: ${{ needs.envs.outputs.service }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -212,6 +221,7 @@ jobs:
             -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
             -var=admin_password="${{ secrets.VM_PASSWORD }}" \
             -var=dns_domain="${{ env.dns_domain }}" \
+            -var=service="${{ env.service }}" \
             -var=cloudflare_api_token="${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -var=cloudflare_zone_id="${{ secrets.CLOUDFLARE_ZONE_ID }}" \
             -out ./_state/${{ env.project }}.tfplan \
@@ -239,6 +249,7 @@ jobs:
             -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
             -var=admin_password="${{ secrets.VM_PASSWORD }}" \
             -var=dns_domain="${{ env.dns_domain }}" \
+            -var=service="${{ env.service }}" \
             -var=cloudflare_api_token="${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -var=cloudflare_zone_id="${{ secrets.CLOUDFLARE_ZONE_ID }}" \
             -out ./_state/${{ env.project }}.destroy.tfplan \

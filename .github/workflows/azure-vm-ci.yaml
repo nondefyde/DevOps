@@ -47,6 +47,9 @@ on:
       repository:
         required: true
         type: string
+      sub_service:
+        required: true
+        type: string
       service:
         required: true
         type: string
@@ -71,8 +74,9 @@ concurrency:
 env:
   current_project: cloudstgdev
   current_service: quest
+  current_sub_service: quest
   current_port: 8000
-  current_hostname_format: "stm-{0}.dev.bytegum.com"
+  current_hostname_format: "stm-{0}.devs.bytegum.com"
   image-name: stm-quest
   dockerfile: './ci/Dockerfile'
   location: 'centralus'

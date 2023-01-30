@@ -73,5 +73,4 @@ variable "dns_domain" {
 
 variable "service" {
   type = string
-  default = "dev"
 }
