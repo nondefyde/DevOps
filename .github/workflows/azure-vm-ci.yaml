@@ -278,8 +278,7 @@ jobs:
             sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
             cd app/vm
             ls -a
-            source .secret
-            DECODED=$(echo $AZR_VM_APP_SECRET | base64 --decode > .env)
-            rm rf .secret
+            echo "DECODED ${DECODED}"
+            ./env.sh
             ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
             echo "...done....."
