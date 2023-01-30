@@ -33,9 +33,10 @@ on:
       CLOUDFLARE_ZONE_ID:
         description: 'Cloudflare zone id'
         required: true
+      VM_USERNAME:
+        description: 'Azure Vm ssh username'
       VM_PASSWORD:
-        description: 'Vm ssh password'
-        required: true
+        description: 'Azure Vm ssh password'
     inputs:
       TFAction:
         type: boolean
