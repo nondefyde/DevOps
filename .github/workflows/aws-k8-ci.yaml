@@ -46,6 +46,8 @@ on:
       dockerfile:
         required: true
         type: string
+      probe_url:
+        type: string
 
 permissions:
   id-token: write
