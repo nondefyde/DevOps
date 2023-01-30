@@ -180,6 +180,7 @@ jobs:
       project: ${{ needs.envs.outputs.project }}
       service: ${{ needs.envs.outputs.service }}
       port: ${{ needs.envs.outputs.port }}
+      hostname: ${{ needs.config.outputs.hostname }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
     steps:
@@ -261,6 +262,7 @@ jobs:
     env:
       project: ${{ needs.envs.outputs.project }}
       service: ${{ needs.envs.outputs.service }}
+      hostname: ${{ needs.envs.config.hostname }}
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
@@ -303,4 +305,5 @@ jobs:
             sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
             cd app/vm
             ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
+            echo "...HOSTED URL = ${{ env.hostname }}....."
             echo "...done....."
