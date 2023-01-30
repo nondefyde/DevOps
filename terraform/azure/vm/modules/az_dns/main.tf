@@ -23,7 +23,7 @@ resource "cloudflare_record" "cf_vm_www_record" {
   depends_on = [azurerm_dns_cname_record.vm_dns_record]
 }
 
-resource "cloudflare_record" "cf_vm_cname_record" {
+resource "cloudflare_record" "cf_vm_sub_domain_cname_record" {
   zone_id         = var.cloudflare_zone_id
   name            = "*-${var.service}"
   value           = var.public_ip_dns_name
