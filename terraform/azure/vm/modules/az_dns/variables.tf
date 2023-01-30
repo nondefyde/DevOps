@@ -26,3 +26,7 @@ variable "cloudflare_zone_id" {
   type = string
   description = "Cloudflare zone id"
 }
+
+variable "service" {
+  type = string
+}

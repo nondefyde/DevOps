@@ -70,3 +70,8 @@ variable "dns_domain" {
   default = "dev.stemuli.net"
   description = "The dns domain"
 }
+
+variable "service" {
+  type = string
+  default = "dev"
+}
