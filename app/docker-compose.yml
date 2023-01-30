@@ -7,7 +7,6 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV}
       VIRTUAL_HOST: ${VIRTUAL_HOST}
-      SERVICE: ${service}
     ports:
       - 8000-8400:${PORT}
     restart: always
