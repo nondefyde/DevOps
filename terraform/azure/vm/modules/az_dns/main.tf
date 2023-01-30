@@ -4,7 +4,7 @@ resource "azurerm_dns_zone" "vm_dns_zone" {
 }
 
 resource "azurerm_dns_cname_record" "vm_dns_record" {
-  name                = "*-${var.service}"
+  name                = "*"
   zone_name           = azurerm_dns_zone.vm_dns_zone.name
   resource_group_name = "${var.prefix}-group"
   ttl                 = 300
