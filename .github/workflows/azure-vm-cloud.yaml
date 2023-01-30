@@ -81,6 +81,7 @@ jobs:
       project: ${{ steps.variables.outputs.project }}
       dns_domain: ${{ steps.variables.outputs.dns_domain }}
       location: ${{ steps.variables.outputs.location }}
+      service: ${{ steps.variables.outputs.service }}
     steps:
       - name: Initialize environments
         run: |
