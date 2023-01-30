@@ -28,7 +28,6 @@ resource "cloudflare_record" "cf_vm_sub_domain_cname_record" {
   name            = "*.${var.service}"
   value           = var.public_ip_dns_name
   type            = "TXT"
-  proxied         = true
   allow_overwrite = true
 
   depends_on = [azurerm_dns_cname_record.vm_dns_record]
