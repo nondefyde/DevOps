@@ -3,14 +3,14 @@ resource "azurerm_dns_zone" "vm_dns_zone" {
   resource_group_name = "${var.prefix}-group"
 }
 
-resource "azurerm_dns_cname_record" "vm_dns_record" {
-  name                = "*"
-  zone_name           = azurerm_dns_zone.vm_dns_zone.name
-  resource_group_name = "${var.prefix}-group"
-  ttl                 = 300
-  record              = var.public_ip_dns_name
-  depends_on = [azurerm_dns_zone.vm_dns_zone]
-}
+#resource "azurerm_dns_cname_record" "vm_dns_record" {
+#  name                = "*"
+#  zone_name           = azurerm_dns_zone.vm_dns_zone.name
+#  resource_group_name = "${var.prefix}-group"
+#  ttl                 = 300
+#  record              = var.public_ip_dns_name
+#  depends_on = [azurerm_dns_zone.vm_dns_zone]
+#}
 
 #resource "cloudflare_record" "cf_vm_www_record" {
 #  zone_id         = var.cloudflare_zone_id
@@ -23,16 +23,16 @@ resource "azurerm_dns_cname_record" "vm_dns_record" {
 #  depends_on = [azurerm_dns_cname_record.vm_dns_record]
 #}
 
-resource "cloudflare_record" "cf_vm_a_record" {
-  zone_id         = var.cloudflare_zone_id
-  name            = "*"
-  value           = var.public_ip
-  type            = "A"
-  proxied         = true
-  allow_overwrite = true
-
-  depends_on =  [azurerm_dns_cname_record.vm_dns_record]
-}
+#resource "cloudflare_record" "cf_vm_a_record" {
+#  zone_id         = var.cloudflare_zone_id
+#  name            = "*"
+#  value           = var.public_ip
+#  type            = "A"
+#  proxied         = true
+#  allow_overwrite = true
+#
+#  depends_on =  [azurerm_dns_cname_record.vm_dns_record]
+#}
 
 resource "cloudflare_record" "cf_vm_subdomain_cname_record" {
   zone_id         = var.cloudflare_zone_id
@@ -42,18 +42,7 @@ resource "cloudflare_record" "cf_vm_subdomain_cname_record" {
   proxied         = true
   allow_overwrite = true
 
-  depends_on = [azurerm_dns_cname_record.vm_dns_record]
-}
-
-resource "cloudflare_record" "cf_vm_cname_record" {
-  zone_id         = var.cloudflare_zone_id
-  name            = "*-${var.service}"
-  value           = var.public_ip_dns_name
-  type            = "CNAME"
-  proxied         = true
-  allow_overwrite = true
-
-  depends_on = [azurerm_dns_cname_record.vm_dns_record]
+  depends_on = [azurerm_dns_zone.vm_dns_zone]
 }
 
 resource "cloudflare_record" "cf_vm_domain_a_record" {
@@ -64,5 +53,5 @@ resource "cloudflare_record" "cf_vm_domain_a_record" {
   proxied         = true
   allow_overwrite = true
 
-  depends_on =  [azurerm_dns_cname_record.vm_dns_record]
+  depends_on =  [azurerm_dns_zone.vm_dns_zone]
 }
