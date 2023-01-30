@@ -202,6 +202,7 @@ jobs:
           touch .secret
           echo AZR_VM_APP_SECRET=${{ env.MY_SECRET }} >> .secret
           echo TEST="any value" >> .secret
+          echo ANOTHER="any value 2" >> .secret
           mv .secret ./vm
           cat ./app/docker-compose.yml | envsubst > ./vm/docker-compose.yml
           ls -a
