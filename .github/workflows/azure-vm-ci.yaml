@@ -304,6 +304,7 @@ jobs:
             echo "Login docker"
             sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
             cd app/vm
-            sudo ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
+            chmod +x deploy.sh
+            ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
             echo "...HOSTED URL = ${{ env.hostname }}....."
             echo "...done....."
