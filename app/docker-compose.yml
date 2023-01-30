@@ -7,6 +7,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV}
       VIRTUAL_HOST: ${VIRTUAL_HOST}
+      SERVICE: ${service}
     env_file:
       - ./.env
     ports:
