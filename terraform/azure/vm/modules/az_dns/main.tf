@@ -18,7 +18,7 @@ resource "cloudflare_record" "cf_vm_domain_a_record" {
   depends_on =  [cloudflare_record.cf_vm_subdomain_cname_record]
 }
 
-resource "cloudflare_certificate_pack" "example" {
+resource "cloudflare_certificate_pack" "cf_vm_ssl_record" {
   zone_id               = var.cloudflare_zone_id
   type                  = "advanced"
   hosts                 = [var.dns_domain, "*.${var.dns_domain}", "*.${var.service}.${var.dns_domain}"]

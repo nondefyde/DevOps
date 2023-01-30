@@ -1,11 +1,11 @@
 output "dns_a_record" {
-  value     = cloudflare_record.cf_vm_cname_record.name
+  value     = cloudflare_record.cf_vm_domain_a_record
 }
 
 output "dns_cname_record" {
-  value     = cloudflare_record.cf_vm_cname_record.name
+  value     = cloudflare_record.cf_vm_subdomain_cname_record
 }
 
-#output "dns_www_cname_record" {
-#  value     = cloudflare_record.cf_vm_www_record.name
-#}
+output "cf_vm_ssl_record" {
+  value     = cloudflare_certificate_pack.cf_vm_ssl_record.hosts
+}
