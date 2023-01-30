@@ -17,6 +17,7 @@ on:
         type: string
 jobs:
   build-ci:
+    if: ${{ inputs.buildCommand }}
     name: "Build CI"
     runs-on: ${{ matrix.os }}
     strategy:
