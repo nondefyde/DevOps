@@ -10,3 +10,13 @@ variable "vpn_id" {
 variable "location" {
   type = string
 }
+
+variable "admin_username" {
+  type = string
+  description = "Admin user name"
+}
+
+variable "admin_password" {
+  type = string
+  default = "Admin password"
+}
