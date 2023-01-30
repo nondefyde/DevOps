@@ -5,7 +5,7 @@ sudo docker image prune -a -f
 
 echo "acr $1"
 
-IMAGE_COUNT=$(sudo docker ps | grep $1 | wc -l)
+IMAGE_COUNT=$(sudo docker ps --filter="name=vm_app_*" | grep vm_app_ | wc -l)
 IDS=$(sudo docker ps --filter ancestor=$1 --format '{{.ID}}')
 ZERO=0
 
