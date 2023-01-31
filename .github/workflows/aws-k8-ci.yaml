@@ -258,7 +258,7 @@ jobs:
 
       - name: Deploy image to kubernetes cluster
         env:
-          APP_NAME:  ${{ env.service}}
+          APP_NAME:  ${{ env.service }}
           IMAGE_TAG: ${{ needs.config.outputs.docker-tag }}-${{ env.service}}
           NAMESPACE: ${{ env.namespace }}
           INGRESS_HOSTNAME: ${{ env.hostname }}
