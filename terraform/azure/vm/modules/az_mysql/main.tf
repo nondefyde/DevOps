@@ -25,7 +25,7 @@ resource "random_password" "password" {
 # Manages the MySQL Flexible Server
 resource "azurerm_mysql_flexible_server" "mysql_server" {
   location                     = var.location
-  name                         = "${var.prefix}_mysqlfs-${var.service}"
+  name                         = "${var.prefix}-mysqlfs-${var.service}"
   resource_group_name          = "${var.prefix}-group"
   administrator_login          = var.admin_username
   administrator_password       = random_password.password.result
@@ -58,7 +58,7 @@ resource "azurerm_mysql_flexible_server" "mysql_server" {
 resource "azurerm_mysql_flexible_database" "mysql_database" {
   charset             = "utf8"
   collation           = "utf8_unicode_ci"
-  name                = "${var.prefix}_mysqlfsdb_${var.service}"
+  name                = "${var.prefix}-mysqlfsdb-${var.service}"
   resource_group_name = "${var.prefix}-group"
   server_name         = azurerm_mysql_flexible_server.mysql_server.name
 }

@@ -50,7 +50,7 @@ variable "admin_username" {
 variable "admin_password" {
   type        = string
   description = "Admin password"
-  default = "password"
+  default = "Stemuli_1@###"
 }
 
 variable "init_file" {

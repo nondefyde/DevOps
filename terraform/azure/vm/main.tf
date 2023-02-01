@@ -29,7 +29,7 @@ resource "azurerm_container_registry" "vm_acr" {
   admin_enabled       = false
 
   georeplications {
-    location = "East US"
+    location = "East US 2"
   }
 
   depends_on = [azurerm_resource_group.vm_group]
@@ -56,6 +56,7 @@ module "az_mysql" {
   prefix         = var.app_project_prefix
   location       = var.location
   admin_username = var.admin_username
+  admin_password = var.admin_password
   service        = var.service
 
   depends_on = [module.az_dns]

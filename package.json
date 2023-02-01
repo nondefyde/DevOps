@@ -28,9 +28,9 @@
     "aws:cicle": "yarn aws:execute && yarn aws:tear",
 
     "azure:clean": "rm -rf ./terraform/azure/_state && rm -rf ./terraform/azure/**/.terraform",
-    "azure:cleanup": "cd ./terraform/azure/_scripts && ./cleanup.sh cloudstgdev",
-    "azure:setup": "cd ./terraform/azure/_scripts && ./setup.sh cloudstgdev centralus",
-    "azure:prepare": "cd ./terraform/azure/_scripts && ./prepare.sh vm cloudstgdev",
+    "azure:cleanup": "cd ./terraform/azure/_scripts && ./cleanup.sh eastus",
+    "azure:setup": "cd ./terraform/azure/_scripts && ./setup.sh cloudstgdev eastus",
+    "azure:prepare": "cd ./terraform/azure/_scripts && ./prepare.sh vm cloudstgdev eastus",
     "azure:apply": "cd ./terraform/azure/_scripts && ./apply.sh vm cloudstgdev",
     "azure:destroy": "cd ./terraform/azure/_scripts && ./destroy.sh vm cloudstgdev",
     "azure:execute": "yarn azure:setup && yarn azure:prepare && yarn azure:apply",
