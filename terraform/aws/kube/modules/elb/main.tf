@@ -31,4 +31,6 @@ resource "helm_release" "lb" {
     name  = "clusterName"
     value = var.cluster_name
   }
+
+  wait_for_jobs = true
 }

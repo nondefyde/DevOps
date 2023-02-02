@@ -272,8 +272,8 @@ jobs:
           cat ./_kubernetes/ingress.yml | envsubst | kubectl apply -f -
           FILE=./env.yml
           if [ -f "$FILE" ]; then
-            echo secret file uploaded
             cat ./env.yml | envsubst | kubectl apply -f -
+            echo secret file uploaded
           fi
 
       - name: Restart Pods

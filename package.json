@@ -17,6 +17,7 @@
     "secret:chv": "cd ./scripts && cat ../_env/chowville.yml | ./base64.sh",
     "secret:kassh": "cd ./scripts && cat ../_env/kassh.yml | ./base64.sh",
     "secret:stm": "cd ./scripts && cat ../_env/stm | ./base64.sh",
+    "secret:gidm": "cd ./scripts && cat ../_env/gidm.yml | ./base64.sh",
 
     "aws:clean": "rm -rf ./terraform/aws/_state && rm -rf ./terraform/azure/**/.terraform",
     "aws:setup": "cd ./terraform/aws/_scripts && ./setup.sh cloudstgdev us-west-2",
