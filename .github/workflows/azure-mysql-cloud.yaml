@@ -1,4 +1,4 @@
-name: AZR VM Cloud
+name: AZR MYSQL Cloud
 
 on:
   push:
