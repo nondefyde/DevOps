@@ -168,6 +168,7 @@ jobs:
       dns_domain: ${{ needs.envs.outputs.dns_domain }}
       location: ${{ needs.envs.outputs.location }}
       service: ${{ needs.envs.outputs.service }}
+      group: ${{ needs.envs.outputs.group }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
