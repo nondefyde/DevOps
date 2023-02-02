@@ -74,7 +74,7 @@ env:
   current_project: cloudstgdev
   current_location: centralus
   current_service: dev
-  current_group: bytegum
+  current_group: cloudstgdev
 
 jobs:
   envs:
