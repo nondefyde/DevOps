@@ -333,7 +333,7 @@ jobs:
         run: |
           echo "Environment AZR: mysql - ${{ env.project}}"
           mkdir -p terraform/azure/mysql/_state
-          terraform -chdir=terraform/azure/vm plan -no-color -input=false \
+          terraform -chdir=terraform/azure/mysql plan -no-color -input=false \
             -var=app_project_prefix="${{ env.project}}" \
             -var=subscription_id="${{ secrets.AZR_SUBSCRIPTION_ID }}" \
             -var=tenant_id="${{ secrets.AZR_TENANT_ID }}" \
