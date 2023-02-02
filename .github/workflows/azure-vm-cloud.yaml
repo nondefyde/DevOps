@@ -160,7 +160,7 @@ jobs:
 
 
   setup-vm:
-    name: 'Build Cloud Infrastructure'
+    name: 'Deploy Virtual Machine'
     needs: [ envs, setups ]
     runs-on: ubuntu-latest
     env:
@@ -269,7 +269,7 @@ jobs:
         continue-on-error: false
 
   setup-mysqldb:
-    name: 'Setup Database'
+    name: 'Setup MYSQL Database'
     needs: [ envs, setup-vm ]
     runs-on: ubuntu-latest
     env:
@@ -339,10 +339,7 @@ jobs:
             -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
             -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
             -var=admin_password="${{ secrets.VM_PASSWORD }}" \
-            -var=dns_domain="${{ env.dns_domain }}" \
             -var=service="${{ env.service }}" \
-            -var=cloudflare_api_token="${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-            -var=cloudflare_zone_id="${{ secrets.CLOUDFLARE_ZONE_ID }}" \
             -out ./_state/${{ env.project }}.tfplan \
             -lock=false
         continue-on-error: false
@@ -367,10 +364,7 @@ jobs:
             -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
             -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
             -var=admin_password="${{ secrets.VM_PASSWORD }}" \
-            -var=dns_domain="${{ env.dns_domain }}" \
             -var=service="${{ env.service }}" \
-            -var=cloudflare_api_token="${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-            -var=cloudflare_zone_id="${{ secrets.CLOUDFLARE_ZONE_ID }}" \
             -out ./_state/${{ env.project }}.destroy.tfplan \
             -lock=false
           terraform -chdir=terraform/azure/mysql apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
