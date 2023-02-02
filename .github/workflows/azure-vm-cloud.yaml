@@ -72,7 +72,7 @@ permissions:
 env:
   current_dns_domain: bytegum.com
   current_project: cloudstgdev
-  current_location: centralus
+  current_location: eastus
   current_service: dev
   current_group: cloudstgdev
 
