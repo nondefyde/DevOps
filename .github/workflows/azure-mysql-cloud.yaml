@@ -72,7 +72,7 @@ permissions:
 env:
   current_dns_domain: bytegum.com
   current_project: cloudstgdev
-  current_location: eastus
+  current_location: westus
   current_service: dev
   current_group: cloudstgdev
 
@@ -154,15 +154,10 @@ jobs:
           cd terraform/azure/_scripts
           chmod +x setup.sh
           ./setup.sh ${{ env.group }} ${{ env.location }}
-      - name: Set Variables
-        id: variables
-        run: |
-          echo "HAS_VM=${{ env.HAS_VM }}" >> $GITHUB_OUTPUT
 
-
-  setup-vm:
-    name: 'Deploy Virtual Machine'
-    needs: [ envs, setups ]
+  setup-mysqldb:
+    name: 'Setup MYSQL Database'
+    needs: [ envs, setup-vm ]
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
@@ -206,13 +201,13 @@ jobs:
       - name: Terraform Init
         id: init
         run: |
-          echo "Environment AZR: vm - ${{ env.project }}"
-          mkdir -p terraform/azure/vm/_state
-          terraform -chdir=terraform/azure/vm init \
+          echo "Environment AZR: mysql - ${{ env.project }}"
+          mkdir -p terraform/azure/mysql/_state
+          terraform -chdir=terraform/azure/mysql init \
             -backend-config="resource_group_name=${{ env.group }}-tfstate" \
             -backend-config="storage_account_name=${{ env.group }}storage" \
             -backend-config="container_name=${{ env.group }}tfstate" \
-            -backend-config="key=${{ env.group }}-vm.terraform.tfstate" \
+            -backend-config="key=${{ env.group }}-mysql.terraform.tfstate" \
             -backend-config="subscription_id=${{ secrets.AZR_SUBSCRIPTION_ID }}" \
             -backend-config="tenant_id=${{ secrets.AZR_TENANT_ID }}" \
             -backend-config="client_id=${{ secrets.AZR_CLIENT_ID }}" \
@@ -222,20 +217,17 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          echo "Environment AZR: vm - ${{ env.project}}"
-          mkdir -p terraform/azure/vm/_state
-          terraform -chdir=terraform/azure/vm plan -no-color -input=false \
+          echo "Environment AZR: mysql - ${{ env.project}}"
+          mkdir -p terraform/azure/mysql/_state
+          terraform -chdir=terraform/azure/mysql plan -no-color -input=false \
             -var=app_project_prefix="${{ env.project}}" \
             -var=subscription_id="${{ secrets.AZR_SUBSCRIPTION_ID }}" \
             -var=tenant_id="${{ secrets.AZR_TENANT_ID }}" \
             -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
             -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
             -var=admin_password="${{ secrets.VM_PASSWORD }}" \
-            -var=dns_domain="${{ env.dns_domain }}" \
             -var=service="${{ env.service }}" \
-            -var=cloudflare_api_token="${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-            -var=cloudflare_zone_id="${{ secrets.CLOUDFLARE_ZONE_ID }}" \
-            -out ./_state/${{ env.project }}.vm.tfplan \
+            -out ./_state/${{ env.project }}.tfplan \
             -lock=false
         continue-on-error: false
 
@@ -243,7 +235,7 @@ jobs:
         id: apply
         run: |
           echo "Terraform Application in progress ${{ env.project }}"
-          terraform -chdir=terraform/azure/vm apply -auto-approve -input=false ./_state/${{ env.project }}.vm.tfplan
+          terraform -chdir=terraform/azure/mysql apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
           echo "Terraform Application was successful ${{ env.project }}"
         continue-on-error: false
 
@@ -252,19 +244,16 @@ jobs:
         id: destroy
         run: |
           echo "Terraform Destruction in progress ${{ env.project }}"
-          terraform -chdir=terraform/azure/vm plan -destroy -no-color -input=false \
+          terraform -chdir=terraform/azure/mysql plan -destroy -no-color -input=false \
             -var=app_project_prefix="${{ env.project}}" \
             -var=subscription_id="${{ secrets.AZR_SUBSCRIPTION_ID }}" \
             -var=tenant_id="${{ secrets.AZR_TENANT_ID }}" \
             -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
             -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
             -var=admin_password="${{ secrets.VM_PASSWORD }}" \
-            -var=dns_domain="${{ env.dns_domain }}" \
             -var=service="${{ env.service }}" \
-            -var=cloudflare_api_token="${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-            -var=cloudflare_zone_id="${{ secrets.CLOUDFLARE_ZONE_ID }}" \
-            -out ./_state/${{ env.project }}.vm.destroy.tfplan \
+            -out ./_state/${{ env.project }}.destroy.tfplan \
             -lock=false
-          terraform -chdir=terraform/azure/vm apply -auto-approve -input=false ./_state/${{ env.project }}.vm.destroy.tfplan
+          terraform -chdir=terraform/azure/mysql apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
           echo "Terraform Destruction in successful ${{ env.project }}"
         continue-on-error: false
