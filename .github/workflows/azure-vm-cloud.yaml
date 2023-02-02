@@ -112,7 +112,7 @@ jobs:
           echo "dns_domain=${{ env.dns_domain }}" >> $GITHUB_OUTPUT
           echo "location=${{ env.location }}" >> $GITHUB_OUTPUT
           echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
-          echo "group=${{ env.service }}" >> $GITHUB_OUTPUT
+          echo "group=${{ env.group }}" >> $GITHUB_OUTPUT
 
   setups:
     name: 'Setup dependencies'
