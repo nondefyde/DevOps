@@ -123,6 +123,7 @@ jobs:
       dns_domain: ${{ needs.envs.outputs.dns_domain }}
       location: ${{ needs.envs.outputs.location }}
       service: ${{ needs.envs.outputs.service }}
+      group: ${{ needs.envs.outputs.group }}
     outputs:
       HAS_VM: ${{ steps.variables.outputs.HAS_VM }}
     steps:
