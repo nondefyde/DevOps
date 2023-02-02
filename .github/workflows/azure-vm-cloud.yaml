@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - '.github/workflows/.**-vm-cloud.yaml'
+#    paths:
+#      - '.github/workflows/.**-vm-cloud.yaml'
   workflow_dispatch:
     inputs:
       TFAction:
@@ -62,6 +62,8 @@ on:
         type: string
       location:
         type: string
+      group:
+        type: string
 
 permissions:
   id-token: write
@@ -72,6 +74,7 @@ env:
   current_project: cloudstgdev
   current_location: centralus
   current_service: dev
+  current_group: cloudstgdev
 
 jobs:
   envs:
@@ -82,6 +85,7 @@ jobs:
       dns_domain: ${{ steps.variables.outputs.dns_domain }}
       location: ${{ steps.variables.outputs.location }}
       service: ${{ steps.variables.outputs.service }}
+      group: ${{ steps.variables.outputs.group }}
     steps:
       - name: Initialize environments
         run: |
@@ -89,7 +93,9 @@ jobs:
           DNS="${{inputs.dns_domain}}"
           LOC="${{inputs.location}}"
           SRV="${{inputs.service}}"
+          GRP="${{inputs.group}}"
           
+          GROUP="${GRP:-${{ env.current_group }}}"
           PROJECT="${EP:-${{ env.current_project }}}"
           DNSNAME="${DNS:-${{ env.current_dns_domain }}}"
           LOCATION="${LOC:-${{ env.current_location }}}"
@@ -98,6 +104,7 @@ jobs:
           echo "dns_domain=${DNSNAME}" >> "$GITHUB_ENV"
           echo "location=${LOCATION}" >> "$GITHUB_ENV"
           echo "service=${SERVICE}" >> "$GITHUB_ENV"
+          echo "group=${GROUP}" >> "$GITHUB_ENV"
       - name: Set Env
         id: variables
         run: |
@@ -105,6 +112,7 @@ jobs:
           echo "dns_domain=${{ env.dns_domain }}" >> $GITHUB_OUTPUT
           echo "location=${{ env.location }}" >> $GITHUB_OUTPUT
           echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
+          echo "group=${{ env.service }}" >> $GITHUB_OUTPUT
 
   setups:
     name: 'Setup dependencies'
@@ -144,14 +152,14 @@ jobs:
         run: |
           cd terraform/azure/_scripts
           chmod +x setup.sh
-          ./setup.sh ${{ env.project }} ${{ env.location }}
+          ./setup.sh ${{ env.group }} ${{ env.location }}
       - name: Set Variables
         id: variables
         run: |
           echo "HAS_VM=${{ env.HAS_VM }}" >> $GITHUB_OUTPUT
 
 
-  setup-cloud:
+  setup-vm:
     name: 'Build Cloud Infrastructure'
     needs: [ envs, setups ]
     runs-on: ubuntu-latest
@@ -199,10 +207,10 @@ jobs:
           echo "Environment AZR: vm - ${{ env.project }}"
           mkdir -p terraform/azure/vm/_state
           terraform -chdir=terraform/azure/vm init \
-            -backend-config="resource_group_name=${{ env.project }}-tfstate" \
-            -backend-config="storage_account_name=${{ env.project }}storage" \
-            -backend-config="container_name=${{ env.project }}tfstate" \
-            -backend-config="key=${{ env.project }}.terraform.tfstate" \
+            -backend-config="resource_group_name=${{ env.group }}-tfstate" \
+            -backend-config="storage_account_name=${{ env.group }}storage" \
+            -backend-config="container_name=${{ env.group }}tfstate" \
+            -backend-config="key=${{ env.group }}-vm.terraform.tfstate" \
             -backend-config="subscription_id=${{ secrets.AZR_SUBSCRIPTION_ID }}" \
             -backend-config="tenant_id=${{ secrets.AZR_TENANT_ID }}" \
             -backend-config="client_id=${{ secrets.AZR_CLIENT_ID }}" \
@@ -225,7 +233,7 @@ jobs:
             -var=service="${{ env.service }}" \
             -var=cloudflare_api_token="${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -var=cloudflare_zone_id="${{ secrets.CLOUDFLARE_ZONE_ID }}" \
-            -out ./_state/${{ env.project }}.tfplan \
+            -out ./_state/${{ env.project }}.vm.tfplan \
             -lock=false
         continue-on-error: false
 
@@ -233,7 +241,7 @@ jobs:
         id: apply
         run: |
           echo "Terraform Application in progress ${{ env.project }}"
-          terraform -chdir=terraform/azure/vm apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
+          terraform -chdir=terraform/azure/vm apply -auto-approve -input=false ./_state/${{ env.project }}.vm.tfplan
           echo "Terraform Application was successful ${{ env.project }}"
         continue-on-error: false
 
@@ -253,8 +261,117 @@ jobs:
             -var=service="${{ env.service }}" \
             -var=cloudflare_api_token="${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -var=cloudflare_zone_id="${{ secrets.CLOUDFLARE_ZONE_ID }}" \
+            -out ./_state/${{ env.project }}.vm.destroy.tfplan \
+            -lock=false
+          terraform -chdir=terraform/azure/vm apply -auto-approve -input=false ./_state/${{ env.project }}.vm.destroy.tfplan
+          echo "Terraform Destruction in successful ${{ env.project }}"
+        continue-on-error: false
+
+  setup-mysqldb:
+    name: 'Setup Database'
+    needs: [ envs, setup-vm ]
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      dns_domain: ${{ needs.envs.outputs.dns_domain }}
+      location: ${{ needs.envs.outputs.location }}
+      service: ${{ needs.envs.outputs.service }}
+      group: ${{ needs.envs.outputs.group }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set Env
+        run: |
+          IP="${{inputs.project}}"
+          EP="${{env.project}}"
+          PROJECT="${IP:-$EP}"
+          echo "FINAL PROJECT NAME ${PROJECT}"
+          echo "project=${PROJECT}" >> "$GITHUB_ENV"
+      - name: Download Repo to Artifact
+        if: ${{ inputs.is_workflow == true }}
+        uses: actions/download-artifact@master
+        with:
+          name: cloud-scripts
+          path: ${{ inputs.repository }}
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a "${{ inputs.repository }}/." ./
+          rm -r "${{ inputs.repository }}"
+          ls -a
+      - name: Install Azure Cli
+        uses: elstudio/action-install-azure-cli@v1
+      - name: Login Azure
+        id: login
+        run: |
+          echo "has vm ${{ needs.setups.outputs.HAS_VM }}"
+          az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        id: init
+        run: |
+          echo "Environment AZR: mysql - ${{ env.project }}"
+          mkdir -p terraform/azure/mysql/_state
+          terraform -chdir=terraform/azure/mysql init \
+            -backend-config="resource_group_name=${{ env.group }}-tfstate" \
+            -backend-config="storage_account_name=${{ env.group }}storage" \
+            -backend-config="container_name=${{ env.group }}tfstate" \
+            -backend-config="key=${{ env.group }}-mysql.terraform.tfstate" \
+            -backend-config="subscription_id=${{ secrets.AZR_SUBSCRIPTION_ID }}" \
+            -backend-config="tenant_id=${{ secrets.AZR_TENANT_ID }}" \
+            -backend-config="client_id=${{ secrets.AZR_CLIENT_ID }}" \
+            -backend-config="client_secret=${{ secrets.AZR_CLIENT_SECRET }}"
+        continue-on-error: false
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          echo "Environment AZR: mysql - ${{ env.project}}"
+          mkdir -p terraform/azure/mysql/_state
+          terraform -chdir=terraform/azure/vm plan -no-color -input=false \
+            -var=app_project_prefix="${{ env.project}}" \
+            -var=subscription_id="${{ secrets.AZR_SUBSCRIPTION_ID }}" \
+            -var=tenant_id="${{ secrets.AZR_TENANT_ID }}" \
+            -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
+            -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
+            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
+            -var=dns_domain="${{ env.dns_domain }}" \
+            -var=service="${{ env.service }}" \
+            -var=cloudflare_api_token="${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -var=cloudflare_zone_id="${{ secrets.CLOUDFLARE_ZONE_ID }}" \
+            -out ./_state/${{ env.project }}.tfplan \
+            -lock=false
+        continue-on-error: false
+
+      - name: Terraform Apply
+        id: apply
+        run: |
+          echo "Terraform Application in progress ${{ env.project }}"
+          terraform -chdir=terraform/azure/mysql apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
+          echo "Terraform Application was successful ${{ env.project }}"
+        continue-on-error: false
+
+      - name: Terraform Destroy
+        if: ${{ inputs.TFAction == true }}
+        id: destroy
+        run: |
+          echo "Terraform Destruction in progress ${{ env.project }}"
+          terraform -chdir=terraform/azure/mysql plan -destroy -no-color -input=false \
+            -var=app_project_prefix="${{ env.project}}" \
+            -var=subscription_id="${{ secrets.AZR_SUBSCRIPTION_ID }}" \
+            -var=tenant_id="${{ secrets.AZR_TENANT_ID }}" \
+            -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
+            -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
+            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
+            -var=dns_domain="${{ env.dns_domain }}" \
+            -var=service="${{ env.service }}" \
+            -var=cloudflare_api_token="${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -var=cloudflare_zone_id="${{ secrets.CLOUDFLARE_ZONE_ID }}" \
             -out ./_state/${{ env.project }}.destroy.tfplan \
             -lock=false
-          terraform -chdir=terraform/azure/vm apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
+          terraform -chdir=terraform/azure/mysql apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
           echo "Terraform Destruction in successful ${{ env.project }}"
         continue-on-error: false

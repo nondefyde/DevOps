@@ -19,23 +19,42 @@
     "secret:stm": "cd ./scripts && cat ../_env/stm | ./base64.sh",
     "secret:getreepa": "cd ./scripts && cat ../_env/getreepa.yml | ./base64.sh",
 
-    "aws:clean": "rm -rf ./terraform/aws/_state && rm -rf ./terraform/azure/**/.terraform",
-    "aws:setup": "cd ./terraform/aws/_scripts && ./setup.sh cloudstgdev us-west-2",
-    "aws:prepare": "cd ./terraform/aws/_scripts && ./prepare.sh kube cloudstgdev package.json",
-    "aws:apply": "cd ./terraform/aws/_scripts && ./apply.sh kube cloudstgdev",
-    "aws:destroy": "cd ./terraform/aws/_scripts && ./destroy.sh kube cloudstgdev",
-    "aws:execute": "yarn aws:setup && yarn aws:prepare && yarn aws:apply",
-    "aws:tear": "yarn aws:destroy",
-    "aws:cicle": "yarn aws:execute && yarn aws:tear",
+    "aws:clean:kube": "rm -rf ./terraform/aws/_state && rm -rf ./terraform/azure/**/.terraform",
+    "aws:setup:kube": "cd ./terraform/aws/_scripts && ./setup.sh cloudstgdev us-west-2",
+    "aws:prepare:kube": "cd ./terraform/aws/_scripts && ./prepare.sh kube cloudstgdev package.json",
+    "aws:apply:kube": "cd ./terraform/aws/_scripts && ./apply.sh kube cloudstgdev",
+    "aws:destroy:kube": "cd ./terraform/aws/_scripts && ./destroy.sh kube cloudstgdev",
+    "aws:execute:kube": "yarn aws:setup:kube && yarn aws:prepare:kube && yarn aws:apply:kube",
+    "aws:tear:kube": "yarn aws:destroy:kube",
+    "aws:cicle:kube": "yarn aws:execute:kube && yarn aws:tear:kube",
 
     "azure:clean": "rm -rf ./terraform/azure/_state && rm -rf ./terraform/azure/**/.terraform",
     "azure:cleanup": "cd ./terraform/azure/_scripts && ./cleanup.sh eastus",
     "azure:setup": "cd ./terraform/azure/_scripts && ./setup.sh cloudstgdev eastus",
-    "azure:prepare": "cd ./terraform/azure/_scripts && ./prepare.sh vm cloudstgdev eastus",
-    "azure:apply": "cd ./terraform/azure/_scripts && ./apply.sh vm cloudstgdev",
-    "azure:destroy": "cd ./terraform/azure/_scripts && ./destroy.sh vm cloudstgdev",
-    "azure:execute": "yarn azure:setup && yarn azure:prepare && yarn azure:apply",
-    "azure:tear": "yarn azure:destroy && yarn azure:cleanup",
-    "azure:cicle": "yarn azure:execute && yarn azure:tear"
+    "azure:destroy": "azure:destroy:vm && azure:destroy:mysql",
+
+
+    "azure:prepare:vm": "cd ./terraform/azure/_scripts && ./prepare.sh vm cloudstgdev",
+    "azure:apply:vm": "cd ./terraform/azure/_scripts && ./apply.sh vm cloudstgdev",
+    "azure:destroy:vm": "cd ./terraform/azure/_scripts && ./destroy.sh vm cloudstgdev",
+    "azure:execute:vm": "yarn azure:setup && yarn azure:prepare && yarn azure:apply:vm",
+    "azure:tear:vm": "yarn azure:destroy:vm && yarn azure:cleanup:vm",
+    "azure:cicle:vm": "yarn azure:execute:vm && yarn azure:tear:vm",
+
+    "azure:prepare:mysql": "cd ./terraform/azure/_scripts && ./prepare.sh mysql cloudstgdev",
+    "azure:apply:mysql": "cd ./terraform/azure/_scripts && ./apply.sh mysql cloudstgdev",
+    "azure:destroy:mysql": "cd ./terraform/azure/_scripts && ./destroy.sh mysql cloudstgdev",
+    "azure:execute:mysql": "yarn azure:setup && yarn azure:prepare:mysql && yarn azure:apply:mysql",
+    "azure:tear:mysql": "yarn azure:destroy:mysql && yarn azure:cleanup:mysql",
+    "azure:cicle:mysql": "yarn azure:execute:mysql && yarn azure:tear:mysql",
+
+
+    "azure:prepare:gw": "cd ./terraform/azure/_scripts && ./prepare.sh gw cloudstgdev",
+    "azure:apply:gw": "cd ./terraform/azure/_scripts && ./apply.sh gw cloudstgdev",
+    "azure:destroy:gw": "cd ./terraform/azure/_scripts && ./destroy.sh gw cloudstgdev",
+    "azure:execute:gw": "yarn azure:setup && yarn azure:prepare:gw && yarn azure:apply:gw",
+    "azure:tear:gw": "yarn azure:destroy:gw && yarn azure:cleanup:gw",
+    "azure:cicle:gw": "yarn azure:execute:gw && yarn azure:tear:gw",
+
   }
 }
