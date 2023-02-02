@@ -269,105 +269,105 @@ jobs:
           echo "Terraform Destruction in successful ${{ env.project }}"
         continue-on-error: false
 
-#  setup-mysqldb:
-#    name: 'Setup MYSQL Database'
-#    needs: [ envs, setup-vm ]
-#    runs-on: ubuntu-latest
-#    env:
-#      project: ${{ needs.envs.outputs.project }}
-#      dns_domain: ${{ needs.envs.outputs.dns_domain }}
-#      location: ${{ needs.envs.outputs.location }}
-#      service: ${{ needs.envs.outputs.service }}
-#      group: ${{ needs.envs.outputs.group }}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Set Env
-#        run: |
-#          IP="${{inputs.project}}"
-#          EP="${{env.project}}"
-#          PROJECT="${IP:-$EP}"
-#          echo "FINAL PROJECT NAME ${PROJECT}"
-#          echo "project=${PROJECT}" >> "$GITHUB_ENV"
-#      - name: Download Repo to Artifact
-#        if: ${{ inputs.is_workflow == true }}
-#        uses: actions/download-artifact@master
-#        with:
-#          name: cloud-scripts
-#          path: ${{ inputs.repository }}
-#      - name: Copy Script files to context
-#        if: ${{ inputs.is_workflow == true }}
-#        run: |
-#          ls
-#          cp -a "${{ inputs.repository }}/." ./
-#          rm -r "${{ inputs.repository }}"
-#          ls -a
-#      - name: Install Azure Cli
-#        uses: elstudio/action-install-azure-cli@v1
-#      - name: Login Azure
-#        id: login
-#        run: |
-#          echo "has vm ${{ needs.setups.outputs.HAS_VM }}"
-#          az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
-#      - name: Setup Terraform
-#        uses: hashicorp/setup-terraform@v2
-#
-#      - name: Terraform Init
-#        id: init
-#        run: |
-#          echo "Environment AZR: mysql - ${{ env.project }}"
-#          mkdir -p terraform/azure/mysql/_state
-#          terraform -chdir=terraform/azure/mysql init \
-#            -backend-config="resource_group_name=${{ env.group }}-tfstate" \
-#            -backend-config="storage_account_name=${{ env.group }}storage" \
-#            -backend-config="container_name=${{ env.group }}tfstate" \
-#            -backend-config="key=${{ env.group }}-mysql.terraform.tfstate" \
-#            -backend-config="subscription_id=${{ secrets.AZR_SUBSCRIPTION_ID }}" \
-#            -backend-config="tenant_id=${{ secrets.AZR_TENANT_ID }}" \
-#            -backend-config="client_id=${{ secrets.AZR_CLIENT_ID }}" \
-#            -backend-config="client_secret=${{ secrets.AZR_CLIENT_SECRET }}"
-#        continue-on-error: false
-#
-#      - name: Terraform Plan
-#        id: plan
-#        run: |
-#          echo "Environment AZR: mysql - ${{ env.project}}"
-#          mkdir -p terraform/azure/mysql/_state
-#          terraform -chdir=terraform/azure/vm plan -no-color -input=false \
-#            -var=app_project_prefix="${{ env.project}}" \
-#            -var=subscription_id="${{ secrets.AZR_SUBSCRIPTION_ID }}" \
-#            -var=tenant_id="${{ secrets.AZR_TENANT_ID }}" \
-#            -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
-#            -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
-#            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
-#            -var=service="${{ env.service }}" \
-#            -out ./_state/${{ env.project }}.tfplan \
-#            -lock=false
-#        continue-on-error: false
-#
-#      - name: Terraform Apply
-#        id: apply
-#        run: |
-#          echo "Terraform Application in progress ${{ env.project }}"
-#          terraform -chdir=terraform/azure/mysql apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
-#          echo "Terraform Application was successful ${{ env.project }}"
-#        continue-on-error: false
-#
-#      - name: Terraform Destroy
-#        if: ${{ inputs.TFAction == true }}
-#        id: destroy
-#        run: |
-#          echo "Terraform Destruction in progress ${{ env.project }}"
-#          terraform -chdir=terraform/azure/mysql plan -destroy -no-color -input=false \
-#            -var=app_project_prefix="${{ env.project}}" \
-#            -var=subscription_id="${{ secrets.AZR_SUBSCRIPTION_ID }}" \
-#            -var=tenant_id="${{ secrets.AZR_TENANT_ID }}" \
-#            -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
-#            -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
-#            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
-#            -var=service="${{ env.service }}" \
-#            -out ./_state/${{ env.project }}.destroy.tfplan \
-#            -lock=false
-#          terraform -chdir=terraform/azure/mysql apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
-#          echo "Terraform Destruction in successful ${{ env.project }}"
-#        continue-on-error: false
+  setup-mysqldb:
+    name: 'Setup MYSQL Database'
+    needs: [ envs, setup-vm ]
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      dns_domain: ${{ needs.envs.outputs.dns_domain }}
+      location: ${{ needs.envs.outputs.location }}
+      service: ${{ needs.envs.outputs.service }}
+      group: ${{ needs.envs.outputs.group }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set Env
+        run: |
+          IP="${{inputs.project}}"
+          EP="${{env.project}}"
+          PROJECT="${IP:-$EP}"
+          echo "FINAL PROJECT NAME ${PROJECT}"
+          echo "project=${PROJECT}" >> "$GITHUB_ENV"
+      - name: Download Repo to Artifact
+        if: ${{ inputs.is_workflow == true }}
+        uses: actions/download-artifact@master
+        with:
+          name: cloud-scripts
+          path: ${{ inputs.repository }}
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a "${{ inputs.repository }}/." ./
+          rm -r "${{ inputs.repository }}"
+          ls -a
+      - name: Install Azure Cli
+        uses: elstudio/action-install-azure-cli@v1
+      - name: Login Azure
+        id: login
+        run: |
+          echo "has vm ${{ needs.setups.outputs.HAS_VM }}"
+          az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        id: init
+        run: |
+          echo "Environment AZR: mysql - ${{ env.project }}"
+          mkdir -p terraform/azure/mysql/_state
+          terraform -chdir=terraform/azure/mysql init \
+            -backend-config="resource_group_name=${{ env.group }}-tfstate" \
+            -backend-config="storage_account_name=${{ env.group }}storage" \
+            -backend-config="container_name=${{ env.group }}tfstate" \
+            -backend-config="key=${{ env.group }}-mysql.terraform.tfstate" \
+            -backend-config="subscription_id=${{ secrets.AZR_SUBSCRIPTION_ID }}" \
+            -backend-config="tenant_id=${{ secrets.AZR_TENANT_ID }}" \
+            -backend-config="client_id=${{ secrets.AZR_CLIENT_ID }}" \
+            -backend-config="client_secret=${{ secrets.AZR_CLIENT_SECRET }}"
+        continue-on-error: false
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          echo "Environment AZR: mysql - ${{ env.project}}"
+          mkdir -p terraform/azure/mysql/_state
+          terraform -chdir=terraform/azure/vm plan -no-color -input=false \
+            -var=app_project_prefix="${{ env.project}}" \
+            -var=subscription_id="${{ secrets.AZR_SUBSCRIPTION_ID }}" \
+            -var=tenant_id="${{ secrets.AZR_TENANT_ID }}" \
+            -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
+            -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
+            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
+            -var=service="${{ env.service }}" \
+            -out ./_state/${{ env.project }}.tfplan \
+            -lock=false
+        continue-on-error: false
+
+      - name: Terraform Apply
+        id: apply
+        run: |
+          echo "Terraform Application in progress ${{ env.project }}"
+          terraform -chdir=terraform/azure/mysql apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
+          echo "Terraform Application was successful ${{ env.project }}"
+        continue-on-error: false
+
+      - name: Terraform Destroy
+        if: ${{ inputs.TFAction == true }}
+        id: destroy
+        run: |
+          echo "Terraform Destruction in progress ${{ env.project }}"
+          terraform -chdir=terraform/azure/mysql plan -destroy -no-color -input=false \
+            -var=app_project_prefix="${{ env.project}}" \
+            -var=subscription_id="${{ secrets.AZR_SUBSCRIPTION_ID }}" \
+            -var=tenant_id="${{ secrets.AZR_TENANT_ID }}" \
+            -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
+            -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
+            -var=admin_password="${{ secrets.VM_PASSWORD }}" \
+            -var=service="${{ env.service }}" \
+            -out ./_state/${{ env.project }}.destroy.tfplan \
+            -lock=false
+          terraform -chdir=terraform/azure/mysql apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
+          echo "Terraform Destruction in successful ${{ env.project }}"
+        continue-on-error: false
