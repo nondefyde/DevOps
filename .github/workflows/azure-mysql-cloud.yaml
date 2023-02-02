@@ -69,6 +69,10 @@ permissions:
   id-token: write
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   current_dns_domain: bytegum.com
   current_project: cloudstgdev
