@@ -157,7 +157,7 @@ jobs:
 
   setup-mysqldb:
     name: 'Setup MYSQL Database'
-    needs: [ envs, setup-vm ]
+    needs: [ envs ]
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
