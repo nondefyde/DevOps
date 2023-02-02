@@ -76,7 +76,7 @@ concurrency:
 env:
   current_dns_domain: bytegum.com
   current_project: cloudstgdev
-  current_location: westus
+  current_location: centralus
   current_service: dev
   current_group: cloudstgdev
 
