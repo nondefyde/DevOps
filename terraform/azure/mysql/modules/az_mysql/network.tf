@@ -3,7 +3,7 @@ resource "azurerm_virtual_network" "mysql_vpn" {
   address_space       = ["10.0.0.0/16"]
   location            = var.location
   name                = "vnet-${var.service}"
-  resource_group_name = "${var.prefix}-group"
+  resource_group_name = azurerm_resource_group.vm_group.name
 }
 
 # Manages the Subnet
