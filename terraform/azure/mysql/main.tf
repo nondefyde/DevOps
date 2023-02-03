@@ -21,10 +21,11 @@ provider "azurerm" {
 data "azurerm_client_config" "current" {}
 
 module "az_mysql" {
-  source = "./modules/az_mysql"
+  source         = "./modules/az_mysql"
   prefix         = var.app_project_group
   location       = var.location
   admin_username = var.admin_username
   admin_password = var.admin_password
   service        = var.service
+  app_group      = var.app_group
 }
