@@ -27,15 +27,7 @@ on:
       AZR_SUBSCRIPTION_ID:
         description: 'Azure subscription id'
         required: true
-      CLOUDFLARE_API_TOKEN:
-        description: 'Cloudflare api token'
-        required: true
-      CLOUDFLARE_ZONE_ID:
-        description: 'Cloudflare zone id'
-        required: true
-      VM_USERNAME:
-        description: 'Azure Vm ssh username'
-      VM_PASSWORD:
+      ADMIN_PASSWORD:
         description: 'Azure Vm ssh password'
     inputs:
       TFAction:
@@ -52,12 +44,6 @@ on:
         required: true
         type: string
       repository:
-        required: true
-        type: string
-      instance_type:
-        required: true
-        type: string
-      dns_domain:
         required: true
         type: string
       location:
