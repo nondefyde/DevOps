@@ -61,7 +61,7 @@ concurrency:
 
 env:
   current_project: cloudstgdev
-  current_location: westus
+  current_location: northcentralus
   current_service: dev
   current_group: cloudmysqldev
 
