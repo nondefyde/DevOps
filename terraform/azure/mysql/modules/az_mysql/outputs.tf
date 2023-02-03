@@ -17,3 +17,7 @@ output "mysql_database_name" {
 output "mysql_database_server_name" {
   value = azurerm_mysql_flexible_database.mysql_database.server_name
 }
+
+output "group_name" {
+  value = azurerm_resource_group.vm_group.name
+}
