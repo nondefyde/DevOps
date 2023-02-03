@@ -1,7 +1,3 @@
-output "dns_a_record" {
-  value     = cloudflare_record.cf_vm_domain_a_record
-}
-
 output "dns_cname_record" {
   value     = cloudflare_record.cf_vm_subdomain_cname_record
 }
