@@ -76,6 +76,7 @@ env:
   current_service: dev
   current_group: cloudstgdev
 
+
 jobs:
   envs:
     name: 'Validate Env Variables'

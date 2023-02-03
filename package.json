@@ -29,8 +29,8 @@
     "aws:cicle:kube": "yarn aws:execute:kube && yarn aws:tear:kube",
 
     "azure:clean": "rm -rf ./terraform/azure/_state && rm -rf ./terraform/azure/**/.terraform",
-    "azure:cleanup": "cd ./terraform/azure/_scripts && ./cleanup.sh eastus",
-    "azure:setup": "cd ./terraform/azure/_scripts && ./setup.sh cloudstgdev eastus",
+    "azure:cleanup": "cd ./terraform/azure/_scripts && ./cleanup.sh centralus",
+    "azure:setup": "cd ./terraform/azure/_scripts && ./setup.sh cloudstgdev centralus",
     "azure:destroy": "azure:destroy:vm && azure:destroy:mysql",
 
 
