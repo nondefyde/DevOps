@@ -22,7 +22,7 @@ data "azurerm_client_config" "current" {}
 
 module "az_mysql" {
   source         = "./modules/az_mysql"
-  prefix         = var.app_project_group
+  prefix         = var.app_project_prefix
   location       = var.location
   admin_username = var.admin_username
   admin_password = var.admin_password
