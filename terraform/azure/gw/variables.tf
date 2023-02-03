@@ -39,3 +39,13 @@ variable "environment" {
 variable "service" {
   type = string
 }
+
+variable "azr_region" {
+  type = string
+  default = "eu-west"
+}
+
+variable "stack" {
+  type = string
+  default = "Node JS"
+}

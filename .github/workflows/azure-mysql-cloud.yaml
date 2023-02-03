@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - '.github/workflows/.**-vm-cloud.yaml'
+#    paths:
+#      - '.github/workflows/.**-vm-cloud.yaml'
   workflow_dispatch:
     inputs:
       TFAction:
@@ -76,7 +76,7 @@ concurrency:
 env:
   current_dns_domain: bytegum.com
   current_project: cloudstgdev
-  current_location: centralus
+  current_location: eastus2
   current_service: dev
   current_group: cloudstgdev
 
