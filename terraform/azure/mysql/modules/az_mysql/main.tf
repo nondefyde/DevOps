@@ -32,7 +32,7 @@ resource "random_password" "password" {
 resource "azurerm_mysql_flexible_server" "mysql_server" {
   location                     = var.location
   name                         = "${var.prefix}-mysqlfs-${var.service}"
-  resource_group_name          = "${var.prefix}-group"
+  resource_group_name          = azurerm_resource_group.vm_group.name
   administrator_login          = var.admin_username
   administrator_password       = random_password.password.result
   backup_retention_days        = 7
@@ -65,6 +65,6 @@ resource "azurerm_mysql_flexible_database" "mysql_database" {
   charset             = "utf8"
   collation           = "utf8_unicode_ci"
   name                = "${var.prefix}-mysqlfsdb-${var.service}"
-  resource_group_name = "${var.prefix}-group"
+  resource_group_name = azurerm_resource_group.vm_group.name
   server_name         = azurerm_mysql_flexible_server.mysql_server.name
 }
