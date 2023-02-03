@@ -54,7 +54,7 @@
     "azure:destroy:gw": "cd ./terraform/azure/_scripts && ./destroy.sh gw cloudstgdev",
     "azure:execute:gw": "yarn azure:setup && yarn azure:prepare:gw && yarn azure:apply:gw",
     "azure:tear:gw": "yarn azure:destroy:gw && yarn azure:cleanup:gw",
-    "azure:cicle:gw": "yarn azure:execute:gw && yarn azure:tear:gw",
+    "azure:cicle:gw": "yarn azure:execute:gw && yarn azure:tear:gw"
 
   }
 }

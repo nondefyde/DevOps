@@ -213,7 +213,7 @@ jobs:
             -backend-config="resource_group_name=${{ env.group }}-tfstate" \
             -backend-config="storage_account_name=${{ env.group }}storage" \
             -backend-config="container_name=${{ env.group }}tfstate" \
-            -backend-config="key=${{ env.group }}-vm.terraform.tfstate" \
+            -backend-config="key=${{ env.project }}-vm.terraform.tfstate" \
             -backend-config="subscription_id=${{ secrets.AZR_SUBSCRIPTION_ID }}" \
             -backend-config="tenant_id=${{ secrets.AZR_TENANT_ID }}" \
             -backend-config="client_id=${{ secrets.AZR_CLIENT_ID }}" \
