@@ -74,11 +74,10 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  current_dns_domain: bytegum.com
   current_project: cloudstgdev
   current_location: eastus2
   current_service: dev
-  current_group: cloudstgdev
+  current_group: cloudmysqldev
 
 jobs:
   envs:
@@ -86,7 +85,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       project: ${{ steps.variables.outputs.project }}
-      dns_domain: ${{ steps.variables.outputs.dns_domain }}
       location: ${{ steps.variables.outputs.location }}
       service: ${{ steps.variables.outputs.service }}
       group: ${{ steps.variables.outputs.group }}
@@ -101,11 +99,9 @@ jobs:
           
           GROUP="${GRP:-${{ env.current_group }}}"
           PROJECT="${EP:-${{ env.current_project }}}"
-          DNSNAME="${DNS:-${{ env.current_dns_domain }}}"
           LOCATION="${LOC:-${{ env.current_location }}}"
           SERVICE="${SRV:-${{ env.current_service }}}"
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
-          echo "dns_domain=${DNSNAME}" >> "$GITHUB_ENV"
           echo "location=${LOCATION}" >> "$GITHUB_ENV"
           echo "service=${SERVICE}" >> "$GITHUB_ENV"
           echo "group=${GROUP}" >> "$GITHUB_ENV"
@@ -113,7 +109,6 @@ jobs:
         id: variables
         run: |
           echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
-          echo "dns_domain=${{ env.dns_domain }}" >> $GITHUB_OUTPUT
           echo "location=${{ env.location }}" >> $GITHUB_OUTPUT
           echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
           echo "group=${{ env.group }}" >> $GITHUB_OUTPUT
@@ -124,7 +119,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      dns_domain: ${{ needs.envs.outputs.dns_domain }}
       location: ${{ needs.envs.outputs.location }}
       service: ${{ needs.envs.outputs.service }}
       group: ${{ needs.envs.outputs.group }}
@@ -165,7 +159,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      dns_domain: ${{ needs.envs.outputs.dns_domain }}
       location: ${{ needs.envs.outputs.location }}
       service: ${{ needs.envs.outputs.service }}
       group: ${{ needs.envs.outputs.group }}
@@ -230,6 +223,7 @@ jobs:
             -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
             -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
             -var=admin_password="${{ secrets.VM_PASSWORD }}" \
+            -var=app_group="${{ env.group }}" \
             -var=service="${{ env.service }}" \
             -out ./_state/${{ env.project }}.tfplan \
             -lock=false
@@ -255,6 +249,7 @@ jobs:
             -var=client_id="${{ secrets.AZR_CLIENT_ID }}" \
             -var=client_secret="${{ secrets.AZR_CLIENT_SECRET }}" \
             -var=admin_password="${{ secrets.VM_PASSWORD }}" \
+            -var=app_group="${{ env.group }}" \
             -var=service="${{ env.service }}" \
             -out ./_state/${{ env.project }}.destroy.tfplan \
             -lock=false

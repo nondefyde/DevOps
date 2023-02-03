@@ -1,3 +1,9 @@
+resource "azurerm_resource_group" "vm_group" {
+  name     = "${var.app_group}-group"
+  location = var.location
+}
+
+
 # Generate random value for the name
 resource "random_string" "name" {
   length  = 8

@@ -20,3 +20,7 @@ variable "admin_password" {
   type = string
   description = "Admin user password"
 }
+
+variable "app_group" {
+  type = string
+}
