@@ -153,7 +153,7 @@ jobs:
         run: |
           cd terraform/azure/_scripts
           chmod +x setup.sh
-          ./setup.sh ${{ env.group }} ${{ env.location }}
+          ./setup.sh ${{ env.group }} centralus
       - name: Set Variables
         id: variables
         run: |
