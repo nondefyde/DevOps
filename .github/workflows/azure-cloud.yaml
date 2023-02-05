@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   envs:
-    name: 'Validate Env Variables'
+    name: 'Execute Cloud'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -11,12 +11,14 @@ inputs:
     required: true
   AZR_TENANT_ID:
     required: true
+
   project:
     description: 'Entry project name'
     required: true
   key:
     description: 'Entry group name'
     required: true
+    default: 'key'
   working-directory:
     description: 'Default working directory'
     default: 'tf'
@@ -37,6 +39,7 @@ runs:
     - name: Terraform Init
       id: init
       working-directory: ${{ inputs.working-directory }}
+      shell: bash
       run: |
         echo "Environment AZR: vm - ${{ env.prefix }}"
         mkdir -p _state
