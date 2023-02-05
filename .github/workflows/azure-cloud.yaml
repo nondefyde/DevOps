@@ -23,6 +23,8 @@ jobs:
   envs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
+    outputs:
+      envFile: ${{ steps.cache-primes.outputs.cache-hit }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -43,11 +45,13 @@ jobs:
         with:
           files: ${{ env.envFileName }}
 
-      - name: Upload environment file to Artifact
-        uses: actions/upload-artifact@master
+      - name: Cache file
+        uses: actions/cache@v2
         with:
-          name: envs
           path: ${{ env.envFileName }}
+          key: ${{ runner.os }}-file-${{ env.envFileName }}
+          restore-keys: |
+            ${{ runner.os }}-file-
 
   setup:
     name: 'Execute Cloud'
@@ -58,11 +62,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Download Repo to Artifact
-        uses: actions/download-artifact@master
+      - name: Restore cache
+        uses: actions/cache@v2
         with:
-          name: envs
           path: ${{ env.envFileName }}
+          key: ${{ runner.os }}-file-${{ env.envFileName }}
+          restore: true
 
       - name: Echo env
         shell: bash
