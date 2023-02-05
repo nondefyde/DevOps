@@ -69,12 +69,6 @@ jobs:
           key: ${{ runner.os }}-file-${{ env.envFileName }}
           restore: true
 
-      - name: Echo env
-        shell: bash
-        run: |
-          ls -a
-          cat ./${{ env.envFileName }}
-
       - name: Init Storage Account
         uses: ./.github/actions/run-tf-azure-script
         with:

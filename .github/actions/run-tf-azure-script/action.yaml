@@ -12,10 +12,6 @@ inputs:
     description: 'Environment'
     required: true
 
-  env-file:
-    description: 'Environment'
-    required: true
-
   project:
     description: 'Entry project name'
     required: true
@@ -35,10 +31,11 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Print env
-      id: debug
+    - name: Echo env
       shell: bash
-      run: echo "Env Name ${{ inputs.envFile }}"
+      run: |
+        ls -a
+        cat ./${{ inputs.envFile }}
 
     - name: Set up environment variables from file
       id: set-env
