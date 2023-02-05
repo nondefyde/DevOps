@@ -15,9 +15,10 @@
     "start": "node app/app.js",
     "secret:dev": "cd ./scripts && cat ../_env/env.yml | ./base64.sh",
     "secret:chv": "cd ./scripts && cat ../_env/chowville.yml | ./base64.sh",
-    "secret:kassh": "cd ./scripts && cat ../_env/kassh.yml | ./base64.sh",
+    "secret:ksh": "cd ./scripts && cat ../_env/kassh.yml | ./base64.sh",
     "secret:stm": "cd ./scripts && cat ../_env/stm | ./base64.sh",
-    "secret:getreepa": "cd ./scripts && cat ../_env/getreepa.yml | ./base64.sh",
+    "secret:rpa": "cd ./scripts && cat ../_env/getreepa.yml | ./base64.sh",
+    "secret:qst": "cd ./scripts && cat ../_env/getreepa.yml | ./base64.sh",
 
     "aws:clean:kube": "rm -rf ./terraform/aws/_state && rm -rf ./terraform/azure/**/.terraform",
     "aws:setup:kube": "cd ./terraform/aws/_scripts && ./setup.sh cloudstgdev us-west-2",
