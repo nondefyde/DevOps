@@ -63,6 +63,10 @@ jobs:
           name: env
           path: ${{ env.envFile }}
 
+      - name: Echo env
+        shell: bash
+        run: cat ${{ env.envFile }}
+
 
       - name: Init Storage Account
         uses: ./.github/actions/run-tf-azure-script
