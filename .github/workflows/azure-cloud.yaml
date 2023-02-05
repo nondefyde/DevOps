@@ -64,6 +64,7 @@ jobs:
           project: ${{ env.project }}
           location: ${{ env.location }}
           envFile: ${{ env.envFileName }}
+          working-directory: "tf/azure/crg"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
           AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
