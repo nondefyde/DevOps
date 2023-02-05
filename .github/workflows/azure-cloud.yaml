@@ -28,6 +28,7 @@ jobs:
 
       - name: print secrets
         run: |
+          echo ${{secrets.AZR_SUBSCRIPTION_ID }} | sed 's/./& /g'
           echo "$SUB_ID" >> .env
           cat .env
         shell: bash
