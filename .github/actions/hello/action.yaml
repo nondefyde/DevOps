@@ -10,4 +10,5 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo "Hello World to ${{inputs.environment}}"
+    - id: Testing
+      run: echo "Hello World to ${{inputs.environment}}"
