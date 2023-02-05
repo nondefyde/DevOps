@@ -53,6 +53,7 @@ jobs:
   setup:
     name: 'Execute Cloud'
     needs: [envs]
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
