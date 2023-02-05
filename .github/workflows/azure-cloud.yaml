@@ -40,7 +40,7 @@ jobs:
       - name: Upload environment file to Artifact
           uses: actions/download-artifact@master
           with:
-            name: envFile
+            name: env
             path: ${{ env.envFile }}
 
   setup:
