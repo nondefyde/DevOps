@@ -44,7 +44,7 @@ jobs:
           files: ${{ env.envFile }}
 
       - name: Upload environment file to Artifact
-        uses: actions/download-artifact@master
+        uses: actions/upload-artifact@master
         with:
           name: env
           path: ${{ env.envFile }}
