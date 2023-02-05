@@ -47,13 +47,8 @@ runs:
         restore: true
 
     - name: Copy env to working directory
-#      if: ${{ inputs.is_workflow == true }}
       shell: bash
-      run: |
-        ls
-        mv "${{ inputs.envFile }}" ./${{ inputs.working-directory }}
-        cd ./${{ inputs.working-directory }}
-        ls -a
+      run: mv "${{ inputs.envFile }}" ./${{ inputs.working-directory }}
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
@@ -86,7 +81,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        ls -a
+        cat ${{ inputs.envFile }}
         echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         mkdir -p _state
         terraform plan -no-color -input=false \
