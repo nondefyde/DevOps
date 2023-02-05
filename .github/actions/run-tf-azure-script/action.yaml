@@ -3,10 +3,23 @@ author: Emmanuel Okafor
 decription: A generic action to run terraform script
 
 inputs:
-  environment:
-    description: 'Environment Name'
-  config-file-path:
-    description: 'Backend config file path'
+  AZR_CLIENT_ID:
+    required: true
+  AZR_CLIENT_SECRET:
+    required: true
+  AZR_SUBSCRIPTION_ID:
+    required: true
+  AZR_TENANT_ID:
+    required: true
+  project:
+    description: 'Entry project name'
+    required: true
+  key:
+    description: 'Entry group name'
+    required: true
+  working-directory:
+    description: 'Default working directory'
+    default: 'tf'
 
 runs:
   using: 'composite'
@@ -23,14 +36,15 @@ runs:
 
     - name: Terraform Init
       id: init
+      working-directory: ${{ inputs.working-directory }}
       run: |
-        echo "Environment AZR: vm - ${{ env.project }}"
-        mkdir -p terraform/azure/vm/_state
+        echo "Environment AZR: vm - ${{ env.prefix }}"
+        mkdir -p _state
         terraform -chdir=terraform/azure/vm init \
-          -backend-config="resource_group_name=${{ env.group }}-tfstate" \
-          -backend-config="storage_account_name=${{ env.group }}storage" \
-          -backend-config="container_name=${{ env.group }}tfstate" \
-          -backend-config="key=${{ env.project }}-vm.terraform.tfstate" \
+          -backend-config="resource_group_name=${{ env.project }}-tfstate" \
+          -backend-config="storage_account_name=${{ env.project }}storage" \
+          -backend-config="container_name=${{ env.project }}tfstate" \
+          -backend-config="key=${{ env.key }}-vm.terraform.tfstate" \
           -backend-config="subscription_id=${{ secrets.AZR_SUBSCRIPTION_ID }}" \
           -backend-config="tenant_id=${{ secrets.AZR_TENANT_ID }}" \
           -backend-config="client_id=${{ secrets.AZR_CLIENT_ID }}" \
