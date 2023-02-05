@@ -28,10 +28,10 @@ jobs:
 
       - name: Save Secret File secrets
         run: |
-          echo "AZR_SUBSCRIPTION_ID=$AZR_SUBSCRIPTION_ID" >> .env
-          echo "AZR_CLIENT_ID=$AZR_CLIENT_ID" >> .env
-          echo "AZR_CLIENT_SECRET=$AZR_CLIENT_SECRET" >> .env
-          echo "AZR_TENANT_ID=$AZR_TENANT_ID" >> .env
+          echo "AZR_SUBSCRIPTION_ID=${{secrets.AZR_SUBSCRIPTION_ID}}" >> .env
+          echo "AZR_TENANT_ID=${{secrets.AZR_TENANT_ID}}" >> .env
+          echo "AZR_CLIENT_ID=${{secrets.AZR_CLIENT_ID}}" >> .env
+          echo "AZR_CLIENT_SECRET=${{secrets.AZR_CLIENT_SECRET}}" >> .env
           cat .env
         shell: bash
         env:
