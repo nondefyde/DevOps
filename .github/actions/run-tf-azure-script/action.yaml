@@ -31,6 +31,13 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Restore cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ inputs.envFile }}
+        key: ${{ runner.os }}-file-${{ env.envFileName }}
+        restore: true
+
     - name: Echo env
       shell: bash
       run: |
