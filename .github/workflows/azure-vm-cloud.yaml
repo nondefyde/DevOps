@@ -161,6 +161,7 @@ jobs:
           echo "HAS_VM=${{ env.HAS_VM }}" >> $GITHUB_OUTPUT
 
 
+
   setup-vm:
     name: 'Deploy Virtual Machine'
     needs: [ envs, setups ]

@@ -1,0 +1,37 @@
+name: run-tf-azure-script
+author: Emmanuel Okafor
+decription: A generic action to run terraform script
+
+inputs:
+  environment:
+    description: 'Environment Name'
+  config-file-path:
+    description: 'Backend config file path'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    - name: Login Azure
+      id: login
+      run: az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
+
+    - name: Terraform Init
+      id: init
+      run: |
+        echo "Environment AZR: vm - ${{ env.project }}"
+        mkdir -p terraform/azure/vm/_state
+        terraform -chdir=terraform/azure/vm init \
+          -backend-config="resource_group_name=${{ env.group }}-tfstate" \
+          -backend-config="storage_account_name=${{ env.group }}storage" \
+          -backend-config="container_name=${{ env.group }}tfstate" \
+          -backend-config="key=${{ env.project }}-vm.terraform.tfstate" \
+          -backend-config="subscription_id=${{ secrets.AZR_SUBSCRIPTION_ID }}" \
+          -backend-config="tenant_id=${{ secrets.AZR_TENANT_ID }}" \
+          -backend-config="client_id=${{ secrets.AZR_CLIENT_ID }}" \
+          -backend-config="client_secret=${{ secrets.AZR_CLIENT_SECRET }}"
