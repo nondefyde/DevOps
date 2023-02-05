@@ -12,6 +12,11 @@ inputs:
   AZR_TENANT_ID:
     required: true
 
+  destroy:
+    description: 'Destroy Setup'
+    required: true
+    default: false
+
   envFile:
     description: 'Environment'
     required: true
@@ -40,6 +45,14 @@ runs:
         path: ${{ inputs.envFile }}
         key: ${{ runner.os }}-file-${{ env.envFile }}
         restore: true
+
+    - name: Copy env to working directory
+      if: ${{ inputs.is_workflow == true }}
+      run: |
+        ls
+        cp -a "${{ inputs.envFile }}/." ./${{ inputs.working-directory }}
+        cd ./${{ inputs.working-directory }}
+        ls -a
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
