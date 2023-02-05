@@ -49,7 +49,7 @@ runs:
     - name: Echo Test Env Value
       id: debug-purpose
       shell: bash
-      run: echo "Test Variable ${TEST}"
+      run: echo "Test Variable ${{ env.TEST }}"
 
 #    - name: Setup Terraform
 #      uses: hashicorp/setup-terraform@v2
