@@ -68,7 +68,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ env.key }}"
+        echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         mkdir -p _state
         terraform init \
           -backend-config="resource_group_name=${{ inputs.project }}-tfstate" \
@@ -86,7 +86,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ env.key }}"
+        echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         mkdir -p _state
         terraform plan -no-color -input=false \
           -var=prefix="${{ inputs.project }}" \
