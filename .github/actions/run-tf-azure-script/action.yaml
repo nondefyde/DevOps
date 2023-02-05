@@ -38,7 +38,7 @@ runs:
       uses: actions/cache@v2
       with:
         path: ${{ inputs.envFile }}
-        key: ${{ runner.os }}-file-${{ env.envFileName }}
+        key: ${{ runner.os }}-file-${{ env.envFile }}
         restore: true
 
     - name: Setup Terraform
@@ -80,7 +80,7 @@ runs:
           -var=tenant_id="${{ inputs.AZR_TENANT_ID }}" \
           -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
           -var=client_secret="${{ inputs.AZR_CLIENT_SECRET }}" \
-          -var-file=${{ inputs.envFileName }} \
+          -var-file=${{ inputs.envFile }} \
           -out ./_state/${{ inputs.project }}.tfplan \
           -lock=false
       continue-on-error: false
