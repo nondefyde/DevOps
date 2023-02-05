@@ -103,3 +103,23 @@ runs:
         terraform -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
         echo "Terraform Application was successful ${{ inputs.project }}"
       continue-on-error: false
+
+    - name: Terraform Destroy
+      if: ${{ inputs.TFDestroy == true }}
+      id: destroy
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "Terraform Destruction in progress ${{ inputs.project }}"
+        terraform -destroy -no-color -input=false \
+          -var=app_project_prefix="${{ inputs.project}}" \
+          -var=subscription_id="${{ inputs.AZR_SUBSCRIPTION_ID }}" \
+          -var=tenant_id="${{ inputs.AZR_TENANT_ID }}" \
+          -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
+          -var=client_secret="${{ inputs.AZR_CLIENT_SECRET }}" \
+          -var-file=./${{ inputs.envFile }} \
+          -out ./_state/${{ inputs.project }}.destroy.tfplan \
+          -lock=false
+        terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.destroy.tfplan
+        echo "Terraform Destruction in successful ${{ inputs.project }}"
+      continue-on-error: false
