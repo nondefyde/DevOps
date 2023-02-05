@@ -1,6 +1,6 @@
 name: create-azure-sa
 author: Emmanuel Okafor
-decription: A generic action to run terraform script
+decription: A generic action to create azure storage account if it does not exist for user
 
 inputs:
   AZR_CLIENT_ID:
