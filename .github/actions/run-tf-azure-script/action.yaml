@@ -51,7 +51,7 @@ runs:
       shell: bash
       run: |
         ls
-        cp "${{ inputs.envFile }}" ./${{ inputs.working-directory }}
+        mv "${{ inputs.envFile }}" ./${{ inputs.working-directory }}
         cd ./${{ inputs.working-directory }}
         ls -a
 
@@ -86,7 +86,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        ls ../../../
+        ls -a
         echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         mkdir -p _state
         terraform plan -no-color -input=false \
@@ -95,7 +95,7 @@ runs:
           -var=tenant_id="${{ inputs.AZR_TENANT_ID }}" \
           -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
           -var=client_secret="${{ inputs.AZR_CLIENT_SECRET }}" \
-          -var-file=../../../"${{ inputs.AZR_CLIENT_ID }}" \
+          -var-file="${{ inputs.envFile }}" \
           -out ./_state/${{ inputs.envFile }}.tfplan \
           -lock=false
       continue-on-error: false
