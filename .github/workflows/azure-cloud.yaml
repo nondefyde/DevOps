@@ -17,7 +17,8 @@ env:
   project: cloudstmdev
   location: centralus
 
-  envFile: "cloud.tfvars"
+  envFileName: "cloud.tfvars"
+  envFilePath: "."
 
 jobs:
   envs:
@@ -30,24 +31,24 @@ jobs:
       - name: Save Secret File secrets
         run: |
           echo "TEST=HELLO" >> cloud.tfvars
-          echo "AZR_SUBSCRIPTION_ID=${{secrets.AZR_SUBSCRIPTION_ID}}" >> ${{ env.envFile }}
-          echo "AZR_TENANT_ID=${{secrets.AZR_TENANT_ID}}" >> ${{ env.envFile }}
-          echo "AZR_CLIENT_ID=${{secrets.AZR_CLIENT_ID}}" >> ${{ env.envFile }}
-          echo "AZR_CLIENT_SECRET=${{secrets.AZR_CLIENT_SECRET}}" >> ${{ env.envFile }}
-          cat ${{ env.envFile }}
+          echo "AZR_SUBSCRIPTION_ID=${{secrets.AZR_SUBSCRIPTION_ID}}" >> ${{ env.envFilePath }}/${{ env.envFile }}
+          echo "AZR_TENANT_ID=${{secrets.AZR_TENANT_ID}}" >> ${{ env.envFilePath }}/${{ env.envFile }}
+          echo "AZR_CLIENT_ID=${{secrets.AZR_CLIENT_ID}}" >> ${{ env.envFilePath }}/${{ env.envFile }}
+          echo "AZR_CLIENT_SECRET=${{secrets.AZR_CLIENT_SECRET}}" >> ${{ env.envFilePath }}/${{ env.envFile }}
+          cat ${{ env.envFilePath }}/${{ env.envFile }}
         shell: bash
 
       - name: Check file existence
         id: check_files
         uses: andstor/file-existence-action@v1
         with:
-          files: ${{ env.envFile }}
+          files: ${{ env.envFilePath }}/${{ env.envFile }}
 
       - name: Upload environment file to Artifact
         uses: actions/upload-artifact@master
         with:
-          name: ${{ env.envFile }}
-          path: .
+          name: ${{ env.envFileName }}
+          path: ${{ env.envFilePath }}
 
   setup:
     name: 'Execute Cloud'
@@ -60,12 +61,12 @@ jobs:
       - name: Download Repo to Artifact
         uses: actions/download-artifact@master
         with:
-          name: ${{ env.envFile }}
-          path: .
+          name: ${{ env.envFileName }}
+          path: ${{ env.envFilePath }}
 
       - name: Echo env
         shell: bash
-        run: cat ${{ env.envFile }}
+        run: cat ${{ env.envFilePath }}/${{ env.envFile }}
 
 
       - name: Init Storage Account
