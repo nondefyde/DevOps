@@ -86,6 +86,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
+        ls ../../../
         echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         mkdir -p _state
         terraform plan -no-color -input=false \
@@ -94,6 +95,7 @@ runs:
           -var=tenant_id="${{ inputs.AZR_TENANT_ID }}" \
           -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
           -var=client_secret="${{ inputs.AZR_CLIENT_SECRET }}" \
-          -out ./_state/${{ inputs.project }}.tfplan \
+          -var-file="../../../${{ inputs.AZR_CLIENT_ID }}" \
+          -out ./_state/${{ inputs.envFile }}.tfplan \
           -lock=false
       continue-on-error: false
