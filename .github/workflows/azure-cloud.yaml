@@ -62,11 +62,11 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: envs
-          path: ${{ env.envFilePath }}
+          path: ${{ env.envFileName }}
 
       - name: Echo env
         shell: bash
-        run: cat ${{ env.envFilePath }}/${{ env.envFileName }}
+        run: cat ${{ env.envFileName }}
 
 
       - name: Init Storage Account
