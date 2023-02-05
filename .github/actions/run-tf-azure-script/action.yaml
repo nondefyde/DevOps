@@ -12,7 +12,7 @@ inputs:
   AZR_TENANT_ID:
     required: true
 
-  destroy:
+  TFDestroy:
     description: 'Destroy Setup'
     required: true
     default: false
@@ -81,8 +81,6 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        cat ${{ inputs.envFile }}
-        echo "File -var-file=./${{ inputs.envFile }}"
         echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         mkdir -p _state
         terraform plan -no-color -input=false \
@@ -93,4 +91,15 @@ runs:
           -var-file=./${{ inputs.envFile }} \
           -out ./_state/${{ inputs.envFile }}.tfplan \
           -lock=false
+      continue-on-error: false
+
+    - name: Terraform Apply
+      if: ${{ inputs.TFDestroy == false }}
+      id: apply
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
+        terraform -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
+        echo "Terraform Application was successful ${{ inputs.project }}"
       continue-on-error: false
