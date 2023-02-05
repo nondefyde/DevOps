@@ -43,8 +43,7 @@ runs:
       shell: bash
       run: |
           while read line; do
-            echo "$line"
-            export "$line"
+            echo "$line" >> "$GITHUB_ENV"
           done < ${{ inputs.envFile }}
 
     - name: Echo Test Env Value
