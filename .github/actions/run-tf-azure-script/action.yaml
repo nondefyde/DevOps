@@ -22,6 +22,8 @@ inputs:
   working-directory:
     description: 'Default working directory'
     default: 'tf'
+  variable-path:
+    description: 'The Path to variable'
 
 runs:
   using: 'composite'
@@ -32,24 +34,44 @@ runs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
-    - name: Login Azure
-      id: login
-      shell: bash
-      run: az login --service-principal --username ${{inputs.AZR_CLIENT_ID}} --password ${{inputs.AZR_CLIENT_SECRET}} --tenant ${{inputs.AZR_TENANT_ID}}
-
-    - name: Terraform Init
-      id: init
-      working-directory: ${{ inputs.working-directory }}
-      shell: bash
+    - name: print secrets
       run: |
-        echo "Execute script : ${{ inputs.working-directory }} - ${{ env.prefix }} ${{ env.key }}"
-        mkdir -p _state
-        terraform init \
-          -backend-config="resource_group_name=${{ inputs.project }}-tfstate" \
-          -backend-config="storage_account_name=${{ inputs.project }}storage" \
-          -backend-config="container_name=${{ inputs.project }}tfstate" \
-          -backend-config="key=${{ inputs.key }}-vm.terraform.tfstate" \
-          -backend-config="subscription_id=${{ inputs.AZR_SUBSCRIPTION_ID }}" \
-          -backend-config="tenant_id=${{ inputs.AZR_TENANT_ID }}" \
-          -backend-config="client_id=${{ inputs.AZR_CLIENT_ID }}" \
-          -backend-config="client_secret=${{ inputs.AZR_CLIENT_SECRET }}"
+        echo $SUB_ID &gt;&gt; src/.env
+        cat src/.env
+      shell: bash
+      env:
+        SUB_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+#
+#    - name: Login Azure
+#      id: login
+#      shell: bash
+#      run: az login --service-principal --username ${{inputs.AZR_CLIENT_ID}} --password ${{inputs.AZR_CLIENT_SECRET}} --tenant ${{inputs.AZR_TENANT_ID}}
+#
+#    - name: Terraform Init
+#      id: init
+#      working-directory: ${{ inputs.working-directory }}
+#      shell: bash
+#      run: |
+#        echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ env.prefix }} ${{ env.key }}"
+#        mkdir -p _state
+#        terraform init \
+#          -backend-config="resource_group_name=${{ inputs.project }}-tfstate" \
+#          -backend-config="storage_account_name=${{ inputs.project }}storage" \
+#          -backend-config="container_name=${{ inputs.project }}tfstate" \
+#          -backend-config="key=${{ inputs.key }}-vm.terraform.tfstate" \
+#          -backend-config="subscription_id=${{ inputs.AZR_SUBSCRIPTION_ID }}" \
+#          -backend-config="tenant_id=${{ inputs.AZR_TENANT_ID }}" \
+#          -backend-config="client_id=${{ inputs.AZR_CLIENT_ID }}" \
+#          -backend-config="client_secret=${{ inputs.AZR_CLIENT_SECRET }}"
+#
+#    - name: Terraform Plan
+#      id: plan
+#      working-directory: ${{ inputs.working-directory }}
+#      run: |
+#        echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ env.prefix }} ${{ env.key }}"
+#        mkdir -p _state
+#        terraform plan -no-color -input=false \
+#          -var-file=${{ inputs.variable-path }} \
+#          -out ./_state/${{ inputs.project }}.tfplan \
+#          -lock=false
+#      continue-on-error: false

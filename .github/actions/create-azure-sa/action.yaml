@@ -42,8 +42,6 @@ runs:
 
         STORAGE_SEARCH=$(az storage account check-name --name $STORAGE_ACCOUNT_NAME)
 
-        echo "STORAGE_SEARCH ${STORAGE_SEARCH}"
-
         nameAvailable=$( jq -r  '.nameAvailable' <<< "${STORAGE_SEARCH}" )
 
         echo "Storage account name is available ${nameAvailable}"
