@@ -43,8 +43,7 @@ runs:
     - name: Set up environment variables from file
       id: set-env
       shell: bash
-      run: |
-          source ${{ inputs.env-file }}
+      run: source ${{ inputs.envFile }}
 
     - name: Echo Test Env Value
       id: debug-purpose
