@@ -37,7 +37,7 @@ jobs:
         shell: bash
 
       - name: Check file existence
-        id: check_files
+        id: check_files
         uses: andstor/file-existence-action@v1
         with:
           files: ${{ env.envFileName }}
