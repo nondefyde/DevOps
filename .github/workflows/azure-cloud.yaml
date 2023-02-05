@@ -24,6 +24,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Echo sample test
-        uses: ./.github/actions/hello/action.yaml
+        uses: ./.github/actions/hello
         with:
           environment: "Staging"
