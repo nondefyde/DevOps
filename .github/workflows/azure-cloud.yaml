@@ -28,13 +28,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Clear cache
-        uses: actions/cache@v2
-        with:
-          clean: true
-          path: ${{ env.envFileName }}
-          key: file-${{ runner.os }}-${{ github.run_id }}
-
       - name: Save Secret File secrets
         run: |
           echo "prefix = ${{ env.project }}" >> cloud.tfvars
@@ -55,6 +48,7 @@ jobs:
           key: file-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             file-${{ runner.os }}
+          clean: true
 
   setup:
     name: 'Execute Cloud'
