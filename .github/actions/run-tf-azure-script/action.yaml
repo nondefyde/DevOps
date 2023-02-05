@@ -40,12 +40,6 @@ runs:
       shell: bash
       run: echo "Env Name ${{ inputs.envFile }}"
 
-    - name: Download Repo to Artifact
-        uses: actions/download-artifact@master
-        with:
-          name: ${{ inputs.envName }}
-          path: ${{ inputs.envFile }}
-
     - name: Set up environment variables from file
       id: set-env
       shell: bash
