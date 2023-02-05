@@ -68,6 +68,8 @@ jobs:
         shell: bash
         run: |
           ls -a
+          cd cloud.tfvars
+          ls -a
           cat ./${{ env.envFileName }}
 
 
