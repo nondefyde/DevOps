@@ -60,7 +60,7 @@ jobs:
       - name: Download Repo to Artifact
         uses: actions/download-artifact@master
         with:
-          name: ${{ inputs.envName }}
+          name: env
           path: ${{ inputs.envFile }}
 
       - name: Init Storage Account
