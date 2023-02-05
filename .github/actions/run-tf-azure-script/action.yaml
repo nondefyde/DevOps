@@ -34,6 +34,7 @@ runs:
 
     - name: Login Azure
       id: login
+      shell: bash
       run: az login --service-principal --username ${{inputs.AZR_CLIENT_ID}} --password ${{inputs.AZR_CLIENT_SECRET}} --tenant ${{inputs.AZR_TENANT_ID}}
 
     - name: Terraform Init
