@@ -66,7 +66,9 @@ jobs:
 
       - name: Echo env
         shell: bash
-        run: cat ./${{ env.envFileName }}
+        run: |
+          ls -a
+          cat ./${{ env.envFileName }}
 
 
       - name: Init Storage Account
