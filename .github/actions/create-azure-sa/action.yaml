@@ -1,0 +1,63 @@
+name: create-azure-sa
+author: Emmanuel Okafor
+decription: A generic action to run terraform script
+
+inputs:
+  AZR_CLIENT_ID:
+    required: true
+  AZR_CLIENT_SECRET:
+    required: true
+  AZR_SUBSCRIPTION_ID:
+    required: true
+  AZR_TENANT_ID:
+    required: true
+
+  project:
+    description: 'Entry project name'
+    required: true
+  location:
+    description: 'storage account location'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Login Azure
+      id: login
+      shell: bash
+      run: az login --service-principal --username ${{inputs.AZR_CLIENT_ID}} --password ${{inputs.AZR_CLIENT_SECRET}} --tenant ${{inputs.AZR_TENANT_ID}}
+
+    - name: Setup Storage Account
+      run: |
+        RESOURCE_GROUP_NAME=${{ inputs.project }}-tfstate
+        RESOURCE_LOCATION=${{ inputs.location }}
+        STORAGE_ACCOUNT_NAME=${{ inputs.project }}storage
+        CONTAINER_NAME=${{ inputs.project }}tfstate
+
+        echo "Setting up storage account ${STORAGE_ACCOUNT_NAME} within group ${RESOURCE_GROUP_NAME}"
+
+        STORAGE_SEARCH=$(az storage account check-name --name $STORAGE_ACCOUNT_NAME)
+
+        echo "STORAGE_SEARCH ${STORAGE_SEARCH}"
+
+        nameAvailable=$( jq -r  '.nameAvailable' <<< "${STORAGE_SEARCH}" )
+
+        echo "Storage account name is available ${nameAvailable}"
+
+        if $nameAvailable
+        then
+          echo "Create resource group ${RESOURCE_GROUP_NAME} in location ${RESOURCE_LOCATION}"
+          az group create --name $RESOURCE_GROUP_NAME --location $RESOURCE_LOCATION
+
+          echo "Create storage account ${STORAGE_ACCOUNT_NAME} within resource group ${RESOURCE_GROUP_NAME} --sku Standard_LRS --encryption-services blob "
+          az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
+
+          echo "Create blob container ${CONTAINER_NAME} on storage account ${STORAGE_ACCOUNT_NAME}"
+          az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
+          echo "Storage account created successfully"
+        else
+          echo "No Storage account was created"
+        fi
