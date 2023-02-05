@@ -3,15 +3,9 @@ author: Emmanuel Okafor
 decription: A generic action to run terraform script
 
 inputs:
-  envName:
-    description: 'Environment'
-    required: true
-    default: "env"
-
   envFile:
     description: 'Environment'
     required: true
-
   project:
     description: 'Entry project name'
     required: true
@@ -49,6 +43,7 @@ runs:
       shell: bash
       run: |
           while read line; do
+            echo "$line"
             export "$line"
           done < ${{ inputs.envFile }}
 
