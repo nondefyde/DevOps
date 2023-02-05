@@ -30,13 +30,14 @@ jobs:
 
       - name: Save Secret File secrets
         run: |
+          echo "test="\"${{ env.location }}\"" >> cloud.tfvars
           echo "prefix="\"${{ env.project }}\"" >> cloud.tfvars
           echo "location="\"${{ env.location }}\"" >> cloud.tfvars
           cat ${{ env.envFileName }}
         shell: bash
 
       - name: Check file existence
-        id: check_files
+        id: check_files
         uses: andstor/file-existence-action@v1
         with:
           files: ${{ env.envFileName }}
