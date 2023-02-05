@@ -108,15 +108,16 @@ runs:
         echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         terraform -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
         echo "Terraform Application was successful ${{ inputs.project }}"
+        echo "The output message is: $(terraform output rg_name)"
+        echo "The output message is: $(terraform output rg_location)"
       continue-on-error: false
 
     - name: Output Variables
+      if: ${{ inputs.TFDestroy == false }}
       id: tf_output
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        echo "The output message is: $(terraform output rg_name)"
-        echo "The output message is: $(terraform output rg_location)"
 
     - name: Terraform Destroy
       if: ${{ inputs.TFDestroy == true }}
