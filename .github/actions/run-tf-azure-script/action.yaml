@@ -3,6 +3,15 @@ author: Emmanuel Okafor
 decription: A generic action to run terraform script
 
 inputs:
+  AZR_CLIENT_ID:
+    required: true
+  AZR_CLIENT_SECRET:
+    required: true
+  AZR_SUBSCRIPTION_ID:
+    required: true
+  AZR_TENANT_ID:
+    required: true
+
   envFile:
     description: 'Environment'
     required: true
@@ -31,14 +40,6 @@ runs:
         path: ${{ inputs.envFile }}
         key: ${{ runner.os }}-file-${{ env.envFileName }}
         restore: true
-
-    - name: Set up environment variables from file
-      id: set-env
-      shell: bash
-      run: |
-          while read line; do
-            echo "$line" >> "$GITHUB_ENV"
-          done < ${{ inputs.envFile }}
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
