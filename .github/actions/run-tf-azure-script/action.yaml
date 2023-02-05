@@ -42,9 +42,9 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        echo "Environment AZR: vm - ${{ env.prefix }}"
+        echo "Execute script : ${{ inputs.working-directory }} - ${{ env.prefix }} ${{ env.key }}"
         mkdir -p _state
-        terraform -chdir=terraform/azure/vm init \
+        terraform init \
           -backend-config="resource_group_name=${{ inputs.project }}-tfstate" \
           -backend-config="storage_account_name=${{ inputs.project }}storage" \
           -backend-config="container_name=${{ inputs.project }}tfstate" \
