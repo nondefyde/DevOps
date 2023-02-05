@@ -28,8 +28,8 @@ jobs:
 
       - name: print secrets
         run: |
-          echo $SUB_ID >> src/.env
-          cat src/.env
+          echo "$SUB_ID" >> .env
+          cat .env
         shell: bash
         env:
           SUB_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
