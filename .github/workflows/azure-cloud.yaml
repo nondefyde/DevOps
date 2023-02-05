@@ -72,7 +72,6 @@ jobs:
           ls -a
           cat ./${{ env.envFileName }}
 
-
       - name: Init Storage Account
         uses: ./.github/actions/run-tf-azure-script
         with:
