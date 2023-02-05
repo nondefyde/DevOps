@@ -46,8 +46,8 @@ jobs:
       - name: Upload environment file to Artifact
         uses: actions/upload-artifact@master
         with:
-          name: env
-          path: ${{ env.envFile }}
+          name: ${{ env.envFile }}
+          path: .
 
   setup:
     name: 'Execute Cloud'
@@ -60,8 +60,8 @@ jobs:
       - name: Download Repo to Artifact
         uses: actions/download-artifact@master
         with:
-          name: env
-          path: ${{ env.envFile }}
+          name: ${{ env.envFile }}
+          path: .
 
       - name: Echo env
         shell: bash
