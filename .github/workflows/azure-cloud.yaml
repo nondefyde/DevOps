@@ -62,7 +62,6 @@ jobs:
         uses: ./.github/actions/run-tf-azure-script
         with:
           project: ${{ env.project }}
-          location: ${{ env.location }}
           envFile: ${{ env.envFileName }}
           working-directory: "tf/azure/crg"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
