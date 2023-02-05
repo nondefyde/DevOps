@@ -44,7 +44,7 @@ runs:
       with:
         key: file-${{ runner.os }}-file-${{ github.run_id }}
         path: ${{ inputs.envFile }}
-        restore: true
+#        restore: true
 
     - name: Copy env to working directory
       shell: bash
