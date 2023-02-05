@@ -32,12 +32,6 @@ runs:
         key: ${{ runner.os }}-file-${{ env.envFileName }}
         restore: true
 
-    - name: Echo env
-      shell: bash
-      run: |
-        ls -a
-        cat ./${{ inputs.envFile }}
-
     - name: Set up environment variables from file
       id: set-env
       shell: bash
@@ -46,30 +40,23 @@ runs:
             echo "$line" >> "$GITHUB_ENV"
           done < ${{ inputs.envFile }}
 
-    - name: Echo Test Env Value
-      id: debug-purpose
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    - name: Login Azure
+      id: login
+      shell: bash
+      run: az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
+
+    - name: Terraform Init
+      id: init
+      working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        echo "TEST: $TEST"
-        echo "AZR_SUBSCRIPTION_ID: $AZR_SUBSCRIPTION_ID"
-
-#    - name: Setup Terraform
-#      uses: hashicorp/setup-terraform@v2
-#
-#    - name: Login Azure
-#      id: login
-#      shell: bash
-#      run: az login --service-principal --username ${{env.AZR_CLIENT_ID}} --password ${{env.AZR_CLIENT_SECRET}} --tenant ${{env.AZR_TENANT_ID}}
-#
-#    - name: Terraform Init
-#      id: init
-#      working-directory: ${{ inputs.working-directory }}
-#      shell: bash
-#      run: |
-#        echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ env.prefix }} ${{ env.key }}"
-#        mkdir -p _state
-#        terraform init \
-#          -backend-config="${{ inputs.env-file }}" \
+        echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ env.prefix }} ${{ env.key }}"
+        mkdir -p _state
+        terraform init \
+          -backend-config="${{ env.envFileName }}" \
 
 #    - name: Terraform Plan
 #      id: plan
