@@ -54,7 +54,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ env.prefix }} ${{ env.key }}"
+        echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ env.key }}"
         mkdir -p _state
         terraform init \
             -backend-config="resource_group_name=${{ inputs.project }}-tfstate" \
@@ -65,12 +65,14 @@ runs:
             -backend-config="tenant_id=${{ inputs.AZR_TENANT_ID }}" \
             -backend-config="client_id=${{ inputs.AZR_CLIENT_ID }}" \
             -backend-config="client_secret=${{ inputs.AZR_CLIENT_SECRET }}"
+      continue-on-error: false
 
     - name: Terraform Plan
       id: plan
       working-directory: ${{ inputs.working-directory }}
+      shell: bash
       run: |
-        echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ env.prefix }} ${{ env.key }}"
+        echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ env.key }}"
         mkdir -p _state
         terraform plan -no-color -input=false \
           -var=prefix="${{ inputs.project }}" \

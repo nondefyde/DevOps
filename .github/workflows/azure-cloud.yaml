@@ -72,6 +72,7 @@ jobs:
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
           AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
           AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
 #
 #      - name: Create Resource Group
 #        uses: ./.github/actions/run-tf-azure-script
