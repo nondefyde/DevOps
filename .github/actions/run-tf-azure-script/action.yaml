@@ -111,7 +111,6 @@ runs:
       continue-on-error: false
 
     - name: Output Variables
-      if: ${{ inputs.TFDestroy == true }}
       id: tf_output
       shell: bash
       working-directory: ${{ inputs.working-directory }}
