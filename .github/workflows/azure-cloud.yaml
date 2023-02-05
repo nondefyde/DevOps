@@ -61,7 +61,8 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: env
-          path: ${{ inputs.envFile }}
+          path: ${{ env.envFile }}
+
 
       - name: Init Storage Account
         uses: ./.github/actions/run-tf-azure-script
