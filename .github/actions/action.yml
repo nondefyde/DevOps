@@ -1,0 +1,13 @@
+name: hello-world
+author: Emmanuel Okafor
+decription: A sample hello world git action
+
+inputs:
+  environment:
+    description: 'Environment Name'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - run: echo "Hello World to ${{inputs.environment}}"

@@ -1,0 +1,25 @@
+name: AZR VM CI
+
+on:
+    push:
+      branches:
+        - 'main'
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  current_project: cloudstgdev
+
+jobs:
+  envs:
+    name: 'Validate Env Variables'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo sample test
+        uses: ./.github/actions/hello-world
