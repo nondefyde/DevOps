@@ -35,8 +35,8 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Echo Test Env Value
-      id: debug purpose
+    - name: Print env
+      id: debug
       shell: bash
       run: echo "Env Name ${{ inputs.envFile }}"
 
@@ -47,7 +47,7 @@ runs:
           source ${{ inputs.env-file }}
 
     - name: Echo Test Env Value
-      id: debug purpose
+      id: debug-purpose
       shell: bash
       run: echo "Test Variable ${TEST}"
 #
