@@ -59,6 +59,18 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Storage Account
+        uses: ./.github/actions/create-azure-sa
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.envFileName }}
+          working-directory: "tf/azure/crg"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Create Resource Group
         uses: ./.github/actions/run-tf-azure-script
         with:
           project: ${{ env.project }}
@@ -70,14 +82,3 @@ jobs:
           AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
           AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
         continue-on-error: false
-
-#      - name: Create Resource Group
-#        uses: ./.github/actions/run-tf-azure-script
-#        with:
-#          project: ${{ env.project }}
-#          key: ${{ env.project }}-rg
-#          working-directory: "tf/azure/crg"
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
