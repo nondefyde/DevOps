@@ -30,7 +30,7 @@ jobs:
 
       - name: Save Secret File secrets
         run: |
-          echo "TEST=HELLO" >> cloud.tfvars
+          echo "prefix=${{ env.project }}" >> cloud.tfvars
           echo "location=${{ env.location }}" >> cloud.tfvars
           cat ${{ env.envFileName }}
         shell: bash

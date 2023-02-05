@@ -85,7 +85,6 @@ runs:
         echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         mkdir -p _state
         terraform plan -no-color -input=false \
-          -var=prefix="${{ inputs.project }}" \
           -var=subscription_id="${{ inputs.AZR_SUBSCRIPTION_ID }}" \
           -var=tenant_id="${{ inputs.AZR_TENANT_ID }}" \
           -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
