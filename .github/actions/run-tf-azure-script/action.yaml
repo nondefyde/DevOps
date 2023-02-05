@@ -8,7 +8,7 @@ inputs:
     required: true
     default: "env"
 
-  env-file:
+  envFile:
     description: 'Environment'
     required: true
 
@@ -35,11 +35,17 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Echo Test Env Value
+      id: debug purpose
+      shell: bash
+      run: echo "Env Name ${{ inputs.envName }}"
+      run: echo "Env File ${{ inputs.envFile }}"
+
     - name: Download Repo to Artifact
         uses: actions/download-artifact@master
         with:
           name: ${{ inputs.envName }}
-          path: ${{ inputs.env-file }}
+          path: ${{ inputs.envFile }}
 
     - name: Set up environment variables from file
       id: set-env

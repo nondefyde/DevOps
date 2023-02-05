@@ -56,7 +56,7 @@ jobs:
         with:
           project: ${{ env.project }}
           location: ${{ env.location }}
-          env-file: ${{ env.envFile }}
+          envFile: ${{ env.envFile }}
 #
 #      - name: Create Resource Group
 #        uses: ./.github/actions/run-tf-azure-script
