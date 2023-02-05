@@ -45,7 +45,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.envFileName }}
-          key: ${{ runner.os }}-file-${{ env.envFileName }}
+          key: ${{ runner.os }}-file-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-file-
 
