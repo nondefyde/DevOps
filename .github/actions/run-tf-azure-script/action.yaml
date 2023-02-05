@@ -49,15 +49,16 @@ runs:
     - name: Set up environment variables from file
       id: set-env
       shell: bash
-      run: while read line; do export $line; done < ${{ inputs.env-file }}
+      run: |
+          source ${{ inputs.env-file }}
 
     - name: Echo Test Env Value
       id: debug purpose
       shell: bash
       run: echo "Test Variable ${TEST}"
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+#
+#    - name: Setup Terraform
+#      uses: hashicorp/setup-terraform@v2
 #
 #    - name: Login Azure
 #      id: login
