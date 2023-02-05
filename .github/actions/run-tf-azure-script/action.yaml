@@ -47,7 +47,7 @@ runs:
         restore: true
 
     - name: Copy env to working directory
-      if: ${{ inputs.is_workflow == true }}
+#      if: ${{ inputs.is_workflow == true }}
       run: |
         ls
         cp -a "${{ inputs.envFile }}/." ./${{ inputs.working-directory }}
