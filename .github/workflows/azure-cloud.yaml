@@ -28,7 +28,7 @@ jobs:
 
       - name: print secrets
         run: |
-          echo $SUB_ID &gt;&gt; src/.env
+          echo $SUB_ID >> src/.env
           cat src/.env
         shell: bash
         env:
