@@ -38,6 +38,12 @@ runs:
         key: ${{ runner.os }}-file-${{ env.envFileName }}
         restore: true
 
+    - name: Echo env
+      shell: bash
+      run: |
+        ls -a
+        cat ./${{ inputs.envFile }}
+
     - name: Set up environment variables from file
       id: set-env
       shell: bash
