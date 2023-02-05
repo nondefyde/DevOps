@@ -2,12 +2,12 @@ name: hello
 author: Emmanuel Okafor
 decription: A sample hello world git action
 
-inputs:
-  environment:
-    description: 'Environment Name'
+#inputs:
+#  environment:
+#    description: 'Environment Name'
 
 runs:
   using: 'shell'
   steps:
     - id: Testing
-      run: echo "Hello World to ${{inputs.environment}}"
+      run: echo "Hello World to"

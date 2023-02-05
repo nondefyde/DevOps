@@ -23,5 +23,3 @@ jobs:
 
       - name: Echo sample test
         uses: ./.github/actions/hello
-        with:
-          environment: "Staging"
