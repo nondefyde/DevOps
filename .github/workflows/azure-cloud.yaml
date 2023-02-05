@@ -38,10 +38,10 @@ jobs:
         shell: bash
 
       - name: Upload environment file to Artifact
-          uses: actions/download-artifact@master
-          with:
-            name: env
-            path: ${{ env.envFile }}
+        uses: actions/download-artifact@master
+        with:
+          name: env
+          path: ${{ env.envFile }}
 
   setup:
     name: 'Execute Cloud'
