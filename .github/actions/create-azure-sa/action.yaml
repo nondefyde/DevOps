@@ -7,8 +7,6 @@ inputs:
     required: true
   AZR_CLIENT_SECRET:
     required: true
-  AZR_SUBSCRIPTION_ID:
-    required: true
   AZR_TENANT_ID:
     required: true
 
