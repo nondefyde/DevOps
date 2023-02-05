@@ -26,10 +26,12 @@ jobs:
         uses: actions/checkout@v3
 
 
-      - name: print secrets
+      - name: Save Secret File secrets
         run: |
-          echo ${{secrets.AZR_SUBSCRIPTION_ID }} | sed 's/./& /g'
-          echo "$SUB_ID" >> .env
+          echo "AZR_SUBSCRIPTION_ID=$AZR_SUBSCRIPTION_ID" >> .env
+          echo "AZR_CLIENT_ID=$AZR_CLIENT_ID" >> .env
+          echo "AZR_CLIENT_SECRET=$AZR_CLIENT_SECRET" >> .env
+          echo "AZR_TENANT_ID=$AZR_TENANT_ID" >> .env
           cat .env
         shell: bash
         env:
