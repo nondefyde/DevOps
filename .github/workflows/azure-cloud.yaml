@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - 'main'
+  workflow_dispatch:
+    inputs:
+      TFDestroy:
+        description: "Destroy Cloud"
+        type: boolean
+        default: false
 
 permissions:
   id-token: write
@@ -30,7 +36,6 @@ jobs:
 
       - name: Save Secret File secrets
         run: |
-          echo "test=\"${{ env.location }}\"" >> cloud.tfvars
           echo "prefix=\"${{ env.project }}\"" >> cloud.tfvars
           echo "location=\"${{ env.location }}\"" >> cloud.tfvars
           cat ${{ env.envFileName }}
@@ -55,11 +60,15 @@ jobs:
     needs: [envs]
     permissions: write-all
     runs-on: ubuntu-latest
+    outputs:
+      resource_group_name: ${{ steps.rg.outputs.rg_name }}
+      resource_group_location: ${{ steps.rg.outputs.rg_location }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Storage Account
+        id: sa
         uses: ./.github/actions/create-azure-sa
         with:
           project: ${{ env.project }}
@@ -71,6 +80,7 @@ jobs:
 
       - name: Create Resource Group
         uses: ./.github/actions/run-tf-azure-script
+        id: rg
         with:
           project: ${{ env.project }}
           envFile: ${{ env.envFileName }}
@@ -80,6 +90,6 @@ jobs:
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
           AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
           AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-          TFDestroy: true
+          TFDestroy: ${{ inputs.TFDestroy == true }}
         continue-on-error: false
 

@@ -33,6 +33,12 @@ inputs:
   variable-path:
     description: 'The Path to variable'
 
+outputs:
+  rg_name:
+    description: The resource group name
+  rg_location:
+    description: The resource group location
+
 runs:
   using: 'composite'
   steps:
@@ -103,6 +109,15 @@ runs:
         terraform -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
         echo "Terraform Application was successful ${{ inputs.project }}"
       continue-on-error: false
+
+    - name: Output Variables
+      if: ${{ inputs.TFDestroy == true }}
+      id: tf_output
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "The output message is: $(terraform output rg_name)"
+        echo "The output message is: $(terraform output rg_location)"
 
     - name: Terraform Destroy
       if: ${{ inputs.TFDestroy == true }}
