@@ -31,6 +31,7 @@ runs:
       run: az login --service-principal --username ${{inputs.AZR_CLIENT_ID}} --password ${{inputs.AZR_CLIENT_SECRET}} --tenant ${{inputs.AZR_TENANT_ID}}
 
     - name: Setup Storage Account
+      shell: bash
       run: |
         RESOURCE_GROUP_NAME=${{ inputs.project }}-tfstate
         RESOURCE_LOCATION=${{ inputs.location }}
