@@ -12,4 +12,3 @@ runs:
     - id: Testing
       shell: bash
       run: echo "Hello World to ${{ inputs.environment }}"
-K
