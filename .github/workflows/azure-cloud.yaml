@@ -34,8 +34,14 @@ jobs:
           echo "AZR_TENANT_ID=${{secrets.AZR_TENANT_ID}}" >> cloud.tfvars
           echo "AZR_CLIENT_ID=${{secrets.AZR_CLIENT_ID}}" >> cloud.tfvars
           echo "AZR_CLIENT_SECRET=${{secrets.AZR_CLIENT_SECRET}}" >> cloud.tfvars
-          cat cloud.tfvars
+          cat ${{ env.envFile }}
         shell: bash
+
+      - name: Check file existence
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: ${{ env.envFile }}
 
       - name: Upload environment file to Artifact
         uses: actions/download-artifact@master
