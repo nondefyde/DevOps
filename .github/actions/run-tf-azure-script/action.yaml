@@ -55,7 +55,9 @@ runs:
     - name: Echo Test Env Value
       id: debug-purpose
       shell: bash
-      run: echo "Test Variable ${TEST}"
+      run: |
+        echo "TEST: $TEST"
+        echo "AZR_SUBSCRIPTION_ID: $AZR_SUBSCRIPTION_ID"
 
 #    - name: Setup Terraform
 #      uses: hashicorp/setup-terraform@v2
