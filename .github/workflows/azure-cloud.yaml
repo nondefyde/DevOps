@@ -18,7 +18,7 @@ env:
   location: centralus
 
   envFileName: "cloud.tfvars"
-  envFilePath: "."
+  envFilePath: "envs"
 
 jobs:
   envs:
@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: ${{ env.envFileName }}
-          path: ${{ env.envFilePath }}/
+          path: ${{ env.envFilePath }}
 
   setup:
     name: 'Execute Cloud'
@@ -63,7 +63,7 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: ${{ env.envFileName }}
-          path: ${{ env.envFilePath }}/
+          path: ${{ env.envFilePath }}
 
       - name: Echo env
         shell: bash
