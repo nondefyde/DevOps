@@ -5,7 +5,6 @@ decription: A sample hello world git action
 inputs:
   environment:
     description: 'Environment Name'
-    required: true
 
 runs:
   using: "composite"
