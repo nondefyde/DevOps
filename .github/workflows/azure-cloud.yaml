@@ -17,35 +17,46 @@ env:
   project: cloudstmdev
   location: centralus
 
+  envFile: "cloud.tfvars"
+
 jobs:
   envs:
-    name: 'Execute Cloud'
+    name: 'Set Environments'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-
       - name: Save Secret File secrets
         run: |
+          echo "TEST=HELLO" >> cloud.tfvars
           echo "AZR_SUBSCRIPTION_ID=${{secrets.AZR_SUBSCRIPTION_ID}}" >> cloud.tfvars
           echo "AZR_TENANT_ID=${{secrets.AZR_TENANT_ID}}" >> cloud.tfvars
           echo "AZR_CLIENT_ID=${{secrets.AZR_CLIENT_ID}}" >> cloud.tfvars
           echo "AZR_CLIENT_SECRET=${{secrets.AZR_CLIENT_SECRET}}" >> cloud.tfvars
           cat cloud.tfvars
         shell: bash
-        env:
-          SUB_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
 
-#      - name: Init Storage Account
-#        uses: ./.github/actions/create-azure-sa
-#        with:
-#          project: ${{ env.project }}
-#          location: ${{ env.location }}
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+      - name: Upload environment file to Artifact
+          uses: actions/download-artifact@master
+          with:
+            name: envFile
+            path: ${{ env.envFile }}
+
+  setup:
+    name: 'Execute Cloud'
+    needs: [envs]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Init Storage Account
+        uses: ./.github/actions/create-azure-sa
+        with:
+          project: ${{ env.project }}
+          location: ${{ env.location }}
+          env-file: ${{ env.envFile }}
 #
 #      - name: Create Resource Group
 #        uses: ./.github/actions/run-tf-azure-script
