@@ -42,8 +42,8 @@ runs:
     - name: Restore cache
       uses: actions/cache@v2
       with:
+        key: file-${{ runner.os }}-file-${{ github.run_id }}
         path: ${{ inputs.envFile }}
-        key: ${{ runner.os }}-file-${{ github.run_id }}
         restore: true
 
     - name: Copy env to working directory
