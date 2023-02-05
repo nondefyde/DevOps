@@ -13,6 +13,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  project: cloudtextdev
+  group: devtxt
+
 jobs:
   envs:
     name: 'Execute Cloud'
@@ -21,11 +25,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup Storage Account
+        run: |
+          cd terraform/azure/_scripts
+          chmod +x setup.sh
+          ./setup.sh ${{ env.group }} centralus
+
       - name: Create Resource Group
         uses: ./.github/actions/run-tf-azure-script
         with:
           project: ${{ env.project }}
-          key: 'rg'
+          key: ${{ env.project }}-rg
           working-directory: "tf/azure/crg"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
