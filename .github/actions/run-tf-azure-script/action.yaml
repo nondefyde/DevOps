@@ -82,6 +82,7 @@ runs:
       shell: bash
       run: |
         cat ${{ inputs.envFile }}
+        echo "File -var-file=./${{ inputs.envFile }}"
         echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         mkdir -p _state
         terraform plan -no-color -input=false \
@@ -89,7 +90,7 @@ runs:
           -var=tenant_id="${{ inputs.AZR_TENANT_ID }}" \
           -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
           -var=client_secret="${{ inputs.AZR_CLIENT_SECRET }}" \
-          -var-file="./${{ inputs.envFile }}" \
+          -var-file=./${{ inputs.envFile }} \
           -out ./_state/${{ inputs.envFile }}.tfplan \
           -lock=false
       continue-on-error: false
