@@ -117,14 +117,32 @@ runs:
         sudo apt-get update
         sudo apt-get install -y jq
 
-    - name: Print environment variable
+    - name: Export Output to environments
+      if: ${{ inputs.TFDestroy == 'false' }}
+      id: tf_output
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
-        cat ${{ inputs.working-directory }}/${{ inputs.key }}.json
-        chmod +x ./scripts/exenv.sh
-        ./scripts/exenv.sh ${{ inputs.working-directory }}/${{ inputs.key }}.json
-        echo "rg_location: $rg_location"
-        echo "rg_name: $rg_name"
+        echo File name ${{ inputs.key }}.json
+        file=value.json
+        cat $file
+        outputs=$(cat $file)
+        outputs=$(terraform output -json)
+        for key in $(echo $outputs | jq -r 'keys[]'); do
+          KEY=$(echo "${key}")
+          VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
+          echo "export $KEY=$VALUE"
+          export "$KEY=$VALUE"
+        done
+
+#    - name: Print environment variable
+#      shell: bash
+#      run: |
+#        cat ${{ inputs.working-directory }}/${{ inputs.key }}.json
+#        chmod +x ./scripts/exenv.sh
+#        ./scripts/exenv.sh ${{ inputs.working-directory }}/${{ inputs.key }}.json
+#        echo "rg_location: $rg_location"
+#        echo "rg_name: $rg_name"
 
     - name: Terraform Destroy
       if: ${{ inputs.TFDestroy == 'true' }}
