@@ -117,27 +117,12 @@ runs:
         sudo apt-get update
         sudo apt-get install -y jq
 
-    - name: Export Output to environments
-      if: ${{ inputs.TFDestroy == 'false' }}
-      id: tf_output
-      shell: bash
-      working-directory: ${{ inputs.working-directory }}
-      run: |
-        echo File name ${{ inputs.key }}.json
-        file=value.json
-        cat $file
-        outputs=$(cat $file)
-        for key in $(echo $outputs | jq -r 'keys[]'); do
-          KEY=$(echo $key | tr '[:lower:]' '[:upper:]')
-          VALUE=$(echo $outputs | jq -r ".${key}.value")
-          echo "key == $KEY"
-          echo "value == $VALUE"
-        done
-
     - name: Print environment variable
       shell: bash
+      working-directory: 'scripts'
       run: |
-        env
+        chmod +x exenv.sh
+        ./exenv.sh ${{ inputs.working-directory }}/${{ inputs.key }}.json
         echo "rg_location: $rg_location"
         echo "rg_name: $rg_name"
 
