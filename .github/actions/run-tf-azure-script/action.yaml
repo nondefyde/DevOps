@@ -107,8 +107,8 @@ runs:
         echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
         echo "Terraform Application was successful ${{ inputs.project }}"
-        terraform output > ${{ inputs.key }}.txt
-        echo "The output saved to file to ${{ inputs.key }}.txt"
+        terraform output -json > ${{ inputs.key }}.json
+        echo "The output saved to file to ${{ inputs.key }}.json"
       continue-on-error: false
 
     - name: Export Output to environments
@@ -117,8 +117,10 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        cat ${{ inputs.key }}.txt
-        export $(grep -v '^#' ${{ inputs.key }}.txt | xargs)
+        outputs=$(cat ${{ inputs.key }}.json)
+        for key in $(echo "${outputs}" | jq -r 'keys[]'); do
+          export TF_OUTPUT_$(echo "${key}" | tr '[:lower:]' '[:upper:]')=$(echo "${outputs}" | jq -r ".${key}")
+        done
 
     - name: Print environment variable
       shell: bash
