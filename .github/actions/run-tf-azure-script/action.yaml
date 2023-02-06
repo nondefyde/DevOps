@@ -102,6 +102,7 @@ runs:
       if: ${{ inputs.TFDestroy == 'false' }}
       id: apply
       shell: bash
+      terraform_wrapper: false
       working-directory: ${{ inputs.working-directory }}
       run: |
         echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
