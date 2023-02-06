@@ -99,7 +99,7 @@ runs:
       continue-on-error: false
 
     - name: Terraform Apply
-      if: ${{ inputs.TFDestroy == false }}
+      if: ${{ inputs.TFDestroy == 'false' }}
       id: apply
       shell: bash
       working-directory: ${{ inputs.working-directory }}
@@ -112,14 +112,14 @@ runs:
       continue-on-error: false
 
     - name: Output Variables
-      if: ${{ inputs.TFDestroy == false }}
+      if: ${{ inputs.TFDestroy == 'false' }}
       id: tf_output
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
 
     - name: Terraform Destroy
-      if: ${{ inputs.TFDestroy == true }}
+      if: ${{ inputs.TFDestroy == 'true' }}
       id: destroy
       shell: bash
       working-directory: ${{ inputs.working-directory }}
