@@ -108,10 +108,10 @@ runs:
         cd _state
         ls -a
         echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
-        terraform -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
+        terraform -auto-approve -input=false _state/${{ inputs.project }}.tfplan
         echo "Terraform Application was successful ${{ inputs.project }}"
-        echo "The output message is: $(terraform output rg_name)"
-        echo "The output message is: $(terraform output rg_location)"
+#        echo "The output message is: $(terraform output rg_name)"
+#        echo "The output message is: $(terraform output rg_location)"
       continue-on-error: false
 
     - name: Output Variables
