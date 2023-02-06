@@ -124,10 +124,9 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         echo File name ${{ inputs.key }}.json
-        file=value.json
-        cat $file
-        outputs=$(cat $file)
+        file=${{ inputs.key }}.json
         outputs=$(terraform output -json)
+        echo "outputs >>> >>>>> $outputs"
         for key in $(echo $outputs | jq -r 'keys[]'); do
           KEY=$(echo "${key}")
           VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
