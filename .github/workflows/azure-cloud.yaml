@@ -97,6 +97,6 @@ jobs:
         id: envs
         working-directory: ${{ inputs.working-directory }}
         run: |
-          echo "Resource name ${{ env.rg_name }}"
-          echo "Resource location ${{ env.rg_location }}"
+          echo "Resource name $rg_name"
+          echo "Resource location $rg_location"
 
