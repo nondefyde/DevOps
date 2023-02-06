@@ -104,9 +104,9 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        ls -a
         cd _state
         ls -a
+        cat ${{ inputs.project }}.tfplan
         echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         terraform -auto-approve -input=false "./_state/${{ inputs.project }}.tfplan"
         echo "Terraform Application was successful ${{ inputs.project }}"
