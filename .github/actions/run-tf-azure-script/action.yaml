@@ -107,8 +107,8 @@ runs:
         echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
         echo "Terraform Application was successful ${{ inputs.project }}"
-        terraform output > ${{ inputs.key }}.txt
-        echo "The output saved to file to ${{ inputs.key }}.json"
+        terraform output > ../${{ inputs.key }}.txt
+        echo "The output saved to file to ${{ inputs.key }}.txt"
       continue-on-error: false
 
     - name: Install jq
@@ -123,11 +123,12 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        cat ${{ inputs.key }}.txt
+        cat ../${{ inputs.key }}.txt
+        echo "==========================="
         while read -r line; do
           echo "line ---- ${line}"
           export "$line"
-        done < ${{ inputs.key }}.txt
+        done < ../${{ inputs.key }}.txt
 #        outputs=$(cat cloudstmdev-rg.json)
 #        echo "outputs >>>>>> $outputs"
 #        list=$(echo ${outputs} | jq -r 'keys[]')
