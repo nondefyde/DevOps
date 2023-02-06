@@ -118,8 +118,8 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
           cat ${{ inputs.key }}-output.txt
-          export $(grep -v '^#' ${{ inputs.key }}-output.txt | xargs)
-          env
+#          export $(grep -v '^#' ${{ inputs.key }}-output.txt | xargs)
+#          env
 
     - name: Terraform Destroy
       if: ${{ inputs.TFDestroy == 'true' }}
