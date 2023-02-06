@@ -120,7 +120,11 @@ runs:
         cat ${{ inputs.key }}.json
         outputs=$(cat ${{ inputs.key }}.json)
         for key in $(echo "${outputs}" | jq -r 'keys[]'); do
-          export TF_OUTPUT_$(echo "${key}" | tr '[:lower:]' '[:upper:]')=$(echo "${outputs}" | jq -r ".${key}")
+          KEY=$(echo "${key}")
+          VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
+          echo "key == $KEY"
+          echo "value == $VALUE"
+          export TF_OUTPUT_$KEY=$VALUE
         done
 
     - name: Print environment variable
