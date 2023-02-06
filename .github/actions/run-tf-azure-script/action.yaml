@@ -107,7 +107,7 @@ runs:
         echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
         echo "Terraform Application was successful ${{ inputs.project }}"
-        terraform output -json > ${{ inputs.key }}.json
+        terraform output > ${{ inputs.key }}.txt
         echo "The output saved to file to ${{ inputs.key }}.json"
       continue-on-error: false
 
@@ -123,11 +123,11 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        cat ${{ inputs.key }}.json
-        outputs=$(cat cloudstmdev-rg.json)
-        echo "outputs >>>>>> $outputs"
-        list=$(echo ${outputs} | jq -r keys[])
-        echo "list >>>>>>>>> $list"
+        cat ${{ inputs.key }}.txt
+#        outputs=$(cat cloudstmdev-rg.json)
+#        echo "outputs >>>>>> $outputs"
+#        list=$(echo ${outputs} | jq -r 'keys[]')
+#        echo "list >>>>>>>>> $list"
 
     - name: Print environment variable
       shell: bash
