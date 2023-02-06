@@ -44,7 +44,7 @@ resource "azurerm_network_security_group" "vm_security_group" {
 
   security_rule {
     name                       = "sub-domains"
-    priority                   = 100
+    priority                   = 300
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
