@@ -1,2 +1,2 @@
-rg_location="centralus"
-rg_name="cloudstmdev-group"
+rg_location = "centralus"
+rg_name = "cloudstmdev-group"
