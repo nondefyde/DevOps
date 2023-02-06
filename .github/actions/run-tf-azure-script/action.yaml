@@ -62,6 +62,7 @@ runs:
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
+      shell: bash
       with:
         - terraform_wrapper: false
 
