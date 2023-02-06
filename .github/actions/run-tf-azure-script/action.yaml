@@ -119,8 +119,9 @@ runs:
       run: |
         cat ${{ inputs.key }}.json
         outputs=$(cat cloudstmdev-rg.json)
+        echo "outputs >>>>>> $outputs"
         list=$(echo ${outputs} | jq -r keys[])
-        echo $list
+        echo "list >>>>>>>>> $list"
 
     - name: Print environment variable
       shell: bash
