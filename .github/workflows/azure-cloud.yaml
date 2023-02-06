@@ -1,4 +1,4 @@
-name: AZR VM CI
+name: AZR TEST CLOUD
 
 on:
   push:
