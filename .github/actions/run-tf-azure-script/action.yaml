@@ -119,10 +119,9 @@ runs:
 
     - name: Print environment variable
       shell: bash
-      working-directory: 'scripts'
       run: |
-        chmod +x exenv.sh
-        ./exenv.sh ${{ inputs.working-directory }}/${{ inputs.key }}.json
+        chmod +x ./scripts/exenv.sh
+        ./scripts/exenv.sh ${{ inputs.working-directory }}/${{ inputs.key }}.json
         echo "rg_location: $rg_location"
         echo "rg_name: $rg_name"
 
