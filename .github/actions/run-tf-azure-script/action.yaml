@@ -120,6 +120,7 @@ runs:
     - name: Print environment variable
       shell: bash
       run: |
+        cat ${{ inputs.working-directory }}/${{ inputs.key }}.json
         chmod +x ./scripts/exenv.sh
         ./scripts/exenv.sh ${{ inputs.working-directory }}/${{ inputs.key }}.json
         echo "rg_location: $rg_location"
