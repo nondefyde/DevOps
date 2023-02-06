@@ -45,11 +45,6 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Install jq
-      run: |
-        sudo apt-get update
-        sudo apt-get install jq -y
-
     - name: Echo env for debug
       shell: bash
       run: echo "TFDestroy >>>>> ${{ inputs.TFDestroy }}"
@@ -115,6 +110,9 @@ runs:
         terraform output -json > ${{ inputs.key }}.json
         echo "The output saved to file to ${{ inputs.key }}.json"
       continue-on-error: false
+
+    - name: Install jq
+      run: apt-get update && apt-get install -y jq
 
     - name: Export Output to environments
       if: ${{ inputs.TFDestroy == 'false' }}
