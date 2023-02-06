@@ -124,6 +124,10 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         cat ${{ inputs.key }}.txt
+        while read -r line; do
+          echo "line ---- $line"
+          export "$line"
+        done < ${{ inputs.key }}.txt
 #        outputs=$(cat cloudstmdev-rg.json)
 #        echo "outputs >>>>>> $outputs"
 #        list=$(echo ${outputs} | jq -r 'keys[]')
