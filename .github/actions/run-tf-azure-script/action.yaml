@@ -107,8 +107,8 @@ runs:
         echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
         echo "Terraform Application was successful ${{ inputs.project }}"
-#        echo "The output message is: $(terraform output rg_name)"
-#        echo "The output message is: $(terraform output rg_location)"
+        echo "The output rg_name is: $(terraform output rg_name)"
+        echo "The output rg_location is: $(terraform output rg_location)"
       continue-on-error: false
 
     - name: Output Variables
