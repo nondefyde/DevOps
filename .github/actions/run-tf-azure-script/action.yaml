@@ -123,10 +123,10 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        cat ${{ inputs.key }}.json
-        echo File name $1
-        
-        outputs=$(cat $1)
+        echo File name ${{ inputs.key }}.json
+        file=${{ inputs.key }}.json
+        cat $file
+        outputs=$(cat $file)
         for key in $(echo $outputs | jq -r 'keys[]'); do
           KEY=$(echo $key | tr '[:lower:]' '[:upper:]')
           VALUE=$(echo $outputs | jq -r ".${key}.value")
