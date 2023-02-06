@@ -112,7 +112,9 @@ runs:
       continue-on-error: false
 
     - name: Check Output file
+      if: ${{ inputs.TFDestroy == 'false' }}
       id: check_files
+      working-directory: ${{ inputs.working-directory }}
       uses: andstor/file-existence-action@v1
       with:
         files: ${{ inputs.key }}-output.txt
