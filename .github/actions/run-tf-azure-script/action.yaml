@@ -111,15 +111,15 @@ runs:
         echo "The output saved to file to ${{ inputs.key }}-output.txt"
       continue-on-error: false
 
-    - name: Check Output file
-      if: ${{ inputs.TFDestroy == 'false' }}
-      id: check_files
-      shell: bash
-      working-directory: ${{ inputs.working-directory }}
-      uses: andstor/file-existence-action@v1
-      with:
-        files: ${{ inputs.key }}-output.txt
-      continue-on-error: false
+#    - name: Check Output file
+#      if: ${{ inputs.TFDestroy == 'false' }}
+#      id: check_files
+#      shell: bash
+#      working-directory: ${{ inputs.working-directory }}
+#      uses: andstor/file-existence-action@v1
+#      with:
+#        files: ${{ inputs.key }}-output.txt
+#      continue-on-error: false
 
     - name: Export Output to environments
       if: ${{ inputs.TFDestroy == 'false' }}
