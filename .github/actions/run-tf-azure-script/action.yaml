@@ -119,6 +119,7 @@ runs:
       run: |
         cat ${{ inputs.key }}.json
         outputs=$(cat ${{ inputs.key }}.json)
+        echo $outputs
 #        for key in $(echo "${outputs}" | jq -r 'keys[]'); do
 #          KEY=$(echo "${key}")
 #          VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
