@@ -116,12 +116,14 @@ runs:
       id: tf_output
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-      run: |
-        echo "Out file here:"
-        cat ${{ inputs.key }}.json
-        echo "Setting environment variables from Terraform output"
-        export $(jq -r 'to_entries[] | "\(.key)=\"\(.value)\""' ${{ inputs.key }}.json)
-        env
+      run: export $(jq -r 'to_entries[] | "\(.key)=\"\(.value)\""' ${{ inputs.key }}.json)
+
+    - name: Check Env
+      if: ${{ inputs.TFDestroy == 'false' }}
+      id: envs
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: printenv
 
     - name: Terraform Destroy
       if: ${{ inputs.TFDestroy == 'true' }}
