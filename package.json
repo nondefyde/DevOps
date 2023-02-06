@@ -18,7 +18,7 @@
     "secret:ksh": "cd ./scripts && cat ../_env/kassh.yml | ./base64.sh",
     "secret:stm": "cd ./scripts && cat ../_env/stm | ./base64.sh",
     "secret:rpa": "cd ./scripts && cat ../_env/getreepa.yml | ./base64.sh",
-    "secret:qst": "cd ./scripts && cat ../_env/getreepa.yml | ./base64.sh",
+    "secret:qst": "cd ./scripts && cat ../_env/qst | ./base64.sh",
 
     "aws:clean:kube": "rm -rf ./terraform/aws/_state && rm -rf ./terraform/azure/**/.terraform",
     "aws:setup:kube": "cd ./terraform/aws/_scripts && ./setup.sh cloudstgdev us-west-2",
