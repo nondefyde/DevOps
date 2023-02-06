@@ -117,10 +117,12 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-          echo "Out file here:"
-          cat ${{ inputs.key }}-output.txt
-#          export $(grep -v '^#' ${{ inputs.key }}-output.txt | xargs)
-#          env
+        echo "Out file here:"
+        cat ${{ inputs.key }}-output.txt
+        while read line; do
+          export "$line"
+        done < <(grep -v '^#' ${{ inputs.key }}-output.txt)
+        env
 
     - name: Terraform Destroy
       if: ${{ inputs.TFDestroy == 'true' }}
