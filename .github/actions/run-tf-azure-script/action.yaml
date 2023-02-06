@@ -124,7 +124,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         echo File name ${{ inputs.key }}.json
-        file=${{ inputs.key }}.json
+        file=output.json
         cat $file
         outputs=$(cat $file)
         for key in $(echo $outputs | jq -r 'keys[]'); do
