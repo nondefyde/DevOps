@@ -119,13 +119,13 @@ runs:
       run: |
         cat ${{ inputs.key }}.json
         outputs=$(cat ${{ inputs.key }}.json)
-        for key in $(echo "${outputs}" | jq -r 'keys[]'); do
-          KEY=$(echo "${key}")
-          VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
-          echo "key == $KEY"
-          echo "value == $VALUE"
-          export TF_OUTPUT_$KEY=$VALUE
-        done
+#        for key in $(echo "${outputs}" | jq -r 'keys[]'); do
+#          KEY=$(echo "${key}")
+#          VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
+#          echo "key == $KEY"
+#          echo "value == $VALUE"
+#          export TF_OUTPUT_$KEY=$VALUE
+#        done
 
     - name: Print environment variable
       shell: bash
