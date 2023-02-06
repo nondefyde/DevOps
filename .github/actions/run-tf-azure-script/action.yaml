@@ -126,14 +126,7 @@ runs:
           KEY=$(echo "${key}")
           VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
           echo "$KEY=$VALUE" >> "$GITHUB_ENV"
-          echo "export $KEY=$VALUE"
         done
-
-    - name: Print environment variable
-      shell: bash
-      run: |
-        echo "rg_location: $rg_location"
-        echo "rg_name: $rg_name"
 
     - name: Terraform Destroy
       if: ${{ inputs.TFDestroy == 'true' }}
