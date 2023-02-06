@@ -107,7 +107,7 @@ runs:
         echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
         echo "Terraform Application was successful ${{ inputs.project }}"
-        terraform output > ${{ inputs.key }}-output.txt
+        terraform output -json > ${{ inputs.key }}.json
         echo "The output saved to file to ${{ inputs.key }}-output.txt"
       continue-on-error: false
 
@@ -129,9 +129,8 @@ runs:
       run: |
         echo "Out file here:"
         cat ${{ inputs.key }}-output.txt
-        while read line; do
-          export "$line"
-        done < <(grep -v '^#' ${{ inputs.key }}-output.txt)
+        echo "Setting environment variables from Terraform output"
+        export $(jq -r 'to_entries[] | "\(.key)=\"\(.value)\""' ${{ inputs.key }}.json)
         env
 
     - name: Terraform Destroy
