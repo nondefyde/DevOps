@@ -94,7 +94,7 @@ runs:
           -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
           -var=client_secret="${{ inputs.AZR_CLIENT_SECRET }}" \
           -var-file=./${{ inputs.envFile }} \
-          -out ./_state/${{ inputs.envFile }}.tfplan \
+          -out ./_state/${{ inputs.project }}.tfplan \
           -lock=false
       continue-on-error: false
 
