@@ -113,11 +113,11 @@ runs:
         echo "The output saved to file to ${{ inputs.key }}.json"
       continue-on-error: false
 
-    - name: Install jq
-      shell: bash
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq
+#    - name: Install jq
+#      shell: bash
+#      run: |
+#        sudo apt-get update
+#        sudo apt-get install -y jq
 
     - name: Export Output to environments
       if: ${{ inputs.TFDestroy == 'false' }}
@@ -128,7 +128,6 @@ runs:
         echo File name ${{ inputs.key }}.json
         file=${{ inputs.key }}.json
         outputs=$(terraform output -json)
-        echo "outputs >>> >>>>> $outputs"
         for key in $(echo $outputs | jq -r 'keys[]'); do
           KEY=$(echo "${key}")
           VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
@@ -136,14 +135,12 @@ runs:
           export "$KEY=$VALUE"
         done
 
-#    - name: Print environment variable
-#      shell: bash
-#      run: |
-#        cat ${{ inputs.working-directory }}/${{ inputs.key }}.json
-#        chmod +x ./scripts/exenv.sh
-#        ./scripts/exenv.sh ${{ inputs.working-directory }}/${{ inputs.key }}.json
-#        echo "rg_location: $rg_location"
-#        echo "rg_name: $rg_name"
+    - name: Print environment variable
+      shell: bash
+      run: |
+        env
+        echo "rg_location: $rg_location"
+        echo "rg_name: $rg_name"
 
     - name: Terraform Destroy
       if: ${{ inputs.TFDestroy == 'true' }}
