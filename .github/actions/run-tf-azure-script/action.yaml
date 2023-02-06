@@ -119,15 +119,8 @@ runs:
       run: |
         cat ${{ inputs.key }}.json
         outputs=$(cat cloudstmdev-rg.json)
-        list=$(echo "${outputs}" | jq -r 'keys[]')
-        for key in $list; do
-#          KEY=$(echo "${key}")
-#          VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
-#          echo "key == $KEY"
-#          echo "value == $VALUE"
-#          export TF_OUTPUT_$KEY=$VALUE
-          export TF_OUTPUT_$key=hello
-        done
+        list=$(echo "${outputs}" | jq -r "keys[]")
+        echo $list
 
     - name: Print environment variable
       shell: bash
