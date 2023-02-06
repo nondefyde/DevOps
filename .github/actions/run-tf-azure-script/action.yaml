@@ -108,18 +108,8 @@ runs:
         terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
         echo "Terraform Application was successful ${{ inputs.project }}"
         terraform output -json > ${{ inputs.key }}.json
-        echo "The output saved to file to ${{ inputs.key }}-output.txt"
+        echo "The output saved to file to ${{ inputs.key }}.json"
       continue-on-error: false
-
-#    - name: Check Output file
-#      if: ${{ inputs.TFDestroy == 'false' }}
-#      id: check_files
-#      shell: bash
-#      working-directory: ${{ inputs.working-directory }}
-#      uses: andstor/file-existence-action@v1
-#      with:
-#        files: ${{ inputs.key }}-output.txt
-#      continue-on-error: false
 
     - name: Export Output to environments
       if: ${{ inputs.TFDestroy == 'false' }}
@@ -128,7 +118,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         echo "Out file here:"
-        cat ${{ inputs.key }}-output.txt
+        cat ${{ inputs.key }}.json
         echo "Setting environment variables from Terraform output"
         export $(jq -r 'to_entries[] | "\(.key)=\"\(.value)\""' ${{ inputs.key }}.json)
         env
