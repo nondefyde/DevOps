@@ -112,6 +112,7 @@ runs:
       continue-on-error: false
 
     - name: Install jq
+      shell: bash
       run: apt-get update && apt-get install -y jq
 
     - name: Export Output to environments
