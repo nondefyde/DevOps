@@ -119,7 +119,7 @@ runs:
       run: |
         cat ${{ inputs.key }}.json
         outputs=$(cat cloudstmdev-rg.json)
-        list=$(echo "${outputs}" | jq -r "keys[]")
+        list=$(echo ${outputs} | jq -r keys[])
         echo $list
 
     - name: Print environment variable

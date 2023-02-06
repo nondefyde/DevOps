@@ -4,7 +4,7 @@ echo File name $1
 
 outputs=$(cat $1)
 #echo $outputs
-list=$(echo "${outputs}" | jq -r 'keys[]')
+list=$(echo "${outputs}" | jq -r "keys[]")
 echo $list
 #for key in $(echo "${outputs}" | jq -r 'keys[]'); do
 #  KEY=$(echo "${key}")
