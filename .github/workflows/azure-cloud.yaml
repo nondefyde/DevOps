@@ -93,3 +93,10 @@ jobs:
           TFDestroy: ${{ inputs.TFDestroy == true }}
         continue-on-error: false
 
+      - name: Check Env
+        id: envs
+        working-directory: ${{ inputs.working-directory }}
+        run: |
+          echo "Resource name ${{ env.rg_name }}"
+          echo "Resource location ${{ env.rg_location }}"
+
