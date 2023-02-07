@@ -50,91 +50,91 @@ jobs:
         with:
           name: ${{ inputs.envFile }}
           path: ${{ inputs.repository }}
-
-      - name: Convert JSON to Terraform Variables
-        shell: bash
-        run: |
-          # Convert JSON to Terraform Variables
-          cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key | ascii_downcase) = \"\(.value)\""' > env.tfvars
-
-      - name: Copy env to working directory
-        shell: bash
-        run: mv env.tfvars ./${{ inputs.working-directory }}
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_wrapper: false
-
-      - name: Terraform Init
-        id: init
-        working-directory: ${{ inputs.working-directory }}
-        shell: bash
-        run: |
-          echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
-          mkdir -p _state
-          terraform init \
-            -backend-config="resource_group_name=${{ inputs.project }}-tfstate" \
-            -backend-config="storage_account_name=${{ inputs.project }}storage" \
-            -backend-config="container_name=${{ inputs.project }}tfstate" \
-            -backend-config="key=${{ inputs.key }}-vm.terraform.tfstate" \
-            -backend-config="subscription_id=${{ inputs.AZR_SUBSCRIPTION_ID }}" \
-            -backend-config="tenant_id=${{ inputs.AZR_TENANT_ID }}" \
-            -backend-config="client_id=${{ inputs.AZR_CLIENT_ID }}" \
-            -backend-config="client_secret=${{ inputs.AZR_CLIENT_SECRET }}"
-        continue-on-error: false
-
-      - name: Terraform Plan
-        id: plan
-        working-directory: ${{ inputs.working-directory }}
-        shell: bash
-        run: |
-          ls -a
-          cat env.tfvars
-          echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
-          mkdir -p _state
-          terraform plan -no-color -input=false \
-            -var=subscription_id="${{ inputs.AZR_SUBSCRIPTION_ID }}" \
-            -var=tenant_id="${{ inputs.AZR_TENANT_ID }}" \
-            -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
-            -var=client_secret="${{ inputs.AZR_CLIENT_SECRET }}" \
-            -var-file=env.tfvars \
-            -out ./_state/${{ inputs.project }}.tfplan \
-            -lock=false
-        continue-on-error: false
-
-      - name: Terraform Apply
-        id: apply
-        shell: bash
-        working-directory: ${{ inputs.working-directory }}
-        run: |
-          echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
-          terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
-          echo "Terraform Application was successful ${{ inputs.project }}"
-          terraform output -json > ${{ inputs.key }}.json
-          echo "The output saved to file to ${{ inputs.key }}.json"
-        continue-on-error: false
-
-      - name: Upload Output
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ inputs.key }}.json
-          path: ${{ inputs.key }}.json
-
-      - name: Export Output to environments
-        id: tf_output
-        shell: bash
-        working-directory: ${{ inputs.working-directory }}
-        run: |
-          echo File name ${{ inputs.key }}.json
-          file=${{ inputs.key }}.json
-          outputs=$(terraform output -json)
-          for key in $(echo $outputs | jq -r 'keys[]'); do
-            KEY=$(echo "${key}")
-            VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
-            echo "$KEY=$VALUE" >> "$GITHUB_ENV"
-          done
-
+#
+#      - name: Convert JSON to Terraform Variables
+#        shell: bash
+#        run: |
+#          # Convert JSON to Terraform Variables
+#          cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key | ascii_downcase) = \"\(.value)\""' > env.tfvars
+#
+#      - name: Copy env to working directory
+#        shell: bash
+#        run: mv env.tfvars ./${{ inputs.working-directory }}
+#
+#      - name: Setup Terraform
+#        uses: hashicorp/setup-terraform@v2
+#        with:
+#          terraform_wrapper: false
+#
+#      - name: Terraform Init
+#        id: init
+#        working-directory: ${{ inputs.working-directory }}
+#        shell: bash
+#        run: |
+#          echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
+#          mkdir -p _state
+#          terraform init \
+#            -backend-config="resource_group_name=${{ inputs.project }}-tfstate" \
+#            -backend-config="storage_account_name=${{ inputs.project }}storage" \
+#            -backend-config="container_name=${{ inputs.project }}tfstate" \
+#            -backend-config="key=${{ inputs.key }}-vm.terraform.tfstate" \
+#            -backend-config="subscription_id=${{ inputs.AZR_SUBSCRIPTION_ID }}" \
+#            -backend-config="tenant_id=${{ inputs.AZR_TENANT_ID }}" \
+#            -backend-config="client_id=${{ inputs.AZR_CLIENT_ID }}" \
+#            -backend-config="client_secret=${{ inputs.AZR_CLIENT_SECRET }}"
+#        continue-on-error: false
+#
+#      - name: Terraform Plan
+#        id: plan
+#        working-directory: ${{ inputs.working-directory }}
+#        shell: bash
+#        run: |
+#          ls -a
+#          cat env.tfvars
+#          echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
+#          mkdir -p _state
+#          terraform plan -no-color -input=false \
+#            -var=subscription_id="${{ inputs.AZR_SUBSCRIPTION_ID }}" \
+#            -var=tenant_id="${{ inputs.AZR_TENANT_ID }}" \
+#            -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
+#            -var=client_secret="${{ inputs.AZR_CLIENT_SECRET }}" \
+#            -var-file=env.tfvars \
+#            -out ./_state/${{ inputs.project }}.tfplan \
+#            -lock=false
+#        continue-on-error: false
+#
+#      - name: Terraform Apply
+#        id: apply
+#        shell: bash
+#        working-directory: ${{ inputs.working-directory }}
+#        run: |
+#          echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
+#          terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
+#          echo "Terraform Application was successful ${{ inputs.project }}"
+#          terraform output -json > ${{ inputs.key }}.json
+#          echo "The output saved to file to ${{ inputs.key }}.json"
+#        continue-on-error: false
+#
+#      - name: Upload Output
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: ${{ inputs.key }}.json
+#          path: ${{ inputs.key }}.json
+#
+#      - name: Export Output to environments
+#        id: tf_output
+#        shell: bash
+#        working-directory: ${{ inputs.working-directory }}
+#        run: |
+#          echo File name ${{ inputs.key }}.json
+#          file=${{ inputs.key }}.json
+#          outputs=$(terraform output -json)
+#          for key in $(echo $outputs | jq -r 'keys[]'); do
+#            KEY=$(echo "${key}")
+#            VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
+#            echo "$KEY=$VALUE" >> "$GITHUB_ENV"
+#          done
+#
 
 
 #runs:
