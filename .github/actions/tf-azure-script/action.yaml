@@ -31,9 +31,9 @@ inputs:
   variable-path:
     description: 'The Path to variable'
 
-outputs:
-  output-value:
-    description: The output value
+#outputs:
+#  output-value:
+#    description: The output value
 
 runs:
   using: 'composite'
