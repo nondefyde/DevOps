@@ -107,8 +107,6 @@ runs:
         echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
         echo "Terraform Application was successful ${{ inputs.project }}"
-        terraform output -json > ${{ inputs.key }}.json
-        echo "The output saved to file to ${{ inputs.key }}.json"
       continue-on-error: false
 
     - name: Export Output to environments
