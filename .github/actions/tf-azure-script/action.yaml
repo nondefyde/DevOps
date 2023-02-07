@@ -108,17 +108,15 @@ runs:
         terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
         echo "Terraform Application was successful ${{ inputs.project }}"
       continue-on-error: false
-#
-#    - name: Export Output to environments
-#      id: tf_output
-#      shell: bash
-#      working-directory: ${{ inputs.working-directory }}
-#      run: |
-#        outputs=$(terraform output -json)
-##        echo "::set-output name=output-value::${outputs}"
-##        echo "output-value=${outputs}" >> $GITHUB_OUTPUT
-#        for key in $(echo $outputs | jq -r 'keys[]'); do
-#          KEY=$(echo "${key}")
-#          VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
-#          echo "$KEY=$VALUE" >> "$GITHUB_ENV"
-#        done
+
+    - name: Export Output to environments
+      id: tf_output
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        outputs=$(terraform output -json)
+        for key in $(echo $outputs | jq -r 'keys[]'); do
+          KEY=$(echo "${key}")
+          VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
+          echo "$KEY=$VALUE" >> "$GITHUB_ENV"
+        done
