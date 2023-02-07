@@ -49,7 +49,7 @@ jobs:
           clean: true
 
   sa:
-    name: 'Storage Account'
+    name: 'SA'
     needs: [ envs ]
     permissions: write-all
     runs-on: ubuntu-latest
@@ -69,7 +69,7 @@ jobs:
         continue-on-error: false
 
   rg:
-    name: 'Resource Group'
+    name: 'RG'
     needs: [ sa ]
     permissions: write-all
     runs-on: ubuntu-latest
@@ -93,7 +93,7 @@ jobs:
         continue-on-error: false
 
   vn:
-    name: 'Virtual Network'
+    name: 'VN'
     needs: [ rg ]
     permissions: write-all
     runs-on: ubuntu-latest
