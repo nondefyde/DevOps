@@ -50,12 +50,6 @@ runs:
         name: ${{ inputs.envFile }}
         path: ${{ inputs.repository }}
 
-    - name: Print
-      shell: bash
-      run: |
-        ls -a
-        cat ${{ inputs.envFile }}
-
     - name: Convert JSON to Terraform Variables
       shell: bash
       run: |
@@ -64,9 +58,15 @@ runs:
         cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key) = \(.value)"' >> env.tfvars
         echo '}' >> env.tfvars
 
+    - name: Print
+      shell: bash
+      run: |
+        ls -a
+        cat env.tfvars
+
     - name: Copy env to working directory
       shell: bash
-      run: mv "${{ inputs.envFile }}/." ./${{ inputs.working-directory }}
+      run: mv env.tfvars ./${{ inputs.working-directory }}
 #
 #    - name: Setup Terraform
 #      uses: hashicorp/setup-terraform@v2
