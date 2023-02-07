@@ -58,7 +58,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     env:
-      envFile: "rg.tfvars"
+      rgEnvFile: "rg.tfvars"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -74,15 +74,19 @@ jobs:
         uses: schdck/create-env-json@v1
         id: create-env
         with:
-          file-name: ${{ env.envFile }}
+          file-name: ${{ env.rgEnvFile }}
           prefix: ${{ env.project }}
           location: ${{ env.project }}
           prevent_resource_deletion:  ${{steps.resource-group.outputs.prevent_resource_deletion}}"
 
+      - name: Print
+        shell: bash
+        run: cat ${{ steps.create-env.outputs.full-path }}
+
       - name: Cache file
         uses: actions/cache@v2
         with:
-          path: ${{ env.envFile }}
+          path: ${{ steps.create-env.outputs.full-path }}
           key: file-${{ runner.os }}-${{ github.run_id }}
           restore-keys: file-${{ runner.os }}-${{ github.run_id }}
           clean: true
@@ -92,7 +96,7 @@ jobs:
         id: rg
         with:
           project: ${{ env.project }}
-          envFile: ${{ env.envFile }}
+          envFile: ${{ env.rgEnvFile }}
           key: ${{ env.project }}-rg
           working-directory: "tf/azure/crg"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
