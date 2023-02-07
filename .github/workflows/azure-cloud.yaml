@@ -64,7 +64,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get cloud config
-        id: resource-group
+        id: rg
         uses: ActionsTools/read-json-action@main
         with:
           file_path: ${{ env.configFile }}
@@ -72,13 +72,11 @@ jobs:
 
       - name: convert to json
         uses: schdck/create-env-json@v1
-        id: create-env
         with:
           file-name: ${{ env.rgEnvFile }}
-          client_Secret: ${{ secrets.AZR_CLIENT_SECRET }}
           prefix: ${{ env.project }}
           location: ${{ env.location }}
-          prevent_resource_deletion:  ${{steps.resource-group.outputs.prevent_resource_deletion}}
+          prevent_resource_deletion:  ${{steps.rg.outputs.prevent_resource_deletion}}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
@@ -100,40 +98,53 @@ jobs:
           AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
         continue-on-error: false
 
-#  vn:
-#    name: 'VN'
-#    needs: [ rg ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Virtual network
-#        uses: ./.github/actions/tf-azure-script
-#        id: vn
-#        with:
-#          project: ${{ env.project }}
-#          envFile: ${{ env.envFileName }}
-#          key: ${{ env.project }}-vn
-#          working-directory: "tf/azure/vn"
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#          TFDestroy: ${{ inputs.TFDestroy == true }}
-#        continue-on-error: false
-#
-#      - name: Check Env
-#        id: envs
-#        run: |
-#          echo "Resource name $rg_name"
-#          echo "Resource location $rg_location"
-#          echo "Resource app_virtual_network_name $app_virtual_network_name"
-#          echo "Resource app_virtual_network_id $app_virtual_network_id"
-#          echo "Resource app_virtual_subnet_name $app_virtual_subnet_name"
-#          echo "Resource app_virtual_subnet_id $app_virtual_subnet_id"
-#          echo "Resource location $app_virtual_subnet_name"
+  vn:
+    name: 'VN'
+    needs: [ rg ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      vmEnvFile: "vm.tfvars"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get cloud config
+        id: vn
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "virtual-network"
+
+      - name: convert to json
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.rgEnvFile }}
+          prefix: ${{ env.project }}
+          location: ${{ env.location }}
+          group: ${{ env.rg_name }}
+          address_prefixes: ${{steps.vn.outputs.address_prefixes}}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.vmEnvFile }}
+          path: ${{ env.vmEnvFile }}
+
+      - name: Virtual network
+        uses: ./.github/actions/tf-azure-script
+        id: vn
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.vmEnvFile }}
+          key: ${{ env.project }}-vn
+          working-directory: "tf/azure/vn"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
 #  vms:
 #    name: 'VMs'
 #    needs: [ vn ]
