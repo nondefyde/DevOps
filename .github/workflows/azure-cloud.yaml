@@ -64,7 +64,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get cloud config
-        id: rg
+        id: rg-cloud-config
         uses: ActionsTools/read-json-action@main
         with:
           file_path: ${{ env.configFile }}
@@ -76,7 +76,7 @@ jobs:
           file-name: ${{ env.rgEnvFile }}
           prefix: ${{ env.project }}
           location: ${{ env.location }}
-          prevent_resource_deletion:  ${{steps.rg.outputs.prevent_resource_deletion}}
+          prevent_resource_deletion:  ${{steps.rg-cloud-config.outputs.prevent_resource_deletion}}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
@@ -110,7 +110,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get cloud config
-        id: vn
+        id: vn-cloud-config
         uses: ActionsTools/read-json-action@main
         with:
           file_path: ${{ env.configFile }}
@@ -123,7 +123,7 @@ jobs:
           prefix: ${{ env.project }}
           location: ${{ env.location }}
           group: ${{ env.rg_name }}
-          address_prefixes: ${{steps.vn.outputs.address_prefixes}}
+          address_prefixes: ${{steps.vn-cloud-config.outputs.address_prefixes}}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
