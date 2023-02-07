@@ -80,11 +80,11 @@ jobs:
           location: ${{ env.project }}
           prevent_resource_deletion:  ${{steps.resource-group.outputs.prevent_resource_deletion}}"
 
-      - name: Print
-        shell: bash
-        run: |
-          ls -a
-          cat ${{ env.rgEnvFile }}
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.rgEnvFile }}
+          path: ${{ env.rgEnvFile }}
 
       - name: Cache file
         uses: actions/cache@v2

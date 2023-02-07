@@ -44,28 +44,28 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Restore cache
-      uses: actions/cache@v2
+    - name: Download Env File
+      if: ${{ inputs.is_workflow == true }}
+      uses: actions/download-artifact@master
       with:
-        path: ${{ inputs.envFile }}
-        key: file-${{ runner.os }}-${{ github.run_id }}
-        restore: true
+        name: ${{ inputs.envFile }}
+        path: ${{ inputs.repository }}
 
     - name: Print
       shell: bash
       run: ls -a
 
-#    - name: Convert JSON to Terraform Variables
-#      shell: bash
-#      run: |
-#        # Convert JSON to Terraform Variables
-#        echo 'variable "example_variable" {' > env.tfvars
-#        cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key) = \(.value)"' >> env.tfvars
-#        echo '}' >> env.tfvars
-#
-#    - name: Copy env to working directory
-#      shell: bash
-#      run: mv env.tfvars ./${{ inputs.working-directory }}
+    - name: Convert JSON to Terraform Variables
+      shell: bash
+      run: |
+        # Convert JSON to Terraform Variables
+        echo 'variable "example_variable" {' > env.tfvars
+        cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key) = \(.value)"' >> env.tfvars
+        echo '}' >> env.tfvars
+
+    - name: Copy env to working directory
+      shell: bash
+      run: mv "${{ inputs.envFile }}/." ./${{ inputs.working-directory }}
 #
 #    - name: Setup Terraform
 #      uses: hashicorp/setup-terraform@v2
