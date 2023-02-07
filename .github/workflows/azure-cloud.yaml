@@ -126,29 +126,19 @@ jobs:
           echo "Resource app_virtual_subnet_name $app_virtual_subnet_name"
           echo "Resource app_virtual_subnet_id $app_virtual_subnet_id"
           echo "Resource location $app_virtual_subnet_name"
-  vm:
+  vms:
     name: 'VMs'
-    needs: [ rg ]
+    needs: [ vn ]
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Virtual network
+      - name: Virtual nachines
         uses: ./.github/actions/tf-azure-script
         id: vn
-        with:
-          project: ${{ env.project }}
-          envFile: ${{ env.envFileName }}
-          key: ${{ env.project }}-vn
-          working-directory: "tf/azure/vn"
-          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-          TFDestroy: ${{ inputs.TFDestroy == true }}
-        continue-on-error: false
+        run: echo "Generate virtual machines"
 
   prints:
     name: 'Print Outputs'
