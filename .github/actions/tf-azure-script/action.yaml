@@ -129,6 +129,7 @@ runs:
         done
 
     - name: Save as varaibles
+      shell: bash
       id: env
       working-directory: ${{ inputs.working-directory }}
       env:
