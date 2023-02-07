@@ -129,7 +129,7 @@ jobs:
 
   prints:
     name: 'Print Outputs'
-    needs: [ envs ]
+    needs: [ vn ]
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
