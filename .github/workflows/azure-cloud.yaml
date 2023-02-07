@@ -58,8 +58,8 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
-      rg_location: ${{ steps.set-output.outputs.project }}
-      rg_name: ${{ steps.set-output.outputs.instance_type }}
+      rg_location: ${{ steps.set-output.outputs.rg_location }}
+      rg_name: ${{ steps.set-output.outputs.rg_name }}
     env:
       rgEnvFile: "rg.tfvars"
     steps:
@@ -136,7 +136,7 @@ jobs:
           prefix: ${{ env.project }}
           location: ${{ needs.rg.outputs.rg_location }}
           group: ${{ needs.rg.outputs.rg_name }}
-#          address_prefixes: ${{steps.vn-cloud-config.outputs.address_prefixes}}
+          address_prefixes: ${{steps.vn-cloud-config.outputs.address_prefixes}}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
