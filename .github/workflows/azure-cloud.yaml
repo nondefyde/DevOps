@@ -76,13 +76,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Save Secret File secrets
-        run: |
-          echo "prefix=\"${{ env.project }}\"" >> cloud.tfvars
-          echo "location=\"${{ env.location }}\"" >> cloud.tfvars
-          cat ${{ env.envFileName }}
-        shell: bash
-
       - name: Resource Group
         uses: ./.github/actions/run-tf-azure-script
         id: rg
