@@ -102,53 +102,53 @@ jobs:
         run: |
           echo "output json ${{ steps.rg.outputs.output-value }}"
 
-  vn:
-    name: 'VN'
-    needs: [ rg ]
-    permissions: write-all
-    runs-on: ubuntu-latest
-    env:
-      vmEnvFile: "vm.tfvars"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Get cloud config
-        id: vn-cloud-config
-        uses: ActionsTools/read-json-action@main
-        with:
-          file_path: ${{ env.configFile }}
-          prop_path: "virtual-network"
-
-      - name: convert to json
-        uses: schdck/create-env-json@v1
-        with:
-          file-name: ${{ env.rgEnvFile }}
-          prefix: ${{ env.project }}
-          location: ${{ env.location }}
-          group: ${{ env.rg_name }}
-          address_prefixes: ${{steps.vn-cloud-config.outputs.address_prefixes}}
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.vmEnvFile }}
-          path: ${{ env.vmEnvFile }}
-
-      - name: Virtual network
-        uses: ./.github/actions/tf-azure-script
-        id: vn
-        with:
-          project: ${{ env.project }}
-          envFile: ${{ env.vmEnvFile }}
-          key: ${{ env.project }}-vn
-          working-directory: "tf/azure/vn"
-          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-        continue-on-error: false
-
+#  vn:
+#    name: 'VN'
+#    needs: [ rg ]
+#    permissions: write-all
+#    runs-on: ubuntu-latest
+#    env:
+#      vmEnvFile: "vm.tfvars"
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Get cloud config
+#        id: vn-cloud-config
+#        uses: ActionsTools/read-json-action@main
+#        with:
+#          file_path: ${{ env.configFile }}
+#          prop_path: "virtual-network"
+#
+#      - name: convert to json
+#        uses: schdck/create-env-json@v1
+#        with:
+#          file-name: ${{ env.rgEnvFile }}
+#          prefix: ${{ env.project }}
+#          location: ${{ env.location }}
+#          group: ${{ env.rg_name }}
+#          address_prefixes: ${{steps.vn-cloud-config.outputs.address_prefixes}}
+#
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: ${{ env.vmEnvFile }}
+#          path: ${{ env.vmEnvFile }}
+#
+#      - name: Virtual network
+#        uses: ./.github/actions/tf-azure-script
+#        id: vn
+#        with:
+#          project: ${{ env.project }}
+#          envFile: ${{ env.vmEnvFile }}
+#          key: ${{ env.project }}-vn
+#          working-directory: "tf/azure/vn"
+#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+#        continue-on-error: false
+#
 #  vms:
 #    name: 'VMs'
 #    needs: [ vn ]

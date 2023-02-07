@@ -52,34 +52,34 @@ runs:
       run: |
         # Convert JSON to Terraform Variables
         cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key | ascii_downcase) = \"\(.value)\""' > env.tfvars
-#
-#    - name: Copy env to working directory
-#      shell: bash
-#      run: mv env.tfvars ./${{ inputs.working-directory }}
-#
-#    - name: Setup Terraform
-#      uses: hashicorp/setup-terraform@v2
-#      with:
-#        terraform_wrapper: false
-#
-#    - name: Terraform Init
-#      id: init
-#      working-directory: ${{ inputs.working-directory }}
-#      shell: bash
-#      run: |
-#        echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
-#        mkdir -p _state
-#        terraform init \
-#          -backend-config="resource_group_name=${{ inputs.project }}-tfstate" \
-#          -backend-config="storage_account_name=${{ inputs.project }}storage" \
-#          -backend-config="container_name=${{ inputs.project }}tfstate" \
-#          -backend-config="key=${{ inputs.key }}-vm.terraform.tfstate" \
-#          -backend-config="subscription_id=${{ inputs.AZR_SUBSCRIPTION_ID }}" \
-#          -backend-config="tenant_id=${{ inputs.AZR_TENANT_ID }}" \
-#          -backend-config="client_id=${{ inputs.AZR_CLIENT_ID }}" \
-#          -backend-config="client_secret=${{ inputs.AZR_CLIENT_SECRET }}"
-#      continue-on-error: false
-#
+
+    - name: Copy env to working directory
+      shell: bash
+      run: mv env.tfvars ./${{ inputs.working-directory }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
+
+    - name: Terraform Init
+      id: init
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: |
+        echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
+        mkdir -p _state
+        terraform init \
+          -backend-config="resource_group_name=${{ inputs.project }}-tfstate" \
+          -backend-config="storage_account_name=${{ inputs.project }}storage" \
+          -backend-config="container_name=${{ inputs.project }}tfstate" \
+          -backend-config="key=${{ inputs.key }}-vm.terraform.tfstate" \
+          -backend-config="subscription_id=${{ inputs.AZR_SUBSCRIPTION_ID }}" \
+          -backend-config="tenant_id=${{ inputs.AZR_TENANT_ID }}" \
+          -backend-config="client_id=${{ inputs.AZR_CLIENT_ID }}" \
+          -backend-config="client_secret=${{ inputs.AZR_CLIENT_SECRET }}"
+      continue-on-error: false
+
 #    - name: Terraform Plan
 #      id: plan
 #      working-directory: ${{ inputs.working-directory }}
