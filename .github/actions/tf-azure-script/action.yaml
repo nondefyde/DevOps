@@ -99,15 +99,15 @@ runs:
           -lock=false
       continue-on-error: false
 
-#    - name: Terraform Apply
-#      id: apply
-#      shell: bash
-#      working-directory: ${{ inputs.working-directory }}
-#      run: |
-#        echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
-#        terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
-#        echo "Terraform Application was successful ${{ inputs.project }}"
-#      continue-on-error: false
+    - name: Terraform Apply
+      id: apply
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
+        terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
+        echo "Terraform Application was successful ${{ inputs.project }}"
+      continue-on-error: false
 #
 #    - name: Export Output to environments
 #      id: tf_output
