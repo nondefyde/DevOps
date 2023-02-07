@@ -32,11 +32,11 @@ inputs:
   variable-path:
     description: 'The Path to variable'
 
-outputs:
-  rg_name:
-    description: The resource group name
-  rg_location:
-    description: The resource group location
+#outputs:
+#  rg_name:
+#    description: The resource group name
+#  rg_location:
+#    description: The resource group location
 
 jobs:
   build:
