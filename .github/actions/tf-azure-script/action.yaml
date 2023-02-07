@@ -44,16 +44,16 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Print
+      shell: bash
+      run: cat ${{ inputs.envFile }}
+
     - name: Restore cache
       uses: actions/cache@v2
       with:
         key: file-${{ runner.os }}-${{ github.run_id }}
         path: ${{ inputs.envFile }}
         restore: true
-
-    - name: Print
-      shell: bash
-      run: cat ${{ inputs.envFile }}
 
     - name: Convert JSON to Terraform Variables
       shell: bash
