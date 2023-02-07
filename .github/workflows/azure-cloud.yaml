@@ -78,7 +78,7 @@ jobs:
           client_Secret: ${{ secrets.AZR_CLIENT_SECRET }}
           prefix: ${{ env.project }}
           location: ${{ env.location }}
-          prevent_resource_deletion:  ${{steps.resource-group.outputs.prevent_resource_deletion}}"
+          prevent_resource_deletion:  ${{steps.resource-group.outputs.prevent_resource_deletion}}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
