@@ -17,19 +17,19 @@ inputs:
   AZR_SUBSCRIPTION_ID:
     description: 'Azure subscription id'
     required: true
-  envFile:
-    description: 'Environment'
-    required: true
-  project:
-    description: 'Entry project name'
-    required: true
-  key:
-    description: 'Entry group name'
-    required: true
-    default: 'key'
-  working-directory:
-    description: 'Default working directory'
-    default: 'tf'
+#  envFile:
+#    description: 'Environment'
+#    required: true
+#  project:
+#    description: 'Entry project name'
+#    required: true
+#  key:
+#    description: 'Entry group name'
+#    required: true
+#    default: 'key'
+#  working-directory:
+#    description: 'Default working directory'
+#    default: 'tf'
 
 #outputs:
 #  rg_name:
@@ -47,8 +47,8 @@ jobs:
       - name: Download Env File
         uses: actions/download-artifact@master
         with:
-          name: ${{ inputs.envFile }}
-          path: ${{ inputs.envFile }}
+          name: ${{ inputs.AZR_SUBSCRIPTION_ID }}
+          path: ${{ inputs.AZR_SUBSCRIPTION_ID }}
 #
 #      - name: Convert JSON to Terraform Variables
 #        shell: bash
