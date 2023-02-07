@@ -54,7 +54,7 @@ runs:
       shell: bash
       run: |
         # Convert JSON to Terraform Variables
-        cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key) = \"\(.value)\""' >> env.tfvars
+        cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key) = \"\(.value)\"' >> env.tfvars
 
     - name: Print
       shell: bash
