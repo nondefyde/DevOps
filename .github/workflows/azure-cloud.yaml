@@ -81,12 +81,12 @@ jobs:
 
       - name: Print
         shell: bash
-        run: cat ${{ steps.create-env.outputs.full-path }}
+        run: cat ${{ env.rgEnvFile }}
 
       - name: Cache file
         uses: actions/cache@v2
         with:
-          path: ${{ steps.create-env.outputs.full-path }}
+          path: ${{ env.rgEnvFile }}
           key: file-${{ runner.os }}-${{ github.run_id }}
           restore-keys: file-${{ runner.os }}-${{ github.run_id }}
           clean: true
