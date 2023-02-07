@@ -39,7 +39,7 @@ outputs:
     description: The resource group location
 
 env:
-  ${{ parseInt(fromJson(file(".github/env")).*.*) }}
+  ${{ fromJson(file(".github/env")) }}
 
 runs:
   using: 'composite'
