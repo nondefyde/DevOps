@@ -54,7 +54,7 @@ runs:
       shell: bash
       run: |
         # Convert JSON to Terraform Variables
-        cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key | ascii_downcase) = \"\(.value)\""' >> env.tfvars
+        cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key | ascii_downcase) = \"\(.value)\""' > env.tfvars
 
     - name: Copy env to working directory
       shell: bash
