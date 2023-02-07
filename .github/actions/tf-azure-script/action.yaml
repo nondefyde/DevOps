@@ -38,6 +38,9 @@ outputs:
   rg_location:
     description: The resource group location
 
+env:
+  ${{ parseInt(fromJson(file(".github/env")).*.*) }}
+
 runs:
   using: 'composite'
   steps:
@@ -125,12 +128,5 @@ runs:
         for key in $(echo $outputs | jq -r 'keys[]'); do
           KEY=$(echo "${key}")
           VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
-          echo "$KEY=$VALUE" >> "$GITHUB_ENV"
+          echo "$KEY=$VALUE" >>  ".github/env"
         done
-
-    - name: Save as varaibles
-      shell: bash
-      id: env
-      working-directory: ${{ inputs.working-directory }}
-      env:
-        ${{ fromJson(file("${{ inputs.key }}.json")) }}
