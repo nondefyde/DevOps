@@ -26,3 +26,8 @@ variable "client_secret" {
   type        = string
   description = "Client ID"
 }
+
+variable "prevent_deletion_if_contains_resources" {
+  type = bool
+  default = true
+}

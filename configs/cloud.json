@@ -1,0 +1,22 @@
+{
+  "prefix": "cloudstmdev",
+  "location": "centralus",
+  "resource-group": {
+    "prevent_deletion_if_contains_resources": false
+  },
+  "virtual-network": {
+    "address_prefixes": [
+      "10.0.2.0/24"
+    ]
+  },
+  "vms": {
+    "quest": {
+      "name": "quest-vm",
+      "vmCount": 1
+    },
+    "room": {
+      "name": "room-vm",
+      "vmCount": 1
+    }
+  }
+}

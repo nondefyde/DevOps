@@ -30,7 +30,7 @@ jobs:
         run: |
           echo "prefix=\"${{ env.project }}\"" >> cloud.tfvars
           echo "location=\"${{ env.location }}\"" >> cloud.tfvars
-          echo "group=\"${{ env.project }}-group\"" >> cloud.tfvars
+          echo "group=\"${{ env.group }}-group\"" >> cloud.tfvars
           cat ${{ env.envFileName }}
         shell: bash
 
@@ -76,6 +76,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: get specified property
+        id: resource-group
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: "configs/cloud.json"
+          prop_path: "resource-group"
+
+      - run: |
+          echo "prevent_deletion_if_contains_resources ::: ${{steps.resource-group.outputs.prevent_deletion_if_contains_resources}}"
 
       - name: Resource Group
         uses: ./.github/actions/tf-azure-script
