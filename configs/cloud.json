@@ -2,7 +2,7 @@
   "prefix": "cloudstmdev",
   "location": "centralus",
   "resource-group": {
-    "prevent_resource_deletion": "false"
+    "prevent_resource_deletion": false
   },
   "virtual-network": {
     "address_prefixes": [
