@@ -49,12 +49,12 @@ runs:
       shell: bash
       run: echo "TFDestroy >>>>> ${{ inputs.TFDestroy }}"
 
-    - name: Restore cache
-      uses: actions/cache@v2
-      with:
-        key: file-${{ runner.os }}-${{ github.run_id }}
-        path: ${{ inputs.envFile }}
-        restore: true
+#    - name: Restore cache
+#      uses: actions/cache@v2
+#      with:
+#        key: file-${{ runner.os }}-${{ github.run_id }}
+#        path: ${{ inputs.envFile }}
+#        restore: true
 
     - name: Copy env to working directory
       shell: bash
