@@ -127,6 +127,6 @@ jobs:
           for key in $(echo $outputs | jq -r 'keys[]'); do
             KEY=$(echo "${key}")
             VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
-            echo "$KEY=$VALUE" >>  ".github/env"
+            echo "$KEY=$VALUE" >> "$GITHUB_ENV"
           done
 
