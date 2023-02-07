@@ -75,6 +75,7 @@ jobs:
         id: create-env
         with:
           file-name: ${{ env.rgEnvFile }}
+          client_Secret: ${{ secrets.AZR_CLIENT_SECRET }}
           prefix: ${{ env.project }}
           location: ${{ env.project }}
           prevent_resource_deletion:  ${{steps.resource-group.outputs.prevent_resource_deletion}}"
