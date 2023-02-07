@@ -51,7 +51,9 @@ runs:
         path: ${{ inputs.envFile }}
         restore: true
 
-    - run: cat ${{ inputs.envFile }}
+    - name: Print
+      shell: bash
+      run: cat ${{ inputs.envFile }}
 
     - name: Convert JSON to Terraform Variables
       shell: bash
