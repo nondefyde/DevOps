@@ -115,7 +115,6 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         outputs=$(terraform output -json)
-        echo output-value=$outputs >> $GITHUB_OUTPUT
         for key in $(echo $outputs | jq -r 'keys[]'); do
           KEY=$(echo "${key}")
           VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
