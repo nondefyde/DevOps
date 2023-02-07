@@ -1,0 +1,10 @@
+[
+  {
+    "name": "quest",
+    "vmCount": 1
+  },
+  {
+    "name": "room",
+    "vmCount": 1
+  }
+]

@@ -136,7 +136,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Virtual nachines
-        uses: ./.github/actions/tf-azure-script
         id: vn
         run: echo "Generate virtual machines"
 
