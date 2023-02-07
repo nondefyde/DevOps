@@ -32,10 +32,8 @@ inputs:
     description: 'The Path to variable'
 
 outputs:
-  rg_name:
-    description: The resource group name
-  rg_location:
-    description: The resource group location
+  output-value:
+    description: The output value
 
 runs:
   using: 'composite'
@@ -113,15 +111,6 @@ runs:
         echo "The output saved to file to ${{ inputs.key }}.json"
       continue-on-error: false
 
-    - name: Terraform Apply
-      id: pri
-      shell: bash
-      env:
-        TEST_ENV: true
-      run: |
-        echo "Set Env"
-
-
     - name: Export Output to environments
       id: tf_output
       shell: bash
@@ -130,6 +119,7 @@ runs:
         echo File name ${{ inputs.key }}.json
         file=${{ inputs.key }}.json
         outputs=$(terraform output -json)
+        echo "::set-output name=output-value::${outputs}"
         for key in $(echo $outputs | jq -r 'keys[]'); do
           KEY=$(echo "${key}")
           VALUE=$(echo "${outputs}" | jq -r ".${key}.value")

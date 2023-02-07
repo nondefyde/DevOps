@@ -98,6 +98,11 @@ jobs:
           AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
         continue-on-error: false
 
+      - name: Echo output
+        uses: actions/upload-artifact@v2
+        run: |
+          echo "output json ${{ steps.rg.outputs.output-value }}"
+
   vn:
     name: 'VN'
     needs: [ rg ]
