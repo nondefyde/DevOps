@@ -130,5 +130,6 @@ runs:
 
     - name: Save as varaibles
       id: env
+      working-directory: ${{ inputs.working-directory }}
       env:
         ${{ fromJson(file("${{ inputs.key }}.json")) }}
