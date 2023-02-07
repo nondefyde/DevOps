@@ -27,7 +27,7 @@ variable "client_secret" {
   description = "Client ID"
 }
 
-variable "prevent_deletion_if_contains_resources" {
+variable "prevent_resource_deletion" {
   type = bool
   default = true
 }

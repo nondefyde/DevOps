@@ -12,7 +12,7 @@ terraform {
 provider "azurerm" {
   features {
     resource_group {
-      prevent_deletion_if_contains_resources = var.prevent_deletion_if_contains_resources
+      prevent_deletion_if_contains_resources = var.prevent_resource_deletion
     }
   }
   subscription_id = var.subscription_id

@@ -84,8 +84,30 @@ jobs:
           file_path: "configs/cloud.json"
           prop_path: "resource-group"
 
-      - run: |
-          echo "prevent_deletion_if_contains_resources ::: ${{steps.resource-group.outputs.prevent_deletion_if_contains_resources}}"
+      - name: convert to json
+        uses: schdck/create-env-json@v1
+        id: create-env
+        with:
+          file-name: ${{ env.envFileName }}
+          prefix: ${{ env.project }}
+          location: ${{ env.project }}
+          prevent_resource_deletion:  ${{steps.resource-group.outputs.prevent_resource_deletion}}"
+
+      - name: Cache file
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.envFileName }}
+          key: file-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: file-${{ runner.os }}-${{ github.run_id }}
+          clean: true
+
+      - name: Check file existence
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: ${{ env.envFileName }}
+
+      - run: cat  ${{ env.envFileName }}
 
       - name: Resource Group
         uses: ./.github/actions/tf-azure-script
