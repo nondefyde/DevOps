@@ -78,7 +78,7 @@ jobs:
           AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
         continue-on-error: false
 
-      - name: Create Resource Group
+      - name: Resource Group
         uses: ./.github/actions/run-tf-azure-script
         id: rg
         with:
