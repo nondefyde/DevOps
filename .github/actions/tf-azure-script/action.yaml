@@ -114,7 +114,7 @@ runs:
       continue-on-error: false
 
     - name: Terraform Apply
-      id: apply
+      id: pri
       shell: bash
       env:
         TEST_ENV: true
