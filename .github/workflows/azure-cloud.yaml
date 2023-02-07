@@ -48,8 +48,8 @@ jobs:
           restore-keys: file-${{ runner.os }}-${{ github.run_id }}
           clean: true
 
-  resource-group:
-    name: 'Resource Group'
+  sa:
+    name: 'Storage Account'
     needs: [ envs ]
     permissions: write-all
     runs-on: ubuntu-latest
@@ -68,6 +68,15 @@ jobs:
           AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
         continue-on-error: false
 
+  rg:
+    name: 'Resource Group'
+    needs: [ envs ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Resource Group
         uses: ./.github/actions/tf-azure-script
         id: rg
@@ -83,6 +92,15 @@ jobs:
           TFDestroy: ${{ inputs.TFDestroy == true }}
         continue-on-error: false
 
+  vn:
+    name: 'Virtual Network'
+    needs: [ envs ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Virtual network
         uses: ./.github/actions/tf-azure-script
         id: vn
@@ -97,6 +115,26 @@ jobs:
           AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
           TFDestroy: ${{ inputs.TFDestroy == true }}
         continue-on-error: false
+
+      - name: Check Env
+        id: envs
+        run: |
+          echo "Resource name $rg_name"
+          echo "Resource location $rg_location"
+          echo "Resource app_virtual_network_name $app_virtual_network_name"
+          echo "Resource app_virtual_network_id $app_virtual_network_id"
+          echo "Resource app_virtual_subnet_name $app_virtual_subnet_name"
+          echo "Resource app_virtual_subnet_id $app_virtual_subnet_id"
+          echo "Resource location $app_virtual_subnet_name"
+
+  prints:
+    name: 'Print Outputs'
+    needs: [ envs ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Check Env
         id: envs
