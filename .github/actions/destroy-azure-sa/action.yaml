@@ -1,0 +1,58 @@
+name: destroy-azure-sa
+author: Emmanuel Okafor
+decription: A generic action to destroy azure storage account if it exist
+
+inputs:
+  AZR_CLIENT_ID:
+    required: true
+  AZR_CLIENT_SECRET:
+    required: true
+  AZR_TENANT_ID:
+    required: true
+
+  project:
+    description: 'Entry project name'
+    required: true
+  location:
+    description: 'storage account location'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Login Azure
+      id: login
+      shell: bash
+      run: az login --service-principal --username ${{inputs.AZR_CLIENT_ID}} --password ${{inputs.AZR_CLIENT_SECRET}} --tenant ${{inputs.AZR_TENANT_ID}}
+
+    - name: Setup Storage Account
+      shell: bash
+      run: |
+        RESOURCE_GROUP_NAME=${{ inputs.project }}-tfstate
+        RESOURCE_LOCATION=${{ inputs.location }}
+        STORAGE_ACCOUNT_NAME=${{ inputs.project }}storage
+        CONTAINER_NAME=${{ inputs.project }}tfstate
+        
+        echo "Clean up resources storage account ${STORAGE_ACCOUNT_NAME} within group ${RESOURCE_GROUP_NAME}"
+        
+        STORAGE_SEARCH=$(az storage account check-name --name $STORAGE_ACCOUNT_NAME)
+        
+        echo "STORAGE_SEARCH ${STORAGE_SEARCH}"
+        
+        nameAvailable=$( jq -r  '.nameAvailable' <<< "${STORAGE_SEARCH}" )
+        
+        echo "Storage account name is available ${nameAvailable}"
+        
+        if $nameAvailable
+          then
+          echo "No Storage account was deleted"
+        else
+          echo "Delete storage account --name $STORAGE_ACCOUNT_NAME"
+          az storage account delete --name $STORAGE_ACCOUNT_NAME --yes
+          
+          echo "Delete resource group ${RESOURCE_GROUP_NAME}"
+          az group delete --name $RESOURCE_GROUP_NAME --yes
+        fi

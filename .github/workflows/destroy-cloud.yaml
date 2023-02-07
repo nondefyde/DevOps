@@ -1,0 +1,125 @@
+name: AZR DESTROY TEST CLOUD
+
+on:
+  workflow_dispatch:
+    inputs:
+      TFAction:
+        description: "Destroy Cloud"
+        type: boolean
+        default: false
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  project: cloudstmdev
+  location: centralus
+  envFileName: "cloud.tfvars"
+
+jobs:
+  envs:
+    name: 'Set Environments'
+    if: ${{ inputs.TFAction == true}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Save Secret File secrets
+        run: |
+          echo "prefix=\"${{ env.project }}\"" >> cloud.tfvars
+          echo "location=\"${{ env.location }}\"" >> cloud.tfvars
+          echo "group=\"${{ env.project }}-group\"" >> cloud.tfvars
+          cat ${{ env.envFileName }}
+        shell: bash
+
+      - name: Check file existence
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: ${{ env.envFileName }}
+
+      - name: Cache file
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.envFileName }}
+          key: file-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: file-${{ runner.os }}-${{ github.run_id }}
+          clean: true
+
+  destroy-vn:
+    name: 'Destroy Virtual Network'
+    if: ${{ inputs.TFAction == true}}
+    needs: [ envs ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Destroy Virtual network
+        uses: ./.github/actions/tf-azure-destroy-script
+        id: vn
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.envFileName }}
+          key: ${{ env.project }}-vn
+          working-directory: "tf/azure/vn"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+          TFDestroy: ${{ inputs.TFDestroy == true }}
+        continue-on-error: false
+
+  destroy-rg:
+    name: 'Destroy Resource Group'
+    if: ${{ inputs.TFAction == true}}
+    needs: [ envs ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Destroy Resource Group
+        uses: ./.github/actions/tf-azure-destroy-script
+        id: rg
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.envFileName }}
+          key: ${{ env.project }}-rg
+          working-directory: "tf/azure/crg"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+          TFDestroy: ${{ inputs.TFDestroy == true }}
+        continue-on-error: false
+
+  destroy-sa:
+    name: 'Destroy Storage Account'
+    if: ${{ inputs.TFAction == true}}
+    needs: [ envs ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Destroy Storage Account
+        uses: ./.github/actions/destroy-azure-sa
+        id: sa
+        with:
+          project: ${{ env.project }}
+          location: ${{ env.location }}
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
