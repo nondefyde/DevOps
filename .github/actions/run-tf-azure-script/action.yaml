@@ -48,8 +48,8 @@ runs:
     - name: Echo env for debug
       shell: bash
       run: |
-        cat ${{ inputs.envFile }}
         echo "TFDestroy >>>>> ${{ inputs.TFDestroy }}"
+        cat ${{ inputs.envFile }}
 
     - name: Restore cache
       uses: actions/cache@v2
