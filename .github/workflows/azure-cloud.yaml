@@ -25,7 +25,7 @@ env:
   envFileName: "cloud.tfvars"
 
 jobs:
-  dep:
+  envs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
     steps:
@@ -53,58 +53,11 @@ jobs:
           restore-keys: file-${{ runner.os }}-${{ github.run_id }}
           clean: true
 
-  sa-rg:
-    name: 'Execute Cloud'
-    needs: [dep]
-    permissions: write-all
-    runs-on: ubuntu-latest
-    outputs:
-      resource_group_name: ${{ steps.rg.outputs.rg_name }}
-      resource_group_location: ${{ steps.rg.outputs.rg_location }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Resource Group
-        uses: ./.github/actions/run-tf-azure-script
-        id: rg
-        with:
-          project: ${{ env.project }}
-          envFile: ${{ env.envFileName }}
-          key: ${{ env.project }}-rg
-          working-directory: "tf/azure/crg"
-          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-          TFDestroy: ${{ inputs.TFDestroy == true }}
-        continue-on-error: false
-
-      - name: Storage Account
-        uses: ./.github/actions/create-azure-sa
-        id: sa
-        with:
-          project: ${{ env.project }}
-          location: ${{ env.location }}
-          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-        continue-on-error: false
-
-      - name: Check Env
-        id: envs
-        run: |
-          echo "Resource name $rg_name"
-          echo "Resource location $rg_location"
-
-  setup:
+  dep:
     name: 'Execute Cloud'
     needs: [ envs ]
     permissions: write-all
     runs-on: ubuntu-latest
-    outputs:
-      resource_group_name: ${{ steps.rg.outputs.rg_name }}
-      resource_group_location: ${{ steps.rg.outputs.rg_location }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
