@@ -79,7 +79,7 @@ jobs:
           file-name: ${{ env.rgEnvFile }}
           prefix: ${{ env.project }}
           location: ${{ env.location }}
-          prevent_resource_deletion:  ${{steps.rg-cloud-config.outputs.prevent_resource_deletion}}
+#          prevent_resource_deletion:  ${{steps.rg-cloud-config.outputs.prevent_resource_deletion}}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
