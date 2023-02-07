@@ -38,9 +38,6 @@ outputs:
   rg_location:
     description: The resource group location
 
-env:
-  ${{ fromJson(file(".github/env")) }}
-
 jobs:
   execute:
     runs-on: ubuntu-latest
