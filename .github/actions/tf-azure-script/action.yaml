@@ -44,18 +44,14 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Install JQ
-      shell: bash
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq
-
     - name: Restore cache
       uses: actions/cache@v2
       with:
         key: file-${{ runner.os }}-${{ github.run_id }}
         path: ${{ inputs.envFile }}
         restore: true
+
+    - run: cat ${{ inputs.envFile }}
 
     - name: Convert JSON to Terraform Variables
       shell: bash
