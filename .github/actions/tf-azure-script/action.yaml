@@ -118,5 +118,5 @@ runs:
         for key in $(echo $outputs | jq -r 'keys[]'); do
           KEY=$(echo "${key}")
           VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
-          echo "$KEY=$VALUE" >> "$GITHUB_ENV"
+          echo "::set-env name=$KEY::$VALUE"
         done
