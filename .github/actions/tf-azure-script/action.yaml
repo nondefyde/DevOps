@@ -44,6 +44,12 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Install JQ
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y jq
+
     - name: Restore cache
       uses: actions/cache@v2
       with:
@@ -51,9 +57,17 @@ runs:
         path: ${{ inputs.envFile }}
         restore: true
 
+    - name: Convert JSON to Terraform Variables
+      shell: bash
+      run: |
+        # Convert JSON to Terraform Variables
+        echo 'variable "example_variable" {' > env.tfvars
+        cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key) = \(.value)"' >> env.tfvars
+        echo '}' >> env.tfvars
+
     - name: Copy env to working directory
       shell: bash
-      run: mv "${{ inputs.envFile }}" ./${{ inputs.working-directory }}
+      run: mv env.tfvars ./${{ inputs.working-directory }}
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
@@ -65,6 +79,8 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
+        ls -a
+        cat env.tfvars
         echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         mkdir -p _state
         terraform init \
