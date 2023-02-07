@@ -1,0 +1,84 @@
+name: tf-azure-destroy-script
+author: Emmanuel Okafor
+description: A generic action to destroy terraform cloud
+
+inputs:
+  AZR_CLIENT_ID:
+    description: 'Azure client id'
+    required: true
+  AZR_CLIENT_SECRET:
+    description: 'Azure secret key'
+    required: true
+  AZR_TENANT_ID:
+    description: 'Azure tenant id'
+    required: true
+  AZR_SUBSCRIPTION_ID:
+    description: 'Azure subscription id'
+    required: true
+
+  envFile:
+    description: 'Environment'
+    required: true
+  project:
+    description: 'Entry project name'
+    required: true
+  key:
+    description: 'Entry group name'
+    required: true
+    default: 'key'
+  working-directory:
+    description: 'Default working directory'
+    default: 'tf'
+  variable-path:
+    description: 'The Path to variable'
+
+outputs:
+  rg_name:
+    description: The resource group name
+  rg_location:
+    description: The resource group location
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Echo env for debug
+      shell: bash
+      run: TFDestroy >>>>> ${{ inputs.TFDestroy }}
+
+    - name: Restore cache
+      uses: actions/cache@v2
+      with:
+        key: file-${{ runner.os }}-${{ github.run_id }}
+        path: ${{ inputs.envFile }}
+        restore: true
+
+    - name: Copy env to working directory
+      shell: bash
+      run: mv "${{ inputs.envFile }}" ./${{ inputs.working-directory }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
+
+    - name: Terraform Destroy
+      id: destroy
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "Terraform Destruction in progress ${{ inputs.project }}"
+        terraform -destroy -no-color -input=false \
+          -var=prefix="${{ inputs.project}}" \
+          -var=subscription_id="${{ inputs.AZR_SUBSCRIPTION_ID }}" \
+          -var=tenant_id="${{ inputs.AZR_TENANT_ID }}" \
+          -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
+          -var=client_secret="${{ inputs.AZR_CLIENT_SECRET }}" \
+          -var-file=./${{ inputs.envFile }} \
+          -out ./_state/${{ inputs.project }}.destroy.tfplan \
+          -lock=false
+        terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.destroy.tfplan
+        echo "Terraform Destruction in successful ${{ inputs.project }}"
+      continue-on-error: false
