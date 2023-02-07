@@ -70,7 +70,7 @@ jobs:
 
   rg:
     name: 'Resource Group'
-    needs: [ envs ]
+    needs: [ sa ]
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
@@ -94,7 +94,7 @@ jobs:
 
   vn:
     name: 'Virtual Network'
-    needs: [ envs ]
+    needs: [ rg ]
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
