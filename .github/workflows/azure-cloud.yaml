@@ -141,7 +141,7 @@ jobs:
 
   prints:
     name: 'Print Outputs'
-    needs: [ vn ]
+    needs: [ vms ]
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
