@@ -127,3 +127,8 @@ runs:
           VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
           echo "$KEY=$VALUE" >> "$GITHUB_ENV"
         done
+
+    - name: Save as varaibles
+      id: env
+      env:
+        ${{ fromJson(file("${{ inputs.key }}.json")) }}
