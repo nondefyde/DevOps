@@ -33,7 +33,7 @@ jobs:
           files: ${{ env.configFile }}
 
   sa:
-    name: 'SA'
+    name: 'Storage Account'
     needs: [ envs ]
     permissions: write-all
     runs-on: ubuntu-latest
@@ -41,7 +41,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Storage Account
+      - name: Instantiate SA
         uses: ./.github/actions/create-azure-sa
         id: sa
         with:
@@ -87,7 +87,7 @@ jobs:
           name: ${{ env.rgEnvFile }}
           path: ${{ env.rgEnvFile }}
 
-      - name: Resource Group
+      - name: Instantiate RG
         uses: ./.github/actions/tf-azure-script
         id: rg
         with:
@@ -136,7 +136,7 @@ jobs:
           prefix: ${{ env.project }}
           location: ${{ env.location }}
           group: ${{ env.rg_name }}
-          address_prefixes: ${{steps.vn-cloud-config.outputs.address_prefixes}}
+#          address_prefixes: ${{steps.vn-cloud-config.outputs.address_prefixes}}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
@@ -144,7 +144,7 @@ jobs:
           name: ${{ env.vmEnvFile }}
           path: ${{ env.vmEnvFile }}
 
-      - name: Virtual network
+      - name: Instantiate VN
         uses: ./.github/actions/tf-azure-script
         id: vn
         with:
