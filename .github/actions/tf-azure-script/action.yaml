@@ -80,25 +80,25 @@ runs:
           -backend-config="client_secret=${{ inputs.AZR_CLIENT_SECRET }}"
       continue-on-error: false
 
-#    - name: Terraform Plan
-#      id: plan
-#      working-directory: ${{ inputs.working-directory }}
-#      shell: bash
-#      run: |
-#        ls -a
-#        cat env.tfvars
-#        echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
-#        mkdir -p _state
-#        terraform plan -no-color -input=false \
-#          -var=subscription_id="${{ inputs.AZR_SUBSCRIPTION_ID }}" \
-#          -var=tenant_id="${{ inputs.AZR_TENANT_ID }}" \
-#          -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
-#          -var=client_secret="${{ inputs.AZR_CLIENT_SECRET }}" \
-#          -var-file=env.tfvars \
-#          -out ./_state/${{ inputs.project }}.tfplan \
-#          -lock=false
-#      continue-on-error: false
-#
+    - name: Terraform Plan
+      id: plan
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: |
+        ls -a
+        cat env.tfvars
+        echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
+        mkdir -p _state
+        terraform plan -no-color -input=false \
+          -var=subscription_id="${{ inputs.AZR_SUBSCRIPTION_ID }}" \
+          -var=tenant_id="${{ inputs.AZR_TENANT_ID }}" \
+          -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
+          -var=client_secret="${{ inputs.AZR_CLIENT_SECRET }}" \
+          -var-file=env.tfvars \
+          -out ./_state/${{ inputs.project }}.tfplan \
+          -lock=false
+      continue-on-error: false
+
 #    - name: Terraform Apply
 #      id: apply
 #      shell: bash
