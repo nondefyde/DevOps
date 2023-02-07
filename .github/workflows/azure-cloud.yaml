@@ -25,35 +25,44 @@ env:
   envFileName: "cloud.tfvars"
 
 jobs:
-  envs:
+  dep:
     name: 'Set Environments'
     runs-on: ubuntu-latest
-    outputs:
-      envFile: ${{ steps.cache-primes.outputs.cache-hit }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Save Secret File secrets
-        run: |
-          echo "prefix=\"${{ env.project }}\"" >> cloud.tfvars
-          echo "location=\"${{ env.location }}\"" >> cloud.tfvars
-          cat ${{ env.envFileName }}
-        shell: bash
+#      - name: Save Secret File secrets
+#        run: |
+#          echo "prefix=\"${{ env.project }}\"" >> cloud.tfvars
+#          echo "location=\"${{ env.location }}\"" >> cloud.tfvars
+#          cat ${{ env.envFileName }}
+#        shell: bash
+#
+#      - name: Check file existence
+#        id: check_files
+#        uses: andstor/file-existence-action@v1
+#        with:
+#          files: ${{ env.envFileName }}
+#
+#      - name: Cache file
+#        uses: actions/cache@v2
+#        with:
+#          path: ${{ env.envFileName }}
+#          key: file-${{ runner.os }}-${{ github.run_id }}
+#          restore-keys: file-${{ runner.os }}-${{ github.run_id }}
+#          clean: true
 
-      - name: Check file existence
-        id: check_files
-        uses: andstor/file-existence-action@v1
+      - name: Storage Account
+        uses: ./.github/actions/create-azure-sa
+        id: sa
         with:
-          files: ${{ env.envFileName }}
-
-      - name: Cache file
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.envFileName }}
-          key: file-${{ runner.os }}-${{ github.run_id }}
-          restore-keys: file-${{ runner.os }}-${{ github.run_id }}
-          clean: true
+          project: ${{ env.project }}
+          location: ${{ env.location }}
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
 
   sa-rg:
     name: 'Execute Cloud'
@@ -73,17 +82,6 @@ jobs:
           echo "location=\"${{ env.location }}\"" >> cloud.tfvars
           cat ${{ env.envFileName }}
         shell: bash
-
-      - name: Storage Account
-        uses: ./.github/actions/create-azure-sa
-        id: sa
-        with:
-          project: ${{ env.project }}
-          location: ${{ env.location }}
-          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-        continue-on-error: false
 
       - name: Resource Group
         uses: ./.github/actions/run-tf-azure-script
