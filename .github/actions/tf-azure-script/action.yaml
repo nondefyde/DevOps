@@ -119,8 +119,8 @@ runs:
         echo File name ${{ inputs.key }}.json
         file=${{ inputs.key }}.json
         outputs=$(terraform output -json)
-        echo "::set-output name=output-value::${outputs}"
-#        echo "output-value=${outputs}" >> $GITHUB_OUTPUT
+#        echo "::set-output name=output-value::${outputs}"
+        echo "output-value=${outputs}" >> $GITHUB_OUTPUT
         for key in $(echo $outputs | jq -r 'keys[]'); do
           KEY=$(echo "${key}")
           VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
