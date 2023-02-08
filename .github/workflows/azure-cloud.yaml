@@ -61,7 +61,8 @@ jobs:
       - name: Set Env
         id: variables
         run: |
-          echo "vmnames=${{ env.vmnames }}" >> $GITHUB_OUTPUT
+          echo "vmnames=${{ format('[{0}]', env.vmnames) }}" >> $GITHUB_OUTPUT
+#          echo "vmnames=${{ env.vmnames }}" >> $GITHUB_OUTPUT
 
 
 #  prebuild:
