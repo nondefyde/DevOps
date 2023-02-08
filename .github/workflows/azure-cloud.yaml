@@ -47,7 +47,7 @@ jobs:
         run: |
           echo "VMS --- ${{ toJson(steps.vm-cloud-config.outputs.vm-names) }}"
           data=${{ toJson(steps.vm-cloud-config.outputs.vm-names) }}
-          echo "vmnames=$data" >> $GITHUB_OUTPUT
+          echo "vmnames=$data" >> "$GITHUB_ENV"
 
 #      - name:
 #        id: set-vm
