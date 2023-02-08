@@ -73,7 +73,7 @@ jobs:
     name: Job for ${{ matrix.items }}
     needs: [ envs ]
     env:
-      project: ${{ needs.envs.outputs.vms }}
+      project: ${{ toJson(needs.envs.outputs.vms) }}
 #    strategy:
 #      matrix:
 #        items: ${{ fromJson(needs.envs.outputs.vms) }}
@@ -86,7 +86,7 @@ jobs:
       - name: Check Env
         id: envs
         run: |
-          echo "JOB ${{ fromJson(needs.envs.outputs.vms) }}"
+          echo "JOB ${{ env.project }}"
 #  sa:
 #    name: 'Storage Account'
 #    needs: [ envs ]
