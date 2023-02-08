@@ -66,7 +66,7 @@ jobs:
     name: Job for ${{ matrix.items }}
     needs: [ envs ]
     env:
-      project: ${{ toJson(needs.envs.outputs.vms) }}
+      project: ${{ fromJson(needs.envs.outputs.vms) }}
     strategy:
       matrix:
         items: ${{ toJson('[\"quest\", \"room\"]') }}
