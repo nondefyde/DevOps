@@ -24,7 +24,7 @@ jobs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
     outputs:
-      vms: ${{ steps.set-vm.outputs.vmnames }}
+      vms: ${{ steps.variables.outputs.vmnames }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -48,6 +48,11 @@ jobs:
           echo "VMS --- ${{ toJson(steps.vm-cloud-config.outputs.vm-names) }}"
           data=${{ toJson(steps.vm-cloud-config.outputs.vm-names) }}
           echo "vmnames=$data" >> "$GITHUB_ENV"
+
+      - name: Set Env
+        id: variables
+        run: |
+          echo "vmnames=${{ env.vmnames }}" >> $GITHUB_OUTPUT
 
 #      - name:
 #        id: set-vm
