@@ -74,9 +74,9 @@ jobs:
     needs: [ envs ]
     env:
       project: ${{ needs.envs.outputs.vms }}
-#    strategy:
-#      matrix:
-#        items: ${{ fromJson(needs.env.outputs.vms) }}
+    strategy:
+      matrix:
+        items: ${{ needs.envs.outputs.vms }}
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
