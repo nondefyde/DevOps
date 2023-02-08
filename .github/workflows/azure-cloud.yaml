@@ -54,7 +54,8 @@ jobs:
           data=${{ toJson(steps.vm-cloud-config.outputs.vms) }}
           echo "data --- $data"
           names=$(echo $data | jq '.[].name')
-          echo $names
+          names_array=($names)
+          echo "Array of names: ${names_array[@]}"
 
 #  prints:
 #    name: Job for ${{ matrix.items }}
