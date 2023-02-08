@@ -47,10 +47,13 @@ jobs:
         run: |
           echo "VMS --- ${{ toJson(steps.vm-cloud-config.outputs.vms) }}"
           data=${{ toJson(steps.vm-cloud-config.outputs.vms) }}
-          names=$(echo $data | jq -r '.[].name')
-          names_array=($names)  
-          json_array="[\"$(echo "${names_array[@]}" | tr ' ' '","')\"]"
-          echo "JSON array: $json_array"
+          names_array=($names)
+          json_array="["
+          for name in "${names_array[@]}"; do
+            json_array+="\"$name\","
+          done
+          json_array=${json_array%?}
+          json_array+="]"
           echo "vmnames=$json_array" >> "$GITHUB_ENV"
 
       - name: Set Env
