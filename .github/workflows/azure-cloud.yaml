@@ -49,12 +49,12 @@ jobs:
           data=${{ toJson(steps.vm-cloud-config.outputs.vms) }}
           names=$(echo $data | jq -r '.[].name')
           names_array=($names)
-          json_array="["
+          json_array="
           for name in "${names_array[@]}"; do
-            json_array+="\"$name\","
+            json_array+='$name',
           done
           json_array=${json_array%?}
-          json_array+="]"
+          json_array+="
           echo "vmnames=$json_array" >> "$GITHUB_ENV"
 
       - name: Set Env
@@ -62,24 +62,37 @@ jobs:
         run: |
           echo "vmnames=\"${{ env.vmnames }}\"" >> $GITHUB_OUTPUT
 
-  prints:
-    name: Job for ${{ matrix.items }}
-    needs: [ envs ]
-    env:
-      project: ${{ toJson(needs.envs.outputs.vms) }}
-    strategy:
-      matrix:
-        items: ${{ fromJson("['ubuntu-latest','windows-latest']") }}
-    permissions: write-all
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
 
-      - name: Check Env
-        id: envs
-        run: |
-          echo "JOB ${{ env.project }}"
+#  prebuild:
+#    runs-on: ubuntu-latest
+#    outputs:
+#      os: ${{ steps.set-matrix.outputs.os }}
+#      nodeVersion: ${{ steps.set-matrix.outputs.nodeVersion }}
+#    steps:
+#      - id: set-matrix
+#        run: |
+#          echo "::set-output name=os::${{format('[{0}]',github.event.inputs.OS)}}"
+#          echo "::set-output name=nodeVersion::${{format('[{0}]',github.event.inputs.NODE_VERSION)}}"
+#
+#
+#  prints:
+#    name: Job for ${{ matrix.items }}
+#    needs: [ envs ]
+#    env:
+#      project: ${{ toJson(needs.envs.outputs.vms) }}
+#    strategy:
+#      matrix:
+#        items: ${{ fromJson("['ubuntu-latest','windows-latest']") }}
+#    permissions: write-all
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Check Env
+#        id: envs
+#        run: |
+#          echo "JOB ${{ env.project }}"
 #  sa:
 #    name: 'Storage Account'
 #    needs: [ envs ]
