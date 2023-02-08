@@ -43,7 +43,7 @@ jobs:
           prop_path: "virtual-machine"
 
       - name:
-        run: "VMS --- ${{steps.vm-cloud-config.outputs.vms}}"
+        run: echo "VMS --- ${{steps.vm-cloud-config.outputs.vms}}"
 
 #  prints:
 #    name: Job for ${{ matrix.items }}
