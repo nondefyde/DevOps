@@ -134,11 +134,11 @@ jobs:
         id: vmjson
         uses: schdck/create-env-json@v1
         with:
-          file-name: ${{ env.rgEnvFile }}
+          file-name: ${{ env.vmEnvFile }}
           prefix: ${{ env.project }}
-#          location: ${{ needs.rg.outputs.rg_location }}
-#          group: ${{ needs.rg.outputs.rg_name }}
-#          address_prefixes: ${{steps.vn-cloud-config.outputs.address_prefixes}}
+          location: ${{ needs.rg.outputs.rg_location }}
+          group: ${{ needs.rg.outputs.rg_name }}
+          address_prefixes: ${{steps.vn-cloud-config.outputs.address_prefixes}}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
