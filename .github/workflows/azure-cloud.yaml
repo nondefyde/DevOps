@@ -79,7 +79,7 @@ jobs:
       - name: Check Env
         id: envs
         run: |
-          echo "JOB ${{ env.project }}"
+          echo "JOB ${{ (env.project).length }}"
 #  sa:
 #    name: 'Storage Account'
 #    needs: [ envs ]
