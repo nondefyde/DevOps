@@ -3,11 +3,6 @@ variable "prefix" {
   description = "The prefix for the resource group"
 }
 
-variable "name" {
-  type        = string
-  description = "The name of the vm"
-}
-
 variable "group" {
   type        = string
   description = "The name of the vm"
@@ -39,11 +34,6 @@ variable "environment" {
   default = "development"
 }
 
-variable "vm_count" {
-  type = number
-  default = 1
-}
-
 variable "admin_username" {
   type = string
   default = "adminuser"
@@ -53,8 +43,17 @@ variable "admin_password" {
   type = string
 }
 
-variable "cloud_init_file" {
+variable "init_file" {
   type        = string
   description = "The entry file when server is setup"
   default     = "./vm.sh"
+}
+
+variable "vm_count" {
+  type = string
+  default = 2
+}
+
+variable "name" {
+  type = string
 }

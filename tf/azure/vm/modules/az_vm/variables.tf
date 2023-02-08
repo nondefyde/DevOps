@@ -4,8 +4,11 @@ variable "prefix" {
 }
 
 variable "name" {
-  type        = string
-  description = "The name of the vm"
+  type = string
+}
+
+variable "vm_count" {
+  type = number
 }
 
 variable "location" {
@@ -47,14 +50,14 @@ variable "environment" {
 }
 
 variable "subnet_id" {
-  type = list(string)
+  type = string
 }
 
-variable "vm_count" {
-  type = number
-  default = 1
+variable "disk_size" {
+  type        = string
+  default     = "Standard_F2"
+  description = "Disk size/type"
 }
-
 
 variable "admin_username" {
   type = string
@@ -67,6 +70,5 @@ variable "admin_password" {
 
 variable "cloud_init_file" {
   type        = string
-  description = "The entry file when server is setup"
-  default     = "./vm.sh"
+  description = "The File initialization file path"
 }

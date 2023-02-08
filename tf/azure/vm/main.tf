@@ -18,6 +18,7 @@ module "az_vm" {
   source = "./modules/az_vm"
 
   name            = var.name
+  vm_count        = var.vm_count
   group           = data.azurerm_resource_group.rg.name
   prefix          = var.prefix
   subscription_id = var.subscription_id
@@ -26,11 +27,9 @@ module "az_vm" {
   client_id       = var.client_id
 
   location  = data.azurerm_resource_group.rg.location
-  subnet_id = data.azurerm_subnet.subnets[0]
+  subnet_id = data.azurerm_subnet.subnets[0].id
 
-  vm_count = var.vm_count
-
-  cloud_init_file = var.cloud_init_file
+  cloud_init_file = var.init_file
   admin_username  = var.admin_username
   admin_password  = var.admin_password
 

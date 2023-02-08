@@ -5,7 +5,7 @@ resource "azurerm_network_interface" "vm_network_interface" {
   resource_group_name = var.group
 
   ip_configuration {
-    name                          = "${var.prefix}-${var.name}_internal"
+    name                          = "${var.prefix}-${var.name}_internal_${count.index}"
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
   }
@@ -32,7 +32,7 @@ resource "azurerm_availability_set" "vm_avset" {
 
 resource "azurerm_network_security_group" "vm_security_group" {
   count                = var.vm_count
-  name                = "${var.prefix}-${var.name}-net-sec-group"
+  name                = "${var.prefix}-${var.name}-net-sec-group-${count.index}"
   location            = var.location
   resource_group_name = var.group
 
