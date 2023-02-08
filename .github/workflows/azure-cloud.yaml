@@ -24,7 +24,7 @@ jobs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
     outputs:
-      vms: [ "quest", "rooms" ]
+      vms: ${{ toJson([ "quest", "rooms" ]) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -40,7 +40,7 @@ jobs:
     needs: [ envs ]
     strategy:
       matrix:
-        items: ${{ needs.env.outputs.vms }}
+        items: ${{ fromJson(needs.env.outputs.vms) }}
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
