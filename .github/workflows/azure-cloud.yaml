@@ -42,10 +42,16 @@ jobs:
           file_path: ${{ env.configFile }}
           prop_path: "virtual-machine"
 
+#      - name: convert to json
+#        id: vmjson
+#        uses: schdck/create-env-json@v1
+#        with:
+#          file-name: ${{steps.vm-cloud-config.outputs.vms}}
+
       - name:
         run: |
-          echo "VMS --- ${{steps.vm-cloud-config.outputs.vms}}"
-          data=${{steps.vm-cloud-config.outputs.vms}}
+          echo "VMS --- ${{ toJson(steps.vm-cloud-config.outputs.vms) }}"
+          data=${{ toJson(steps.vm-cloud-config.outputs.vms) }}
           echo "data --- $data"
           names=$(echo $data | jq '.[].name')
           echo $names
