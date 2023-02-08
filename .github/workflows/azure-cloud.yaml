@@ -43,7 +43,11 @@ jobs:
           prop_path: "virtual-machine"
 
       - name:
-        run: echo "VMS --- ${{steps.vm-cloud-config.outputs.vms}}"
+        run: |
+          echo "VMS --- ${{steps.vm-cloud-config.outputs.vms}}"
+          const data = [{"name":"quest","vmCount":1},{"name":"room","vmCount":1}];
+          const names = data.map(item => item.name);
+          console.log(names);
 
 #  prints:
 #    name: Job for ${{ matrix.items }}
