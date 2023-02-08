@@ -55,7 +55,8 @@ jobs:
           echo "data --- $data"
           names=$(echo $data | jq '.[].name')
           names_array=($names)
-          echo "Array of names: ${names_array[@]}"
+          json_array=$(echo "${names_array[@]}" | jq -R 'split(" ") | map(select(length > 0))')
+          echo "JSON array of names: $json_array"
 
 #  prints:
 #    name: Job for ${{ matrix.items }}
