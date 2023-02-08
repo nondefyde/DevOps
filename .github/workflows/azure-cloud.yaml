@@ -44,8 +44,9 @@ jobs:
 
       - name:
         run: |
+          echo "VMS --- ${{steps.vm-cloud-config.outputs.vms}}"
           data=${{steps.vm-cloud-config.outputs.vms}}
-          echo "VMS --- $data"
+          echo "data --- $data"
           names=$(echo $data | jq '.[].name')
           echo $names
 
