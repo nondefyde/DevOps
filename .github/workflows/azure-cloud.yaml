@@ -138,7 +138,7 @@ jobs:
           prefix: ${{ env.project }}
           location: ${{ needs.rg.outputs.rg_location }}
           group: ${{ needs.rg.outputs.rg_name }}
-          address_prefixes: ${{steps.vn-cloud-config.outputs.address_prefixes}}
+          address_prefix: ${{steps.vn-cloud-config.outputs.address_prefix}}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2

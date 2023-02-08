@@ -31,7 +31,7 @@ variable "client_secret" {
   description = "Client ID"
 }
 
-variable "address_prefixes" {
-  type = list(string)
-  default = ["10.0.2.0/24"]
+variable "address_prefix" {
+  type = string
+  default = "10.0.2.0/24"
 }
