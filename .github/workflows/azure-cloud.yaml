@@ -54,7 +54,7 @@ jobs:
             json_array+="\"$name\","
           done
           json_array=${json_array%?}
-          json_array+="]"
+          json_array+=\"]"
           echo "vmnames=$json_array" >> "$GITHUB_ENV"
 
       - name: Set Env
@@ -66,10 +66,10 @@ jobs:
     name: Job for ${{ matrix.items }}
     needs: [ envs ]
     env:
-      project: ${{ needs.envs.outputs.vms }}
-#    strategy:
-#      matrix:
-#        items: ${{ fromJson(needs.envs.outputs.vms) }}
+      project: ${{ toJson(needs.envs.outputs.vms) }}
+    strategy:
+      matrix:
+        items: ${{ toJson(needs.envs.outputs.vms) }}
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
@@ -79,7 +79,7 @@ jobs:
       - name: Check Env
         id: envs
         run: |
-          echo "JOB ${{ (env.project).length }}"
+          echo "JOB ${{ env.project }}"
 #  sa:
 #    name: 'Storage Account'
 #    needs: [ envs ]
