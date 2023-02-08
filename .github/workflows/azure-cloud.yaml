@@ -54,7 +54,7 @@ jobs:
             string_array+="'$name',"
           done
           string_array=${string_array%?}
-          echo "String array: '$string_array'"
+          echo "String array: \"$string_array\""
 
           echo "vmnames='$string_array'" >> "$GITHUB_ENV"
 
