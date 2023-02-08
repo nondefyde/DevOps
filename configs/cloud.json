@@ -7,14 +7,16 @@
   "virtual-network": {
     "address_prefix": "10.0.2.0/24"
   },
-  "vms": {
-    "quest": {
-      "name": "quest-vm",
-      "vmCount": 1
-    },
-    "room": {
-      "name": "room-vm",
-      "vmCount": 1
-    }
+  "virtual-machine": {
+    "vms": [
+      {
+        "name": "quest",
+        "vmCount": 1
+      },
+      {
+        "name": "room",
+        "vmCount": 1
+      }
+    ]
   }
 }

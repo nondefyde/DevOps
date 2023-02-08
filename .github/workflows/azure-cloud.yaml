@@ -23,8 +23,8 @@ jobs:
   envs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
-    outputs:
-      vms: ${{ toJson(["quest", "rooms"]) }}
+#    outputs:
+#      vms: ${{ toJson(["quest", "rooms"]) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -35,22 +35,32 @@ jobs:
         with:
           files: ${{ env.configFile }}
 
-  prints:
-    name: Job for ${{ matrix.items }}
-    needs: [ envs ]
-    strategy:
-      matrix:
-        items: ${{ fromJson(needs.env.outputs.vms) }}
-    permissions: write-all
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Get cloud config
+        id: vm-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "virtual-machine"
 
-      - name: Check Env
-        id: envs
-        run: |
-          echo "JOB ${{ matrix.items }}"
+      - name:
+        run: "VMS --- ${{steps.vm-cloud-config.outputs.vms}}"
+
+#  prints:
+#    name: Job for ${{ matrix.items }}
+#    needs: [ envs ]
+#    strategy:
+#      matrix:
+#        items: ${{ fromJson(needs.env.outputs.vms) }}
+#    permissions: write-all
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Check Env
+#        id: envs
+#        run: |
+#          echo "JOB ${{ matrix.items }}"
 #  sa:
 #    name: 'Storage Account'
 #    needs: [ envs ]
