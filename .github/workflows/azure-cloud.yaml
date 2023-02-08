@@ -24,7 +24,7 @@ jobs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
     outputs:
-      vms: ${{ toJson([ "quest", "rooms" ]) }}
+      vms: ${{ toJson(["quest", "rooms" ]) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
