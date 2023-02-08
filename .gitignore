@@ -4,6 +4,12 @@ commands
 /_env
 .env
 
+/tf/_env/**
+/tf/_state
+/tf/**/*.tfplan
+/tf/**/*.terraform.lock.hcl
+/tf/**/.terraform/*
+
 # Iaas Folder
 /terraform/_env/**
 /terraform/_state

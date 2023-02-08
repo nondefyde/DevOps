@@ -153,7 +153,7 @@ jobs:
           project: ${{ env.project }}
           envFile: ${{ env.vmEnvFile }}
           key: ${{ env.project }}-vn
-          working-directory: "tf/azure/vn"
+          working-directory: "tf/azure/vnet"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
           AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
@@ -166,19 +166,63 @@ jobs:
           echo "rg_location=${{ env.rg_location }}" >> $GITHUB_OUTPUT
           echo "rg_name=${{ env.rg_name }}" >> $GITHUB_OUTPUT
 
-#  vms:
-#    name: 'VMs'
-#    needs: [ vn ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Virtual nachines
-#        id: vn
-#        run: echo "Generate virtual machines"
-#
+
+  vms:
+    name: 'VMs'
+    needs: [ vn ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Virtual machines
+        id: vn
+        run: echo "Generate virtual machines"
+
+      - name: Get cloud config
+          id: vn-cloud-config
+          uses: ActionsTools/read-json-action@main
+          with:
+            file_path: ${{ env.configFile }}
+            prop_path: "vms"
+
+      - name: convert to json
+        id: vmjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.vmEnvFile }}
+          prefix: ${{ env.project }}
+          location: ${{ needs.rg.outputs.rg_location }}
+          group: ${{ needs.rg.outputs.rg_name }}
+          address_prefix: ${{steps.vn-cloud-config.outputs.address_prefix}}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.vmEnvFile }}
+          path: ${{ env.vmEnvFile }}
+
+      - name: Instantiate VN
+        uses: ./.github/actions/tf-azure-script
+        id: vn
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.vmEnvFile }}
+          key: ${{ env.project }}-vn
+          working-directory: "tf/azure/vm"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "rg_location=${{ env.rg_location }}" >> $GITHUB_OUTPUT
+          echo "rg_name=${{ env.rg_name }}" >> $GITHUB_OUTPUT
+
 #  prints:
 #    name: 'Print Outputs'
 #    needs: [ vms ]
