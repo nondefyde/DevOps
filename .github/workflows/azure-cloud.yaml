@@ -24,7 +24,7 @@ jobs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
     outputs:
-      vms: ${{ steps.set-vm.outputs.vms }}
+      vms: ${{ steps.set-vm.outputs.vmnames }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
