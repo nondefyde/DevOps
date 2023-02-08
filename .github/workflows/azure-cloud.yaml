@@ -73,7 +73,7 @@ jobs:
     name: Job for ${{ matrix.items }}
     needs: [ envs ]
     env:
-      project: ${{ fromJson(needs.envs.outputs.vms) }}
+      project: ${{ needs.envs.outputs.vms }}
 #    strategy:
 #      matrix:
 #        items: ${{ fromJson(needs.envs.outputs.vms) }}
