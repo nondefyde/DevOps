@@ -49,13 +49,9 @@ jobs:
           data=${{ toJson(steps.vm-cloud-config.outputs.vms) }}
           names=$(echo $data | jq -r '.[].name')
           names_array=($names)
-          json_array="
-          for name in "${names_array[@]}"; do
-            json_array+='$name',
-          done
-          json_array=${json_array%?}
-          json_array+="
-          echo "vmnames=$json_array" >> "$GITHUB_ENV"
+          echo "names_array $names_array"
+
+          echo "vmnames=$names_array" >> "$GITHUB_ENV"
 
       - name: Set Env
         id: variables
