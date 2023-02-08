@@ -51,8 +51,9 @@ jobs:
           names=$(echo $data | jq '.[].name')
           names_array=($names)
           json_array=$(echo "${names_array[@]}" | jq -R 'split(" ") | map(select(length > 0))')
-          toString="$($json_array | jq -R)"
+          toString=$(echo '$json_array' | jq '@json')
           echo "JSON array of names: $toString"
+          
           echo "vmnames=$toString" >> $GITHUB_OUTPUT
           echo "vmnames=$toString" >> "$GITHUB_ENV"
 
