@@ -9,5 +9,5 @@ resource "azurerm_subnet" "app_virtual_subnet" {
   name                 = "${var.prefix}-subnet"
   resource_group_name  = var.group
   virtual_network_name = azurerm_virtual_network.app_virtual_network.name
-  address_prefixes     = ["10.0.2.0/24"]
+  address_prefixes     = [var.address_prefixes]
 }
