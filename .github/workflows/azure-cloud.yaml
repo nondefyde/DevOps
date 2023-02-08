@@ -52,7 +52,7 @@ jobs:
           names_array=($names)
           json_array=$(echo "${names_array[@]}" | jq -R 'split(" ") | map(select(length > 0))')
           echo "JSON array of names: $json_array"
-          echo "vmnames=a >> $GITHUB_OUTPUT
+          echo "vmnames=$json_array" >> $GITHUB_OUTPUT
 
   prints:
     name: Job for ${{ matrix.items }}
