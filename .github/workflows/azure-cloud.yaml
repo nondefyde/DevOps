@@ -54,7 +54,7 @@ jobs:
             json_array+="\"$name\","
           done
           json_array=${json_array%?}
-          json_array+=\"]"
+          json_array+="]"
           echo "vmnames=$json_array" >> "$GITHUB_ENV"
 
       - name: Set Env
