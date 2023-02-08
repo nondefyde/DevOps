@@ -45,29 +45,18 @@ jobs:
       - name:
         id: set-vm
         run: |
-          echo "VMS --- ${{ toJson(steps.vm-cloud-config.outputs.vm-names) }}"
-          data=${{ toJson(steps.vm-cloud-config.outputs.vm-names) }}
-          echo "vmnames=$data" >> "$GITHUB_ENV"
+          echo "VMS --- ${{ toJson(steps.vm-cloud-config.outputs.vms) }}"
+          data=${{ toJson(steps.vm-cloud-config.outputs.vms) }}
+          names=$(echo $data | jq -r '.[].name')
+          names_array=($names)
+          json_array="[\"${names_array[@]}\"]"
+          echo "JSON array: $json_array"
+          echo "vmnames=$json_array" >> "$GITHUB_ENV"
 
       - name: Set Env
         id: variables
         run: |
           echo "vmnames=\"${{ env.vmnames }}\"" >> $GITHUB_OUTPUT
-
-#      - name:
-#        id: set-vm
-#        run: |
-#          echo "VMS --- ${{ toJson(steps.vm-cloud-config.outputs.vms) }}"
-#          data=${{ toJson(steps.vm-cloud-config.outputs.vms) }}
-#          echo "data --- $data"
-#          names=$(echo $data | jq '.[].name')
-#          names_array=($names)
-#          json_array=$(echo "${names_array[@]}" | jq -R 'split(" ") | map(select(length > 0))')
-#          toString=$(echo '$json_array' | jq '@json')
-#          echo "JSON array of names: $toString"
-#
-#          echo "vmnames=$toString" >> $GITHUB_OUTPUT
-#          echo "vmnames=$toString" >> "$GITHUB_ENV"
 
   prints:
     name: Job for ${{ matrix.items }}
