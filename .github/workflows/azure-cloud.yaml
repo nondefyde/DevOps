@@ -47,6 +47,7 @@ jobs:
         run: |
           echo "VMS --- ${{ toJson(steps.vm-cloud-config.outputs.vms) }}"
           data=${{ toJson(steps.vm-cloud-config.outputs.vms) }}
+          names=$(echo $data | jq -r '.[].name')
           names_array=($names)
           json_array="["
           for name in "${names_array[@]}"; do
