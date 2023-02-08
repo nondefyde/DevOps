@@ -23,8 +23,8 @@ jobs:
   envs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
-#    outputs:
-#      vms: ${{ toJson(["quest", "rooms"]) }}
+    outputs:
+      vms: ${{ steps.set-vm.outputs.vms }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -42,13 +42,8 @@ jobs:
           file_path: ${{ env.configFile }}
           prop_path: "virtual-machine"
 
-#      - name: convert to json
-#        id: vmjson
-#        uses: schdck/create-env-json@v1
-#        with:
-#          file-name: ${{steps.vm-cloud-config.outputs.vms}}
-
       - name:
+        id: set-vm
         run: |
           echo "VMS --- ${{ toJson(steps.vm-cloud-config.outputs.vms) }}"
           data=${{ toJson(steps.vm-cloud-config.outputs.vms) }}
@@ -57,23 +52,24 @@ jobs:
           names_array=($names)
           json_array=$(echo "${names_array[@]}" | jq -R 'split(" ") | map(select(length > 0))')
           echo "JSON array of names: $json_array"
+          echo "vms=$json_array" >> $GITHUB_OUTPUT
 
-#  prints:
-#    name: Job for ${{ matrix.items }}
-#    needs: [ envs ]
-#    strategy:
-#      matrix:
-#        items: ${{ fromJson(needs.env.outputs.vms) }}
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Check Env
-#        id: envs
-#        run: |
-#          echo "JOB ${{ matrix.items }}"
+  prints:
+    name: Job for ${{ matrix.items }}
+    needs: [ envs ]
+    strategy:
+      matrix:
+        items: ${{ fromJson(needs.env.outputs.vms) }}
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Check Env
+        id: envs
+        run: |
+          echo "JOB ${{ matrix.items }}"
 #  sa:
 #    name: 'Storage Account'
 #    needs: [ envs ]
