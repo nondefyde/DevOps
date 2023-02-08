@@ -66,10 +66,10 @@ jobs:
     name: Job for ${{ matrix.items }}
     needs: [ envs ]
     env:
-      project: ${{ fromJson(needs.envs.outputs.vms) }}
+      project: ${{ toJson(needs.envs.outputs.vms) }}
     strategy:
       matrix:
-        items: ${{ toJson('[\"quest\", \"room\"]') }}
+        items: ${{ toJson("[\"quest\", \"room\"]") }}
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
