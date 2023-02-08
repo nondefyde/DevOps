@@ -74,6 +74,7 @@ jobs:
           prop_path: "resource-group"
 
       - name: convert to json
+        id: rgjson
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.rgEnvFile }}
@@ -130,6 +131,7 @@ jobs:
           prop_path: "virtual-network"
 
       - name: convert to json
+        id: vmjson
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.rgEnvFile }}
