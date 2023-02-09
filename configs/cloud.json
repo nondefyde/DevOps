@@ -8,16 +8,15 @@
     "address_prefix": "10.0.2.0/24"
   },
   "virtual-machine": {
-    "vm-names": ["quest", "rooms"],
-    "vms": [
-      {
-        "name": "quest",
+    "vms" : {
+      "quest": {
+        "name": "quest-vm",
         "vmCount": 1
       },
-      {
-        "name": "room",
+      "room": {
+        "name": "room-vm",
         "vmCount": 1
       }
-    ]
+    }
   }
 }
