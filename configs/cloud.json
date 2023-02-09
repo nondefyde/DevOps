@@ -11,11 +11,11 @@
     "vms" : {
       "quest": {
         "name": "quest",
-        "vmCount": 1
+        "vmCount": 2
       },
       "room": {
         "name": "room",
-        "vmCount": 1
+        "vmCount": 2
       }
     }
   }
