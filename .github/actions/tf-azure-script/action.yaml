@@ -73,7 +73,7 @@ runs:
           -backend-config="resource_group_name=${{ inputs.project }}-tfstate" \
           -backend-config="storage_account_name=${{ inputs.project }}storage" \
           -backend-config="container_name=${{ inputs.project }}tfstate" \
-          -backend-config="key=${{ inputs.key }}-vm.terraform.tfstate" \
+          -backend-config="key=${{ inputs.key }}.terraform.tfstate" \
           -backend-config="subscription_id=${{ inputs.AZR_SUBSCRIPTION_ID }}" \
           -backend-config="tenant_id=${{ inputs.AZR_TENANT_ID }}" \
           -backend-config="client_id=${{ inputs.AZR_CLIENT_ID }}" \
