@@ -216,7 +216,7 @@ jobs:
 
   vms:
     name: Virtual Machines ${{ matrix.items }}
-    needs: [ envs, vn ]
+    needs: [ envs ]
     permissions: write-all
     runs-on: ubuntu-latest
     env:
