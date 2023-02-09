@@ -240,7 +240,7 @@ jobs:
         run: |
           echo "vm ${{ matrix.items }}"
           echo "vm count ${{steps.vm-cloud-config.outputs.vms['quest'] }}"
-          echo "vm name ${{ fromJson(steps.vm-cloud-config.outputs.vms)['quest'] }}"
+          echo "vm name ${{ fromJson(steps.vm-cloud-config.outputs.vms)['quest']['name'] }}"
 #
 #      - name: convert to json
 #        id: vmjson
