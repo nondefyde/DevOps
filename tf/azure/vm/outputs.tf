@@ -1,3 +1,3 @@
-output "vm_names" {
-  value = module.az_vm.vm_names
+output "vm_count" {
+  value = var.vm_count
 }

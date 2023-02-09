@@ -10,11 +10,11 @@
   "virtual-machine": {
     "vms" : {
       "quest": {
-        "name": "quest-vm",
+        "name": "quest",
         "vmCount": 1
       },
       "room": {
-        "name": "room-vm",
+        "name": "room",
         "vmCount": 1
       }
     }
