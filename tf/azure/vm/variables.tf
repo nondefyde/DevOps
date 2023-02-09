@@ -51,7 +51,7 @@ variable "init_file" {
 
 variable "vm_count" {
   type = string
-  default = 2
+  default = 1
 }
 
 variable "name" {
