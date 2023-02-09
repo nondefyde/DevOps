@@ -238,8 +238,9 @@ jobs:
       - name: Print VM Info
         id: vm-info
         run: |
-          echo "vm name ${{steps.vm-cloud-config.outputs.vms['${{ matrix.items }}'].name }}"
-          echo "vm count ${{steps.vm-cloud-config.outputs.vms['${{ matrix.items }}'].vmCount }}"
+          echo "vm ${{ matrix.items }}"
+          echo "vm name ${{steps.vm-cloud-config.outputs.vms['${{ matrix.items }}'] }}"
+          echo "vm count ${{steps.vm-cloud-config.outputs.vms['${{ matrix.items }}'] }}"
 #
 #      - name: convert to json
 #        id: vmjson
