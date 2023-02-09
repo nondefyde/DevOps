@@ -63,7 +63,11 @@ jobs:
   prints:
     name: Job for ${{ matrix.items }}
     needs: [ envs ]
-
+    env:
+      vms: ${{ needs.envs.outputs.vm_names }}
+    strategy:
+      matrix:
+        items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
@@ -73,7 +77,7 @@ jobs:
       - name: Check Env
         id: envs
         run: |
-          echo "JOB ${{ env.vm }}"
+          echo "JOB ${{ env.vms }}"
 #
 #  sa:
 #    name: 'Storage Account'
