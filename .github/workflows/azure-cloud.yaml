@@ -62,39 +62,25 @@ jobs:
         id: variables
         run: |
           echo "vmnames=${{ format('[{0}]', env.vmnames) }}" >> $GITHUB_OUTPUT
-#          echo "vmnames=${{ env.vmnames }}" >> $GITHUB_OUTPUT
 
+  prints:
+    name: Job for ${{ matrix.items }}
+    needs: [ envs ]
+    env:
+      vm: ${{ needs.envs.outputs.vms }}
+    strategy:
+      matrix:
+        items: ${{ fromJSON(needs.envs.outputs.vms) }}
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-#  prebuild:
-#    runs-on: ubuntu-latest
-#    outputs:
-#      os: ${{ steps.set-matrix.outputs.os }}
-#      nodeVersion: ${{ steps.set-matrix.outputs.nodeVersion }}
-#    steps:
-#      - id: set-matrix
-#        run: |
-#          echo "::set-output name=os::${{format('[{0}]',github.event.inputs.OS)}}"
-#          echo "::set-output name=nodeVersion::${{format('[{0}]',github.event.inputs.NODE_VERSION)}}"
-#
-#
-#  prints:
-#    name: Job for ${{ matrix.items }}
-#    needs: [ envs ]
-#    env:
-#      project: ${{ toJson(needs.envs.outputs.vms) }}
-#    strategy:
-#      matrix:
-#        items: ${{ fromJson("['ubuntu-latest','windows-latest']") }}
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Check Env
-#        id: envs
-#        run: |
-#          echo "JOB ${{ env.project }}"
+      - name: Check Env
+        id: envs
+        run: |
+          echo "JOB ${{ env.vm }}"
 #  sa:
 #    name: 'Storage Account'
 #    needs: [ envs ]
