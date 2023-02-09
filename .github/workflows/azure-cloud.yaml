@@ -229,11 +229,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get cloud config
-          id: vm-cloud-config
-          uses: ActionsTools/read-json-action@main
-          with:
-            file_path: ${{ env.configFile }}
-            prop_path: "virtual-machine"
+        id: vm-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "virtual-machine"
 
       - name: Print VM Info
         id: vm-info
