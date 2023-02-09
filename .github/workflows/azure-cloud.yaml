@@ -235,8 +235,8 @@ jobs:
             file_path: ${{ env.configFile }}
             prop_path: "virtual-machine"
 
-      - name: Set output
-        id: set-output
+      - name: Print VM Info
+        id: vm-info
         run: |
           echo "vm name ${{steps.vm-cloud-config.outputs.vms[${{ matrix.items }}].name }}"
           echo "vm count ${{steps.vm-cloud-config.outputs.vms[${{ matrix.items }}].vmCount }}"
