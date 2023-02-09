@@ -56,7 +56,7 @@ jobs:
           string_array=${string_array%?}
           echo "String array: \"$string_array\""
 
-          echo "vmnames=\"$string_array\"" >> "$GITHUB_ENV"
+          echo "vmnames=$string_array" >> "$GITHUB_ENV"
 
       - name: Set Env
         id: variables
