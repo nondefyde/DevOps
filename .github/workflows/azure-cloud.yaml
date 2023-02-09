@@ -146,7 +146,7 @@ jobs:
       virtual_subnet_name: ${{ steps.set-output.outputs.virtual_subnet_name }}
       virtual_subnet_id: ${{ steps.set-output.outputs.virtual_subnet_id }}
     env:
-      vmEnvFile: "vm.tfvars"
+      vnEnvFile: "vn.tfvars"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -162,7 +162,7 @@ jobs:
         id: vmjson
         uses: schdck/create-env-json@v1
         with:
-          file-name: ${{ env.vmEnvFile }}
+          file-name: ${{ env.vnEnvFile }}
           prefix: ${{ env.project }}
           location: ${{ needs.rg.outputs.rg_location }}
           group: ${{ needs.rg.outputs.rg_name }}
@@ -171,15 +171,15 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.vmEnvFile }}
-          path: ${{ env.vmEnvFile }}
+          name: ${{ env.vnEnvFile }}
+          path: ${{ env.vnEnvFile }}
 
       - name: Instantiate VN
         uses: ./.github/actions/tf-azure-script
         id: vn
         with:
           project: ${{ env.project }}
-          envFile: ${{ env.vmEnvFile }}
+          envFile: ${{ env.vnEnvFile }}
           key: ${{ env.project }}-vn
           working-directory: "tf/azure/vnet"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
@@ -204,6 +204,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       vm: ${{ needs.envs.outputs.vm_names }}
+      vmEnvFile: "vm.tfvars"
     strategy:
       matrix:
         items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
