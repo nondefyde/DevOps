@@ -264,7 +264,7 @@ jobs:
 
   apim:
     name: Api Management Service
-    needs: [ envs, rg, vm ]
+    needs: [ envs, rg, vn ]
     permissions: write-all
     runs-on: ubuntu-latest
     env:
