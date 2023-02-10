@@ -18,7 +18,6 @@ env:
   location: centralus
   configFile: "configs/cloud.json"
 
-
 jobs:
   envs:
     name: 'Set Environments'
