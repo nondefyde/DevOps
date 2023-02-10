@@ -196,6 +196,7 @@ jobs:
           echo "virtual_subnet_id=${{ env.virtual_subnet_id }}" >> $GITHUB_OUTPUT
 
 
+
   vms:
     name: Virtual Machines ${{ matrix.items }}
     needs: [ envs, rg, vn ]
@@ -203,7 +204,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       vm: ${{ needs.envs.outputs.vm_names }}
-      vmEnvFile: "vm.tfvars"
+      vmEnvFile: "vm-${{ matrix.items }}.tfvars"
     strategy:
       matrix:
         items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
@@ -240,15 +241,15 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.vmEnvFile }}-${{ matrix.items }}
-          path: ${{ env.vmEnvFile }}-${{ matrix.items }}
+          name: ${{ env.vmEnvFile }}
+          path: ${{ env.vmEnvFile }}
 
       - name: Instantiate VMachine(s)
         uses: ./.github/actions/tf-azure-script
         id: vn
         with:
           project: ${{ env.project }}
-          envFile: ${{ env.vmEnvFile }}-${{ matrix.items }}
+          envFile: ${{ env.vmEnvFile }}
           key: ${{ env.project }}-${{ matrix.items }}-vm
           working-directory: "tf/azure/vm"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
