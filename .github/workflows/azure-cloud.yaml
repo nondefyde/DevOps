@@ -41,10 +41,17 @@ jobs:
         with:
           file_path: ${{ env.configFile }}
 
+      - name: Get Environment
+        id: vm-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "virtual-machine"
+
       - name:
         id: set-vm
         run: |
-          data=${{ toJson(steps.env-config.outputs.virtual-machine['vms']) }}
+          data=${{ toJson(steps.vm-config.outputs.vms) }}
           names=$(echo $data | jq -r 'keys[]')
           names_array=($names)
           string_array=""
