@@ -11,15 +11,22 @@
     "vms" : {
       "quest": {
         "name": "quest",
-        "vmCount": 1
+        "vmCount": 1,
+        "container_instance": 1
       },
       "room": {
         "name": "room",
-        "vmCount": 1
+        "vmCount": 1,
+        "container_instance": 1
       }
     }
   },
-  "api_management": {
+  "api-management": {
+    "publisher_name": "Stemuli",
+    "publisher_email": "nondefyde@gmail.com",
+    "capacity": 1,
+    "sku": "Developer",
+    "name": "cloudstmdevapi",
     "apis": {
       "quest": {
         "name": "Quest"

@@ -1,7 +1,3 @@
-output "public_ip" {
-  value = azurerm_public_ip.public_ip.id
-}
-
 output "management_api_url" {
   value = azurerm_api_management.apim.management_api_url
 }

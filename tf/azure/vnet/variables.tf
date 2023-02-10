@@ -3,10 +3,6 @@ variable "prefix" {
   description = "The prefix for the resource group"
 }
 
-variable "location" {
-  type = string
-}
-
 variable "group" {
   type = string
 }
