@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       vm_names: ${{ steps.variables.outputs.vm_names }}
+      environment: ${{ steps.variables.outputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -34,17 +35,16 @@ jobs:
         with:
           files: ${{ env.configFile }}
 
-      - name: Get cloud config
-        id: vm-cloud-config
+      - name: Get Environment
+        id: env-config
         uses: ActionsTools/read-json-action@main
         with:
           file_path: ${{ env.configFile }}
-          prop_path: "virtual-machine"
 
       - name:
         id: set-vm
         run: |
-          data=${{ toJson(steps.vm-cloud-config.outputs.vms) }}
+          data=${{ toJson(steps.env-config.outputs.virtual-machine.vms) }}
           names=$(echo $data | jq -r 'keys[]')
           names_array=($names)
           string_array=""
@@ -58,6 +58,7 @@ jobs:
         id: variables
         run: |
           echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
+          echo "environment=${{ steps.env-config.outputs.environment) }}" >> $GITHUB_OUTPUT
 
   sa:
     name: 'Storage Account'
@@ -288,7 +289,10 @@ jobs:
           file-name: ${{ env.apimEnvFile }}
           prefix: ${{ env.project }}
           group: ${{ needs.rg.outputs.rg_name }}
+          environment: ${{ needs.envs.outputs.environment }}
+          address_prefix: ${{steps.apim-cloud-config.outputs.address_prefix}}
           capacity: ${{steps.apim-cloud-config.outputs.capacity}}
+          sku: ${{steps.apim-cloud-config.outputs.sku}}
           publisher_name: ${{steps.apim-cloud-config.outputs.publisher_name}}
           publisher_email: ${{steps.apim-cloud-config.outputs.publisher_email}}
 

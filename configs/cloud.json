@@ -1,6 +1,7 @@
 {
   "prefix": "cloudstmdev",
   "location": "centralus",
+  "environment": "development",
   "resource-group": {
     "prevent_resource_deletion": false
   },
