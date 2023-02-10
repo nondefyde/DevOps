@@ -20,6 +20,13 @@
     }
   },
   "api_management": {
-
+    "apis": {
+      "quest": {
+        "name": "Quest"
+      },
+      "room": {
+        "name": "Room"
+      }
+    }
   }
 }
