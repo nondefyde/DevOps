@@ -18,5 +18,8 @@
         "vmCount": 1
       }
     }
+  },
+  "api_management": {
+
   }
 }
