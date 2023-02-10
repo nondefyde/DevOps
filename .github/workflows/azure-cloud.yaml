@@ -277,6 +277,7 @@ jobs:
     env:
       apimEnvFile: "apim.tfvars"
     outputs:
+      apim_id: ${{ steps.set-output.outputs.apim_id }}
       gateway_url: ${{ steps.set-output.outputs.gateway_url }}
       portal_url: ${{ steps.set-output.outputs.portal_url }}
       developer_portal_url: ${{ steps.set-output.outputs.developer_portal_url }}
@@ -329,6 +330,65 @@ jobs:
       - name: Set output
         id: set-output
         run: |
+          echo "apim_id=${{ env.apim_id }}" >> $GITHUB_OUTPUT
+          echo "gateway_url=${{ env.gateway_url }}" >> $GITHUB_OUTPUT
+          echo "management_api_url=${{ env.management_api_url }}" >> $GITHUB_OUTPUT
+          echo "portal_url=${{ env.portal_url }}" >> $GITHUB_OUTPUT
+          echo "developer_portal_url=${{ env.developer_portal_url }}" >> $GITHUB_OUTPUT
+
+  apimp:
+    name: Api Management Service
+    needs: [ envs, apim ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      apimpEnvFile: "apimp.tfvars"
+    outputs:
+      apim_id: ${{ steps.set-output.outputs.apim_id }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get cloud config
+        id: apim-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "api-management"
+
+      - name: convert to json
+        id: vmjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.apimEnvFile }}
+          prefix: ${{ env.project }}
+          group: ${{ needs.rg.outputs.rg_name }}
+          environment: ${{ needs.envs.outputs.environment }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.apimEnvFile }}
+          path: ${{ env.apimEnvFile }}
+
+      - name: Api Setup / Policies
+        uses: ./.github/actions/tf-azure-script
+        id: apim
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.apimEnvFile }}
+          key: ${{ env.project }}-vm
+          working-directory: "tf/azure/apim"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "apim_id=${{ env.apim_id }}" >> $GITHUB_OUTPUT
           echo "gateway_url=${{ env.gateway_url }}" >> $GITHUB_OUTPUT
           echo "management_api_url=${{ env.management_api_url }}" >> $GITHUB_OUTPUT
           echo "portal_url=${{ env.portal_url }}" >> $GITHUB_OUTPUT

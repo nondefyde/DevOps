@@ -1,7 +1,3 @@
-output "apim_id" {
-  value = azurerm_api_management.apim.id
-}
-
 output "management_api_url" {
   value = azurerm_api_management.apim.management_api_url
 }

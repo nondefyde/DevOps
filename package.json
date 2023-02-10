@@ -68,6 +68,9 @@
     "az:apply:vm": "cd ./tf/azure/_scripts && ./apply.sh vm teststgdev",
 
     "az:prepare:apim": "cd ./tf/azure/_scripts && ./prepare.sh apim teststgdev",
-    "az:apply:apim": "cd ./tf/azure/_scripts && ./apply.sh apim teststgdev"
+    "az:apply:apim": "cd ./tf/azure/_scripts && ./apply.sh apim teststgdev",
+
+    "az:prepare:apimp": "cd ./tf/azure/_scripts && ./prepare.sh apimp teststgdev",
+    "az:apply:apimp": "cd ./tf/azure/_scripts && ./apply.sh apimp teststgdev"
   }
 }

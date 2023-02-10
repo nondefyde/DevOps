@@ -26,7 +26,7 @@
     "publisher_name": "Stemuli",
     "publisher_email": "nondefyde@gmail.com",
     "capacity": 1,
-    "address_prefix": "10.0.2.0/24",
+    "address_prefix": "10.0.3.0/24",
     "sku": "Developer",
     "name": "cloudstmdevapi",
     "apis": {
