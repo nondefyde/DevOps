@@ -37,14 +37,6 @@ resource "azurerm_subnet_network_security_group_association" "nsg-assoc" {
   network_security_group_id = azurerm_network_security_group.apim_security_group.id
 }
 
-
-data "azurerm_subnet" "subnets" {
-  name                 = data.azurerm_virtual_network.vnet.subnets[count.index]
-  virtual_network_name = data.azurerm_virtual_network.vnet.name
-  resource_group_name  = data.azurerm_virtual_network.vnet.resource_group_name
-  count                = length(data.azurerm_virtual_network.vnet.subnets)
-}
-
 resource "azurerm_api_management" "apim" {
   name                = "${var.prefix}-api"
   location            = data.azurerm_resource_group.rg.location
@@ -56,7 +48,7 @@ resource "azurerm_api_management" "apim" {
   virtual_network_type = "Internal"
 
   virtual_network_configuration {
-    subnet_id = data.azurerm_subnet.subnets[0].id
+    subnet_id = azurerm_subnet.apim_subnet.id
   }
 
   depends_on = [azurerm_subnet_network_security_group_association.nsg-assoc]
