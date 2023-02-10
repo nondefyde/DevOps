@@ -270,7 +270,10 @@ jobs:
     env:
       apimEnvFile: "apim.tfvars"
     outputs:
-      vm_names: ${{ steps.set-output.outputs.vm_names }}
+      gateway_url: ${{ steps.set-output.outputs.gateway_url }}
+      portal_url: ${{ steps.set-output.outputs.portal_url }}
+      developer_portal_url: ${{ steps.set-output.outputs.developer_portal_url }}
+      management_api_url: ${{ steps.set-output.outputs.management_api_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
