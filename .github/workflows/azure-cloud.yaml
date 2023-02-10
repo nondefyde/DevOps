@@ -35,13 +35,13 @@ jobs:
         with:
           files: ${{ env.configFile }}
 
-      - name: Get Environment
+      - name: Cloud Config
         id: env-config
         uses: ActionsTools/read-json-action@main
         with:
           file_path: ${{ env.configFile }}
 
-      - name: Get Environment
+      - name: VM config
         id: vm-config
         uses: ActionsTools/read-json-action@main
         with:
