@@ -243,12 +243,12 @@ jobs:
           name: ${{ env.vmEnvFile }}
           path: ${{ env.vmEnvFile }}
 
-      - name: Instantiate VN
+      - name: Instantiate VMachine(s)
         uses: ./.github/actions/tf-azure-script
         id: vn
         with:
           project: ${{ env.project }}
-          envFile: ${{ env.vmEnvFile }}
+          envFile: ${{ env.vmEnvFile }}-${{ matrix.items }}
           key: ${{ env.project }}-${{ matrix.items }}-vm
           working-directory: "tf/azure/vm"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
