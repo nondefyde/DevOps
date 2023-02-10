@@ -39,3 +39,13 @@ variable "environment" {
   type = string
   default = "development"
 }
+
+variable "sku" {
+  type = string
+  default = "Developer"
+}
+
+variable "capacity" {
+  type = number
+  default = 1
+}

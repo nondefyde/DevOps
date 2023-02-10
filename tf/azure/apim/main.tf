@@ -33,8 +33,10 @@ resource "azurerm_api_management" "apim" {
   publisher_name      = var.publisher_name
   publisher_email     = var.publisher_email
   public_ip_address_id = azurerm_public_ip.public_ip.id
-  sku_name = "Developer_1"
-  virtual_network_configuration = {
-    subnet_id: data.azurerm_subnet.subnets[0].id
+  sku_name = "Developer_${var.capacity}"
+  virtual_network_type = "Internal"
+
+  virtual_network_configuration {
+    subnet_id  = data.azurerm_subnet.subnets[0].id
   }
 }
