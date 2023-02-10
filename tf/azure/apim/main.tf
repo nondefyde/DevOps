@@ -8,14 +8,14 @@ data "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_subnet" "apim_subnet" {
-  name                 = "${var.prefix}-subnet"
+  name                 = "${var.prefix}-apim-subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = data.azurerm_virtual_network.vnet.name
   address_prefixes     = [var.address_prefix]
 }
 
 resource "azurerm_network_security_group" "apim_security_group" {
-  name                = "${var.prefix}-net-sec-group"
+  name                = "${var.prefix}-apim-net-group"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
 
@@ -34,7 +34,7 @@ resource "azurerm_network_security_group" "apim_security_group" {
 
 resource "azurerm_subnet_network_security_group_association" "nsg-assoc" {
   subnet_id                 = azurerm_subnet.apim_subnet.id
-  network_security_group_id = azurerm_network_security_group.vm_security_group.id
+  network_security_group_id = azurerm_network_security_group.apim_security_group.id
 }
 
 
@@ -59,5 +59,5 @@ resource "azurerm_api_management" "apim" {
     subnet_id = data.azurerm_subnet.subnets[0].id
   }
 
-  depends_on = [azurerm_subnet_network_security_group_association]
+  depends_on = [azurerm_subnet_network_security_group_association.nsg-assoc]
 }

@@ -49,3 +49,8 @@ variable "capacity" {
   type = number
   default = 1
 }
+
+variable "address_prefix" {
+  type = string
+  default = "10.0.2.0/24"
+}
