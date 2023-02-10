@@ -240,8 +240,8 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.vmEnvFile }}
-          path: ${{ env.vmEnvFile }}
+          name: ${{ env.vmEnvFile }}-${{ matrix.items }}
+          path: ${{ env.vmEnvFile }}-${{ matrix.items }}
 
       - name: Instantiate VMachine(s)
         uses: ./.github/actions/tf-azure-script
