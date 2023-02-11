@@ -376,7 +376,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get cloud config
-        id: apim-cloud-config
+        id: apimp-cloud-config
         uses: ActionsTools/read-json-action@main
         with:
           file_path: ${{ env.configFile }}
@@ -385,15 +385,15 @@ jobs:
       - name: Print VM Info
         id: vm-info
         run: |
-          echo "publisher name ${{ steps.apim-cloud-config.outputs.publisher_name }}"
-          echo "publisher email ${{ steps.apim-cloud-config.outputs.publisher_email }}"
-          echo "publisher email ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['name'] }}"
+          echo "publisher name ${{ steps.apimp-cloud-config.outputs.publisher_name }}"
+          echo "publisher email ${{ steps.apimp-cloud-config.outputs.publisher_email }}"
+          echo "publisher email ${{ fromJson(steps.apimp-cloud-config.outputs.outputs.apis)[matrix.items]['name'] }}"
 
       - name: convert to json
         id: apimpjson
         uses: schdck/create-env-json@v1
         with:
-          file-name: ${{ env.apimEnvFile }}
+          file-name: ${{ env.apimpEnvFile }}
           prefix: ${{ env.project }}
           group: ${{ needs.rg.outputs.rg_name }}
           name: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['name']
