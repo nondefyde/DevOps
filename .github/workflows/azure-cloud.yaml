@@ -337,7 +337,7 @@ jobs:
           echo "developer_portal_url=${{ env.developer_portal_url }}" >> $GITHUB_OUTPUT
 
   apimp:
-    name: Api Management Service
+    name: Api Services
     needs: [ envs, apim ]
     permissions: write-all
     runs-on: ubuntu-latest
@@ -371,14 +371,14 @@ jobs:
           name: ${{ env.apimEnvFile }}
           path: ${{ env.apimEnvFile }}
 
-      - name: Api Setup / Policies
+      - name: Api Setups
         uses: ./.github/actions/tf-azure-script
         id: apim
         with:
           project: ${{ env.project }}
           envFile: ${{ env.apimEnvFile }}
           key: ${{ env.project }}-vm
-          working-directory: "tf/azure/apim"
+          working-directory: "tf/azure/apimp"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
           AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
