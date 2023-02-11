@@ -29,31 +29,23 @@ variable "client_secret" {
   description = "Client ID"
 }
 
-variable "environment" {
+
+variable "cloudflare_api_token" {
   type = string
-  default = "development"
+  description = "Cloudflare api token"
 }
 
-variable "admin_username" {
+variable "cloudflare_zone_id" {
   type = string
-  default = "adminuser"
+  description = "Cloudflare zone id"
 }
 
-variable "admin_password" {
+variable "dns_domain" {
   type = string
+  default = "dev.bytegum.com"
+  description = "The dns domain"
 }
 
-variable "init_file" {
-  type        = string
-  description = "The entry file when server is setup"
-  default     = "./vm.sh"
-}
-
-variable "vm_count" {
-  type = string
-  default = 1
-}
-
-variable "name" {
+variable "service" {
   type = string
 }

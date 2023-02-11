@@ -71,6 +71,9 @@
     "az:apply:apim": "cd ./tf/azure/_scripts && ./apply.sh apim teststgdev",
 
     "az:prepare:apimp": "cd ./tf/azure/_scripts && ./prepare.sh apimp teststgdev",
-    "az:apply:apimp": "cd ./tf/azure/_scripts && ./apply.sh apimp teststgdev"
+    "az:apply:apimp": "cd ./tf/azure/_scripts && ./apply.sh apimp teststgdev",
+
+    "az:prepare:dns": "cd ./tf/azure/_scripts && ./prepare.sh dns teststgdev",
+    "az:apply:dns": "cd ./tf/azure/_scripts && ./apply.sh dns teststgdev"
   }
 }

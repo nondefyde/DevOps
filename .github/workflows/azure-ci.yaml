@@ -95,6 +95,8 @@ jobs:
       api_names: ${{ steps.variables.outputs.api_names }}
       environment: ${{ steps.variables.outputs.environment }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Initialize environments
         run: |
           EP="${{inputs.project}}"
