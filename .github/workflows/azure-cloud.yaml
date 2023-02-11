@@ -23,9 +23,9 @@ jobs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
     outputs:
-      vm_names: ${{ steps.get-envs.outputs.vm_names }}
-      api_names: ${{ steps.get-envs.outputs.api_names }}
-      environment: ${{ steps.get-envs.outputs.environment }}
+      vm_names: ${{ steps.variables.outputs.vm_names }}
+      api_names: ${{ steps.variables.outputs.api_names }}
+      environment: ${{ steps.variables.outputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -36,7 +36,7 @@ jobs:
         with:
           configFile: ${{ env.configFile }}
 
-      - name: Set Env
+      - name: Set Outputs
         id: variables
         shell: bash
         run: |
@@ -179,6 +179,7 @@ jobs:
           echo "virtual_network_name=${{ env.virtual_network_name }}" >> $GITHUB_OUTPUT
           echo "virtual_subnet_name=${{ env.virtual_subnet_name }}" >> $GITHUB_OUTPUT
           echo "virtual_subnet_id=${{ env.virtual_subnet_id }}" >> $GITHUB_OUTPUT
+
 
   vms:
     name: Virtual Machines ${{ matrix.items }}
