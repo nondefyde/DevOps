@@ -387,41 +387,41 @@ jobs:
         run: |
           echo "publisher name ${{ steps.apimp-cloud-config.outputs.publisher_name }}"
           echo "publisher email ${{ steps.apimp-cloud-config.outputs.publisher_email }}"
-          echo "publisher email ${{ fromJson(steps.apimp-cloud-config.outputs.outputs.apis)[matrix.items]['name'] }}"
+          echo "publisher api ${{ fromJson(steps.apimp-cloud-config.outputs.outputs.apis)[matrix.items]['name'] }}"
 
-      - name: convert to json
-        id: apimpjson
-        uses: schdck/create-env-json@v1
-        with:
-          file-name: ${{ env.apimpEnvFile }}
-          prefix: ${{ env.project }}
-          group: ${{ needs.rg.outputs.rg_name }}
-          name: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['name'] }}
-          suffix: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['suffix'] }}
-          endpoints: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['endpoints'] }}
-          header: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['header'] }}
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.apimpEnvFile }}
-          path: ${{ env.apimpEnvFile }}
-
-      - name: Api Setups
-        uses: ./.github/actions/tf-azure-script
-        id: apim
-        with:
-          project: ${{ env.project }}
-          envFile: ${{ env.apimpEnvFile }}
-          key: ${{ env.project }}-${{ matrix.items }}-apimp
-          working-directory: "tf/azure/apimp"
-          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-        continue-on-error: false
-
-      - name: Set output
-        id: set-output
-        run: |
-          echo "apim_id=${{ env.apim_id }}" >> $GITHUB_OUTPUT
+#      - name: convert to json
+#        id: apimpjson
+#        uses: schdck/create-env-json@v1
+#        with:
+#          file-name: ${{ env.apimpEnvFile }}
+#          prefix: ${{ env.project }}
+#          group: ${{ needs.rg.outputs.rg_name }}
+#          name: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['name'] }}
+#          suffix: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['suffix'] }}
+#          endpoints: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['endpoints'] }}
+#          header: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['header'] }}
+#
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: ${{ env.apimpEnvFile }}
+#          path: ${{ env.apimpEnvFile }}
+#
+#      - name: Api Setups
+#        uses: ./.github/actions/tf-azure-script
+#        id: apim
+#        with:
+#          project: ${{ env.project }}
+#          envFile: ${{ env.apimpEnvFile }}
+#          key: ${{ env.project }}-${{ matrix.items }}-apimp
+#          working-directory: "tf/azure/apimp"
+#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+#        continue-on-error: false
+#
+#      - name: Set output
+#        id: set-output
+#        run: |
+#          echo "apim_id=${{ env.apim_id }}" >> $GITHUB_OUTPUT
