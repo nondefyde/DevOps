@@ -81,7 +81,7 @@ env:
 
 jobs:
   envs:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && ( inputs.is_workflow == true || github.event_name == 'push') }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
     name: 'Validate Env Variables'
     runs-on: ubuntu-latest
     outputs:
@@ -266,56 +266,56 @@ jobs:
              rm -r $FILE
           fi
 
-  deploy:
-    name: 'Deploy Image to Container in VM'
-    needs: [ envs, config, deploy-image ]
-    runs-on: ubuntu-latest
-    env:
-      project: ${{ needs.envs.outputs.project }}
-      service: ${{ needs.envs.outputs.service }}
-      hostname: ${{ needs.config.outputs.hostname }}
-      port: ${{ needs.envs.outputs.port }}
-      hostname-format: ${{ needs.envs.outputs.hostname-format }}
-      dockerfile: ${{ needs.envs.outputs.dockerfile }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Download Repo to Artifact
-        if: ${{ inputs.is_workflow == true }}
-        uses: actions/download-artifact@master
-        with:
-          name: cloud-scripts
-          path: ${{ inputs.repository }}
-      - name: Copy Script files to context
-        if: ${{ inputs.is_workflow == true }}
-        run: |
-          ls
-          cp -a "${{ inputs.repository }}/." ./
-          rm -r "${{ inputs.repository }}"
-          ls -a
-      - name: Login Azure
-        id: login
-        run: az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
-      - name: Get ACR credentials
-        id: acr-credentials
-        run: |
-          LOGIN_SERVER=$(az acr login -n ${{env.project}}acr --expose-token)
-          accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
-          server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
-          echo "server=${server}" >> $GITHUB_ENV
-          echo "accessToken=${accessToken}" >> $GITHUB_ENV
-      - name: Run deployment script
-        uses: docker://evaneos/ssh-action:0.1.0
-        with:
-          hosts: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
-          user: ${{ secrets.VM_USERNAME }}
-          password: ${{ secrets.VM_PASSWORD }}
-          commands: |
-            echo "Running scripts to update and spin up container with latest image"
-            echo "Login docker"
-            sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
-            cd app/vm
-            chmod +x deploy.sh
-            ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
-            echo "...HOSTED URL = ${{ env.hostname }}....."
-            echo "...done....."
+#  deploy:
+#    name: 'Deploy Image to Container in VM'
+#    needs: [ envs, config, deploy-image ]
+#    runs-on: ubuntu-latest
+#    env:
+#      project: ${{ needs.envs.outputs.project }}
+#      service: ${{ needs.envs.outputs.service }}
+#      hostname: ${{ needs.config.outputs.hostname }}
+#      port: ${{ needs.envs.outputs.port }}
+#      hostname-format: ${{ needs.envs.outputs.hostname-format }}
+#      dockerfile: ${{ needs.envs.outputs.dockerfile }}
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#      - name: Download Repo to Artifact
+#        if: ${{ inputs.is_workflow == true }}
+#        uses: actions/download-artifact@master
+#        with:
+#          name: cloud-scripts
+#          path: ${{ inputs.repository }}
+#      - name: Copy Script files to context
+#        if: ${{ inputs.is_workflow == true }}
+#        run: |
+#          ls
+#          cp -a "${{ inputs.repository }}/." ./
+#          rm -r "${{ inputs.repository }}"
+#          ls -a
+#      - name: Login Azure
+#        id: login
+#        run: az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
+#      - name: Get ACR credentials
+#        id: acr-credentials
+#        run: |
+#          LOGIN_SERVER=$(az acr login -n ${{env.project}}acr --expose-token)
+#          accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
+#          server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
+#          echo "server=${server}" >> $GITHUB_ENV
+#          echo "accessToken=${accessToken}" >> $GITHUB_ENV
+#      - name: Run deployment script
+#        uses: docker://evaneos/ssh-action:0.1.0
+#        with:
+#          hosts: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
+#          user: ${{ secrets.VM_USERNAME }}
+#          password: ${{ secrets.VM_PASSWORD }}
+#          commands: |
+#            echo "Running scripts to update and spin up container with latest image"
+#            echo "Login docker"
+#            sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
+#            cd app/vm
+#            chmod +x deploy.sh
+#            ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
+#            echo "...HOSTED URL = ${{ env.hostname }}....."
+#            echo "...done....."
