@@ -313,7 +313,7 @@ jobs:
           name: ${{ env.apimEnvFile }}
           path: ${{ env.apimEnvFile }}
 
-      - name: Instantiate VMachine(s)
+      - name: Instantiate API Magt Services
         uses: ./.github/actions/tf-azure-script
         id: apim
         with:

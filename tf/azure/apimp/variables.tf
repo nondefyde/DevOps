@@ -27,7 +27,46 @@ variable "client_secret" {
   description = "Client ID"
 }
 
+variable "name" {
+  type = string
+  default = "test"
+}
+
+variable "suffix" {
+  type = string
+  default = "tst"
+}
+
+variable "protocols" {
+  type = list(string)
+  default = ["https"]
+}
+
+variable "display_name" {
+  type = string
+  default = "Test API"
+}
+
 variable "revision" {
   type = string
   default = "1"
+}
+
+variable "endpoints" {
+  type = string
+  default = "/*"
+}
+variable "methods" {
+  type = list(string)
+  default = [
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE"
+  ]
+}
+
+variable "header" {
+  type = string
+  default = "x-api-key"
 }

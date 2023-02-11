@@ -3,16 +3,36 @@ data "azurerm_resource_group" "rg" {
 }
 
 data "azurerm_api_management" "apim" {
-  name                = "search-api"
-  resource_group_name = "search-service"
+  name                = "${var.prefix}-api"
+  resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-resource "azurerm_api_management_api" "example" {
-  name                = "example-api"
-  resource_group_name = data.azurerm_resource_group.rg.name
+resource "azurerm_api_management_api" "apimp" {
+  name                  = "${var.prefix}-${var.name}-http-api"
+  resource_group_name   = data.azurerm_resource_group.rg.name
+  api_management_name   = data.azurerm_api_management.apim.name
+  revision              = var.revision
+  display_name          = var.display_name
+  path                  = var.suffix
+  protocols             = var.protocols
+  subscription_required = false
+}
+
+resource "azurerm_api_management_api_operation" "apimp_operations" {
+  count               = length(var.methods)
+  operation_id        = "${var.prefix}-${var.name}-operation-${count.index}"
+  api_name            = azurerm_api_management_api.apimp.name
   api_management_name = data.azurerm_api_management.apim.name
-  revision            = "1"
-  display_name        = "Example API"
-  path                = "example"
-  protocols           = ["https"]
+  resource_group_name = data.azurerm_resource_group.rg.name
+  display_name        = "${var.methods[count.index]} Resource"
+  method              = var.methods[count.index]
+  url_template        = var.endpoints
+
+  request {
+    header {
+      name     = var.header
+      type     = "string"
+      required = true
+    }
+  }
 }
