@@ -24,7 +24,7 @@ resource "azurerm_api_management_api_operation" "apimp_operations" {
   api_name            = azurerm_api_management_api.apimp.name
   api_management_name = data.azurerm_api_management.apim.name
   resource_group_name = data.azurerm_resource_group.rg.name
-  display_name        = "${var.methods[count.index]} Resource"
+  display_name        = "${var.methods[count.index]} ${var.name} Res"
   method              = var.methods[count.index]
   url_template        = var.endpoints
 
