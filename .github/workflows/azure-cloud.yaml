@@ -30,16 +30,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Get App Envs
+      - name: Set App Envs
         id: get-envs
-        uses: ./.github/actions/get-envs
+        uses: ./.github/actions/set-envs
         with:
           configFile: ${{ env.configFile }}
 
-      - name: Print VM Info
-        id: vm-info
+      - name: Set Env
+        id: variables
+        shell: bash
         run: |
-          echo "vm_names: ${{ steps.get-envs.outputs.vm_names }}"
+          echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
+          echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
+          echo "environment=${{ steps.env-config.outputs.environment }}" >> $GITHUB_OUTPUT
 
   sa:
     name: 'Storage Account'

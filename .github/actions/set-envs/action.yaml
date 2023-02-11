@@ -1,4 +1,4 @@
-name: get-envs
+name: set-envs
 author: Emmanuel Okafor
 decription: A generic action to get app global based envs
 
@@ -7,19 +7,11 @@ inputs:
     description: 'Entry cofig file'
     required: true
 
-outputs:
-  environment:
-    description: 'Environment'
-  vm_names:
-    description: 'VM names'
-  api_names:
-    description: 'API names'
-
 runs:
   using: 'composite'
   steps:
-#    - name: Checkout
-#      uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
 
     - name: Check file existence
       id: check_files
@@ -74,11 +66,3 @@ runs:
         done
         string_array=${string_array%?}
         echo "vm_names=$string_array" >> "$GITHUB_ENV"
-
-    - name: Set Env
-      id: variables
-      shell: bash
-      run: |
-        echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
-        echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
-        echo "environment=${{ steps.env-config.outputs.environment }}" >> $GITHUB_OUTPUT
