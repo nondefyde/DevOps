@@ -180,7 +180,6 @@ jobs:
           echo "virtual_subnet_name=${{ env.virtual_subnet_name }}" >> $GITHUB_OUTPUT
           echo "virtual_subnet_id=${{ env.virtual_subnet_id }}" >> $GITHUB_OUTPUT
 
-
   vms:
     name: Virtual Machines ${{ matrix.items }}
     needs: [ envs, crg, vn ]
