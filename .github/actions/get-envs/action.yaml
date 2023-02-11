@@ -7,13 +7,13 @@ inputs:
     description: 'Entry cofig file'
     required: true
 
-outputs:
-  environment:
-    description: 'Environment'
-  vm_names:
-    description: 'VM names'
-  api_names:
-    description: 'API names'
+#outputs:
+#  environment:
+#    description: 'Environment'
+#  vm_names:
+#    description: 'VM names'
+#  api_names:
+#    description: 'API names'
 
 runs:
   using: 'composite'
