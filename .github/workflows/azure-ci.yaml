@@ -121,6 +121,7 @@ jobs:
           echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
           echo "environment=${{ steps.env-config.outputs.environment }}" >> $GITHUB_OUTPUT
 
+
   config:
     name: 'Setup Config Variables'
     needs: [ envs ]
@@ -171,6 +172,7 @@ jobs:
           echo "hostname      ${{ env.hostname }}"
           echo "docker-tag      ${{ env.docker-tag }}"
           echo "event_name      ${{ github.event_name }}"
+
 
   deploy-image:
     name: 'Push Image to Cloud Registry'
