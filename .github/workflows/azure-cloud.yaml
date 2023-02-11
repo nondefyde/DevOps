@@ -401,28 +401,29 @@ jobs:
           suffix: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['suffix'] }}
           endpoints: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['endpoints'] }}
           header: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['header'] }}
-#
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: ${{ env.apimpEnvFile }}
-#          path: ${{ env.apimpEnvFile }}
-#
-#      - name: Api Setups
-#        uses: ./.github/actions/tf-azure-script
-#        id: apim
-#        with:
-#          project: ${{ env.project }}
-#          envFile: ${{ env.apimpEnvFile }}
-#          key: ${{ env.project }}-${{ matrix.items }}-apimp
-#          working-directory: "tf/azure/apimp"
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#        continue-on-error: false
-#
-#      - name: Set output
-#        id: set-output
-#        run: |
-#          echo "apim_id=${{ env.apim_id }}" >> $GITHUB_OUTPUT
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.apimpEnvFile }}
+          path: ${{ env.apimpEnvFile }}
+
+      - name: Api Setups
+        uses: ./.github/actions/tf-azure-script
+        id: apim
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.apimpEnvFile }}
+          key: ${{ env.project }}-${{ matrix.items }}-apimp
+          working-directory: "tf/azure/apimp"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "api_management_api_name=${{ env.api_management_api_name }}" >> $GITHUB_OUTPUT
+          echo "api_management_api_id=${{ env.api_management_api_id }}" >> $GITHUB_OUTPUT
