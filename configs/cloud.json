@@ -34,6 +34,7 @@
         "name": "Quest API",
         "suffix": "qt",
         "endpoints": "/*",
+        "header": "x-api-key",
         "methods": [
           "GET",
           "POST",
@@ -45,6 +46,7 @@
         "name": "Room API",
         "suffix": "rm",
         "endpoints": "/*",
+        "header": "x-api-key",
         "methods": [
           "GET",
           "POST",
