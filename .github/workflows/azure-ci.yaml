@@ -90,9 +90,9 @@ jobs:
       port: ${{ steps.variables.outputs.port }}
       hostname-format: ${{ steps.variables.outputs.hostname-format }}
       dockerfile: ${{ steps.variables.outputs.dockerfile }}
-      vm_names: ${{ steps.get-envs.outputs.vm_names }}
-      api_names: ${{ steps.get-envs.outputs.api_names }}
-      environment: ${{ steps.get-envs.outputs.environment }}
+      vm_names: ${{ steps.variables.outputs.vm_names }}
+      api_names: ${{ steps.variables.outputs.api_names }}
+      environment: ${{ steps.variables.outputs.environment }}
     steps:
       - name: Initialize environments
         run: |
@@ -118,7 +118,7 @@ jobs:
 
       - name: Get App Envs
         id: get-envs
-        uses: ./.github/actions/get-envs
+        uses: ./.github/actions/set-envs
         with:
           files: ${{ env.configFile }}
 
@@ -130,6 +130,9 @@ jobs:
           echo "port=${{ env.port }}" >> $GITHUB_OUTPUT
           echo "hostname-format=${{env.hostname-format}}" >> $GITHUB_OUTPUT
           echo "dockerfile=${{ env.dockerfile }}" >> $GITHUB_OUTPUT
+          echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
+          echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
+          echo "environment=${{ steps.env-config.outputs.environment }}" >> $GITHUB_OUTPUT
 
   config:
     name: 'Setup Config Variables'
