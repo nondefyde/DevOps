@@ -1,9 +1,9 @@
-name: AZR VM CI
+name: AZR VM TEST CI
 
 on:
-  #  push:
-  #    branches:
-  #      - 'main'
+  push:
+    branches:
+      - 'main'
   workflow_run:
     workflows: [ "AZR TEST CLOUD" ]
     types:
@@ -81,7 +81,7 @@ env:
 
 jobs:
   envs:
-    if: ${{ inputs.TFAction == false && github.event.workflow_run.conclusion == 'success' && ( inputs.is_workflow == true || github.event_name == 'push') }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && ( inputs.is_workflow == true || github.event_name == 'push') }}
     name: 'Validate Env Variables'
     runs-on: ubuntu-latest
     outputs:
