@@ -34,7 +34,7 @@ jobs:
         id: get-envs
         uses: ./.github/actions/get-envs
         with:
-          files: ${{ env.configFile }}
+          configFile: ${{ env.configFile }}
 
   sa:
     name: 'Storage Account'
