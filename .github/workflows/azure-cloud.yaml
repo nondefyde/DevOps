@@ -39,7 +39,7 @@ jobs:
       - name: Print VM Info
         id: vm-info
         run: |
-          echo "vm_names: ${{ steps.get-envs.outputs.vm_names }}"
+          echo "vm_names: ${{ outputs.vm_names }}"
 
   sa:
     name: 'Storage Account'
