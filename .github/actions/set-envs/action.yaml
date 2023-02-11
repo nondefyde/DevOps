@@ -6,19 +6,14 @@ inputs:
   configFile:
     required: true
   project:
-    required: true
     type: string
   service:
-    required: true
     type: string
   hostname-format:
-    required: true
     type: string
   port:
-    required: true
     type: string
   dockerfile:
-    required: true
     type: string
 
 runs:
