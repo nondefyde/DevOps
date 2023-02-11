@@ -36,6 +36,11 @@ jobs:
         with:
           configFile: ${{ env.configFile }}
 
+      - name: Print VM Info
+        id: vm-info
+        run: |
+          echo "output vm_names  ${{ steps.get-envs.outputs.vm_names }}"
+
   sa:
     name: 'Storage Account'
     needs: [ envs ]
