@@ -1,9 +1,9 @@
 name: AZR TEST CLOUD
 
 on:
-#  push:
-#    branches:
-#      - 'main'
+  push:
+    branches:
+      - 'main'
 
 permissions:
   id-token: write
@@ -64,8 +64,8 @@ jobs:
           AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
         continue-on-error: false
 
-  rg:
-    name: 'Resource Group'
+  crg:
+    name: 'Res Group & Registry'
     needs: [ sa ]
     permissions: write-all
     runs-on: ubuntu-latest
@@ -100,7 +100,7 @@ jobs:
           name: ${{ env.rgEnvFile }}
           path: ${{ env.rgEnvFile }}
 
-      - name: Instantiate RG
+      - name: Instantiate RG & CR
         uses: ./.github/actions/tf-azure-script
         id: rg
         with:
@@ -121,7 +121,7 @@ jobs:
           echo "rg_name=${{ env.rg_name }}" >> $GITHUB_OUTPUT
   vn:
     name: 'Virtual Network'
-    needs: [ rg ]
+    needs: [ crg ]
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
@@ -148,8 +148,8 @@ jobs:
         with:
           file-name: ${{ env.vnEnvFile }}
           prefix: ${{ env.project }}
-          location: ${{ needs.rg.outputs.rg_location }}
-          group: ${{ needs.rg.outputs.rg_name }}
+          location: ${{ needs.crg.outputs.rg_location }}
+          group: ${{ needs.crg.outputs.rg_name }}
           address_prefix: ${{steps.vn-cloud-config.outputs.address_prefix}}
 
       - name: Upload Artifact
@@ -183,7 +183,7 @@ jobs:
 
   vms:
     name: Virtual Machines ${{ matrix.items }}
-    needs: [ envs, rg, vn ]
+    needs: [ envs, crg, vn ]
     permissions: write-all
     runs-on: ubuntu-latest
     env:
@@ -217,7 +217,7 @@ jobs:
         with:
           file-name: ${{ env.vmEnvFile }}
           prefix: ${{ env.project }}
-          group: ${{ needs.rg.outputs.rg_name }}
+          group: ${{ needs.crg.outputs.rg_name }}
           name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
           vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
           admin_password: ${{ secrets.VM_PASSWORD }}
@@ -249,7 +249,7 @@ jobs:
 
   apim:
     name: Api Management Service
-    needs: [ envs, rg, vn ]
+    needs: [ envs, crg, vn ]
     permissions: write-all
     runs-on: ubuntu-latest
     env:
@@ -277,7 +277,7 @@ jobs:
         with:
           file-name: ${{ env.apimEnvFile }}
           prefix: ${{ env.project }}
-          group: ${{ needs.rg.outputs.rg_name }}
+          group: ${{ needs.crg.outputs.rg_name }}
           environment: ${{ needs.envs.outputs.environment }}
           address_prefix: ${{steps.apim-cloud-config.outputs.address_prefix}}
           capacity: ${{steps.apim-cloud-config.outputs.capacity}}
@@ -316,7 +316,7 @@ jobs:
 
   apimp:
     name: Api Services ${{ matrix.items }}
-    needs: [ envs, rg, apim ]
+    needs: [ envs, crg, apim ]
     permissions: write-all
     runs-on: ubuntu-latest
     env:
@@ -351,7 +351,7 @@ jobs:
         with:
           file-name: ${{ env.apimpEnvFile }}
           prefix: ${{ env.project }}
-          group: ${{ needs.rg.outputs.rg_name }}
+          group: ${{ needs.crg.outputs.rg_name }}
           name: ${{ matrix.items }}
           display_name: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['name'] }}
           suffix: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['suffix'] }}
