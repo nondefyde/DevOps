@@ -389,17 +389,17 @@ jobs:
           echo "publisher email ${{ steps.apimp-cloud-config.outputs.publisher_email }}"
           echo "publisher api ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['name'] }}"
 
-#      - name: convert to json
-#        id: apimpjson
-#        uses: schdck/create-env-json@v1
-#        with:
-#          file-name: ${{ env.apimpEnvFile }}
-#          prefix: ${{ env.project }}
-#          group: ${{ needs.rg.outputs.rg_name }}
-#          name: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['name'] }}
-#          suffix: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['suffix'] }}
-#          endpoints: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['endpoints'] }}
-#          header: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['header'] }}
+      - name: convert to json
+        id: apimpjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.apimpEnvFile }}
+          prefix: ${{ env.project }}
+          group: ${{ needs.rg.outputs.rg_name }}
+          name: ${{ fromJson(steps.apim-cloud-config.outputs.apis)[matrix.items]['name'] }}
+          suffix: ${{ fromJson(steps.apim-cloud-config.outputs.apis)[matrix.items]['suffix'] }}
+          endpoints: ${{ fromJson(steps.apim-cloud-config.outputs.apis)[matrix.items]['endpoints'] }}
+          header: ${{ fromJson(steps.apim-cloud-config.outputs.apis)[matrix.items]['header'] }}
 #
 #      - name: Upload Artifact
 #        uses: actions/upload-artifact@v2
