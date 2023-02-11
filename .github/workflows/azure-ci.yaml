@@ -102,7 +102,7 @@ jobs:
         id: get-envs
         uses: ./.github/actions/set-envs
         with:
-          files: ${{ env.configFile }}
+          configFile: ${{ env.configFile }}
           project: ${{ inputs.project}}
           service: ${{ inputs.service}}
           port: ${{ inputs.port}}
