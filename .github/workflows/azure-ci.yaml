@@ -1,0 +1,321 @@
+name: AZR VM CI
+
+on:
+  #  push:
+  #    branches:
+  #      - 'main'
+  workflow_run:
+    workflows: [ "AZR TEST CLOUD" ]
+    types:
+      - completed
+  workflow_call:
+    secrets:
+      AZR_CLIENT_ID:
+        description: 'Azure client id'
+        required: true
+      AZR_CLIENT_SECRET:
+        description: 'Azure secret key'
+        required: true
+      AZR_TENANT_ID:
+        description: 'Azure tenant id'
+        required: true
+      AZR_SUBSCRIPTION_ID:
+        description: 'Azure subscription id'
+        required: true
+      AZR_VM_APP_SECRET:
+        description: 'Azure Vm env secrets'
+      VM_USERNAME:
+        description: 'Azure Vm ssh username'
+      VM_PASSWORD:
+        description: 'Azure Vm ssh password'
+    # Map the workflow outputs to job outputs
+    outputs:
+      HAS_VM:
+        description: "If a virtual machine already exist"
+        value: ${{ jobs.setups.outputs.HAS_VM }}
+    inputs:
+      TFAction:
+        type: boolean
+        default: false
+      is_workflow:
+        required: true
+        type: boolean
+        default: false
+      project:
+        required: true
+        type: string
+      repository:
+        required: true
+        type: string
+      service:
+        required: true
+        type: string
+      hostname-format:
+        required: true
+        type: string
+      port:
+        required: true
+        type: string
+      dockerfile:
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  current_project: cloudstgdev
+  current_service: dev
+  current_port: 8000
+  current_hostname_format: "stm-{0}.{1}.bytegum.com"
+  image-name: stm-quest
+  dockerfile: './ci/Dockerfile'
+  location: 'centralus'
+  environment: 'stg'
+  appSecret: ${{ secrets.AZR_VM_APP_SECRET }}
+
+jobs:
+  envs:
+    if: ${{ inputs.TFAction == false && github.event.workflow_run.conclusion == 'success' && ( inputs.is_workflow == true || github.event_name == 'push') }}
+    name: 'Validate Env Variables'
+    runs-on: ubuntu-latest
+    outputs:
+      project: ${{ steps.variables.outputs.project }}
+      service: ${{ steps.variables.outputs.service }}
+      port: ${{ steps.variables.outputs.port }}
+      hostname-format: ${{ steps.variables.outputs.hostname-format }}
+      dockerfile: ${{ steps.variables.outputs.dockerfile }}
+      vm_names: ${{ steps.get-envs.outputs.vm_names }}
+      api_names: ${{ steps.get-envs.outputs.api_names }}
+      environment: ${{ steps.get-envs.outputs.environment }}
+    steps:
+      - name: Initialize environments
+        run: |
+          EP="${{inputs.project}}"
+          ES="${{inputs.service}}"
+          PRT="${{inputs.port}}"
+          HOST_FMT="${{inputs.hostname-format}}"
+          ENV_HOST_FMT="${{env.current_hostname_format}}"
+          DOCFILE="${{ inputs.dockerfile }}"
+
+          PROJECT="${EP:-${{env.current_project}}}"
+          SERVICE="${ES:-${{env.current_service}}}"
+          PORT="${PRT:-${{env.current_port}}}"
+          
+          HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
+          DOCKER_FILE="${DOCFILE:-${{ env.dockerfile }}}"
+
+          echo "project=${PROJECT}" >> "$GITHUB_ENV"
+          echo "service=${SERVICE}" >> "$GITHUB_ENV"
+          echo "port=${PORT}" >> "$GITHUB_ENV"
+          echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
+          echo "dockerfile=${DOCKER_FILE}" >> "$GITHUB_ENV"
+
+      - name: Get App Envs
+        id: get-envs
+        uses: ./.github/actions/get-envs
+        with:
+          files: ${{ env.configFile }}
+
+      - name: Set Env
+        id: variables
+        run: |
+          echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
+          echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
+          echo "port=${{ env.port }}" >> $GITHUB_OUTPUT
+          echo "hostname-format=${{env.hostname-format}}" >> $GITHUB_OUTPUT
+          echo "dockerfile=${{ env.dockerfile }}" >> $GITHUB_OUTPUT
+
+  config:
+    name: 'Setup Config Variables'
+    needs: [ envs ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      service: ${{ needs.envs.outputs.service }}
+      port: ${{ needs.envs.outputs.port }}
+      hostname-format: ${{ needs.envs.outputs.hostname-format }}
+      dockerfile: ${{ needs.envs.outputs.dockerfile }}
+    outputs:
+      hostname: ${{ steps.resolved.outputs.hostname }}
+      git-sha: ${{ steps.resolved.outputs.git-sha }}
+      docker-tag: ${{ steps.resolved.outputs.docker-tag }}
+    steps:
+      - id: debug-context
+        run: |
+          echo "event_name      ${{ github.event_name }}"
+          echo "project        ${{ env.project }}"
+          echo "hostname-format    ${{ env.hostname-format }}"
+
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
+      - name: Slugify Value
+        uses: rlespinasse/slugify-value@v1.4.0
+        with:
+          slug-maxlength: 30
+          key: feat-name
+          value: ${{ steps.branch-name.outputs.current_branch }}
+
+      - name: Set variables
+        id: variables
+        run: |
+          echo "hostname=${{ format(env.hostname-format, env.FEAT-NAME_SLUG_URL, env.service) }}" >> $GITHUB_ENV
+          echo "docker-tag=${{ env.FEAT-NAME_SLUG_URL }}" >> $GITHUB_ENV
+          echo "git-sha=${{ steps.commit.outputs.short }}" >> $GITHUB_ENV
+
+      - name: Resolve outputs
+        id: resolved
+        run: |
+          echo "git-sha=${{ env.git-sha }}" >> $GITHUB_OUTPUT
+          echo "hostname=${{ env.hostname }}" >> $GITHUB_OUTPUT
+          echo "docker-tag=${{ env.docker-tag }}" >> $GITHUB_OUTPUT
+          echo "git-sha      ${{ env.git-sha }}"
+          echo "hostname      ${{ env.hostname }}"
+          echo "docker-tag      ${{ env.docker-tag }}"
+          echo "event_name      ${{ github.event_name }}"
+
+  deploy-image:
+    name: 'Push Image to Cloud Registry'
+    needs: [ envs, config ]
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      service: ${{ needs.envs.outputs.service }}
+      port: ${{ needs.envs.outputs.port }}
+      hostname: ${{ needs.config.outputs.hostname }}
+      hostname-format: ${{ needs.envs.outputs.hostname-format }}
+      dockerfile: ${{ needs.envs.outputs.dockerfile }}
+    steps:
+      - name: --- For debugging ---
+        id: debug-context
+        run: |
+          echo "event_name      ${{ github.event_name }}"
+          echo "hostname        ${{ needs.config.outputs.hostname }}"
+          echo "docker-tag      ${{ needs.config.outputs.docker-tag }}"
+          echo "project         ${{ env.project }}"
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download Repo to Artifact
+        if: ${{ inputs.is_workflow == true }}
+        uses: actions/download-artifact@master
+        with:
+          name: cloud-scripts
+          path: ${{ inputs.repository }}
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a "${{ inputs.repository }}/." ./
+          rm -r "${{ inputs.repository }}"
+          ls -a
+
+      - name: Login Azure
+        id: login
+        run: |
+          az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
+          az acr login --name "${{env.project}}acr.azurecr.io"
+
+      - name: Env setup
+        if: ${{ env.appSecret }}
+        run: |
+          touch vm/.env
+          DECODED=$(echo ${{ secrets.AZR_VM_APP_SECRET }} | base64 --decode > vm/.env)
+          cat vm/.env
+
+      - name: Generate Docker Compose File
+        env:
+          IMAGE: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
+          VIRTUAL_HOST: ${{ needs.config.outputs.hostname }}
+          PORT: ${{ env.port }}
+          NODE_ENV: ${{ env.environment }}
+        run: cat ./ci/docker-compose.yml | envsubst > ./vm/docker-compose.yml
+
+      - name: Push File to VM
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
+          username: ${{ secrets.VM_USERNAME }}
+          password: ${{ secrets.VM_PASSWORD }}
+          rm: true
+          source: "vm/."
+          target: "app"
+
+      - name: Build & Push
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          platforms: linux/amd64
+          file: ${{ env.dockerfile }}
+          tags: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}
+
+      - name: Cleanups
+        run: |
+          FILE=vm/.env
+          if [ -f "$FILE" ]; then
+            echo secret file removed
+             rm -r $FILE
+          fi
+
+  deploy:
+    name: 'Deploy Image to Container in VM'
+    needs: [ envs, config, deploy-image ]
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      service: ${{ needs.envs.outputs.service }}
+      hostname: ${{ needs.config.outputs.hostname }}
+      port: ${{ needs.envs.outputs.port }}
+      hostname-format: ${{ needs.envs.outputs.hostname-format }}
+      dockerfile: ${{ needs.envs.outputs.dockerfile }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download Repo to Artifact
+        if: ${{ inputs.is_workflow == true }}
+        uses: actions/download-artifact@master
+        with:
+          name: cloud-scripts
+          path: ${{ inputs.repository }}
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a "${{ inputs.repository }}/." ./
+          rm -r "${{ inputs.repository }}"
+          ls -a
+      - name: Login Azure
+        id: login
+        run: az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
+      - name: Get ACR credentials
+        id: acr-credentials
+        run: |
+          LOGIN_SERVER=$(az acr login -n ${{env.project}}acr --expose-token)
+          accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
+          server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
+          echo "server=${server}" >> $GITHUB_ENV
+          echo "accessToken=${accessToken}" >> $GITHUB_ENV
+      - name: Run deployment script
+        uses: docker://evaneos/ssh-action:0.1.0
+        with:
+          hosts: ${{ env.project }}-dns.${{ env.location }}.cloudapp.azure.com
+          user: ${{ secrets.VM_USERNAME }}
+          password: ${{ secrets.VM_PASSWORD }}
+          commands: |
+            echo "Running scripts to update and spin up container with latest image"
+            echo "Login docker"
+            sudo docker login ${{ env.server }} --username 00000000-0000-0000-0000-000000000000 --password ${{ env.accessToken }}
+            cd app/vm
+            chmod +x deploy.sh
+            ./deploy.sh ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
+            echo "...HOSTED URL = ${{ env.hostname }}....."
+            echo "...done....."

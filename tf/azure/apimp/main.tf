@@ -108,5 +108,4 @@ resource "azurerm_api_management_api_operation_policy" "api_operation_policy" {
     </on-error>
 </policies>
 XML
-
 }
