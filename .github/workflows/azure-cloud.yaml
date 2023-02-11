@@ -396,10 +396,10 @@ jobs:
           file-name: ${{ env.apimpEnvFile }}
           prefix: ${{ env.project }}
           group: ${{ needs.rg.outputs.rg_name }}
-          name: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['name']
-          suffix: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['suffix']
-          endpoints: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['endpoints']
-          header: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['header']
+          name: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['name'] }}
+          suffix: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['suffix'] }}
+          endpoints: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['endpoints'] }}
+          header: ${{ fromJson(steps.apim-cloud-config.outputs.outputs.apis)[matrix.items]['header'] }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
