@@ -4,8 +4,22 @@ decription: A generic action to get app global based envs
 
 inputs:
   configFile:
-    description: 'Entry cofig file'
     required: true
+  project:
+    required: true
+    type: string
+  service:
+    required: true
+    type: string
+  hostname-format:
+    required: true
+    type: string
+  port:
+    required: true
+    type: string
+  dockerfile:
+    required: true
+    type: string
 
 runs:
   using: 'composite'

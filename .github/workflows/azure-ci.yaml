@@ -103,6 +103,11 @@ jobs:
         uses: ./.github/actions/set-envs
         with:
           files: ${{ env.configFile }}
+          project: ${{inputs.project}}
+          service: ${{inputs.service}}
+          port: ${{inputs.port}}
+          hostname-format: ${{inputs.hostname-format}}
+          dockerfile: ${{inputs.dockerfile}}
 
       - name: Set Env
         id: variables
