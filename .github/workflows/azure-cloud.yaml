@@ -387,7 +387,7 @@ jobs:
         run: |
           echo "publisher name ${{ steps.apimp-cloud-config.outputs.publisher_name }}"
           echo "publisher email ${{ steps.apimp-cloud-config.outputs.publisher_email }}"
-#          echo "publisher api ${{ fromJson(steps.apimp-cloud-config.outputs.outputs.apis)[matrix.items]['name'] }}"
+          echo "publisher api ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['name'] }}"
 
 #      - name: convert to json
 #        id: apimpjson
