@@ -47,8 +47,8 @@ resource "null_resource" "example" {
     }
 
     inline = [
-      "chmod +x ${var.cloud_init_file}",
-      "${var.cloud_init_file} ${var.admin_username}"
+      "chmod +x ${var.init_file}",
+      "${var.init_file} ${var.admin_username}"
     ]
   }
 
