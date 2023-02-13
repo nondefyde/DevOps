@@ -54,9 +54,9 @@ resource "null_resource" "install_dep" {
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
-      user     = azurerm_linux_virtual_machine.vm.admin_username
+      user     = azurerm_linux_virtual_machine.vm.*.admin_username
       host     = element(azurerm_network_interface.vm_network_interface.*.private_ip_address, count.index)
-      password = azurerm_linux_virtual_machine.vm.admin_password
+      password = azurerm_linux_virtual_machine.vm.*.admin_password
     }
 
     inline = [
