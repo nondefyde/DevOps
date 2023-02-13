@@ -173,7 +173,7 @@ jobs:
 
 
   deploy-image:
-    name: 'Push Image to Cloud Registry'
+    name: 'Push Image'
     needs: [ envs, config ]
     runs-on: ubuntu-latest
     env:
@@ -209,25 +209,37 @@ jobs:
           file: ${{ env.dockerfile }}
           tags: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}
 
-#  deploy:
-#    name: 'Deploy Image to Container in VM'
-#    needs: [ envs, config, deploy-image ]
-#    runs-on: ubuntu-latest
-#    env:
-#      project: ${{ needs.envs.outputs.project }}
-#      service: ${{ needs.envs.outputs.service }}
-#      hostname: ${{ needs.config.outputs.hostname }}
-#      port: ${{ needs.envs.outputs.port }}
-#      hostname-format: ${{ needs.envs.outputs.hostname-format }}
-#      dockerfile: ${{ needs.envs.outputs.dockerfile }}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Generate Docker Compose File
-#        env:
-#          IMAGE: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
-#          VIRTUAL_HOST: ${{ needs.config.outputs.hostname }}
-#          PORT: ${{ env.port }}
-#          NODE_ENV: ${{ env.environment }}
-#        run: cat ./ci/docker-compose.yml | envsubst > ./vm/docker-compose.yml
+  deploy:
+    name: 'Deploy Image - VM'
+    needs: [ envs, config, deploy-image ]
+    runs-on: ubuntu-latest
+    env:
+      vm: ${{ needs.envs.outputs.vm_names }}
+      project: ${{ needs.envs.outputs.project }}
+      service: ${{ needs.envs.outputs.service }}
+      hostname: ${{ needs.config.outputs.hostname }}
+      port: ${{ needs.envs.outputs.port }}
+      hostname-format: ${{ needs.envs.outputs.hostname-format }}
+      dockerfile: ${{ needs.envs.outputs.dockerfile }}
+    strategy:
+      matrix:
+        items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Instantiate VMachine(s)
+        uses: ./.github/actions/tf-azure-script
+        id: vm
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.vmEnvFile }}
+          key: ${{ env.project }}-${{ matrix.items }}-dep
+          working-directory: "tf/azure/dep"
+          group: ${{ env.project }}-group
+          image: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
