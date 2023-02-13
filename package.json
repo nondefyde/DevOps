@@ -78,6 +78,6 @@
     "az:apply:dns": "cd ./tf/azure/_scripts && ./apply.sh dns teststgdev",
 
     "az:prepare:all": "cd ./tf/azure/_scripts && ./prepare.sh dns teststgdev",
-    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm && yarn az:execute:apim && yarn az:execute:apimp"
+    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm"
   }
 }

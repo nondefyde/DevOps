@@ -49,14 +49,14 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 }
 
-resource "null_resource" "example" {
+resource "null_resource" "install_dep" {
   count = var.vm_count
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
-      user     = var.admin_username
+      user     = azurerm_linux_virtual_machine.vm.admin_username
       host     = element(azurerm_network_interface.vm_network_interface.*.private_ip_address, count.index)
-      password = var.admin_password
+      password = azurerm_linux_virtual_machine.vm.admin_password
     }
 
     inline = [
@@ -64,4 +64,5 @@ resource "null_resource" "example" {
       "${var.cloud_init_file} ${var.admin_username}"
     ]
   }
+  depends_on = [azurerm_linux_virtual_machine.vm]
 }

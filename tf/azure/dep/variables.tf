@@ -44,3 +44,11 @@ variable "admin_username" {
 variable "admin_password" {
   type = string
 }
+
+variable "image" {
+  type = string
+}
+
+variable "app_secret" {
+  type = string
+}

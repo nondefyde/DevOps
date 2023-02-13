@@ -24,8 +24,9 @@ resource "null_resource" "example" {
     }
 
     inline = [
-      "chmod +x /path/to/deploy.sh",
-      "/path/to/deploy.sh"
+      "az login --service-principal --username ${var.client_id} --password ${var.client_secret} --tenant ${var.tenant_id}"
+      "chmod +x ./deploy.sh",
+      "./deploy.sh ${var.project} ${var.image} ${var.app_secret}"
     ]
   }
 }

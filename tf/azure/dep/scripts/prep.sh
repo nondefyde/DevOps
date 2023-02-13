@@ -1,32 +1,28 @@
 #! /bin/bash
 
-while [ "$(hostname -I)" = "" ]; do
-  echo -e "\e[1A\e[KNo network: $(date)"
-  sleep 1
-done
-echo "I have network";
+echo "Add env file"
+touch vm/.env
+DECODED=$(echo $3 | base64 --decode > vm/.env)
 
-# Update the apt package index and install packages to allow apt to use a repository over HTTPS
-sudo apt update
-sudo apt install apt-transport-https ca-certificates curl software-properties-common
+echo "Genrate docker compose file"
+cat ./ci/docker-compose.yml | envsubst > ./vm/docker-compose.yml
 
-# Add Docker’s official GPG key
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+echo "Login docker"
+LOGIN_SERVER=$(az acr login -n "${1}acr" --expose-token)
+accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
+server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
 
-# The following command is to set up the stable repository
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu `lsb_release -cs` stable"
+sudo docker login ${server} --username 00000000-0000-0000-0000-000000000000 --password ${accessToken}
 
-# Update the apt package index, and install the latest version of Docker Engine and contained, or go to the next step to install a specific version
-sudo apt update
-sudo apt install -y docker-ce
+echo "Check if reverse proxy is running"
+IMAGE_COUNT=$(sudo docker ps --filter="name=reverse_proxy" | grep reverse_proxy | wc -l)
+ZERO=0
+if [ $IMAGE_COUNT -gt 0 ]; then
+  chmod a+x ./deploy.sh
+  ./deploy.sh $2
+else
+  sudo docker pull jwilder/nginx-proxy:latest
+  sudo docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro --name reverse_proxy --net nginx-proxy jwilder/nginx-proxy
+fi
 
-sudo docker pull jwilder/nginx-proxy:latest
-sudo docker network create nginx-proxy
-sudo docker volume create app-volume
-sudo docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro --name reverse_proxy --net nginx-proxy jwilder/nginx-proxy
 
-#Install Docker compose
-sudo mkdir -p /home/adminuser/.docker/cli-plugins
-sudo curl -SL https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64 -o /home/adminuser/.docker/cli-plugins/docker-compose
-sudo chmod +x /home/adminuser/.docker/cli-plugins/docker-compose
-sudo docker compose version

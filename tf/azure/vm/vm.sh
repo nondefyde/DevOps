@@ -25,3 +25,10 @@ sudo mkdir -p /home/$1/.docker/cli-plugins
 sudo curl -SL https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64 -o /home/$1/.docker/cli-plugins/docker-compose
 sudo chmod +x /home/$1/.docker/cli-plugins/docker-compose
 sudo docker compose version
+
+
+sudo docker pull jwilder/nginx-proxy:latest
+sudo docker network create nginx-proxy
+sudo docker volume create app-volume
+
+sudo curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
