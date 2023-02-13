@@ -44,20 +44,6 @@ resource "azurerm_linux_virtual_machine" "vm" {
     storage_account_uri = azurerm_storage_account.vm_storage_account.primary_blob_endpoint
   }
 
-  provisioner "remote-exec" {
-    connection {
-      type     = "ssh"
-      host     = element(azurerm_network_interface.vm_network_interface.*.private_ip_address, count.index)
-      user     = var.admin_username
-      password =var.admin_password
-    }
-
-    inline = [
-      "chmod +x ${var.cloud_init_file}",
-      "${var.cloud_init_file} ${var.admin_username}"
-    ]
-  }
-
   tags = {
     environment = var.environment
   }
