@@ -118,5 +118,8 @@ runs:
         for key in $(echo $outputs | jq -r 'keys[]'); do
           KEY=$(echo "${key}")
           VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
+          if [ $(echo "$VALUE" | jq type) == '"array"' ]; then
+            VALUE=$(echo "$VALUE" | jq -r 'join(",")')
+          fi
           echo "$KEY=$VALUE" >> "$GITHUB_ENV"
         done
