@@ -121,5 +121,6 @@ runs:
           if [ $(echo "$VALUE" | jq type) == '"array"' ]; then
             VALUE=$(echo "$VALUE" | jq -r 'join(",")')
           fi
+          echo "Value :::: $VALUE"
           echo "$KEY=$VALUE" >> "$GITHUB_ENV"
         done
