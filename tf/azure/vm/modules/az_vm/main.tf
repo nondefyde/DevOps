@@ -48,8 +48,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
     connection {
       type     = "ssh"
       host     = element(azurerm_network_interface.vm_network_interface.*.private_ip_address, count.index)
-      user     = element(azurerm_linux_virtual_machine.vm.*.admin_username, count.index)
-      password = element(azurerm_linux_virtual_machine.vm.*.admin_password, count.index)
+      user     = var.admin_username
+      password =var.admin_password
     }
 
     inline = [
