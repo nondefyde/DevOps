@@ -1,11 +1,3 @@
-data "template_file" "vm_init" {
-  template = file(var.cloud_init_file)
-  vars     = {
-    prefix = var.prefix
-    user   = var.admin_username
-  }
-}
-
 # Generate random text for a unique storage account name
 resource "random_id" "random_id" {
   keepers = {
@@ -36,8 +28,6 @@ resource "azurerm_linux_virtual_machine" "vm" {
   disable_password_authentication = false
   network_interface_ids           = [element(azurerm_network_interface.vm_network_interface.*.id, count.index)]
 
-  custom_data = base64encode(data.template_file.vm_init.rendered)
-
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -56,5 +46,22 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   tags = {
     environment = var.environment
+  }
+}
+
+resource "null_resource" "example" {
+  count = var.vm_count
+  provisioner "remote-exec" {
+    connection {
+      type     = "ssh"
+      user     = var.admin_username
+      host     = element(azurerm_network_interface*.private_ip_address, count.index)
+      password = var.admin_password
+    }
+
+    inline = [
+      "chmod +x ${var.cloud_init_file}",
+      "${var.cloud_init_file} ${var.admin_username}"
+    ]
   }
 }
