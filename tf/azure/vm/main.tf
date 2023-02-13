@@ -35,22 +35,3 @@ module "az_vm" {
 
   environment = var.environment
 }
-
-resource "null_resource" "example" {
-  count = var.vm_count
-  provisioner "remote-exec" {
-    connection {
-      type     = "ssh"
-      host     = element(module.az_vm.*.private_ip_address, count.index)
-      user     = var.admin_username
-      password = var.admin_password
-    }
-
-    inline = [
-      "chmod +x ${var.init_file}",
-      "${var.init_file} ${var.admin_username}"
-    ]
-  }
-
-  depends_on = [module.az_vm]
-}
