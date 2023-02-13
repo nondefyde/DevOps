@@ -41,7 +41,7 @@ resource "null_resource" "example" {
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
-      host     = element(azurerm_network_interface.vm_network_interface.*.private_ip_address, count.index)
+      host     = element(module.az_vm.*.private_ip_address, count.index)
       user     = var.admin_username
       password = var.admin_password
     }
