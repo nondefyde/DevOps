@@ -1,16 +1,3 @@
-#resource "azurerm_public_ip" "public_ip" {
-#  count               = var.vm_count
-#  name                = "${var.prefix}-${var.name}-public-id-${count.index}"
-#  resource_group_name = "${var.prefix}-group"
-#  location            = var.location
-#  allocation_method   = "Static"
-#  ip_version          = "IPv4"
-#  domain_name_label   = "${var.prefix}-${var.name}-${count.index}-dns"
-#  tags                = {
-#    environment = var.environment
-#  }
-#}
-
 resource "azurerm_network_interface" "vm_network_interface" {
   count               = var.vm_count
   name                = "${var.prefix}-${var.name}-net-${count.index}"
@@ -21,7 +8,6 @@ resource "azurerm_network_interface" "vm_network_interface" {
     name                          = "${var.prefix}-${var.name}-internal-${count.index}"
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
-#    public_ip_address_id          = azurerm_public_ip.public_ip[count.index].id
   }
 }
 

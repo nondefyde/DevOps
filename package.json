@@ -60,20 +60,24 @@
     "az:setup": "cd ./tf/azure/_scripts && ./setup.sh teststgdev centralus",
     "az:prepare:rg": "cd ./tf/azure/_scripts && ./prepare.sh crg teststgdev",
     "az:apply:rg": "cd ./tf/azure/_scripts && ./apply.sh crg teststgdev",
+    "az:execute:rg": "yarn az:prepare:rg && yarn az:apply:rg",
 
     "az:prepare:vnet": "cd ./tf/azure/_scripts && ./prepare.sh vnet teststgdev",
     "az:apply:vnet": "cd ./tf/azure/_scripts && ./apply.sh vnet teststgdev",
+    "az:execute:vnet": "yarn az:prepare:vnet && yarn az:apply:vnet",
 
     "az:prepare:vm": "cd ./tf/azure/_scripts && ./prepare.sh vm teststgdev",
     "az:apply:vm": "cd ./tf/azure/_scripts && ./apply.sh vm teststgdev",
+    "az:execute:vm": "yarn az:prepare:vm && yarn az:apply:vm",
 
     "az:prepare:apim": "cd ./tf/azure/_scripts && ./prepare.sh apim teststgdev",
     "az:apply:apim": "cd ./tf/azure/_scripts && ./apply.sh apim teststgdev",
-
-    "az:prepare:apimp": "cd ./tf/azure/_scripts && ./prepare.sh apimp teststgdev",
-    "az:apply:apimp": "cd ./tf/azure/_scripts && ./apply.sh apimp teststgdev",
+    "az:execute:apim": "yarn az:prepare:apim && yarn az:apply:apim",
 
     "az:prepare:dns": "cd ./tf/azure/_scripts && ./prepare.sh dns teststgdev",
-    "az:apply:dns": "cd ./tf/azure/_scripts && ./apply.sh dns teststgdev"
+    "az:apply:dns": "cd ./tf/azure/_scripts && ./apply.sh dns teststgdev",
+
+    "az:prepare:all": "cd ./tf/azure/_scripts && ./prepare.sh dns teststgdev",
+    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm && yarn az:execute:apim && yarn az:execute:apimp"
   }
 }

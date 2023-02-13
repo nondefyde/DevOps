@@ -24,7 +24,7 @@ resource "azurerm_api_management_api_operation" "apimp_operations" {
   api_name            = azurerm_api_management_api.apimp.name
   api_management_name = data.azurerm_api_management.apim.name
   resource_group_name = data.azurerm_resource_group.rg.name
-  display_name        = "${var.methods[count.index]} ${var.name} Res"
+  display_name        = "${var.methods[count.index]} Resource"
   method              = var.methods[count.index]
   url_template        = var.endpoints
 
@@ -42,7 +42,7 @@ resource "azurerm_api_management_api_operation_policy" "api_operation_policy" {
   api_name            = azurerm_api_management_api.apimp.name
   api_management_name = data.azurerm_api_management.apim.name
   resource_group_name = data.azurerm_resource_group.rg.name
-  operation_id        = azurerm_api_management_api_operation.apimp_operations[count.index].operation_id
+  operation_id        = azurerm_api_management_api_operation.apimp_operations[[count.index].id
 
   xml_content = <<XML
 <policies>
@@ -108,4 +108,5 @@ resource "azurerm_api_management_api_operation_policy" "api_operation_policy" {
     </on-error>
 </policies>
 XML
+
 }
