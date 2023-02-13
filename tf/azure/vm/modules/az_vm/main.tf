@@ -44,13 +44,6 @@ resource "azurerm_linux_virtual_machine" "vm" {
     storage_account_uri = azurerm_storage_account.vm_storage_account.primary_blob_endpoint
   }
 
-  tags = {
-    environment = var.environment
-  }
-}
-
-resource "null_resource" "install_dep" {
-  count = var.vm_count
   provisioner "remote-exec" {
     connection {
       type     = "ssh"
@@ -64,5 +57,8 @@ resource "null_resource" "install_dep" {
       "${var.cloud_init_file} ${var.admin_username}"
     ]
   }
-  depends_on = [azurerm_linux_virtual_machine.vm]
+
+  tags = {
+    environment = var.environment
+  }
 }
