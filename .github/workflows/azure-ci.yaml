@@ -210,7 +210,7 @@ jobs:
           tags: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}
 
   deploy:
-    name: 'Deploy Image - VM'
+    name: 'Deploy Image - VM ${{ matrix.items }}'
     needs: [ envs, config, deploy-image ]
     runs-on: ubuntu-latest
     env:
