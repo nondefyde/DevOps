@@ -55,7 +55,7 @@ resource "null_resource" "example" {
     connection {
       type     = "ssh"
       user     = var.admin_username
-      host     = element(azurerm_network_interface*.private_ip_address, count.index)
+      host     = element(azurerm_network_interface.vm_network_interface.*.private_ip_address, count.index)
       password = var.admin_password
     }
 
