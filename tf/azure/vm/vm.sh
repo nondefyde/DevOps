@@ -21,9 +21,9 @@ sudo apt update
 sudo apt install -y docker-ce
 
 #Install Docker compose
-sudo mkdir -p /home/$1/.docker/cli-plugins
-sudo curl -SL https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64 -o /home/$1/.docker/cli-plugins/docker-compose
-sudo chmod +x /home/$1/.docker/cli-plugins/docker-compose
+sudo mkdir -p /home/adminuser/.docker/cli-plugins
+sudo curl -SL https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64 -o /home/adminuser/.docker/cli-plugins/docker-compose
+sudo chmod +x /home/adminuser/.docker/cli-plugins/docker-compose
 sudo docker compose version
 
 
