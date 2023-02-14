@@ -1,60 +1,35 @@
 #! /bin/bash
 
-echo "Deploy image to container"
+echo "Remove unused images as part of cleaning up"
+sudo docker image prune -a -f
 
-RESOURCE_GROUP_NAME=${1}-group
-RESOURCE_LOCATION=centralus
-VM_NAME=${1}-vm
-IMAGE=${2}
-HOST=${3}
-CONTAINER_NAME=${4}
-PORT=${5}
+echo "acr $1"
 
-echo "Login to container registry ${1}acr"
+IMAGE_COUNT=$(sudo docker ps --filter="name=vm-app-*" | grep vm-app- | wc -l)
+IDS=$(sudo docker ps --filter ancestor=$1 --format '{{.ID}}')
+ZERO=0
 
-LOGIN_SERVER=$(az acr login -n ${1}acr --expose-token)
+echo "Number of container running image is ${IMAGE_COUNT}"
 
-accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
-server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
+if [ $IMAGE_COUNT -gt 0 ]; then
+  NEWCOUNT=$((IMAGE_COUNT+1))
+  echo "Spin up new container with updated image to scale up to ${NEWCOUNT}"
 
-echo "logged in to server > ${server}"
+  sudo docker compose pull app
+  sudo docker compose up -d --scale app=$NEWCOUNT --no-recreate
 
-echo "Login to docker"
-az vm run-command invoke \
-  -g ${RESOURCE_GROUP_NAME} \
-  -n ${VM_NAME} \
-  --command-id RunShellScript \
-  --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
-  --parameters ${server} ${accessToken}
-
-
-echo "Cleanup previous deployment"
-az vm run-command invoke \
-  -g ${RESOURCE_GROUP_NAME} \
-  -n ${VM_NAME} \
-  --command-id RunShellScript \
-  --scripts '
-       sudo docker stop $1
-       sudo docker rmi $1
-       sudo docker container stop $1
-       sudo docker container rm $1
-    ' \
-  --parameters ${CONTAINER_NAME}
-
-echo "Pull latest image from docker"
-az vm run-command invoke \
-  -g ${RESOURCE_GROUP_NAME} \
-  -n ${VM_NAME} \
-  --command-id RunShellScript \
-  --scripts 'sudo docker pull $1' \
-  --parameters ${IMAGE}
-
-echo "Deploy latest image to docker"
-az vm run-command invoke \
-  -g ${RESOURCE_GROUP_NAME} \
-  -n ${VM_NAME} \
-  --command-id RunShellScript \
-  --scripts 'sudo docker run --name=$3 --restart=always -p $4 -e VIRTUAL_HOST=$1 -d $2' \
-  --parameters ${HOST} ${IMAGE} ${CONTAINER_NAME} ${PORT}
-
-echo "Successfully Deployed"
+  UPDATED_IMAGE_COUNT=$(sudo docker ps --filter="name=vm-app-*" | grep vm-app- | wc -l)
+  echo "Updated image >>>>> ${UPDATED_IMAGE_COUNT} >>>>> new Image count ${NEWCOUNT}"
+  if [ $UPDATED_IMAGE_COUNT -ge $NEWCOUNT ]; then
+    for id in $IDS; do
+      echo "Destroy old container running id ${id}"
+      sudo docker stop $id
+      sudo docker rm -f $id
+    done
+    echo "Scaling down to 1"
+    sudo docker compose up -d --scale app=1 --no-recreate
+  fi
+else
+  echo "Spin up new container"
+  sudo docker compose up -d --scale app=1 --no-recreate
+fi

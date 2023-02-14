@@ -236,40 +236,12 @@ jobs:
           file_path: ${{ env.configFile }}
           prop_path: "virtual-machine"
 
-      - name: convert to json
-        id: depjson
-        uses: schdck/create-env-json@v1
-        with:
-          file-name: ${{ env.depEnvFile }}
-          prefix: ${{ env.project }}
-          group: ${{ env.project }}-group
-          name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
-          vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
-          image: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
-          app_secret: ${{ secrets.AZR_VM_APP_SECRET }}
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.depEnvFile }}
-          path: ${{ env.depEnvFile }}
-
       - name: Print VM Info
         id: vm-info
         run: |
-          echo "vm name ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}"
-          echo "vm count ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}"
-
-      - name: Deploying
-        uses: ./.github/actions/tf-azure-script
-        id: depl
-        with:
-          project: ${{ env.project }}
-          envFile: ${{ env.depEnvFile }}
-          key: ${{ env.project }}-${{ matrix.items }}-dep
-          working-directory: "tf/azure/depl"
-          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-        continue-on-error: false
+          echo "Run Deployment"
+          az vm run-command invoke 
+            --command-id RunShellScript 
+            --name teststgdev-quest-vm-1 
+            --resource-group TESTSTGDEV-GROUP 
+            --scripts "curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/depl/scripts/prep.sh | bash -s <arg1> <arg2> <arg3>"
