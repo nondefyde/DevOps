@@ -19,6 +19,8 @@ APP_SECRET=${6}
 VM_NAME=${7}
 VM_COUNT=${8}
 
+echo "APP_SECRET     : ${APP_SECRET}"
+
 for i in $(seq 1 ${8}); do
   echo "Login Azure in VM ${4}-${7}-vm-$i"
     az vm run-command invoke \
