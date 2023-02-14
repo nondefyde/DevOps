@@ -10,7 +10,7 @@ data "azurerm_network_interface" "vm_interface" {
 
 data "azurerm_linux_virtual_machine" "vms" {
   count               = var.vm_count
-  name                = var.vm_name
+  name                = "${var.prefix}-${var.name}-vm-${count.index + 1}"
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 

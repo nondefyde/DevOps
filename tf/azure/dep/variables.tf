@@ -27,6 +27,15 @@ variable "client_secret" {
   description = "Client ID"
 }
 
+variable "vm_count" {
+  type = string
+  default = 1
+}
+
+variable "name" {
+  type = string
+}
+
 variable "image" {
   type = string
 }

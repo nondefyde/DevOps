@@ -1,9 +1,9 @@
 name: AZR VM TEST CI
 
 on:
-#  push:
-#    branches:
-#      - 'main'
+  push:
+    branches:
+      - 'main'
   workflow_run:
     workflows: [ "AZR TEST CLOUD" ]
     types:
@@ -228,15 +228,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Get cloud config
+        id: vm-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "virtual-machine"
+
+      - name: Print VM Info
+        id: vm-info
+        run: |
+          echo "vm name ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}"
+          echo "vm count ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}"
+
       - name: Instantiate VMachine(s)
         uses: ./.github/actions/tf-azure-script
-        id: vm
+        id: dep
         with:
           project: ${{ env.project }}
           envFile: ${{ env.vmEnvFile }}
           key: ${{ env.project }}-${{ matrix.items }}-dep
           working-directory: "tf/azure/dep"
           group: ${{ env.project }}-group
+          name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
+          vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
           image: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
           app_secret: ${{ secrets.AZR_VM_APP_SECRET }}
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
