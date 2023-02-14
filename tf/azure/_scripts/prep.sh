@@ -9,9 +9,10 @@ echo "App Secret  : ${3}"
 
 
 echo "Create required directory"
-sudo mkdir vm
-sudo touch vm/.env
-DECODED=$(echo ${3} | base64 --decode > vm/.env)
+
+mkdir ~/vm
+touch ~/vm/.env
+DECODED=$(echo ${3} | base64 --decode > ~/vm/.env)
 
 #echo "Generate docker compose file"
 #cat ./ci/docker-compose.yml | envsubst > ./vm/docker-compose.yml
