@@ -27,6 +27,7 @@ sudo docker login ${server} --username 00000000-0000-0000-0000-000000000000 --pa
 echo "Check if reverse proxy is running"
 IMAGE_COUNT=$(sudo docker ps --filter="name=reverse_proxy" | grep reverse_proxy | wc -l)
 ZERO=0
+echo "IMAGE_COUNT ${IMAGE_COUNT}"
 if [ $IMAGE_COUNT -gt 0 ]; then
   echo "Reverse Proxy is working well"
 #  curl s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/deploy.sh
