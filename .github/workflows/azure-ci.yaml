@@ -238,6 +238,7 @@ jobs:
           working-directory: "tf/azure/dep"
           group: ${{ env.project }}-group
           image: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
+          app_secret: ${{ secrets.AZR_VM_APP_SECRET }}
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
           AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}

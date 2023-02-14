@@ -27,23 +27,10 @@ variable "client_secret" {
   description = "Client ID"
 }
 
-#variable "vm_name" {
-#  type = string
-#}
-#
-#variable "vm_count" {
-#  type = number
-#  default = 1
-#}
-#variable "admin_username" {
-#  type = string
-#  default = "adminuser"
-#}
-#
-#variable "admin_password" {
-#  type = string
-#}
-
 variable "image" {
+  type = string
+}
+
+variable "app_secret" {
   type = string
 }
