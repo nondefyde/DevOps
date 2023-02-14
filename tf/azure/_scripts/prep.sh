@@ -2,14 +2,11 @@
 
 trap 'echo Error: Command failed; exit 1' ERR
 
-
 echo "Project     : ${1}"
 echo "Image       : ${2}"
 echo "App Secret  : ${3}"
 
-
 echo "Create required directory"
-
 mkdir ~/vm
 touch ~/vm/.env
 DECODED=$(echo ${3} | base64 --decode > ~/vm/.env)
@@ -30,7 +27,7 @@ IMAGE_COUNT=$(sudo docker ps --filter="name=reverse_proxy" | grep reverse_proxy 
 ZERO=0
 echo "IMAGE_COUNT ${IMAGE_COUNT}"
 if [ $IMAGE_COUNT -gt 0 ]; then
-  echo "Reverse Proxy is working well"
+  echo "Reverse Proxy present"
 #  curl s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/deploy.sh
 #  chmod a+x ./deploy.sh
 #  ./deploy.sh $2
