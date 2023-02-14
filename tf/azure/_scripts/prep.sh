@@ -35,9 +35,7 @@ ZERO=0
 echo "IMAGE_COUNT ${IMAGE_COUNT}"
 if [ $IMAGE_COUNT -gt 0 ]; then
   echo "Reverse Proxy present"
-#  curl -sSL https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/deploy.sh
-#  chmod a+x ./deploy.sh
-#  ./deploy.sh $2
+  curl -sSL https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/deploy.sh | bash -s "${1}"
 else
   sudo docker pull jwilder/nginx-proxy:latest
   sudo docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro --name reverse_proxy --net nginx-proxy jwilder/nginx-proxy
