@@ -20,8 +20,7 @@ VM_NAME=${7}
 VM_COUNT=${8}
 
 for i in $(seq 1 ${8}); do
-  echo "Run Command on VM ${4}-${7}-vm-$i"
-
+  echo "Login Azure in VM ${4}-${7}-vm-$i"
     az vm run-command invoke \
       --command-id RunShellScript \
       --name ${4}-${7}-vm-$i \
@@ -31,7 +30,7 @@ for i in $(seq 1 ${8}); do
         ' \
       --parameters ${1} ${2} ${3}
 
-
+  echo "Run Deploy Command on VM ${4}-${7}-vm-$i"
   az vm run-command invoke \
     --command-id RunShellScript \
     --name ${4}-${7}-vm-$i \
