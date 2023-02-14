@@ -10,8 +10,8 @@ echo "Vm Count    : ${5}"
 
 echo "Cleanup previous deployment"
 az vm run-command invoke \
-  -g ${RESOURCE_GROUP_NAME} \
-  -n ${VM_NAME} \
+  --resource-group ${1}-group \
+  --name ${1}-${4}-vm-$i \
   --command-id RunShellScript \
   --scripts '
        sudo mkdir vm
@@ -20,22 +20,21 @@ az vm run-command invoke \
     ' \
   --parameters ${CONTAINER_NAME}
 
-echo "Login to docker"
-echo "Login to container registry ${1}acr"
-LOGIN_SERVER=$(az acr login -n ${1}acr --expose-token)
-accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
-server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
-echo "logged in to server > ${server}"
-az vm run-command invoke \
-  -g ${RESOURCE_GROUP_NAME} \
-  -n ${VM_NAME} \
-  --command-id RunShellScript \
-  --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
-  --parameters ${server} ${accessToken}
-
-
 echo "Deploy to VM"
 for i in $(seq 1 ${5}); do
+  echo "Login to docker"
+  echo "Login to container registry ${1}acr"
+  LOGIN_SERVER=$(az acr login -n ${1}acr --expose-token)
+  accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
+  server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
+  echo "logged in to server > ${server}"
+  az vm run-command invoke \
+    --resource-group ${1}-group \
+    --name ${1}-${4}-vm-$i \
+    --command-id RunShellScript \
+    --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
+    --parameters ${server} ${accessToken}
+
   echo "Run Command on VM ${1}-${4}-vm-$i"
   az vm run-command invoke \
     --command-id RunShellScript \
