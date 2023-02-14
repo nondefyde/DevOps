@@ -38,11 +38,11 @@ for i in $(seq 1 ${8}); do
       --name ${4}-${7}-vm-$i \
       --resource-group ${RESOURCE_GROUP_NAME} \
       --scripts '
-           rm -rf vm
-           mkdir vm
-           touch vm/.env
-           DECODED=$(echo $1 | base64 --decode > vm/.env)
-        ' \
+          rm -rf /home/adminuser/vm;
+          mkdir /home/adminuser/vm;
+          touch /home/adminuser/vm/.env;
+          DECODED=\$(echo $1 | base64 --decode > /home/adminuser/vm/.env)
+        '\
       --parameters ${6}
 
   echo "Run Deploy Command on VM ${4}-${7}-vm-$i"
@@ -52,5 +52,3 @@ for i in $(seq 1 ${8}); do
     --resource-group ${RESOURCE_GROUP_NAME} \
     --scripts "curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh | bash -s ${6}"
 done
-
-
