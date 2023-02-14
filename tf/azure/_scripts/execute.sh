@@ -8,38 +8,31 @@ echo "App Secret  : ${3}"
 echo "Vm Name     : ${4}"
 echo "Vm Count    : ${5}"
 
-echo "Cleanup previous deployment"
-az vm run-command invoke \
-  --resource-group ${1}-group \
-  --name ${1}-${4}-vm-$i \
-  --command-id RunShellScript \
-  --scripts '
-       sudo mkdir vm
-       sudo touch vm/.env
-       DECODED=$(echo $3 | base64 --decode > vm/.env)
-    ' \
-  --parameters ${CONTAINER_NAME}
+RESOURCE_GROUP_NAME=${1}-group
+IMAGE=${2}
+APP_SECRET=${3}
+VM_NAME=${4}
+VM_COUNT=${5}
 
-echo "Deploy to VM"
 for i in $(seq 1 ${5}); do
-  echo "Login to docker"
-  echo "Login to container registry ${1}acr"
-  LOGIN_SERVER=$(az acr login -n ${1}acr --expose-token)
-  accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
-  server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
-  echo "logged in to server > ${server}"
+
+  echo "Cleanup previous deployment"
   az vm run-command invoke \
-    --resource-group ${1}-group \
+    --resource-group ${RESOURCE_GROUP_NAME} \
     --name ${1}-${4}-vm-$i \
     --command-id RunShellScript \
-    --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
-    --parameters ${server} ${accessToken}
+    --scripts '
+         sudo mkdir vm
+         sudo touch vm/.env
+         DECODED=$(echo $1 | base64 --decode > vm/.env)
+      ' \
+    --parameters ${APP_SECRET}
 
   echo "Run Command on VM ${1}-${4}-vm-$i"
   az vm run-command invoke \
     --command-id RunShellScript \
     --name ${1}-${4}-vm-$i \
-    --resource-group ${1}-group \
+    --resource-group ${RESOURCE_GROUP_NAME} \
     --scripts "curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh | bash -s $1 $2 $3"
 done
 
