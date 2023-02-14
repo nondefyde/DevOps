@@ -32,6 +32,19 @@ for i in $(seq 1 ${8}); do
         ' \
       --parameters ${1} ${2} ${3}
 
+  echo "Create Required Files in VM ${4}-${7}-vm-$i"
+    az vm run-command invoke \
+      --command-id RunShellScript \
+      --name ${4}-${7}-vm-$i \
+      --resource-group ${RESOURCE_GROUP_NAME} \
+      --scripts '
+           rm -rf vm
+           mkdir vm
+           touch vm/.env
+           DECODED=$(echo $1 | base64 --decode > vm/.env)
+        ' \
+      --parameters ${6}
+
   echo "Run Deploy Command on VM ${4}-${7}-vm-$i"
   az vm run-command invoke \
     --command-id RunShellScript \
