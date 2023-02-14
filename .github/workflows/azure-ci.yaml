@@ -241,6 +241,7 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.depEnvFile }}
+          prefix: ${{ env.project }}
           group: ${{ env.project }}-group
           name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
           vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
@@ -259,7 +260,7 @@ jobs:
           echo "vm name ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}"
           echo "vm count ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}"
 
-      - name: Instantiate VMachine(s)
+      - name: Deploying
         uses: ./.github/actions/tf-azure-script
         id: dep
         with:
