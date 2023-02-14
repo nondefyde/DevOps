@@ -1,6 +1,7 @@
 #! /bin/bash
 
 echo "Add env file"
+mkdir vm
 touch vm/.env
 #DECODED=$(echo $3 | base64 --decode > vm/.env)
 #
