@@ -3,6 +3,7 @@
 echo "Add env file"
 mkdir vm
 touch vm/.env
+echo "Added folder"
 #DECODED=$(echo $3 | base64 --decode > vm/.env)
 #
 #echo "Generate docker compose file"
