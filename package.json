@@ -74,8 +74,8 @@
     "az:apply:apim": "cd ./tf/azure/_scripts && ./apply.sh apim teststgdev",
     "az:execute:apim": "yarn az:prepare:apim && yarn az:apply:apim",
 
-    "az:prepare:dep": "cd ./tf/azure/_scripts && ./prepare.sh dep teststgdev",
-    "az:apply:dep": "cd ./tf/azure/_scripts && ./apply.sh dep teststgdev",
+    "az:prepare:dep": "cd ./tf/azure/_scripts && ./prepare.sh depl teststgdev",
+    "az:apply:dep": "cd ./tf/azure/_scripts && ./apply.sh depl teststgdev",
 
     "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm"
   }

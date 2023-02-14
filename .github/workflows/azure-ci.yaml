@@ -262,12 +262,12 @@ jobs:
 
       - name: Deploying
         uses: ./.github/actions/tf-azure-script
-        id: dep
+        id: depl
         with:
           project: ${{ env.project }}
           envFile: ${{ env.depEnvFile }}
           key: ${{ env.project }}-${{ matrix.items }}-dep
-          working-directory: "tf/azure/dep"
+          working-directory: "tf/azure/depl"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
           AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
