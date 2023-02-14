@@ -9,8 +9,8 @@ echo "App Secret  : ${3}"
 echo "Vm Name     : ${4}"
 echo "Vm Count    : ${5}"
 
-
 for i in $(seq 1 ${5}); do
+  echo "Run Command on VM ${1}-${4}-vm-$i"
   az vm run-command invoke \
     --command-id RunShellScript \
     --name ${1}-${4}-vm-$i \
