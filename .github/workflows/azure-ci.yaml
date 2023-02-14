@@ -229,19 +229,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Get cloud config
-        id: vm-cloud-config
-        uses: ActionsTools/read-json-action@main
+      - name: Download Repo to Artifact
+        if: ${{ inputs.is_workflow == true }}
+        uses: actions/download-artifact@master
         with:
-          file_path: ${{ env.configFile }}
-          prop_path: "virtual-machine"
+          name: cloud-scripts
+          path: ${{ inputs.repository }}
+      - name: Copy Script files to context
+        if: ${{ inputs.is_workflow == true }}
+        run: |
+          ls
+          cp -a "${{ inputs.repository }}/." ./
+          rm -r "${{ inputs.repository }}"
+          ls -a
 
-      - name: Print VM Info
-        id: vm-info
+      - name: Deploy to VM
+        id: deploy-vm
+        working-directory: "tf/azure/_scripts"
         run: |
           echo "Run Deployment"
-          az vm run-command invoke 
-            --command-id RunShellScript 
-            --name teststgdev-quest-vm-1 
-            --resource-group TESTSTGDEV-GROUP 
-            --scripts "curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/depl/scripts/prep.sh | bash -s <arg1> <arg2> <arg3>"
+          chmod +x execute.sh
+          ./execute.sh ${{ env.project }} ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest ${{ secrets.AZR_VM_APP_SECRET }}

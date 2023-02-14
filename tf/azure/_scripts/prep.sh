@@ -18,7 +18,7 @@ echo "Check if reverse proxy is running"
 IMAGE_COUNT=$(sudo docker ps --filter="name=reverse_proxy" | grep reverse_proxy | wc -l)
 ZERO=0
 if [ $IMAGE_COUNT -gt 0 ]; then
-  curl s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/depl/scripts/deploy.sh
+  curl s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/deploy.sh
   chmod a+x ./deploy.sh
   ./deploy.sh $2
 else
