@@ -7,9 +7,9 @@ echo "Image       : ${2}"
 echo "App Secret  : ${3}"
 
 echo "Create required directory"
-sudo rm -rf vm
-sudo mkdir vm
-sudo touch ./vm/.env
+rm -rf vm
+mkdir vm
+touch ./vm/.env
 DECODED=$(echo ${3} | base64 --decode > ~/vm/.env)
 #
 ##echo "Generate docker compose file"
