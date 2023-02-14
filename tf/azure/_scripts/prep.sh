@@ -6,8 +6,6 @@ echo "Project     : ${1}"
 echo "Image       : ${2}"
 echo "App Secret  : ${3}"
 
-echo "running echo ${3} | base64 --decode > ~/vm/.env"
-
 echo "Create required directory"
 APP_SECRET=${3}
 rm -rf vm

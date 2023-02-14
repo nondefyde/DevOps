@@ -40,7 +40,7 @@ for i in $(seq 1 ${8}); do
     --scripts '
          curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh | bash -s ${1} ${2} ${3}
       ' \
-    --parameters ${PROJECT} ${IMAGE} ${APP_SECRET}
+    --parameters ${4} ${5} ${6}
 done
 
 
