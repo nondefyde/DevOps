@@ -32,3 +32,5 @@ sudo docker network create nginx-proxy
 sudo docker volume create app-volume
 
 sudo curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+sudo apt-get install jq --yes
