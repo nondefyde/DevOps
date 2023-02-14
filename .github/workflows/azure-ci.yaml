@@ -221,6 +221,7 @@ jobs:
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
+      depEnvFile: "dep-${{ matrix.items }}.tfvars"
     strategy:
       matrix:
         items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
@@ -235,6 +236,23 @@ jobs:
           file_path: ${{ env.configFile }}
           prop_path: "virtual-machine"
 
+      - name: convert to json
+        id: depjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.depEnvFile }}
+          group: ${{ env.project }}-group
+          name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
+          vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
+          image: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
+          app_secret: ${{ secrets.AZR_VM_APP_SECRET }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.depEnvFile }}
+          path: ${{ env.depEnvFile }}
+
       - name: Print VM Info
         id: vm-info
         run: |
@@ -246,14 +264,9 @@ jobs:
         id: dep
         with:
           project: ${{ env.project }}
-          envFile: ${{ env.vmEnvFile }}
+          envFile: ${{ env.depEnvFile }}
           key: ${{ env.project }}-${{ matrix.items }}-dep
           working-directory: "tf/azure/dep"
-          group: ${{ env.project }}-group
-          name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
-          vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
-          image: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest
-          app_secret: ${{ secrets.AZR_VM_APP_SECRET }}
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
           AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
