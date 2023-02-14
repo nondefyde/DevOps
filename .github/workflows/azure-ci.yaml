@@ -242,6 +242,14 @@ jobs:
           cp -a "${{ inputs.repository }}/." ./
           rm -r "${{ inputs.repository }}"
           ls -a
+          
+
+      - name: Get cloud config
+        id: vm-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "virtual-machine"
 
       - name: Deploy to VM
         id: deploy-vm
@@ -249,4 +257,4 @@ jobs:
         run: |
           echo "Run Deployment"
           chmod +x execute.sh
-          ./execute.sh ${{ env.project }} ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest ${{ secrets.AZR_VM_APP_SECRET }}
+          ./execute.sh ${{ env.project }} ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest ${{ secrets.AZR_VM_APP_SECRET }} ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }} ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }} 
