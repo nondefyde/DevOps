@@ -1,11 +1,6 @@
 #! /bin/bash
 
-echo "Add env file"
-sudo mkdir vm
-sudo touch vm/.env
-echo "Added folder"
-#DECODED=$(echo $3 | base64 --decode > vm/.env)
-#
+
 #echo "Generate docker compose file"
 #cat ./ci/docker-compose.yml | envsubst > ./vm/docker-compose.yml
 #
@@ -13,7 +8,7 @@ echo "Added folder"
 #LOGIN_SERVER=$(az acr login -n "${1}acr" --expose-token)
 #accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
 #server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
-#
+
 #sudo docker login ${server} --username 00000000-0000-0000-0000-000000000000 --password ${accessToken}
 #
 #echo "Check if reverse proxy is running"
