@@ -217,11 +217,7 @@ jobs:
       vm: ${{ needs.envs.outputs.vm_names }}
       project: ${{ needs.envs.outputs.project }}
       service: ${{ needs.envs.outputs.service }}
-      hostname: ${{ needs.config.outputs.hostname }}
       port: ${{ needs.envs.outputs.port }}
-      hostname-format: ${{ needs.envs.outputs.hostname-format }}
-      dockerfile: ${{ needs.envs.outputs.dockerfile }}
-      depEnvFile: "dep-${{ matrix.items }}.tfvars"
     strategy:
       matrix:
         items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
@@ -242,7 +238,6 @@ jobs:
           cp -a "${{ inputs.repository }}/." ./
           rm -r "${{ inputs.repository }}"
           ls -a
-          
 
       - name: Get cloud config
         id: vm-cloud-config
