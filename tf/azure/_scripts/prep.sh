@@ -10,7 +10,7 @@ echo "Create required directory"
 APP_SECRET=${1}
 rm -rf vm
 mkdir vm
-touch ./vm/.env
+touch vm/.env
 DECODED=$(echo $APP_SECRET | base64 --decode > vm/.env)
 
 ##echo "Generate docker compose file"
