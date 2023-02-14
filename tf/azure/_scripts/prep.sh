@@ -4,6 +4,13 @@ trap 'echo Error: Command failed; exit 1' ERR
 
 echo "Project     : ${1}"
 echo "Image       : ${2}"
+echo "App Secret  : ${3}"
+
+
+rm -rf /home/adminuser/vm
+mkdir /home/adminuser/vm
+touch /home/adminuser/vm/.env
+DECODED=$(echo "${3}" | base64 --decode > /home/adminuser/vm/.env)
 
 ##echo "Generate docker compose file"
 ##cat ./ci/docker-compose.yml | envsubst > ./vm/docker-compose.yml

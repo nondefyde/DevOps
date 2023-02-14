@@ -19,8 +19,6 @@ APP_SECRET=${6}
 VM_NAME=${7}
 VM_COUNT=${8}
 
-echo "APP_SECRET     : ${APP_SECRET}"
-
 for i in $(seq 1 ${8}); do
   echo "Login Azure in VM ${4}-${7}-vm-$i"
     az vm run-command invoke \
@@ -32,23 +30,10 @@ for i in $(seq 1 ${8}); do
         ' \
       --parameters ${1} ${2} ${3}
 
-  echo "Create Required Files in VM ${4}-${7}-vm-$i"
-    az vm run-command invoke \
-      --command-id RunShellScript \
-      --name ${4}-${7}-vm-$i \
-      --resource-group ${RESOURCE_GROUP_NAME} \
-      --scripts '
-          rm -rf /home/adminuser/vm;
-          mkdir /home/adminuser/vm;
-          touch /home/adminuser/vm/.env;
-          DECODED=\$(echo $1 | base64 --decode > /home/adminuser/vm/.env)
-        '\
-      --parameters ${6}
-
   echo "Run Deploy Command on VM ${4}-${7}-vm-$i"
   az vm run-command invoke \
     --command-id RunShellScript \
     --name ${4}-${7}-vm-$i \
     --resource-group ${RESOURCE_GROUP_NAME} \
-    --scripts "curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh | bash -s ${6}"
+    --scripts "curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh | bash -s ${4} ${5} ${6}"
 done
