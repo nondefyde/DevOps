@@ -11,7 +11,7 @@ APP_SECRET=${1}
 rm -rf vm
 mkdir vm
 touch ./vm/.env
-DECODED=$(echo $APP_SECRET | base64 --decode > ~/vm/.env)
+DECODED=$(echo $APP_SECRET | base64 --decode > vm/.env)
 
 ##echo "Generate docker compose file"
 ##cat ./ci/docker-compose.yml | envsubst > ./vm/docker-compose.yml

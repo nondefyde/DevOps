@@ -37,10 +37,7 @@ for i in $(seq 1 ${8}); do
     --command-id RunShellScript \
     --name ${4}-${7}-vm-$i \
     --resource-group ${RESOURCE_GROUP_NAME} \
-    --scripts '
-         curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh | bash -s ${1}
-      ' \
-    --parameters ${6}
+    --scripts "curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh | bash -s ${6}"
 done
 
 
