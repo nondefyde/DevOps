@@ -2,12 +2,12 @@
 
 trap 'echo Error: Command failed; exit 1' ERR
 
-echo "Project     : ${1}"
-echo "Image       : ${2}"
-echo "App Secret  : ${3}"
+#echo "Project     : ${1}"
+#echo "Image       : ${2}"
+echo "App Secret  : ${1}"
 
 echo "Create required directory"
-APP_SECRET=${3}
+APP_SECRET=${1}
 rm -rf vm
 mkdir vm
 touch ./vm/.env
