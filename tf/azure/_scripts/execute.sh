@@ -30,6 +30,8 @@ PREP_SCRIPT="https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_s
 
 ARGUMENTS=${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}
 
+echo "Arguments $ARGUMENTS"
+
 for i in $(seq 1 ${8}); do
   echo "Login Azure in VM ${4}-${7}-vm-$i"
   az vm run-command invoke \
@@ -46,5 +48,5 @@ for i in $(seq 1 ${8}); do
     --command-id RunShellScript \
     --name ${4}-${7}-vm-$i \
     --resource-group ${4}-group \
-    --scripts "curl -s ${PREP_SCRIPT} | bash -s ${ARGUMENTS}"
+    --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
 done
