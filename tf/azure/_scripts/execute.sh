@@ -12,7 +12,7 @@ echo "App Secret  : ${6}"
 echo "Vm Name     : ${7}"
 echo "Vm Count    : ${8}"
 
-
+PROJECT=${4}
 RESOURCE_GROUP_NAME=${4}-group
 IMAGE=${5}
 APP_SECRET=${6}
@@ -36,9 +36,9 @@ for i in $(seq 1 ${8}); do
     --name ${4}-${7}-vm-$i \
     --resource-group ${RESOURCE_GROUP_NAME} \
     --scripts '
-         curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh | bash -s $1 $2 $3
+         curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh | bash -s ${1} ${2} ${3}
       ' \
-    --parameters ${4} ${5} ${6}
+    --parameters ${PROJECT} ${IMAGE} ${APP_SECRET}
 done
 
 
