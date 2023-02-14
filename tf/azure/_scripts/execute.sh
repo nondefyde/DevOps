@@ -21,15 +21,25 @@ VM_COUNT=${8}
 
 for i in $(seq 1 ${8}); do
   echo "Run Command on VM ${4}-${7}-vm-$i"
+
+    az vm run-command invoke \
+      --command-id RunShellScript \
+      --name ${4}-${7}-vm-$i \
+      --resource-group ${RESOURCE_GROUP_NAME} \
+      --scripts '
+           az login --service-principal --username ${1} --password ${2} --tenant ${3}
+        ' \
+      --parameters ${1} ${2} ${3}
+
+
   az vm run-command invoke \
     --command-id RunShellScript \
     --name ${4}-${7}-vm-$i \
     --resource-group ${RESOURCE_GROUP_NAME} \
     --scripts '
-         az login --service-principal --username ${1} --password ${2} --tenant ${3}
-         curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh | bash -s $4 $5 $6
+         curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh | bash -s $1 $2 $3
       ' \
-    --parameters ${1} ${2} ${3} ${4} ${5} ${6}
+    --parameters ${4} ${5} ${6}
 done
 
 
