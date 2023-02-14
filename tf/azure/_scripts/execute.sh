@@ -15,19 +15,6 @@ VM_NAME=${4}
 VM_COUNT=${5}
 
 for i in $(seq 1 ${5}); do
-
-  echo "Cleanup previous deployment"
-  az vm run-command invoke \
-    --resource-group ${RESOURCE_GROUP_NAME} \
-    --name ${1}-${4}-vm-$i \
-    --command-id RunShellScript \
-    --scripts '
-         sudo mkdir vm
-         sudo touch vm/.env
-         DECODED=$(echo $1 | base64 --decode > vm/.env)
-      ' \
-    --parameters ${APP_SECRET}
-
   echo "Run Command on VM ${1}-${4}-vm-$i"
   az vm run-command invoke \
     --command-id RunShellScript \
