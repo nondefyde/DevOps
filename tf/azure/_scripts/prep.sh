@@ -2,19 +2,25 @@
 
 trap 'echo Error: Command failed; exit 1' ERR
 
-echo "Project     : ${1}"
-echo "Image       : ${2}"
-echo "App Secret  : ${3}"
+echo "Project       : ${1}"
+echo "App Secret    : ${2}"
+echo "Image         : ${3}"
+echo "Environment   : ${4}"
+echo "Virtual Host  : ${5}"
+echo "Port          : ${6}"
+echo "Vm User       : ${7}"
 
 
-rm -rf /home/adminuser/vm
-mkdir /home/adminuser/vm
-touch /home/adminuser/vm/.env
-DECODED=$(echo "${3}" | base64 --decode > /home/adminuser/vm/.env)
+rm -rf "/home/${7}/vm"
+mkdir "/home/${7}/vm"
+touch "/home/${7}/vm/.env"
+DECODED=$(echo "${2}" | base64 --decode > /home/adminuser/vm/.env)
 
-##echo "Generate docker compose file"
-##cat ./ci/docker-compose.yml | envsubst > ./vm/docker-compose.yml
-#
+echo "Generate docker compose file"
+DOCKER_COMPOSE_FILE=https://raw.githubusercontent.com/nondefyde/DevOps/main/ci/docker-compose.yml
+curl -sSL "${DOCKER_COMPOSE_FILE}" | sed "s/{IMAGE}/$3/g; s/{NODE_ENV}/$4/g; s/{VIRTUAL_HOST}/$5/g; s/{PORT}/$6/g" > "/home/${7}/vm/docker-compose.yml"
+
+
 #echo "Login to container registry ${1}acr"
 #LOGIN_SERVER=$(az acr login -n ${1}acr --expose-token)
 #accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
