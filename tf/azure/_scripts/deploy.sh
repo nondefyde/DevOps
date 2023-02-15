@@ -35,7 +35,7 @@ if [ $IMAGE_COUNT -gt 0 ]; then
       sudo docker stop $id
       sudo docker rm -f $id
     done
-    echo "Scaling down to 1"
+    echo "Scaling down to ${3}"
     sudo docker compose up -d --scale app="${3}" --no-recreate
   fi
 else
