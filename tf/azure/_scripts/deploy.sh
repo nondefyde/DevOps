@@ -29,8 +29,8 @@ if [ $IMAGE_COUNT -gt 0 ]; then
   if [ $UPDATED_IMAGE_COUNT -ge $NEWCOUNT ]; then
     for id in $IDS; do
       echo "Destroy old container running id ${id}"
-      docker stop $id
-      docker rm -f $id
+      sudo docker stop $id
+      sudo docker rm -f $id
     done
     echo "Scaling down to ${3}"
     docker compose up -d --scale app="${3}" --no-recreate

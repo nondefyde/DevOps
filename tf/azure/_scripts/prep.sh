@@ -10,11 +10,6 @@ echo "Virtual Host  : ${5}"
 echo "Port          : ${6}"
 echo "Vm User       : ${7}"
 
-echo "Add docker group"
-sudo groupadd docker
-sudo usermod -aG docker $USER
-newgrp docker
-
 echo "Generate env file"
 rm -rf "/home/${7}/vm"
 mkdir "/home/${7}/vm"

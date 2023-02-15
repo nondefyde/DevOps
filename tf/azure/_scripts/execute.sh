@@ -30,15 +30,14 @@ INSTANCE=${13}
 
 PREP_SCRIPT="https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh"
 
-ARGUMENTS=${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}
-
-echo "Arguments $ARGUMENTS"
-
 
 LOGIN_SERVER=$(az acr login -n ${PROJECT}acr --expose-token)
 accessToken=$(jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
 server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
 echo "logged in to server > ${server}"
+
+
+echo "${PROJECT} ${IMAGE} ${INSTANCE} ${VM_USER} vm-app-"
 
 for i in $(seq 1 ${8}); do
   echo "Login Azure in VM ${4}-${7}-vm-$i"
@@ -64,9 +63,9 @@ for i in $(seq 1 ${8}); do
     --name ${4}-${7}-vm-$i \
     --resource-group ${4}-group \
     --scripts '
+      cd /home/$6/vm
       echo "Login docker"
-      sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2
-      cd home/$6/vm
+      docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2
       chmod +x deploy.sh
       ./deploy.sh $3 $4 $5 $6 $7
     ' \
