@@ -6,9 +6,6 @@ echo "instance    : $3"
 echo "Vm user     : $4"
 echo "App alias   : $5"
 
-echo "Use docker rootless"
-docker context use rootless
-
 echo "Remove unused images as part of cleaning up"
 docker image prune -a -f
 
@@ -40,6 +37,5 @@ if [ $IMAGE_COUNT -gt 0 ]; then
   fi
 else
   echo "Spin up ${3} new container instance"
-  docker compose up
-#  docker compose up -d --scale app="${3}" --no-recreate
+  docker compose up -d --scale app="${3}" --no-recreate
 fi

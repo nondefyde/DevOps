@@ -33,7 +33,7 @@ if [ $IMAGE_COUNT -gt 0 ]; then
 else
   docker pull jwilder/nginx-proxy:latest
   docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro --name reverse_proxy --net nginx-proxy jwilder/nginx-proxy
-  echo "Pull and started up reverse proxy"
+  echo "Pulled and started up reverse proxy"
 fi
 
 
