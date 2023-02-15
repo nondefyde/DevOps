@@ -36,8 +36,8 @@ ARGUMENTS=${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_
 echo "Arguments $ARGUMENTS"
 
 
-LOGIN_SERVER=$(az acr login -n ${1}acr --expose-token)
-accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
+LOGIN_SERVER=$(az acr login -n ${PROJECT}acr --expose-token)
+accessToken=$(jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
 server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
 echo "logged in to server > ${server}"
 
