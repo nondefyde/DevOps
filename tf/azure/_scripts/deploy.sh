@@ -33,10 +33,9 @@ if [ $IMAGE_COUNT -gt 0 ]; then
       sudo docker rm -f $id
     done
     echo "Scaling down to ${3}"
-    docker compose up -d --scale app="${3}" --no-recreate
+    docker compose up -d --scale app=$3 --no-recreate
   fi
 else
   echo "Spin up ${3} new container instance"
-  docker pull jwilder/nginx-proxy:latest
-#  docker compose up -d --scale app="${3}" --no-recreate
+  docker compose up -d --scale app=$3 --no-recreate
 fi
