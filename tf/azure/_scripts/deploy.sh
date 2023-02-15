@@ -6,9 +6,6 @@ echo "instance    : $3"
 echo "Vm user     : $4"
 echo "App alias   : $5"
 
-echo "Change Directory"
-cd "/home/${4}/vm"
-
 echo "Remove unused images as part of cleaning up"
 sudo docker image prune -a -f
 

@@ -29,7 +29,6 @@ INSTANCE=${13}
 
 
 PREP_SCRIPT="https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh"
-DEPLOY_SCRIPT="https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/deploy.sh"
 
 ARGUMENTS=${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}
 
@@ -59,18 +58,25 @@ for i in $(seq 1 ${8}); do
     --resource-group ${4}-group \
     --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
 
-  echo "Login to docker"
-  az vm run-command invoke \
-    --name ${4}-${7}-vm-$i \
-    --resource-group ${4}-group \
-    --command-id RunShellScript \
-    --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
-    --parameters "${server}" "${accessToken}"
+#  echo "Login to docker"
+#  az vm run-command invoke \
+#    --name ${4}-${7}-vm-$i \
+#    --resource-group ${4}-group \
+#    --command-id RunShellScript \
+#    --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
+#    --parameters "${server}" "${accessToken}"
 
   echo "Deploy Update on VM ${4}-${7}-vm-$i"
   az vm run-command invoke \
     --command-id RunShellScript \
     --name ${4}-${7}-vm-$i \
     --resource-group ${4}-group \
-    --scripts "curl -sSL ${DEPLOY_SCRIPT} | bash -s ${PROJECT} ${IMAGE} ${INSTANCE} ${VM_USER} vm-app-"
+    --scripts '
+      echo "Login docker"
+      sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2
+      cd vm
+      chmod +x deploy.sh
+      ./deploy.sh $3 $4 $5 $6 $7
+    ' \
+    --parameters "${server}" "${accessToken}" "${PROJECT}" "${IMAGE}" "${INSTANCE}" "${VM_USER}" "vm-app-"
 done
