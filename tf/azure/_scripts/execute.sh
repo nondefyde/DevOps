@@ -65,7 +65,7 @@ for i in $(seq 1 ${8}); do
     --resource-group ${4}-group \
     --command-id RunShellScript \
     --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
-    --parameters ${server} ${accessToken}
+    --parameters "${server}" "${accessToken}"
 
   echo "Deploy Update on VM ${4}-${7}-vm-$i"
   az vm run-command invoke \
