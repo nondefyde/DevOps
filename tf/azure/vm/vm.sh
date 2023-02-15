@@ -35,6 +35,9 @@ sudo groupadd docker
 sudo usermod -aG docker adminuser
 newgrp docker
 
+sudo chown adminuser:adminuser /home/adminuser/.docker/config.json
+sudo chmod 600 /home/adminuser/.docker/config.json
+
 sudo curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
 sudo apt-get install jq --yes
