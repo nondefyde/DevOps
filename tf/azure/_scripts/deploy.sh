@@ -47,5 +47,6 @@ if [ $IMAGE_COUNT -gt 0 ]; then
   fi
 else
   echo "Spin up new container"
-  sudo docker compose up -d --scale app="${3}" --no-recreate
+  ls -a
+#  sudo docker compose up -d --scale app="${3}" --no-recreate
 fi
