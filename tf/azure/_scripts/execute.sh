@@ -59,5 +59,5 @@ for i in $(seq 1 ${8}); do
     --command-id RunShellScript \
     --name ${4}-${7}-vm-$i \
     --resource-group ${4}-group \
-    --scripts "curl -sSL ${DEPLOY_SCRIPT} | bash -s ${IMAGE} ${INSTANCE} vm-app-"
+    --scripts "curl -sSL ${DEPLOY_SCRIPT} | bash -s ${IMAGE} ${INSTANCE} ${VM_USER} vm-app-"
 done

@@ -2,14 +2,19 @@
 
 echo "acr         : $1"
 echo "instance    : $2"
-echo "App alias   : $3"
+echo "Vm user     : $3"
+echo "App alias   : $4"
+
+echo "Change Directory"
+cd "/home/${3}/vm"
 
 echo "Remove unused images as part of cleaning up"
-docker image prune -a -f
+sudo docker image prune -a -f
 
+echo "Login az registry"
 az acr login --name $1
 
-APP_ALIAS=$3
+APP_ALIAS=$4
 
 IMAGE_COUNT=$(sudo docker ps --filter="name=${APP_ALIAS}*" | grep "${APP_ALIAS}" | wc -l)
 IDS=$(sudo docker ps --filter ancestor=$1 --format '{{.ID}}')
