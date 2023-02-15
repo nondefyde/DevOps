@@ -6,6 +6,8 @@ echo "instance    : $3"
 echo "Vm user     : $4"
 echo "App alias   : $5"
 
+docker context use rootless
+
 echo "Remove unused images as part of cleaning up"
 docker image prune -a -f
 

@@ -74,7 +74,8 @@ for i in $(seq 1 ${8}); do
     --name ${4}-${7}-vm-$i \
     --resource-group ${4}-group \
     --scripts '
-      cd /home/$6/vm
+      cd /home/$4/vm
+      ls -a
       chmod +x deploy.sh
       ./deploy.sh $1 $2 $3 $4 $5
     ' \
