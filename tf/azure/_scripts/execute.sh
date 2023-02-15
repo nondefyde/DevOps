@@ -53,7 +53,6 @@ for i in $(seq 1 ${8}); do
     --resource-group ${4}-group \
     --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
 
-
   echo "Deploy Update on VM ${4}-${7}-vm-$i"
   az vm run-command invoke \
     --command-id RunShellScript \
