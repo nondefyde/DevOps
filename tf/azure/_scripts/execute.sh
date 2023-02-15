@@ -27,6 +27,7 @@ ENV=${12}
 
 
 PREP_SCRIPT="https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh"
+DEPLOY_SCRIPT="https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/deploy.sh"
 
 ARGUMENTS=${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}
 
@@ -43,10 +44,18 @@ for i in $(seq 1 ${8}); do
       ' \
     --parameters ${1} ${2} ${3}
 
-  echo "Run Deploy Command on VM ${4}-${7}-vm-$i"
+  echo "Prepare VM ${4}-${7}-vm-$i"
   az vm run-command invoke \
     --command-id RunShellScript \
     --name ${4}-${7}-vm-$i \
     --resource-group ${4}-group \
     --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
+
+
+  echo "Deploy Update on VM ${4}-${7}-vm-$i"
+  az vm run-command invoke \
+    --command-id RunShellScript \
+    --name ${4}-${7}-vm-$i \
+    --resource-group ${4}-group \
+    --scripts "curl -sSL ${DEPLOY_SCRIPT} | bash -s "${IMAGE}""
 done
