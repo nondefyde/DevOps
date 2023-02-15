@@ -35,6 +35,12 @@ ARGUMENTS=${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_
 
 echo "Arguments $ARGUMENTS"
 
+
+LOGIN_SERVER=$(az acr login -n ${1}acr --expose-token)
+accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
+server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
+echo "logged in to server > ${server}"
+
 for i in $(seq 1 ${8}); do
   echo "Login Azure in VM ${4}-${7}-vm-$i"
   az vm run-command invoke \
@@ -52,6 +58,14 @@ for i in $(seq 1 ${8}); do
     --name ${4}-${7}-vm-$i \
     --resource-group ${4}-group \
     --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
+
+  echo "Login to docker"
+  az vm run-command invoke \
+    --name ${4}-${7}-vm-$i \
+    --resource-group ${4}-group \
+    --command-id RunShellScript \
+    --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
+    --parameters ${server} ${accessToken}
 
   echo "Deploy Update on VM ${4}-${7}-vm-$i"
   az vm run-command invoke \

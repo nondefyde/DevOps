@@ -12,13 +12,6 @@ cd "/home/${4}/vm"
 echo "Remove unused images as part of cleaning up"
 sudo docker image prune -a -f
 
-echo "Login to container registry ${1}acr"
-LOGIN_SERVER=$(az acr login -n ${1}acr --expose-token)
-accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
-server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
-sudo docker login ${server} --username 00000000-0000-0000-0000-000000000000 --password ${accessToken}
-echo "Logged in docker to server >> ${server}"
-
 APP_ALIAS=$5
 
 IMAGE_COUNT=$(sudo docker ps --filter="name=${APP_ALIAS}*" | grep "${APP_ALIAS}" | wc -l)
