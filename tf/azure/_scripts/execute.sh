@@ -27,9 +27,7 @@ PORT=${11}
 ENV=${12}
 INSTANCE=${13}
 
-
 PREP_SCRIPT="https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh"
-
 
 LOGIN_SERVER=$(az acr login -n ${PROJECT}acr --expose-token)
 accessToken=$(jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )

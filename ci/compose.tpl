@@ -10,7 +10,7 @@ services:
     env_file:
       - ./.env
     ports:
-      - 8000-8400:{PORT}
+      - "8000-8400:{PORT}"
     restart: always
     networks:
       - app-network
