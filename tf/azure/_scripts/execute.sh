@@ -57,6 +57,17 @@ for i in $(seq 1 ${8}); do
     --resource-group ${4}-group \
     --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
 
+  echo "Login docker on VM ${4}-${7}-vm-$i"
+    az vm run-command invoke \
+      --command-id RunShellScript \
+      --name ${4}-${7}-vm-$i \
+      --resource-group ${4}-group \
+      --scripts '
+        echo "Login docker"
+        docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2
+      ' \
+      --parameters "${server}" "${accessToken}"
+
   echo "Deploy Update on VM ${4}-${7}-vm-$i"
   az vm run-command invoke \
     --command-id RunShellScript \
@@ -64,10 +75,8 @@ for i in $(seq 1 ${8}); do
     --resource-group ${4}-group \
     --scripts '
       cd /home/$6/vm
-      echo "Login docker"
-      docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2
       chmod +x deploy.sh
-      ./deploy.sh $3 $4 $5 $6 $7
+      ./deploy.sh $1 $2 $3 $4 $5
     ' \
-    --parameters "${server}" "${accessToken}" "${PROJECT}" "${IMAGE}" "${INSTANCE}" "${VM_USER}" "vm-app-"
+    --parameters "${PROJECT}" "${IMAGE}" "${INSTANCE}" "${VM_USER}" "vm-app-"
 done
