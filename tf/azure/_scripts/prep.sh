@@ -10,6 +10,10 @@ echo "Virtual Host  : ${5}"
 echo "Port          : ${6}"
 echo "Vm User       : ${7}"
 
+echo "Add docker group"
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
 
 echo "Generate env file"
 rm -rf "/home/${7}/vm"
@@ -32,8 +36,8 @@ echo "IMAGE_COUNT ${IMAGE_COUNT}"
 if [ $IMAGE_COUNT -gt 0 ]; then
   echo "Reverse Proxy present"
 else
-  sudo docker pull jwilder/nginx-proxy:latest
-  sudo docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro --name reverse_proxy --net nginx-proxy jwilder/nginx-proxy
+  docker pull jwilder/nginx-proxy:latest
+  docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro --name reverse_proxy --net nginx-proxy jwilder/nginx-proxy
   echo "Pull and started up reverse proxy"
 fi
 
