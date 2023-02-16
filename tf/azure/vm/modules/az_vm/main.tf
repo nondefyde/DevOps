@@ -24,17 +24,33 @@ resource "azurerm_storage_account" "vm_storage_account" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_linux_virtual_machine" "vm" {
-  count                           = var.vm_count
-  name                            = "${var.prefix}-${var.name}-vm-${count.index + 1}"
-  availability_set_id             = azurerm_availability_set.vm_avset.id
+resource "azurerm_network_security_group" "vm_security_group" {
+  name                = "${var.prefix}-${var.name}-net-sec-group"
+  location            = var.location
+  resource_group_name = var.group
+
+  security_rule {
+    name                       = "sub-domains"
+    priority                   = 300
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+}
+
+resource "azurerm_linux_virtual_machine_scale_set" "vm_set" {
+  name                            = "${var.prefix}-${var.name}-vm"
   resource_group_name             = var.group
   location                        = var.location
-  size                            = var.disk_size
+  sku                             = "Standard_F2"
+  instances                       = var.vm_count
   admin_username                  = var.admin_username
   admin_password                  = var.admin_password
   disable_password_authentication = false
-  network_interface_ids           = [element(azurerm_network_interface.vm_network_interface.*.id, count.index)]
 
   custom_data = base64encode(data.template_file.vm_init.rendered)
 
@@ -52,6 +68,18 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   boot_diagnostics {
     storage_account_uri = azurerm_storage_account.vm_storage_account.primary_blob_endpoint
+  }
+
+  network_interface {
+    name                      = "${var.prefix}-${var.name}-net-interface"
+    primary                   = true
+    network_security_group_id = azurerm_network_security_group.vm_security_group.id
+
+    ip_configuration {
+      name                          = "${var.prefix}-${var.name}-internal"
+      subnet_id                     = var.subnet_id
+      primary                       = true
+    }
   }
 
   tags = {
