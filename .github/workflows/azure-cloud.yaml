@@ -296,7 +296,7 @@ jobs:
         with:
           project: ${{ env.project }}
           envFile: ${{ env.apimEnvFile }}
-          key: ${{ env.project }}-vm
+          key: ${{ env.project }}-apim
           working-directory: "tf/azure/apim"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
