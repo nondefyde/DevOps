@@ -37,7 +37,7 @@ echo "logged in to server > ${server}"
 
 echo "${PROJECT} ${IMAGE} ${INSTANCE} ${VM_USER} vm-app-"
 
-for i in $(seq 1 ${8}); do
+for i in $(seq 0 ${8}); do
   echo "Login Azure in VM ${4}-${7}-vm-$i"
   az vm run-command invoke \
     --command-id RunShellScript \
