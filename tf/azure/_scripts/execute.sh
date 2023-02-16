@@ -42,6 +42,17 @@ echo "Run command on VM scale set:  $VMSS_NAME"
 
 for i in $(seq 1 ${8}); do
   INDEX=$((i - 1))
+  echo "Login Azure in VM $INDEX"
+  az vmss run-command invoke \
+    --instance-id $INDEX \
+    --command-id RunShellScript \
+    --name ${VMSS_NAME} \
+    --resource-group ${4}-group \
+    --scripts '
+         az login --service-principal --username ${1} --password ${2} --tenant ${3}
+      ' \
+    --parameters ${1} ${2} ${3}
+
   echo "Prepare VM $INDEX"
   az vmss run-command invoke \
     --instance-id $INDEX \
