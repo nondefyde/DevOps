@@ -3,7 +3,6 @@ version: '3.8'
 services:
   app:
     image: {IMAGE}
-    container_name: app
     volumes:
       - app-volume:/var/lib/app/content
     environment:
@@ -12,7 +11,7 @@ services:
     env_file:
       - ./.env
     ports:
-      - "{PORT}"
+      - "8001-8400:{PORT}"
     restart: always
     networks:
       - app-network

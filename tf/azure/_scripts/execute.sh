@@ -87,9 +87,9 @@ for i in $(seq 1 ${8}); do
     ' \
     --parameters "${PROJECT}" "${IMAGE}" "${INSTANCE}" "${VM_USER}" "vm-app-"
 
-  echo "Update all vmms instances"
-  az vmss update-instances \
-    --name ${VMSS_NAME} \
-    --resource-group ${4}-group \
-    --instance-ids $INDEX
+#  echo "Update all vmms instances"
+#  az vmss update-instances \
+#    --name ${VMSS_NAME} \
+#    --resource-group ${4}-group \
+#    --instance-ids $INDEX
 done
