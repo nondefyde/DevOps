@@ -43,7 +43,7 @@ resource "azurerm_network_security_group" "vm_security_group" {
 }
 
 resource "azurerm_linux_virtual_machine_scale_set" "vm_set" {
-  name                            = "${var.prefix}-${var.name}-vm"
+  name                            = "${var.prefix}-${var.name}-vms"
   resource_group_name             = var.group
   location                        = var.location
   sku                             = "Standard_F2"

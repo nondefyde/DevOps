@@ -180,14 +180,14 @@ jobs:
           echo "virtual_subnet_name=${{ env.virtual_subnet_name }}" >> $GITHUB_OUTPUT
           echo "virtual_subnet_id=${{ env.virtual_subnet_id }}" >> $GITHUB_OUTPUT
 
-  vms:
+  vmss:
     name: Virtual Machines ${{ matrix.items }}
     needs: [ envs, crg, vn ]
     permissions: write-all
     runs-on: ubuntu-latest
     env:
       vm: ${{ needs.envs.outputs.vm_names }}
-      vmEnvFile: "vm-${{ matrix.items }}.tfvars"
+      vmEnvFile: "vmss-${{ matrix.items }}.tfvars"
     strategy:
       matrix:
         items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
@@ -233,7 +233,7 @@ jobs:
         with:
           project: ${{ env.project }}
           envFile: ${{ env.vmEnvFile }}
-          key: ${{ env.project }}-${{ matrix.items }}-vm
+          key: ${{ env.project }}-${{ matrix.items }}-vmss
           working-directory: "tf/azure/vm"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}

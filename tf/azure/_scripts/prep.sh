@@ -20,6 +20,11 @@ echo "Generate docker compose file"
 DOCKER_COMPOSE_FILE=https://raw.githubusercontent.com/nondefyde/DevOps/main/ci/compose.tpl
 curl -sSL "${DOCKER_COMPOSE_FILE}" | sed "s;{IMAGE};$3;g; s;{NODE_ENV};$4;g; s;{VIRTUAL_HOST};$5;g; s;{PORT};$6;g;"  > "/home/${7}/vm/docker-compose.yml"
 
+
+echo "Generate nginx conf file"
+DOCKER_COMPOSE_FILE=https://raw.githubusercontent.com/nondefyde/DevOps/main/ci/compose.tpl
+curl -sSL "${DOCKER_COMPOSE_FILE}" | sed "s;{IMAGE};$3;g; s;{NODE_ENV};$4;g; s;{VIRTUAL_HOST};$5;g; s;{PORT};$6;g;"  > "/home/${7}/vm/docker-compose.yml"
+
 echo "Copy deploy script"
 DEPLOY_FILE=https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/deploy.sh
 curl -sSL "${DEPLOY_FILE}" > "/home/${7}/vm/deploy.sh"

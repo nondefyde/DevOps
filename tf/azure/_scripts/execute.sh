@@ -37,28 +37,35 @@ echo "logged in to server > ${server}"
 
 echo "${PROJECT} ${IMAGE} ${INSTANCE} ${VM_USER} vm-app-"
 
-for i in $(seq 0 ${8}); do
-  echo "Login Azure in VM ${4}-${7}-vm-$i"
-  az vm run-command invoke \
+VMSS_NAME=${4}-${7}-vms
+echo "Run command on VM scale set:  $VMSS_NAME"
+
+for i in $(seq 1 ${8}); do
+  INDEX=$((i - 1))
+  echo "Login Azure in VM $INDEX"
+  az vmss run-command invoke \
+    --instance-id $INDEX \
     --command-id RunShellScript \
-    --name ${4}-${7}-vm-$i \
+    --name ${VMSS_NAME} \
     --resource-group ${4}-group \
     --scripts '
          az login --service-principal --username ${1} --password ${2} --tenant ${3}
       ' \
     --parameters ${1} ${2} ${3}
 
-  echo "Prepare VM ${4}-${7}-vm-$i"
-  az vm run-command invoke \
+  echo "Prepare VM $INDEX"
+  az vmss run-command invoke \
+    --instance-id $INDEX \
     --command-id RunShellScript \
-    --name ${4}-${7}-vm-$i \
+    --name ${VMSS_NAME} \
     --resource-group ${4}-group \
     --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
 
-  echo "Login docker on VM ${4}-${7}-vm-$i"
-    az vm run-command invoke \
+  echo "Login docker on VM $INDEX"
+    az vmss run-command invoke \
+      --instance-id $INDEX \
       --command-id RunShellScript \
-      --name ${4}-${7}-vm-$i \
+      --name ${VMSS_NAME} \
       --resource-group ${4}-group \
       --scripts '
         echo "Login docker"
@@ -66,10 +73,11 @@ for i in $(seq 0 ${8}); do
       ' \
       --parameters "${server}" "${accessToken}"
 
-  echo "Deploy Update on VM ${4}-${7}-vm-$i"
-  az vm run-command invoke \
+  echo "Deploy Update on VM $INDEX"
+  az vmss run-command invoke \
+    --instance-id $INDEX \
     --command-id RunShellScript \
-    --name ${4}-${7}-vm-$i \
+    --name ${VMSS_NAME} \
     --resource-group ${4}-group \
     --scripts '
       cd /home/$4/vm
@@ -78,4 +86,10 @@ for i in $(seq 0 ${8}); do
       ./deploy.sh $1 $2 $3 $4 $5
     ' \
     --parameters "${PROJECT}" "${IMAGE}" "${INSTANCE}" "${VM_USER}" "vm-app-"
+
+  echo "Update all vmms instances"
+  az vmss update-instances \
+    --name ${VMSS_NAME} \
+    --resource-group ${4}-group \
+    --instance-ids $INDEX
 done
