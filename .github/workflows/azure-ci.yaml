@@ -244,6 +244,10 @@ jobs:
           file_path: ${{ env.configFile }}
           prop_path: "virtual-machine"
 
+      - name: Login Azure
+        id: login
+        run: az login --service-principal --username ${{secrets.AZR_CLIENT_ID}} --password ${{secrets.AZR_CLIENT_SECRET}} --tenant ${{secrets.AZR_TENANT_ID}}
+
       - name: Deploy to VM
         id: deploy-vm
         working-directory: "tf/azure/_scripts"
