@@ -24,7 +24,7 @@ VM_COUNT=${8}
 VM_USER=${9}
 VIRTUAL_HOST=${10}
 PORT=${11}
-ENV=${12}
+ENV=${7}
 INSTANCE=${13}
 
 PREP_SCRIPT="https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh"
