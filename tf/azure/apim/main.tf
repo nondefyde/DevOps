@@ -52,6 +52,5 @@ resource "azurerm_api_management" "apim" {
   virtual_network_configuration {
     subnet_id = azurerm_subnet.apim_subnet.id
   }
-
   depends_on = [azurerm_subnet_network_security_group_association.nsg-assoc]
 }
