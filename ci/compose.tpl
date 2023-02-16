@@ -21,7 +21,7 @@ services:
     image: jwilder/nginx-proxy:alpine
     container_name: nginx-proxy
     ports:
-      - "80:80"
+      - "7000:80"
       - "443:443"
     volumes:
       - "/etc/nginx/certs"
