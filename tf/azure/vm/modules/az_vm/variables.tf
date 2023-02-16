@@ -3,11 +3,21 @@ variable "prefix" {
   description = "The prefix for the resource group"
 }
 
-variable "group" {
-  type        = string
-  description = "The name of the vm"
+variable "name" {
+  type = string
 }
 
+variable "vm_count" {
+  type = number
+}
+
+variable "location" {
+  type = string
+}
+
+variable "group" {
+  type = string
+}
 
 variable "subscription_id" {
   type        = string
@@ -29,9 +39,24 @@ variable "client_secret" {
   description = "Client ID"
 }
 
+variable "address_prefix" {
+  type = string
+  default = "10.0.2.0/24"
+}
+
 variable "environment" {
   type = string
   default = "development"
+}
+
+variable "subnet_id" {
+  type = string
+}
+
+variable "disk_size" {
+  type        = string
+  default     = "Standard_F2"
+  description = "Disk size/type"
 }
 
 variable "admin_username" {
@@ -43,17 +68,7 @@ variable "admin_password" {
   type = string
 }
 
-variable "init_file" {
+variable "cloud_init_file" {
   type        = string
-  description = "The entry file when server is setup"
-  default     = "./scripts/vm.sh"
-}
-
-variable "vm_count" {
-  type = string
-  default = 1
-}
-
-variable "name" {
-  type = string
+  description = "The File initialization file path"
 }
