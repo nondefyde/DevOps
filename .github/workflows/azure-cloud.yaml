@@ -245,7 +245,6 @@ jobs:
         id: set-output
         run: |
           echo "vm_names=${{ env.vm_names }}" >> $GITHUB_OUTPUT
-
   apim:
     name: Api Management Service
     needs: [ envs, crg, vn ]

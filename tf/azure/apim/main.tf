@@ -30,6 +30,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+
+  depends_on = [azurerm_subnet.apim_subnet]
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg-assoc" {
