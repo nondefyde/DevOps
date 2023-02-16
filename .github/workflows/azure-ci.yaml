@@ -121,8 +121,6 @@ jobs:
           echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
           echo "environment=${{ steps.env-config.outputs.environment }}" >> $GITHUB_OUTPUT
 
-
-
   config:
     name: 'Setup Config Variables'
     needs: [ envs ]
@@ -252,4 +250,7 @@ jobs:
         run: |
           echo "Run Deployment"
           chmod +x execute.sh
-          ./execute.sh ${{ env.project }} ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest ${{ secrets.AZR_VM_APP_SECRET }} ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }} ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }} 
+          ./execute.sh ${{secrets.AZR_CLIENT_ID}} ${{secrets.AZR_CLIENT_SECRET}} ${{secrets.AZR_SUBSCRIPTION_ID}} \
+          ${{ env.project }} ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest \
+          ${{ secrets.AZR_VM_APP_SECRET }} ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }} \
+          ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }} ${{ secrets.VM_USERNAME }} localhost ${{ env.port }} 1
