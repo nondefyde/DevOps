@@ -270,7 +270,7 @@ jobs:
         id: gwjson
         uses: schdck/create-env-json@v1
         with:
-          file-name: ${{ env.vmEnvFile }}
+          file-name: ${{ env.gwEnvFile }}
           prefix: ${{ env.project }}
           group: ${{ needs.crg.outputs.rg_name }}
 
