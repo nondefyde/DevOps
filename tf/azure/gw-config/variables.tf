@@ -46,3 +46,7 @@ variable "vm_count" {
   type = number
   default = 1
 }
+
+variable "gw_name" {
+  type = string
+}

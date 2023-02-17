@@ -21,8 +21,8 @@ data "azurerm_network_interface" "vm_network_interfaces" {
 }
 
 data "azurerm_application_gateway" "gw_network" {
-  name                = "existing-app-gateway"
-  resource_group_name = "existing-resources"
+  name                = var.gw_name
+  resource_group_name = data.azurerm_resource_group.rg.name
 }
 
 resource "azurerm_network_interface_backend_address_pool_association" "backend_assoc" {
