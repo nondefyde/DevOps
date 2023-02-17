@@ -66,7 +66,8 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   backend_address_pool {
-    name = local.backend_address_pool_name
+    count: length(var.vm_names)
+    name = "${var.vm_names[count.index]}-pool"
   }
 
   backend_http_settings {
