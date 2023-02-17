@@ -31,11 +31,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-#      - name: Set App Envs
-#        id: get-envs
-#        uses: ./.github/actions/set-envs
-#        with:
-#          configFile: ${{ env.configFile }}
+      - name: Set App Envs
+        id: get-envs
+        uses: ./.github/actions/set-envs
+        with:
+          configFile: ${{ env.configFile }}
 
 #      - name: Set Outputs
 #        id: variables
