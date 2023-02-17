@@ -247,25 +247,18 @@ jobs:
         id: set-output
         run: |
           echo "vm_names=${{ env.vm_names }}" >> $GITHUB_OUTPUT
-
-
   gw:
     name: Application Gateway
     needs: [ envs, crg, vms ]
     permissions: write-all
     runs-on: ubuntu-latest
+    outputs:
+      gw_name: ${{ steps.set-output.outputs.gw_name }}
     env:
       gwEnvFile: "gw.tfvars"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Get cloud config
-        id: vm-cloud-config
-        uses: ActionsTools/read-json-action@main
-        with:
-          file_path: ${{ env.configFile }}
-          prop_path: "virtual-machine"
 
       - name: convert to json
         id: gwjson
@@ -289,6 +282,67 @@ jobs:
           envFile: ${{ env.gwEnvFile }}
           key: ${{ env.project }}-gw
           working-directory: "tf/azure/gw"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "gw_name=${{ env.gw_name }}" >> $GITHUB_OUTPUT
+
+
+
+  gw-config:
+    name: Configure Gateway ${{ matrix.items }}
+    needs: [ envs, gw ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      vm: ${{ needs.envs.outputs.vm_names }}
+      gw_name: ${{ needs.gw.outputs.gw_name }}
+      gwConfEnvFile: "gw-config.tfvars"
+    strategy:
+      matrix:
+        items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get cloud config
+        id: vm-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "virtual-machine"
+
+      - name: convert to json
+        id: gwjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.gwConfEnvFile }}
+          prefix: ${{ env.project }}
+          gw_name: ${{ env.gw_name }}
+          group: ${{ needs.crg.outputs.rg_name }}
+          name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
+          vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.gwConfEnvFile }}
+          path: ${{ env.gwConfEnvFile }}
+
+      - name: APP GW
+        uses: ./.github/actions/tf-azure-script
+        id: vm
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.gwConfEnvFile }}
+          key: ${{ env.project }}-gw-config
+          working-directory: "tf/azure/gw-config"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
           AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
