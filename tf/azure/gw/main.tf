@@ -30,7 +30,6 @@ resource "azurerm_public_ip" "gw_ip" {
 
 # since these variables are re-used - a locals block makes this more maintainable
 locals {
-  backend_address_pool_name      = "${data.azurerm_virtual_network.vnet.name}-beap"
   frontend_port_name             = "${data.azurerm_virtual_network.vnet.name}-feport"
   frontend_ip_configuration_name = "${data.azurerm_virtual_network.vnet.name}-feip"
   http_setting_name              = "${data.azurerm_virtual_network.vnet.name}-be-htst"
@@ -55,6 +54,13 @@ resource "azurerm_application_gateway" "gw_network" {
     subnet_id = azurerm_subnet.frontend.id
   }
 
+  http_listener {
+    name                           = local.listener_name
+    frontend_ip_configuration_name = local.frontend_ip_configuration_name
+    frontend_port_name             = local.frontend_port_name
+    protocol                       = "Http"
+  }
+
   frontend_port {
     name = local.frontend_port_name
     port = 80
@@ -71,26 +77,21 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   backend_http_settings {
-    name                  = local.http_setting_name
+    count : length(var.vm_names)
+    name                  = "${var.vm_names[count.index]}-http-setting"
     cookie_based_affinity = "Disabled"
-    path                  = "/path1/"
-    port                  = 80
+    path                  = "/${var.vm_names[count.index]}/"
+    port                  = 8000
     protocol              = "Http"
     request_timeout       = 60
   }
 
-  http_listener {
-    name                           = local.listener_name
-    frontend_ip_configuration_name = local.frontend_ip_configuration_name
-    frontend_port_name             = local.frontend_port_name
-    protocol                       = "Http"
-  }
-
   request_routing_rule {
-    name                       = local.request_routing_rule_name
+    count : length(var.vm_names)
+    name                       = "${var.vm_names[count.index]}-routing-tb"
     rule_type                  = "Basic"
     http_listener_name         = local.listener_name
-    backend_address_pool_name  = local.backend_address_pool_name
-    backend_http_settings_name = local.http_setting_name
+    backend_address_pool_name  = "${var.vm_names[count.index]}-pool"
+    backend_http_settings_name = "${var.vm_names[count.index]}-http-setting"
   }
 }
