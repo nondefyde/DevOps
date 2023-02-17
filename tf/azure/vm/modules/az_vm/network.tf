@@ -4,7 +4,7 @@ resource "azurerm_network_interface" "vm_network_interface" {
   location                = var.location
   resource_group_name     = var.group
   dns_servers             = ["10.0.0.4"]
-  internal_dns_name_label = "${var.prefix}-${var.name}-${count.index}.local"
+  internal_dns_name_label = "${var.prefix}-${var.name}-${count.index}"
 
   ip_configuration {
     name                          = "${var.prefix}-${var.name}-internal-${count.index}"
