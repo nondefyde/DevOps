@@ -38,7 +38,7 @@ variable "backend_address_prefix" {
   default = "10.0.4.0/24"
 }
 
-variable "vm_labels" {
+variable "api_names" {
   type    = string
   default = "quest"
 }

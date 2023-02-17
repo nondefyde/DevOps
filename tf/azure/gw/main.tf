@@ -30,8 +30,8 @@ resource "azurerm_public_ip" "gw_ip" {
 
 # since these variables are re-used - a locals block makes this more maintainable
 locals {
-  vm_names                           = toset(split(",", var.vm_labels))
-  names                              = split(",", var.vm_labels)
+  vm_names                           = toset(split(",", var.api_names))
+  names                              = split(",", var.api_names)
   frontend_port_name                 = "${var.prefix}-gw-feport"
   frontend_ip_configuration_name     = "${var.prefix}-gw-feip"
   index_list                         = range(length(local.names))
