@@ -78,6 +78,10 @@
     "az:apply:gw": "cd ./tf/azure/_scripts && ./apply.sh gw testdevstg",
     "az:execute:gw": "yarn az:prepare:gw && yarn az:apply:gw",
 
-    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm && yarn az:execute:gw"
+    "az:prepare:gwc": "cd ./tf/azure/_scripts && ./prepare.sh gwc testdevstg",
+    "az:apply:gwc": "cd ./tf/azure/_scripts && ./apply.sh gwc testdevstg",
+    "az:execute:gwc": "yarn az:prepare:gwc && yarn az:apply:gwc",
+
+    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm && yarn az:execute:gw && yarn az:execute:gwc"
   }
 }

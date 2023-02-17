@@ -28,17 +28,12 @@ variable "client_secret" {
   description = "Client ID"
 }
 
-variable "frontend_address_prefix" {
+variable "name" {
   type = string
-  default = "10.0.3.0/24"
-}
-
-variable "backend_address_prefix" {
-  type = string
-  default = "10.0.4.0/24"
-}
-
-variable "vm_labels" {
-  type    = string
   default = "quest"
+}
+
+variable "vm_count" {
+  type = number
+  default = 2
 }
