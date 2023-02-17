@@ -97,23 +97,23 @@ resource "azurerm_application_gateway" "gw_network" {
       http_listener_name         = "${request_routing_rule.value}-http-listener"
       backend_address_pool_name  = "${request_routing_rule.value}-pool"
       backend_http_settings_name = "${request_routing_rule.value}-http-setting"
-#      url_path_map_name          = "${request_routing_rule.value}-url-path"
+      url_path_map_name          = "${request_routing_rule.value}-url-path-map"
     }
   }
 
-#  dynamic "url_path_map" {
-#    for_each = local.vm_names
-#    content {
-#      name                              = "${url_path_map.value}-url-path"
-#      default_backend_address_pool_name = "${url_path_map.value}-pool"
-#
-#      path_rule {
-#        name                        = "${url_path_map.value}-url-path-rule"
-#        redirect_configuration_name = "${url_path_map.value}-url-path"
-#        paths                       = [
-#          "/${url_path_map.value}",
-#        ]
-#      }
-#    }
-#  }
+  dynamic "url_path_map" {
+    for_each = local.vm_names
+    content {
+      name                      = "${url_path_map.value}-url-path-map"
+      default_backend_pool_name = "${url_path_map.value}-pool"
+
+      path_rule {
+        name              = "${url_path_map.value}-url-path-rule"
+        backend_pool_name = "${url_path_map.value}-pool"
+        paths             = [
+          "/${url_path_map.value}",
+        ]
+      }
+    }
+  }
 }
