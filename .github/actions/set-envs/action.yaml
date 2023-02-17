@@ -80,7 +80,7 @@ runs:
         names_array=($names)
         string_array=""
         for name in "${names_array[@]}"; do
-          string_array+="$name,"
+          string_array+="'$name',"
         done
         string_array=${string_array%?}
         echo "api_names=$string_array" >> "$GITHUB_ENV"
