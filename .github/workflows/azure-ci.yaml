@@ -229,6 +229,7 @@ jobs:
         with:
           name: cloud-scripts
           path: ${{ inputs.repository }}
+
       - name: Copy Script files to context
         if: ${{ inputs.is_workflow == true }}
         run: |
