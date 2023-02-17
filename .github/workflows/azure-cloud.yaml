@@ -180,8 +180,6 @@ jobs:
           echo "virtual_network_name=${{ env.virtual_network_name }}" >> $GITHUB_OUTPUT
           echo "virtual_subnet_name=${{ env.virtual_subnet_name }}" >> $GITHUB_OUTPUT
           echo "virtual_subnet_id=${{ env.virtual_subnet_id }}" >> $GITHUB_OUTPUT
-
-
   vms:
     name: Virtual Machines ${{ matrix.items }}
     needs: [ envs, crg, vn ]
@@ -274,7 +272,7 @@ jobs:
           name: ${{ env.gwEnvFile }}
           path: ${{ env.gwEnvFile }}
 
-      - name: APP GW
+      - name: Initialize Gateway
         uses: ./.github/actions/tf-azure-script
         id: vm
         with:
@@ -292,3 +290,56 @@ jobs:
         id: set-output
         run: |
           echo "gw_name=${{ env.gw_name }}" >> $GITHUB_OUTPUT
+
+  gwc:
+    name: Gateway Config ${{ matrix.items }}
+    needs: [ envs, gw ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      gw_name: ${{ steps.set-output.outputs.gw_name }}
+    env:
+      vm: ${{ needs.envs.outputs.vm_names }}
+      gwcEnvFile: "gwc-${{ matrix.items }}.tfvars"
+    strategy:
+      matrix:
+        items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: convert to json
+        id: gwjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.gwcEnvFile }}
+          prefix: ${{ env.project }}
+          group: ${{ needs.crg.outputs.rg_name }}
+          name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
+          vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.gwcEnvFile }}
+          path: ${{ env.gwcEnvFile }}
+
+      - name: Configure Gateway
+        uses: ./.github/actions/tf-azure-script
+        id: vm
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.gwEnvFile }}
+          key: ${{ env.project }}-gwc
+          working-directory: "tf/azure/gwc"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "gw_name=${{ env.gw_name }}" >> $GITHUB_OUTPUT
+          echo "backend_pool_name=${{ env.backend_pool_name }}" >> $GITHUB_OUTPUT
