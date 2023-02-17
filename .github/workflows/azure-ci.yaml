@@ -1,11 +1,11 @@
 name: AZR VM TEST CI
 
 on:
-#  push:
-#    branches:
-#      - 'main'
+  push:
+    branches:
+      - 'main'
   workflow_run:
-    workflows: [ "AZR TEST CLOUD" ]
+    workflows: [ "AZR DEPLOY VMS" ]
     types:
       - completed
   workflow_call:
@@ -250,7 +250,7 @@ jobs:
 
       - name: Deploy to VM
         id: deploy-vm
-        working-directory: "tf/azure/_scripts"
+        working-directory: "tf/azure/vm/_scripts"
         run: |
           echo "Run Deployment"
           chmod +x execute.sh
