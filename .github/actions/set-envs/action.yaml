@@ -47,7 +47,7 @@ runs:
 
     - name: Check file existence
       id: check_files
-      uses: andstor/file-existence-action@v2
+      uses: andstor/file-existence-action@v1
       with:
         files: ${{ inputs.configFile }}
 
@@ -64,7 +64,7 @@ runs:
         file_path: ${{ inputs.configFile }}
         prop_path: "virtual-machine"
 
-    - name: API config
+    - name: VM config
       id: api-config
       uses: ActionsTools/read-json-action@main
       with:
@@ -98,13 +98,3 @@ runs:
         done
         string_array=${string_array%?}
         echo "vm_names=$string_array" >> "$GITHUB_ENV"
-#
-#    - name:
-#        id: set-name
-#        shell: bash
-#        run: |
-#          data=${{ toJson(steps.api-config.outputs.apis) }}
-#          names=$(echo $data | jq -r 'keys[]')
-#          names_array=($names)
-#          string_array=$( IFS=','; echo "${names_array[*]}" )
-#          echo "app_names=$string_array" >> "$GITHUB_ENV"
