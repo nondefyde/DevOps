@@ -3,16 +3,13 @@ resource "azurerm_network_interface" "vm_network_interface" {
   name                = "${var.prefix}-${var.name}-net-${count.index}"
   location            = var.location
   resource_group_name = var.group
+  dns_servers         = ["10.0.0.4"]
+  internal_dns_name_label : ["${var.prefix}-${var.name}-${count.index}.local"]
 
   ip_configuration {
     name                          = "${var.prefix}-${var.name}-internal-${count.index}"
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
-  }
-
-  dns_settings {
-    dns_servers = ["10.0.0.4"]
-    dns_search_domains = ["${var.prefix}-${var.name}-${count.index}.local"]
   }
 }
 
