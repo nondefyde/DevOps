@@ -66,9 +66,9 @@
     "az:apply:vnet": "cd ./tf/azure/_scripts && ./apply.sh vnet testdevstg",
     "az:execute:vnet": "yarn az:prepare:vnet && yarn az:apply:vnet",
 
-    "az:prepare:vmss": "cd ./tf/azure/_scripts && ./prepare.sh vmss testdevstg",
-    "az:apply:vmss": "cd ./tf/azure/_scripts && ./apply.sh vmss testdevstg",
-    "az:execute:vmss": "yarn az:prepare:vmss && yarn az:apply:vmss",
+    "az:prepare:vm": "cd ./tf/azure/_scripts && ./prepare.sh vm testdevstg",
+    "az:apply:vm": "cd ./tf/azure/_scripts && ./apply.sh vm testdevstg",
+    "az:execute:vm": "yarn az:prepare:vmss && yarn az:apply:vm",
 
     "az:prepare:apim": "cd ./tf/azure/_scripts && ./prepare.sh apim testdevstg",
     "az:apply:apim": "cd ./tf/azure/_scripts && ./apply.sh apim testdevstg",
@@ -77,6 +77,6 @@
     "az:prepare:gw": "cd ./tf/azure/_scripts && ./prepare.sh gw testdevstg",
     "az:apply:gw": "cd ./tf/azure/_scripts && ./apply.sh gw testdevstg",
 
-    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm && yarn az:execute:gw"
+    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm"
   }
 }

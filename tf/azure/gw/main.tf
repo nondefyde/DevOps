@@ -100,6 +100,34 @@ resource "azurerm_application_gateway" "gw_network" {
       http_listener_name         = local.listener_name
       backend_address_pool_name  = "${request_routing_rule.value}-pool"
       backend_http_settings_name = "${request_routing_rule.value}-http-setting"
+      url_path_map_name = "${request_routing_rule.value}-url-path"
+    }
+  }
+
+  dynamic "request_routing_rule" {
+    for_each = local.vm_names
+    content {
+      name                       = "${request_routing_rule.value}-routing-tb"
+      rule_type                  = "Basic"
+      http_listener_name         = local.listener_name
+      backend_address_pool_name  = "${request_routing_rule.value}-pool"
+      backend_http_settings_name = "${request_routing_rule.value}-http-setting"
+    }
+  }
+
+  dynamic "url_path_map" {
+    for_each = local.vm_names
+    content {
+      name                               = "${url_path_map.value}-url-path"
+      default_redirect_configuration_name  = "${url_path_map.value}-url-path"
+
+      path_rule {
+        name                        = "${url_path_map.value}-url-path-rule"
+        redirect_configuration_name = "${url_path_map.value}-url-path"
+        paths = [
+          "/${url_path_map.value}",
+        ]
+      }
     }
   }
 }
