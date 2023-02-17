@@ -30,7 +30,7 @@ resource "azurerm_public_ip" "gw_ip" {
 
 # since these variables are re-used - a locals block makes this more maintainable
 locals {
-  vm_names                       = split(",", var.vm_labels)
+  vm_names                       = toset(split(",", var.vm_labels))
   frontend_port_name             = "${data.azurerm_virtual_network.vnet.name}-feport"
   frontend_ip_configuration_name = "${data.azurerm_virtual_network.vnet.name}-feip"
   http_setting_name              = "${data.azurerm_virtual_network.vnet.name}-be-htst"
@@ -72,27 +72,34 @@ resource "azurerm_application_gateway" "gw_network" {
     public_ip_address_id = azurerm_public_ip.gw_ip.id
   }
 
-  backend_address_pool {
-    count = length(local.vm_names)
-    name  = "${local.vm_names[count.index]}-pool"
+
+  dynamic "backend_address_pool" {
+    for_each = local.vm_names
+    content {
+      name = "${backend_address_pool.value}-pool"
+    }
   }
 
-  backend_http_settings {
-    count                 = length(local.vm_names)
-    name                  = "${local.vm_names[count.index]}-http-setting"
-    cookie_based_affinity = "Disabled"
-    path                  = "/${local.vm_names[count.index]}/"
-    port                  = 8000
-    protocol              = "Http"
-    request_timeout       = 60
+  dynamic "backend_http_settings" {
+    for_each = local.vm_names
+    content {
+      name                  = "${backend_http_settings.value}-http-setting"
+      cookie_based_affinity = "Disabled"
+      path                  = "/${backend_http_settings.value}/"
+      port                  = 8000
+      protocol              = "Http"
+      request_timeout       = 60
+    }
   }
 
-  request_routing_rule {
-    count                      = length(local.vm_names)
-    name                       = "${local.vm_names[count.index]}-routing-tb"
-    rule_type                  = "Basic"
-    http_listener_name         = local.listener_name
-    backend_address_pool_name  = "${local.vm_names[count.index]}-pool"
-    backend_http_settings_name = "${local.vm_names[count.index]}-http-setting"
+  dynamic "request_routing_rule" {
+    for_each = local.vm_names
+    content {
+      name                       = "${request_routing_rule.value}-routing-tb"
+      rule_type                  = "Basic"
+      http_listener_name         = local.listener_name
+      backend_address_pool_name  = "${request_routing_rule.value}-pool"
+      backend_http_settings_name = "${request_routing_rule.value}-http-setting"
+    }
   }
 }

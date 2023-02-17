@@ -62,6 +62,7 @@ variable "methods" {
     "GET",
     "POST",
     "PUT",
+    "PATCH",
     "DELETE"
   ]
 }
