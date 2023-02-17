@@ -64,7 +64,7 @@ resource "azurerm_application_gateway" "gw_network" {
   dynamic "http_listener" {
     for_each = local.vm_names
     content {
-      name                           = "${http_listener.key}-http-listener"
+      name                           = "${http_listener.value}-http-listener"
       frontend_ip_configuration_name = local.frontend_ip_configuration_name
       frontend_port_name             = local.frontend_port_name
       protocol                       = "Http"
@@ -74,14 +74,14 @@ resource "azurerm_application_gateway" "gw_network" {
   dynamic "backend_address_pool" {
     for_each = local.vm_names
     content {
-      name = "${backend_address_pool.key}-pool"
+      name = "${backend_address_pool.value}-pool"
     }
   }
 
   dynamic "backend_http_settings" {
     for_each = local.vm_names
     content {
-      name                  = "${backend_http_settings.key}-http-setting"
+      name                  = "${backend_http_settings.value}-http-setting"
       cookie_based_affinity = "Disabled"
       port                  = 8000
       protocol              = "Http"
@@ -92,27 +92,26 @@ resource "azurerm_application_gateway" "gw_network" {
   dynamic "request_routing_rule" {
     for_each = local.vm_names
     content {
-      name                       = "${request_routing_rule.key}-routing-tb"
+      name                       = "${request_routing_rule.value}-routing-tb"
       rule_type                  = "Basic"
-      http_listener_name         = "${http_listener[request_routing_rule.key].name}"
-      backend_address_pool_name  = "${backend_address_pool[request_routing_rule.key].name}"
-      backend_http_settings_name = "${backend_http_settings[request_routing_rule.key].name}"
-      url_path_map_name = "${request_routing_rule.key}-url-path"
+      http_listener_name         = "${request_routing_rule.value}-http-listener"
+      backend_address_pool_name  = "${request_routing_rule.value}-pool"
+      backend_http_settings_name = "${request_routing_rule.value}-http-setting"
+      url_path_map_name          = "${request_routing_rule.value}-url-path"
     }
   }
 
   dynamic "url_path_map" {
     for_each = local.vm_names
     content {
-      name                               = "${url_path_map.key}-url-path"
-      default_backend_address_pool_name  = "${backend_address_pool[url_path_map.key].name}"
-      backend_address_pool_name = "${backend_address_pool[url_path_map.key].name}"
+      name                              = "${url_path_map.value}-url-path"
+      default_backend_address_pool_name = "${url_path_map.value}-pool"
 
       path_rule {
-        name                        = "${url_path_map.key}-url-path-rule"
-        redirect_configuration_name = "${url_path_map.key}-url-path"
-        paths = [
-          "/${url_path_map.key}",
+        name                        = "${url_path_map.value}-url-path-rule"
+        redirect_configuration_name = "${url_path_map.value}-url-path"
+        paths                       = [
+          "/${url_path_map.value}",
         ]
       }
     }
