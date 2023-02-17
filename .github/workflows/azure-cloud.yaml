@@ -311,8 +311,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Get cloud config
+        id: vm-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "virtual-machine"
+
       - name: convert to json
-        id: gwjson
+        id: gwcjson
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.gwcEnvFile }}

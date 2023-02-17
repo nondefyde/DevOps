@@ -25,7 +25,7 @@ variable "client_id" {
 
 variable "client_secret" {
   type        = string
-  description = "Client ID"
+  description = "Client Secret"
 }
 
 variable "frontend_address_prefix" {
