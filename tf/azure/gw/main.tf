@@ -55,13 +55,6 @@ resource "azurerm_application_gateway" "gw_network" {
     subnet_id = azurerm_subnet.frontend.id
   }
 
-  http_listener {
-    name                           = local.listener_name
-    frontend_ip_configuration_name = local.frontend_ip_configuration_name
-    frontend_port_name             = local.frontend_port_name
-    protocol                       = "Http"
-  }
-
   frontend_port {
     name = local.frontend_port_name
     port = 80
@@ -72,6 +65,15 @@ resource "azurerm_application_gateway" "gw_network" {
     public_ip_address_id = azurerm_public_ip.gw_ip.id
   }
 
+  dynamic "http_listener" {
+    for_each = local.vm_names
+    content {
+      name                           = "${http_listener.value}-http-listener"
+      frontend_ip_configuration_name = local.frontend_ip_configuration_name
+      frontend_port_name             = "${http_listener.value}-port"
+      protocol                       = "Http"
+    }
+  }
 
   dynamic "backend_address_pool" {
     for_each = local.vm_names
