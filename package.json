@@ -77,6 +77,6 @@
     "az:prepare:gw": "cd ./tf/azure/_scripts && ./prepare.sh gw testdevstg",
     "az:apply:gw": "cd ./tf/azure/_scripts && ./apply.sh gw testdevstg",
 
-    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm"
+    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm && yarn az:execute:gw"
   }
 }
