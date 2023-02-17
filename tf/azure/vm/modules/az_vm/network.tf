@@ -11,6 +11,10 @@ resource "azurerm_network_interface" "vm_network_interface" {
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
   }
+
+  tags = {
+    Name: "${var.prefix}-${var.name}-net"
+  }
 }
 
 resource "azurerm_managed_disk" "vm_managed_disk" {

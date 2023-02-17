@@ -26,7 +26,7 @@ resource "azurerm_storage_account" "vm_storage_account" {
 
 resource "azurerm_linux_virtual_machine" "vm" {
   count                           = var.vm_count
-  name                            = "${var.prefix}-${var.name}-vm-${count.index + 1}"
+  name                            = "${var.prefix}-${var.name}-vm-${count.index}"
   availability_set_id             = azurerm_availability_set.vm_avset.id
   resource_group_name             = var.group
   location                        = var.location
