@@ -33,10 +33,6 @@ locals {
   vm_names                       = toset(split(",", var.vm_labels))
   frontend_port_name             = "${data.azurerm_virtual_network.vnet.name}-feport"
   frontend_ip_configuration_name = "${data.azurerm_virtual_network.vnet.name}-feip"
-  http_setting_name              = "${data.azurerm_virtual_network.vnet.name}-be-htst"
-  listener_name                  = "${data.azurerm_virtual_network.vnet.name}-httplstn"
-  request_routing_rule_name      = "${data.azurerm_virtual_network.vnet.name}-rqrt"
-  redirect_configuration_name    = "${data.azurerm_virtual_network.vnet.name}-rdrcfg"
 }
 
 resource "azurerm_application_gateway" "gw_network" {
@@ -99,21 +95,10 @@ resource "azurerm_application_gateway" "gw_network" {
     content {
       name                       = "${request_routing_rule.value}-routing-tb"
       rule_type                  = "Basic"
-      http_listener_name         = local.listener_name
+      http_listener_name         = "${request_routing_rule.value}-http-listener"
       backend_address_pool_name  = "${request_routing_rule.value}-pool"
       backend_http_settings_name = "${request_routing_rule.value}-http-setting"
       url_path_map_name = "${request_routing_rule.value}-url-path"
-    }
-  }
-
-  dynamic "request_routing_rule" {
-    for_each = local.vm_names
-    content {
-      name                       = "${request_routing_rule.value}-routing-tb"
-      rule_type                  = "Basic"
-      http_listener_name         = local.listener_name
-      backend_address_pool_name  = "${request_routing_rule.value}-pool"
-      backend_http_settings_name = "${request_routing_rule.value}-http-setting"
     }
   }
 
