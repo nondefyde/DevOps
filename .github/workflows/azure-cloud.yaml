@@ -25,8 +25,8 @@ jobs:
     outputs:
       vm_names: ${{ steps.variables.outputs.vm_names }}
       api_names: ${{ steps.variables.outputs.api_names }}
-#      app_names: ${{ steps.variables.outputs.app_names }}
-#      environment: ${{ steps.variables.outputs.environment }}
+      app_names: ${{ steps.variables.outputs.app_names }}
+      environment: ${{ steps.variables.outputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -43,9 +43,9 @@ jobs:
         run: |
           echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
           echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
-#          echo "app_names=${{ env.app_names }}" >> $GITHUB_OUTPUT
-#          echo "environment=${{ steps.env-config.outputs.environment }}" >> $GITHUB_OUTPUT
-#
+          echo "app_names=${{ env.app_names }}" >> $GITHUB_OUTPUT
+          echo "environment=${{ steps.env-config.outputs.environment }}" >> $GITHUB_OUTPUT
+
 #  sa:
 #    name: 'Storage Account'
 #    needs: [ envs ]
