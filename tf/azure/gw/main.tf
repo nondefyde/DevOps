@@ -66,7 +66,7 @@ resource "azurerm_application_gateway" "gw_network" {
     content {
       name                           = "${http_listener.value}-http-listener"
       frontend_ip_configuration_name = local.frontend_ip_configuration_name
-      frontend_port_name             = "${http_listener.value}-port"
+      frontend_port_name             = local.frontend_port_name
       protocol                       = "Http"
     }
   }
