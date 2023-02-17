@@ -247,3 +247,57 @@ jobs:
         id: set-output
         run: |
           echo "vm_names=${{ env.vm_names }}" >> $GITHUB_OUTPUT
+
+  gw:
+    name: Virtual Machines
+    needs: [ envs, vms ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      gwEnvFile: "gw.tfvars"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get cloud config
+        id: vm-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "virtual-machine"
+
+      - name: convert to json
+        id: vmjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.vmEnvFile }}
+          prefix: ${{ env.project }}
+          group: ${{ needs.crg.outputs.rg_name }}
+          name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
+          vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
+          admin_password: ${{ secrets.VM_PASSWORD }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.vmEnvFile }}
+          path: ${{ env.vmEnvFile }}
+
+      - name: APP GW
+        uses: ./.github/actions/tf-azure-script
+        id: vm
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.vmEnvFile }}
+          key: ${{ env.project }}-${{ matrix.items }}-vmss
+          working-directory: "tf/azure/vm"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "vm_names=${{ env.vm_names }}" >> $GITHUB_OUTPUT
