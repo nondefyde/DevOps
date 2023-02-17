@@ -355,8 +355,6 @@ jobs:
         run: |
           echo "gw_name=${{ env.gw_name }}" >> $GITHUB_OUTPUT
           echo "backend_pool_name=${{ env.backend_pool_name }}" >> $GITHUB_OUTPUT
-          
-
 
   apim:
     name: Api Management Service
