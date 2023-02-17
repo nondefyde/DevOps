@@ -389,9 +389,9 @@ jobs:
           group: ${{ needs.crg.outputs.rg_name }}
           environment: ${{ needs.envs.outputs.environment }}
           address_prefix: ${{steps.apim-cloud-config.outputs.address_prefix}}
-          capacity: ${{steps.apim-cloud-config.outputs.capacity}}
-          sku: ${{steps.apim-cloud-config.outputs.sku}}
-          publisher_name: ${{steps.apim-cloud-config.outputs.publisher_name}}
+          capacity: ${{steps.apim-cloud-config.outputs.capacity }}
+          sku: ${{steps.apim-cloud-config.outputs.sku }}
+          publisher_name: ${{steps.apim-cloud-config.outputs.publisher_name }}
           publisher_email: ${{steps.apim-cloud-config.outputs.publisher_email}}
 
       - name: Upload Artifact
