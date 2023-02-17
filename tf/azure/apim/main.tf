@@ -1,6 +1,5 @@
-resource "azurerm_resource_group" "rg" {
-  name     = "${var.prefix}-api-group"
-  location = var.location
+data "azurerm_resource_group" "rg" {
+  name = var.group
 }
 
 data "azurerm_virtual_network" "vnet" {
