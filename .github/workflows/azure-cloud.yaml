@@ -233,7 +233,7 @@ jobs:
         with:
           project: ${{ env.project }}
           envFile: ${{ env.vmEnvFile }}
-          key: ${{ env.project }}-${{ matrix.items }}-vmss
+          key: ${{ env.project }}-${{ matrix.items }}-vm
           working-directory: "tf/azure/vm"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
