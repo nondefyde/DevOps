@@ -41,7 +41,7 @@ jobs:
         shell: bash
         run: |
           echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
-          echo "api_names=${{ format("[{0}]", env.api_names) }}" >> $GITHUB_OUTPUT
+          echo "api_names=${{ format(\"[{0}]\", env.api_names) }}" >> $GITHUB_OUTPUT
           echo "environment=${{ steps.env-config.outputs.environment }}" >> $GITHUB_OUTPUT
 
 #  sa:
