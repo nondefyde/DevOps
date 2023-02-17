@@ -68,7 +68,7 @@
 
     "az:prepare:vm": "cd ./tf/azure/_scripts && ./prepare.sh vm testdevstg",
     "az:apply:vm": "cd ./tf/azure/_scripts && ./apply.sh vm testdevstg",
-    "az:execute:vm": "yarn az:prepare:vmss && yarn az:apply:vm",
+    "az:execute:vm": "yarn az:prepare:vm && yarn az:apply:vm",
 
     "az:prepare:apim": "cd ./tf/azure/_scripts && ./prepare.sh apim testdevstg",
     "az:apply:apim": "cd ./tf/azure/_scripts && ./apply.sh apim testdevstg",
