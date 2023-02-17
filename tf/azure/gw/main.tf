@@ -30,6 +30,7 @@ resource "azurerm_public_ip" "gw_ip" {
 
 # since these variables are re-used - a locals block makes this more maintainable
 locals {
+  vm_names                       = split(",", var.vm_labels)
   frontend_port_name             = "${data.azurerm_virtual_network.vnet.name}-feport"
   frontend_ip_configuration_name = "${data.azurerm_virtual_network.vnet.name}-feip"
   http_setting_name              = "${data.azurerm_virtual_network.vnet.name}-be-htst"
@@ -72,26 +73,26 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   backend_address_pool {
-    count: length(var.vm_names)
-    name = "${var.vm_names[count.index]}-pool"
+    count = length(local.vm_names)
+    name  = "${local.vm_names[count.index]}-pool"
   }
 
   backend_http_settings {
-    count : length(var.vm_names)
-    name                  = "${var.vm_names[count.index]}-http-setting"
+    count                 = length(local.vm_names)
+    name                  = "${local.vm_names[count.index]}-http-setting"
     cookie_based_affinity = "Disabled"
-    path                  = "/${var.vm_names[count.index]}/"
+    path                  = "/${local.vm_names[count.index]}/"
     port                  = 8000
     protocol              = "Http"
     request_timeout       = 60
   }
 
   request_routing_rule {
-    count : length(var.vm_names)
-    name                       = "${var.vm_names[count.index]}-routing-tb"
+    count                      = length(local.vm_names)
+    name                       = "${local.vm_names[count.index]}-routing-tb"
     rule_type                  = "Basic"
     http_listener_name         = local.listener_name
-    backend_address_pool_name  = "${var.vm_names[count.index]}-pool"
-    backend_http_settings_name = "${var.vm_names[count.index]}-http-setting"
+    backend_address_pool_name  = "${local.vm_names[count.index]}-pool"
+    backend_http_settings_name = "${local.vm_names[count.index]}-http-setting"
   }
 }
