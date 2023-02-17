@@ -47,7 +47,7 @@ runs:
 
     - name: Check file existence
       id: check_files
-      uses: andstor/file-existence-action@v1
+      uses: andstor/file-existence-action@v2
       with:
         files: ${{ inputs.configFile }}
 

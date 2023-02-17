@@ -296,7 +296,7 @@ jobs:
 
   gwc:
     name: Gateway Config ${{ matrix.items }}
-    needs: [ envs, gw ]
+    needs: [ envs, crg, gw ]
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
