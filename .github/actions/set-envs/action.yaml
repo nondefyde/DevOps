@@ -64,7 +64,7 @@ runs:
         file_path: ${{ inputs.configFile }}
         prop_path: "virtual-machine"
 
-    - name: VM config
+    - name: API config
       id: api-config
       uses: ActionsTools/read-json-action@main
       with:
