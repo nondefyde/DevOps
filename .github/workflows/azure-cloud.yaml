@@ -23,10 +23,10 @@ jobs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
     outputs:
-#      vm_names: ${{ steps.variables.outputs.vm_names }}
-#      api_names: ${{ steps.variables.outputs.api_names }}
+      vm_names: ${{ steps.variables.outputs.vm_names }}
+      api_names: ${{ steps.variables.outputs.api_names }}
 #      app_names: ${{ steps.variables.outputs.app_names }}
-      environment: ${{ steps.variables.outputs.environment }}
+#      environment: ${{ steps.variables.outputs.environment }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -37,12 +37,12 @@ jobs:
         with:
           configFile: ${{ env.configFile }}
 
-#      - name: Set Outputs
-#        id: variables
-#        shell: bash
-#        run: |
-#          echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
-#          echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
+      - name: Set Outputs
+        id: variables
+        shell: bash
+        run: |
+          echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
+          echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
 #          echo "app_names=${{ env.app_names }}" >> $GITHUB_OUTPUT
 #          echo "environment=${{ steps.env-config.outputs.environment }}" >> $GITHUB_OUTPUT
 #
