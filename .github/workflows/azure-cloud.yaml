@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       vm_names: ${{ steps.variables.outputs.vm_names }}
-      api_names: ${{ steps.variables.outputs.api_names }}
+#      api_names: ${{ steps.variables.outputs.api_names }}
       environment: ${{ steps.variables.outputs.environment }}
     steps:
       - name: Checkout
