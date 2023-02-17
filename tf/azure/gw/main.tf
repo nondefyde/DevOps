@@ -11,14 +11,14 @@ resource "azurerm_subnet" "frontend" {
   name                 = "${var.prefix}-frontend-subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = data.azurerm_virtual_network.vnet.name
-  address_prefixes     = [var.address_prefix]
+  address_prefixes     = [var.frontend_address_prefix]
 }
 
 resource "azurerm_subnet" "backend" {
   name                 = "${var.prefix}-backend-subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = data.azurerm_virtual_network.vnet.name
-  address_prefixes     = [var.address_prefix]
+  address_prefixes     = [var.backend_address_prefix]
 }
 
 resource "azurerm_public_ip" "gw_ip" {
