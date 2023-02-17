@@ -40,5 +40,5 @@ variable "backend_address_prefix" {
 
 variable "vm_labels" {
   type = string
-  default = "quest,room"
+  default = "quest"
 }

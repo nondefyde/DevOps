@@ -31,8 +31,8 @@ resource "azurerm_public_ip" "gw_ip" {
 # since these variables are re-used - a locals block makes this more maintainable
 locals {
   vm_names                       = toset(split(",", var.vm_labels))
-  frontend_port_name             = "${data.azurerm_virtual_network.vnet.name}-feport"
-  frontend_ip_configuration_name = "${data.azurerm_virtual_network.vnet.name}-feip"
+  frontend_port_name             = "${var.prefix}-gw-feport"
+  frontend_ip_configuration_name = "${var.prefix}-gw-feip"
 }
 
 resource "azurerm_application_gateway" "gw_network" {
@@ -101,19 +101,19 @@ resource "azurerm_application_gateway" "gw_network" {
     }
   }
 
-  dynamic "url_path_map" {
-    for_each = local.vm_names
-    content {
-      name                      = "${url_path_map.value}-url-path-map"
-      default_backend_pool_name = "${url_path_map.value}-pool"
-
-      path_rule {
-        name              = "${url_path_map.value}-url-path-rule"
-        backend_pool_name = "${url_path_map.value}-pool"
-        paths             = [
-          "/${url_path_map.value}",
-        ]
-      }
-    }
-  }
+#  dynamic "url_path_map" {
+#    for_each = local.vm_names
+#    content {
+#      name                      = "${url_path_map.value}-url-path-map"
+#      default_backend_address_pool_id = backend_address_pool[url_path_map.value].id
+#
+#      path_rule {
+#        name              = "${url_path_map.value}-url-path-rule"
+#        backend_address_pool_id = backend_address_pool[url_path_map.value].id
+#        paths             = [
+#          "/${url_path_map.value}",
+#        ]
+#      }
+#    }
+#  }
 }
