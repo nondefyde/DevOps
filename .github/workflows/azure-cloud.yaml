@@ -340,7 +340,7 @@ jobs:
         with:
           project: ${{ env.project }}
           envFile: ${{ env.gwcEnvFile }}
-          key: ${{ env.project }}-gwc
+          key: ${{ env.project }}-${{ matrix.items }}-gwc
           working-directory: "tf/azure/gwc"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
