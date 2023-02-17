@@ -249,7 +249,7 @@ jobs:
           echo "vm_names=${{ env.vm_names }}" >> $GITHUB_OUTPUT
 
   gw:
-    name: Virtual Machines
+    name: Application Gateway
     needs: [ envs, crg, vms ]
     permissions: write-all
     runs-on: ubuntu-latest
