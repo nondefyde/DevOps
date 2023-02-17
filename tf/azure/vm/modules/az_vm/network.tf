@@ -9,6 +9,11 @@ resource "azurerm_network_interface" "vm_network_interface" {
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
   }
+
+  dns_settings {
+    dns_servers = ["10.0.0.4"]
+    dns_search_domains = ["${var.prefix}-${var.name}-${count.index}.local"]
+  }
 }
 
 resource "azurerm_managed_disk" "vm_managed_disk" {
