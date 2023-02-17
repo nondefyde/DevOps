@@ -79,8 +79,7 @@ runs:
         names=$(echo $data | jq -r 'keys[]')
         names_array=($names)
         string_array=$( IFS=','; echo "${names_array[*]}" )
-        api_names=$string_array
-        echo "api_names=$api_names"
+        echo "api_names=$string_array" >> "$GITHUB_ENV"
 
     - name:
       id: set-vm
