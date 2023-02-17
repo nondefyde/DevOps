@@ -78,6 +78,7 @@ runs:
         data=${{ toJson(steps.api-config.outputs.apis) }}
         names=$(echo $data | jq -r 'keys[]')
         names_array=($names)
+        echo "names_array ::: $names_array"
         string_array=""
         for name in "${names_array[@]}"; do
           string_array+="'$name',"
