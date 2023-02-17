@@ -248,6 +248,7 @@ jobs:
         run: |
           echo "vm_names=${{ env.vm_names }}" >> $GITHUB_OUTPUT
 
+
   gw:
     name: Application Gateway
     needs: [ envs, crg, vms ]
