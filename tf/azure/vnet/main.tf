@@ -41,7 +41,7 @@ resource "azurerm_subnet_network_security_group_association" "nsg-assoc" {
 
 
 resource "azurerm_subnet" "baston_subnet" {
-  name                 = "${var.prefix}-baston-subnet"
+  name                 = "AzureBastionSubnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.app_virtual_network.name
   address_prefixes     = ["10.0.7.0/24"]

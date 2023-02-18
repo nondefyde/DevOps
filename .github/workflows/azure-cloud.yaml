@@ -123,7 +123,7 @@ jobs:
           echo "rg_name=${{ env.rg_name }}" >> $GITHUB_OUTPUT
 
   vn:
-    name: 'Virtual Network'
+    name: 'VNet & Baston Host'
     needs: [ crg ]
     permissions: write-all
     runs-on: ubuntu-latest
