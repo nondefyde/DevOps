@@ -121,7 +121,7 @@ runs:
         string_array=""
         for (( i=0; i<${#suffixes[@]}; i++ ))
         do
-          string_array+="$output${names[i]}:${suffixes[i]},"
+          string_array+="${names[i]}:${suffixes[i]}},"
         done
         echo "string_array $string_array"
 #        echo "api_suffixes=$output" >> "$GITHUB_ENV"
