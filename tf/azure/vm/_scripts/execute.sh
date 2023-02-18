@@ -39,6 +39,7 @@ echo "${PROJECT} ${IMAGE} ${INSTANCE} ${VM_USER} vm-app-"
 for i in $(seq 1 ${8}); do
   INDEX=$((i - 1))
   echo "Prepare VM ${PROJECT}-${VM_NAME}-vm-$INDEX"
+  echo "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
   az vm run-command invoke \
     --command-id RunShellScript \
     --name ${PROJECT}-${VM_NAME}-vm-$INDEX \
