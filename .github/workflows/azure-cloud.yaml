@@ -419,7 +419,7 @@ jobs:
           echo "gateway_url=${{ env.gateway_url }}" >> $GITHUB_OUTPUT
           echo "management_api_url=${{ env.management_api_url }}" >> $GITHUB_OUTPUT
           echo "portal_url=${{ env.portal_url }}" >> $GITHUB_OUTPUT
-          echo "developer_portal_url=${{ env.developer_portal_url }}" >> $GITHUB_OUTPU
+          echo "developer_portal_url=${{ env.developer_portal_url }}" >> $GITHUB_OUTPUT
 
 
   apimp:
