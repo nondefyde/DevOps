@@ -1,5 +1,5 @@
 {
-  "prefix": "cloudstmdev",
+  "prefix": "appdevcloudstg",
   "location": "centralus",
   "environment": "development",
   "resource-group": {
