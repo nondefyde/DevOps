@@ -106,10 +106,10 @@ resource "azurerm_application_gateway" "gw_network" {
     default_backend_http_settings_name = "${var.prefix}-http-setting"
 
     dynamic "path_rule" {
-      for_each = local.app_suffixes
+      for_each = {for i in local.vm_names : i => local.app_suffixes[index(local.app_suffixes, i)]}
       content {
-        name                       = "${path_rule.value}-url-path-rule"
-        backend_address_pool_name  = "${var.prefix}-${path_rule.value}-pool"
+        name                       = "${path_rule.key}-url-path-rule"
+        backend_address_pool_name  = "${var.prefix}-${path_rule.key}-pool"
         backend_http_settings_name = "${var.prefix}-http-setting"
         paths                      = [
           "/${path_rule.value}",
