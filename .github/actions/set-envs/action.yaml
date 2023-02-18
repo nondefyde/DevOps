@@ -71,43 +71,43 @@ runs:
         file_path: ${{ inputs.configFile }}
         prop_path: "api-management"
 
-    - name: Output api names
-      id: set-apis
-      shell: bash
-      run: |
-        data=${{ toJson(steps.api-config.outputs.apis) }}
-        names=$(echo $data | jq -r 'keys[]')
-        names_array=($names)
-        string_array=""
-        for name in "${names_array[@]}"; do
-          string_array+="'$name',"
-        done
-        string_array=${string_array%?}
-        echo "api_names=$string_array" >> "$GITHUB_ENV"
+#    - name: Output api names
+#      id: set-apis
+#      shell: bash
+#      run: |
+#        data=${{ toJson(steps.api-config.outputs.apis) }}
+#        names=$(echo $data | jq -r 'keys[]')
+#        names_array=($names)
+#        string_array=""
+#        for name in "${names_array[@]}"; do
+#          string_array+="'$name',"
+#        done
+#        string_array=${string_array%?}
+#        echo "api_names=$string_array" >> "$GITHUB_ENV"
 
-    - name: Output vm names
-      id: set-vm
-      shell: bash
-      run: |
-        data=${{ toJson(steps.vm-config.outputs.vms) }}
-        names=$(echo $data | jq -r 'keys[]')
-        names_array=($names)
-        string_array=""
-        for name in "${names_array[@]}"; do
-          string_array+="'$name',"
-        done
-        string_array=${string_array%?}
-        echo "vm_names=$string_array" >> "$GITHUB_ENV"
+#    - name: Output vm names
+#      id: set-vm
+#      shell: bash
+#      run: |
+#        data=${{ toJson(steps.vm-config.outputs.vms) }}
+#        names=$(echo $data | jq -r 'keys[]')
+#        names_array=($names)
+#        string_array=""
+#        for name in "${names_array[@]}"; do
+#          string_array+="'$name',"
+#        done
+#        string_array=${string_array%?}
+#        echo "vm_names=$string_array" >> "$GITHUB_ENV"
 
-    - name: Output app names
-      id: set-name
-      shell: bash
-      run: |
-        data=${{ toJson(steps.api-config.outputs.apis) }}
-        names=$(echo $data | jq -r 'keys[]')
-        names_array=($names)
-        string_array=$( IFS=','; echo "${names_array[*]}" )
-        echo "app_names=$string_array" >> "$GITHUB_ENV"
+#    - name: Output app names
+#      id: set-name
+#      shell: bash
+#      run: |
+#        data=${{ toJson(steps.api-config.outputs.apis) }}
+#        names=$(echo $data | jq -r 'keys[]')
+#        names_array=($names)
+#        string_array=$( IFS=','; echo "${names_array[*]}" )
+#        echo "app_names=$string_array" >> "$GITHUB_ENV"
 
 #    - name: Output api suffixes
 #      id: set-api-suffixes
