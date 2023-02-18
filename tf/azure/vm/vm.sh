@@ -6,7 +6,8 @@ while [ "$(hostname -I)" = "" ]; do
 done
 echo "I have network";
 
-curl -s https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/vm/_scripts/vm.sh | bash -s
-
+# Update the apt package index and install packages to allow apt to use a repository over HTTPS
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
 
 
