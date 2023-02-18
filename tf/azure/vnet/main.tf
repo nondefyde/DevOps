@@ -44,7 +44,7 @@ resource "azurerm_subnet" "baston_subnet" {
   name                 = "AzureBastionSubnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.app_virtual_network.name
-  address_prefixes     = ["10.0.2.0/27"]
+  address_prefixes     = ["10.0.7.0/24"]
 }
 
 resource "azurerm_public_ip" "baston_public_ip" {
