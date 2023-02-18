@@ -118,4 +118,8 @@ runs:
         suffixes=$(echo $data | jq -r '. | to_entries | map(.value.suffix)')
         echo "$names"
         echo "$suffixes"
+        string_array=""
+        for name in "${names_array[@]}"; do
+          string_array+="$name:st,"
+        done
         echo "api_suffixes=$string_array" >> "$GITHUB_ENV"
