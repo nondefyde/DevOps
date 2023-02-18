@@ -38,7 +38,6 @@ echo "${PROJECT} ${IMAGE} ${INSTANCE} ${VM_USER} vm-app-"
 
 for i in $(seq 1 ${8}); do
   INDEX=$((i - 1))
-
   echo "Prepare VM ${4}-${7}-vm-$INDEX"
   az vm run-command invoke \
     --command-id RunShellScript \
