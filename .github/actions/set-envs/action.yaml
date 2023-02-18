@@ -121,13 +121,7 @@ runs:
         output=""
         for i in "${!suffixes[@]}"
         do
-          if [[ -n "$output" ]]
-          then
-            output="$output,"
-            echo "then loop"
-          fi
-          output="$output${names[i]}:${suffixes[i]}"
-          echo "loop $i"
+          echo "The suffix at index $i is ${suffixes[i]}"
         done
-        echo "output $output"
+#        echo "output $output"
 #        echo "api_suffixes=$output" >> "$GITHUB_ENV"
