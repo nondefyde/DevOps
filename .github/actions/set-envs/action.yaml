@@ -118,12 +118,15 @@ runs:
         names=$(echo $data | jq -r 'keys[]')
         echo "suffixes $suffixes"
         echo "names $names"
-        output=()
-        for i in "${!suffixes[@]}"
-        do
-          output+=("${names[i]}:${suffixes[i]}")
-        done
         
+        output=""
+        for element in ${suffixes[@]}; do
+        if [[ -n "$output" ]]; then
+          output="$output,"
+        fi
+        output="$output$element"
+        done
+        echo "output $output"
         echo "${output[@]}"
 #        echo "output $output"
 #        echo "api_suffixes=$output" >> "$GITHUB_ENV"
