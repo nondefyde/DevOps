@@ -114,14 +114,14 @@ runs:
       shell: bash
       run: |
         data=${{ toJson(steps.api-config.outputs.apis) }}
-        names=$(echo $data | jq -r 'keys[]')
-        suffixes=$(echo $data | jq -r '.[] | .suffix')
-        echo "$names"
-        echo "$suffixes"
-        output=""
+        suffixes=($(echo $data | jq -r '.[] | .suffix'))
+        names=($(echo $data | jq -r '.[] | .name'))
+        output=()
         for i in "${!suffixes[@]}"
         do
-          echo "The suffix at index $i is ${suffixes[i]}"
+        output+=("${names[i]}:${suffixes[i]}")
         done
+        
+        echo "${output[@]}"
 #        echo "output $output"
 #        echo "api_suffixes=$output" >> "$GITHUB_ENV"
