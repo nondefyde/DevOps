@@ -109,10 +109,10 @@ runs:
         string_array=$( IFS=','; echo "${names_array[*]}" )
         echo "app_names=$string_array" >> "$GITHUB_ENV"
 
-#    - name: Output api suffixes
-#      id: set-api-suffixes
-#      shell: bash
-#      run: |
-#        data=${{ toJson(steps.api-config.outputs.apis) }}
-#        suffixes=$(echo data | jq -r '.apis | to_entries[] | .value.suffix' | paste -sd ",")
-#        echo "app_suffixes=$suffixes" >> "$GITHUB_ENV"
+    - name: Output api suffixes
+      id: set-api-suffixes
+      shell: bash
+      run: |
+        data=${{ toJson(steps.api-config.outputs.apis) }}
+        suffixes=$(echo data | jq -r '.apis | to_entries[] | .value.suffix' | paste -sd ",")
+        echo "app_suffixes=$suffixes" >> "$GITHUB_ENV"
