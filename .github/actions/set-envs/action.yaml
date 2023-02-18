@@ -114,10 +114,8 @@ runs:
       shell: bash
       run: |
         data=${{ toJson(steps.api-config.outputs.apis) }}
-        suffixes=($(echo $data | jq -r '.[] | .suffix'))
-        names_string=($(echo $data | jq -r 'keys[] as $k | .[$k].name' | tr '\n' ' '))
-        readarray -t names <<< "$names_string"
-        echo "names_string $names_string"
+        suffixes=$(echo $data | jq -r '.[] | .suffix')
+        names=$(echo $data | jq -r 'keys[]' | tr -d '\r\n')
         echo "suffixes $suffixes"
         echo "names $names"
         output=()
