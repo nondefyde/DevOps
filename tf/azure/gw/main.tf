@@ -30,13 +30,9 @@ resource "azurerm_public_ip" "gw_ip" {
 
 # since these variables are re-used - a locals block makes this more maintainable
 locals {
-  vm_names                           = toset(split(",", var.app_names))
-  names                              = split(",", var.app_names)
-  app_suffixes                       = split(",", var.app_suffixes)
-  frontend_port_name                 = "${var.prefix}-gw-feport"
-  frontend_ip_configuration_name     = "${var.prefix}-gw-feip"
-  index_list                         = range(length(local.names))
-  backend_address_pool_name_to_index = {for idx, name in local.names : name => idx}
+  api_suffixes                   = toset(split(",", var.api_suffixes))
+  frontend_port_name             = "${var.prefix}-gw-feport"
+  frontend_ip_configuration_name = "${var.prefix}-gw-feip"
 }
 
 resource "azurerm_application_gateway" "gw_network" {
@@ -81,9 +77,9 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   dynamic "backend_address_pool" {
-    for_each = local.vm_names
+    for_each = local.api_suffixes
     content {
-      name = "${var.prefix}-${backend_address_pool.value}-pool"
+      name = "${var.prefix}-${split(":", backend_address_pool.value)[0]}-pool"
     }
   }
 
@@ -106,13 +102,13 @@ resource "azurerm_application_gateway" "gw_network" {
     default_backend_http_settings_name = "${var.prefix}-http-setting"
 
     dynamic "path_rule" {
-      for_each = local.vm_names
+      for_each = local.api_suffixes
       content {
-        name                       = "${path_rule.value}-url-path-rule"
-        backend_address_pool_name  = "${var.prefix}-${path_rule.value}-pool"
+        name                       = "${split(":", path_rule.value)[0]}-url-path-rule"
+        backend_address_pool_name  = "${var.prefix}-${split(":", path_rule.value)[0]}-pool"
         backend_http_settings_name = "${var.prefix}-http-setting"
         paths                      = [
-          "/${local.app_suffixes[count.index]}",
+          "/${split(":", path_rule.value)[1]}",
         ]
       }
     }

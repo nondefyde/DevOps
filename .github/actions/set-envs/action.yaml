@@ -114,5 +114,8 @@ runs:
       shell: bash
       run: |
         data=${{ toJson(steps.api-config.outputs.apis) }}
-        suffixes=$(echo $data | jq -r --arg field1 "name" --arg field2 "suffix" '[.[] | "\(.[$field1]):\(.[$field2])"] | join(",")' | grep -E '^[a-zA-Z]+:')
-        echo "app_suffixes=$suffixes" >> "$GITHUB_ENV"
+        names=$(echo $data | jq -r 'keys[]')
+        suffixes=$(echo $data | jq -r '. | to_entries | map(.value.suffix)')
+        echo "$names"
+        echo "$suffixes"
+        echo "api_suffixes=$string_array" >> "$GITHUB_ENV"

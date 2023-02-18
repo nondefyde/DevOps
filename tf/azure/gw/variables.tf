@@ -38,12 +38,7 @@ variable "backend_address_prefix" {
   default = "10.0.4.0/24"
 }
 
-variable "app_suffixes" {
+variable "api_suffixes" {
   type    = string
-  default = "qst"
-}
-
-variable "app_names" {
-  type    = string
-  default = "quest"
+  default = "quest:qst"
 }
