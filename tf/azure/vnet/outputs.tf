@@ -21,3 +21,11 @@ output "network_security_group_id" {
 output "network_security_group_association_id" {
   value = azurerm_subnet_network_security_group_association.nsg-assoc.id
 }
+
+output "baston_id" {
+  value = azurerm_bastion_host.baston_host.id
+}
+
+output "baston_dns" {
+  value = azurerm_bastion_host.baston_host.dns_name
+}

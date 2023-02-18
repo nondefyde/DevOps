@@ -32,6 +32,7 @@ resource "azurerm_public_ip" "gw_ip" {
 locals {
   vm_names                           = toset(split(",", var.app_names))
   names                              = split(",", var.app_names)
+  app_suffixes                       = toset(split(",", var.app_suffixes))
   frontend_port_name                 = "${var.prefix}-gw-feport"
   frontend_ip_configuration_name     = "${var.prefix}-gw-feip"
   index_list                         = range(length(local.names))
@@ -105,7 +106,7 @@ resource "azurerm_application_gateway" "gw_network" {
     default_backend_http_settings_name = "${var.prefix}-http-setting"
 
     dynamic "path_rule" {
-      for_each = local.vm_names
+      for_each = local.app_suffixes
       content {
         name                       = "${path_rule.value}-url-path-rule"
         backend_address_pool_name  = "${var.prefix}-${path_rule.value}-pool"

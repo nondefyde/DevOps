@@ -26,6 +26,7 @@ jobs:
       vm_names: ${{ steps.variables.outputs.vm_names }}
       api_names: ${{ steps.variables.outputs.api_names }}
       app_names: ${{ steps.variables.outputs.app_names }}
+      app_suffixes: ${{ steps.variables.outputs.app_suffixes }}
       environment: ${{ steps.variables.outputs.environment }}
     steps:
       - name: Checkout
@@ -44,6 +45,7 @@ jobs:
           echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
           echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
           echo "app_names=${{ env.app_names }}" >> $GITHUB_OUTPUT
+          echo "app_suffixes=${{ env.app_suffixes }}" >> $GITHUB_OUTPUT
           echo "environment=${{ steps.env-config.outputs.environment }}" >> $GITHUB_OUTPUT
 
   sa:
@@ -130,20 +132,13 @@ jobs:
     outputs:
       virtual_network_id: ${{ steps.set-output.outputs.virtual_network_id }}
       virtual_network_name: ${{ steps.set-output.outputs.virtual_network_name }}
-      virtual_subnet_name: ${{ steps.set-output.outputs.virtual_subnet_name }}
-      virtual_subnet_id: ${{ steps.set-output.outputs.virtual_subnet_id }}
+      baston_dns: ${{ steps.set-output.outputs.baston_dns }}
+      baston_id: ${{ steps.set-output.outputs.baston_id }}
     env:
       vnEnvFile: "vn.tfvars"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Get cloud config
-        id: vn-cloud-config
-        uses: ActionsTools/read-json-action@main
-        with:
-          file_path: ${{ env.configFile }}
-          prop_path: "virtual-network"
 
       - name: convert to json
         id: vmjson
@@ -153,7 +148,6 @@ jobs:
           prefix: ${{ env.project }}
           location: ${{ needs.crg.outputs.rg_location }}
           group: ${{ needs.crg.outputs.rg_name }}
-          address_prefix: ${{steps.vn-cloud-config.outputs.address_prefix}}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
@@ -161,7 +155,7 @@ jobs:
           name: ${{ env.vnEnvFile }}
           path: ${{ env.vnEnvFile }}
 
-      - name: Instantiate VN
+      - name: Instantiate VNet & Baston
         uses: ./.github/actions/tf-azure-script
         id: vn
         with:
@@ -180,8 +174,8 @@ jobs:
         run: |
           echo "virtual_network_id=${{ env.virtual_network_id }}" >> $GITHUB_OUTPUT
           echo "virtual_network_name=${{ env.virtual_network_name }}" >> $GITHUB_OUTPUT
-          echo "virtual_subnet_name=${{ env.virtual_subnet_name }}" >> $GITHUB_OUTPUT
-          echo "virtual_subnet_id=${{ env.virtual_subnet_id }}" >> $GITHUB_OUTPUT
+          echo "baston_dns=${{ env.baston_dns }}" >> $GITHUB_OUTPUT
+          echo "baston_id=${{ env.baston_id }}" >> $GITHUB_OUTPUT
   vms:
     name: Virtual Machines ${{ matrix.items }}
     needs: [ envs, crg, vn ]
@@ -256,6 +250,7 @@ jobs:
       gw_name: ${{ steps.set-output.outputs.gw_name }}
     env:
       app_names: ${{ needs.envs.outputs.app_names }}
+      app_suffixes: ${{ needs.envs.outputs.app_suffixes }}
       vm: ${{ needs.envs.outputs.vm_names }}
       gwEnvFile: "gw.tfvars"
     steps:
@@ -270,6 +265,7 @@ jobs:
           prefix: ${{ env.project }}
           group: ${{ needs.crg.outputs.rg_name }}
           app_names: ${{ env.app_names }}
+          app_suffixes: ${{ env.app_suffixes }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2

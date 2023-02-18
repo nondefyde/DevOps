@@ -5,20 +5,17 @@
   "resource-group": {
     "prevent_resource_deletion": false
   },
-  "virtual-network": {
-    "address_prefix": "10.0.2.0/24"
-  },
   "virtual-machine": {
     "vms" : {
       "quest": {
         "name": "quest",
         "vmCount": 1,
-        "container_instance": 1
+        "instanceCount": 2
       },
       "room": {
         "name": "room",
         "vmCount": 1,
-        "container_instance": 1
+        "instanceCount": 2
       }
     }
   },
@@ -27,7 +24,6 @@
     "publisher_email": "nondefyde@gmail.com",
     "capacity": 1,
     "sku": "Developer",
-    "name": "cloudstmdevapi",
     "apis": {
       "quest": {
         "name": "Quest API",

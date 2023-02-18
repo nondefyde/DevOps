@@ -56,9 +56,10 @@ resource "azurerm_public_ip" "baston_public_ip" {
 }
 
 resource "azurerm_bastion_host" "baston_host" {
-  name                = "${var.prefix}-baston-host"
-  location            = data.azurerm_resource_group.rg.location
-  resource_group_name = data.azurerm_resource_group.rg.name
+  name                   = "${var.prefix}-baston-host"
+  location               = data.azurerm_resource_group.rg.location
+  resource_group_name    = data.azurerm_resource_group.rg.name
+  shareable_link_enabled = true
 
   ip_configuration {
     name                 = "configuration"
