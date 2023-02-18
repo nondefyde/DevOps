@@ -114,5 +114,5 @@ runs:
       shell: bash
       run: |
         data=${{ toJson(steps.api-config.outputs.apis) }}
-        suffixes=$(echo data | jq -r '.apis | to_entries[] | .value.suffix' | paste -sd ",")
+        suffixes=$(echo $data | jq -r '.apis | to_entries[] | .value.suffix' | paste -sd ",")
         echo "app_suffixes=$suffixes" >> "$GITHUB_ENV"
