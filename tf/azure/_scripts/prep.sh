@@ -22,7 +22,7 @@ fi
 
 echo "Run VM Setup scripts"
 VM_SETUP=https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/vm/_scripts/vm.sh
-curl -s "${VM_SETUP}" | bash -s
+sudo curl -sL "${VM_SETUP}" | sudo bash
 
 
 echo "Project       : ${1}"
