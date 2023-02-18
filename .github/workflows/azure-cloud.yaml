@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  project: appdevcloudstg
+  project: appdevclouds
   location: centralus
   configFile: "configs/cloud.json"
 
