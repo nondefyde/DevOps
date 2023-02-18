@@ -87,6 +87,6 @@
     "az:apply:bst": "cd ./tf/azure/_scripts && ./apply.sh bst testdevstg",
     "az:execute:bst": "yarn az:prepare:bst && yarn az:apply:bst",
 
-    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm && yarn az:execute:gw && yarn az:execute:gwc && yarn az:execute:bst"
+    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm && yarn az:execute:bst"
   }
 }

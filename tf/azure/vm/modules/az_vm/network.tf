@@ -3,17 +3,11 @@ resource "azurerm_network_interface" "vm_network_interface" {
   name                    = "${var.prefix}-${var.name}-net-${count.index}"
   location                = var.location
   resource_group_name     = var.group
-  dns_servers             = ["10.0.0.4"]
-  internal_dns_name_label = "${var.prefix}-${var.name}-${count.index}"
 
   ip_configuration {
     name                          = "${var.prefix}-${var.name}-internal-${count.index}"
     subnet_id                     = var.subnet_id
     private_ip_address_allocation = "Dynamic"
-  }
-
-  tags = {
-    Name: "${var.prefix}-${var.name}-net"
   }
 }
 
@@ -37,7 +31,7 @@ resource "azurerm_availability_set" "vm_avset" {
 }
 
 resource "azurerm_network_security_group" "vm_security_group" {
-  count                = var.vm_count
+  count               = var.vm_count
   name                = "${var.prefix}-${var.name}-net-sec-group-${count.index}"
   location            = var.location
   resource_group_name = var.group
@@ -56,7 +50,7 @@ resource "azurerm_network_security_group" "vm_security_group" {
 }
 
 resource "azurerm_network_interface_security_group_association" "net_isga" {
-  count                = var.vm_count
+  count                     = var.vm_count
   network_interface_id      = element(azurerm_network_interface.vm_network_interface.*.id, count.index)
   network_security_group_id = element(azurerm_network_security_group.vm_security_group.*.id, count.index)
 }
