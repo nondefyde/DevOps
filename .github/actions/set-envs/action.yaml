@@ -115,5 +115,5 @@ runs:
       run: |
         data=${{ toJson(steps.api-config.outputs.apis) }}
         echo "date $data"
-        suffixes=$(echo $data | jq -r '.apis | to_entries[] | .value.suffix' | paste -sd ",")
+        suffixes=$(echo $data | jq -r '. | to_entries | map(.value.suffix) | join(",")')
         echo "app_suffixes=$suffixes" >> "$GITHUB_ENV"
