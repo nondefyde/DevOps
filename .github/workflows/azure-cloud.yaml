@@ -123,7 +123,7 @@ jobs:
           echo "rg_name=${{ env.rg_name }}" >> $GITHUB_OUTPUT
 
   vn:
-    name: 'VNet & Baston Host'
+    name: 'Virtual Network'
     needs: [ crg ]
     permissions: write-all
     runs-on: ubuntu-latest
@@ -153,7 +153,7 @@ jobs:
           name: ${{ env.vnEnvFile }}
           path: ${{ env.vnEnvFile }}
 
-      - name: Instantiate VNet & Baston
+      - name: Instantiate VNet
         uses: ./.github/actions/tf-azure-script
         id: vn
         with:
@@ -172,6 +172,58 @@ jobs:
         run: |
           echo "virtual_network_id=${{ env.virtual_network_id }}" >> $GITHUB_OUTPUT
           echo "virtual_network_name=${{ env.virtual_network_name }}" >> $GITHUB_OUTPUT
+          echo "baston_dns=${{ env.baston_dns }}" >> $GITHUB_OUTPUT
+          echo "baston_id=${{ env.baston_id }}" >> $GITHUB_OUTPUT
+          
+
+  bst:
+    name: 'Baston Host'
+    needs: [ crg ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      virtual_network_id: ${{ steps.set-output.outputs.virtual_network_id }}
+      virtual_network_name: ${{ steps.set-output.outputs.virtual_network_name }}
+      baston_dns: ${{ steps.set-output.outputs.baston_dns }}
+      baston_id: ${{ steps.set-output.outputs.baston_id }}
+    env:
+      vnEnvFile: "vn.tfvars"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: convert to json
+        id: vmjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.vnEnvFile }}
+          prefix: ${{ env.project }}
+          location: ${{ needs.crg.outputs.rg_location }}
+          group: ${{ needs.crg.outputs.rg_name }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.vnEnvFile }}
+          path: ${{ env.vnEnvFile }}
+
+      - name: Instantiate Baston
+        uses: ./.github/actions/tf-azure-script
+        id: vn
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.vnEnvFile }}
+          key: ${{ env.project }}-bst
+          working-directory: "tf/azure/bst"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
           echo "baston_dns=${{ env.baston_dns }}" >> $GITHUB_OUTPUT
           echo "baston_id=${{ env.baston_id }}" >> $GITHUB_OUTPUT
   vms:
