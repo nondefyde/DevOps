@@ -118,14 +118,10 @@ runs:
         suffixes=$(echo $data | jq -r '.[] | .suffix')
         echo "$names"
         echo "$suffixes"
-        output=""
+        string_array=""
         for (( i=0; i<${#suffixes[@]}; i++ ))
         do
-          if [[ -n "$output" ]]
-          then
-            output="$output,"
-          fi
-          output="$output${names[i]}:${suffixes[i]}"
+          string_array+="$output${names[i]}:${suffixes[i]},"
         done
-        echo "output $output"
+        echo "string_array $string_array"
 #        echo "api_suffixes=$output" >> "$GITHUB_ENV"
