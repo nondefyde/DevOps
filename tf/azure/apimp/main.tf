@@ -42,8 +42,7 @@ resource "azurerm_api_management_api_operation_policy" "api_operation_policy" {
   api_name            = azurerm_api_management_api.apimp.name
   api_management_name = data.azurerm_api_management.apim.name
   resource_group_name = data.azurerm_resource_group.rg.name
-  operation_id        = azurerm_api_management_api_operation.apimp_operations[[count.index].id
-
+  operation_id        = azurerm_api_management_api_operation.apimp_operations[[count.index].id]
   xml_content = <<XML
 <policies>
     <inbound>
