@@ -124,7 +124,7 @@ runs:
         if [[ -n "$output" ]]; then
           output="${names[$i]}:$output,"
         fi
-         output="$output$i"
+         output="$output${names[$i]}:$i"
         done
         echo "output $output"
         echo "${output[@]}"
