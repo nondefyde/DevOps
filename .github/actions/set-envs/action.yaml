@@ -122,9 +122,9 @@ runs:
         output=""
         for i in ${suffixes[@]}; do
         if [[ -n "$output" ]]; then
-          output="$output,"
+          output="${names[$i]}:$output,"
         fi
-        output="$output${names[$i]}:${suffixes[$i]}"
+         output="$output$i"
         done
         echo "output $output"
         echo "${output[@]}"
