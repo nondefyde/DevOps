@@ -120,11 +120,11 @@ runs:
         echo "names $names"
         
         output=""
-        for element in ${suffixes[@]}; do
+        for i in ${suffixes[@]}; do
         if [[ -n "$output" ]]; then
           output="$output,"
         fi
-        output="$output$element"
+        output="$output${names[$i]}:${suffixes[$i]}"
         done
         echo "output $output"
         echo "${output[@]}"
