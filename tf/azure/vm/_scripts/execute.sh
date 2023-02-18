@@ -39,6 +39,18 @@ echo "${PROJECT} ${IMAGE} ${INSTANCE} ${VM_USER} vm-app-"
 
 for i in $(seq 1 ${8}); do
   INDEX=$((i - 1))
+
+  echo "Run Setups on VM ${4}-${7}-vm-$INDEX"
+  az vm run-command invoke \
+    --command-id RunShellScript \
+    --name ${4}-${7}-vm-$INDEX \
+    --resource-group ${4}-group \
+    --scripts '
+      cd /home/$4/vm
+      chmod +x deploy.sh
+      ./vm.sh
+    ' \
+
   echo "Login Azure in VM ${4}-${7}-vm-$INDEX"
   az vm run-command invoke \
     --command-id RunShellScript \
