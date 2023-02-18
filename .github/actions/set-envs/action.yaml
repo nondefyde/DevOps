@@ -115,7 +115,7 @@ runs:
       run: |
         data=${{ toJson(steps.api-config.outputs.apis) }}
         names=$(echo $data | jq -r 'keys[]')
-        suffixes=$(echo $data | jq -r '. | to_entries | map(.value.suffix)')
+        suffixes=$(echo $data | jq -r '.[] | .suffix')
         echo "$names"
         echo "$suffixes"
         output=""
