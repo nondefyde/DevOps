@@ -1,5 +1,13 @@
 #! /bin/bash
 
+if command -v curl >/dev/null 2>&1; then
+    # Run your command here
+    echo "curl is enabled"
+else
+    sudo apt update
+    sudo apt install apt-transport-https ca-certificates curl software-properties-common
+fi
+
 trap 'echo Error: Command failed; exit 1' ERR
 
 echo "Project       : ${1}"
