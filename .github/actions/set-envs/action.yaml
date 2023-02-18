@@ -124,8 +124,10 @@ runs:
           if [[ -n "$output" ]]
           then
             output="$output,"
+            echo "then loop"
           fi
           output="$output${names[i]}:${suffixes[i]}"
+          echo "loop $i"
         done
         echo "output $output"
 #        echo "api_suffixes=$output" >> "$GITHUB_ENV"
