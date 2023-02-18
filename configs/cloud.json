@@ -9,20 +9,20 @@
     "vms" : {
       "quest": {
         "name": "quest",
-        "vmCount": 1,
-        "instanceCount": 2
+        "vmCount": "1",
+        "instanceCount": "2"
       },
       "room": {
         "name": "room",
-        "vmCount": 1,
-        "instanceCount": 2
+        "vmCount": "1",
+        "instanceCount": "2"
       }
     }
   },
   "api-management": {
     "publisher_name": "Stemuli",
     "publisher_email": "nondefyde@gmail.com",
-    "capacity": 1,
+    "capacity": "1",
     "sku": "Developer",
     "apis": {
       "quest": {
