@@ -8,6 +8,16 @@ if command -v curl >/dev/null 2>&1; then
 else
     sudo apt update
     sudo apt install apt-transport-https ca-certificates curl software-properties-common
+    echo "Installed curl"
+fi
+
+if command -v az &> /dev/null
+then
+    echo "Azure CLI is installed."
+else
+    sudo curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+    sudo apt-get install jq --yes
+    echo "Installed Azure CLI & jq"
 fi
 
 echo "Run VM Setup scripts"
