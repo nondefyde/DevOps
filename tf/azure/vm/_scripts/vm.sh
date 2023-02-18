@@ -1,11 +1,5 @@
 #! /bin/bash
 
-while [ "$(hostname -I)" = "" ]; do
-  echo -e "\e[1A\e[KNo network: $(date)"
-  sleep 1
-done
-echo "I have network";
-
 if [[ $(which docker) && $(docker --version) ]]; then
     echo "Installation already done"
 else

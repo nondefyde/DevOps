@@ -46,7 +46,7 @@ variable "admin_password" {
 variable "init_file" {
   type        = string
   description = "The entry file when server is setup"
-  default     = "./_scripts/vm.sh"
+  default     = "./vm.sh"
 }
 
 variable "vm_count" {
