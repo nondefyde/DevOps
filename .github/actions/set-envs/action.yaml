@@ -127,4 +127,5 @@ runs:
           fi
           output="$output${names[i]}:${suffixes[i]}"
         done
-        echo "api_suffixes=$output" >> "$GITHUB_ENV"
+        echo "output"
+#        echo "api_suffixes=$output" >> "$GITHUB_ENV"
