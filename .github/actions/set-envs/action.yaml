@@ -121,7 +121,7 @@ runs:
           if [[ -n "$output" ]]; then
             output="$output,"
           fi
-          output="$output${names[$i]}:$suffixes[$i]"
+          output="$output${names[$i]}:${suffixes[$i]}"
           echo "i $i ${names[$i]}"
         done
         echo "${output[@]}"
