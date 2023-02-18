@@ -38,27 +38,28 @@ echo "logged in to server > ${server}"
 echo "${PROJECT} ${IMAGE} ${INSTANCE} ${VM_USER} vm-app-"
 
 for i in $(seq 1 ${8}); do
-  echo "Login Azure in VM ${4}-${7}-vm-$i"
+  INDEX=$((i - 1))
+  echo "Login Azure in VM ${4}-${7}-vm-$INDEX"
   az vm run-command invoke \
     --command-id RunShellScript \
-    --name ${4}-${7}-vm-$i \
+    --name ${4}-${7}-vm-$INDEX \
     --resource-group ${4}-group \
     --scripts '
          az login --service-principal --username ${1} --password ${2} --tenant ${3}
       ' \
     --parameters ${1} ${2} ${3}
 
-  echo "Prepare VM ${4}-${7}-vm-$i"
+  echo "Prepare VM ${4}-${7}-vm-$INDEX"
   az vm run-command invoke \
     --command-id RunShellScript \
-    --name ${4}-${7}-vm-$i \
+    --name ${4}-${7}-vm-$INDEX \
     --resource-group ${4}-group \
     --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
 
-  echo "Login docker on VM ${4}-${7}-vm-$i"
+  echo "Login docker on VM ${4}-${7}-vm-$INDEX"
     az vm run-command invoke \
       --command-id RunShellScript \
-      --name ${4}-${7}-vm-$i \
+      --name ${4}-${7}-vm-$INDEX \
       --resource-group ${4}-group \
       --scripts '
         echo "Login docker"
@@ -66,10 +67,10 @@ for i in $(seq 1 ${8}); do
       ' \
       --parameters "${server}" "${accessToken}"
 
-  echo "Deploy Update on VM ${4}-${7}-vm-$i"
+  echo "Deploy Update on VM ${4}-${7}-vm-$INDEX"
   az vm run-command invoke \
     --command-id RunShellScript \
-    --name ${4}-${7}-vm-$i \
+    --name ${4}-${7}-vm-$INDEX \
     --resource-group ${4}-group \
     --scripts '
       cd /home/$4/vm
