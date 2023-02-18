@@ -39,6 +39,13 @@ echo "${PROJECT} ${IMAGE} ${INSTANCE} ${VM_USER} vm-app-"
 for i in $(seq 1 ${8}); do
   INDEX=$((i - 1))
 
+  echo "Prepare VM ${4}-${7}-vm-$INDEX"
+  az vm run-command invoke \
+    --command-id RunShellScript \
+    --name ${4}-${7}-vm-$INDEX \
+    --resource-group ${4}-group \
+    --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
+
   echo "Login Azure in VM ${4}-${7}-vm-$INDEX"
   az vm run-command invoke \
     --command-id RunShellScript \
@@ -48,13 +55,6 @@ for i in $(seq 1 ${8}); do
          az login --service-principal --username ${1} --password ${2} --tenant ${3}
       ' \
     --parameters ${1} ${2} ${3}
-
-  echo "Prepare VM ${4}-${7}-vm-$INDEX"
-  az vm run-command invoke \
-    --command-id RunShellScript \
-    --name ${4}-${7}-vm-$INDEX \
-    --resource-group ${4}-group \
-    --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
 
   echo "Login docker on VM ${4}-${7}-vm-$INDEX"
     az vm run-command invoke \
