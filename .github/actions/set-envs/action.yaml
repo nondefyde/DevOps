@@ -118,11 +118,11 @@ runs:
         names=($(echo $data | jq -r 'keys[]'))        
         output=""
         for i in ${suffixes[@]}; do
+          if [[ -n "$output" ]]; then
+            output="${names[$i]}:$output,"
+          fi
+          output="$output${names[$i]}:$i"
           echo "i $i ${names[$i]}"
-        if [[ -n "$output" ]]; then
-          output="${names[$i]}:$output,"
-        fi
-         output="$output${names[$i]}:$i"
         done
         echo "output $output"
         echo "${output[@]}"
