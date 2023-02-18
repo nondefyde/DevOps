@@ -2,6 +2,7 @@ data "template_file" "vm_init" {
   template = file(var.cloud_init_file)
   vars     = {
     prefix = var.prefix
+    user   = var.admin_username
   }
 }
 
