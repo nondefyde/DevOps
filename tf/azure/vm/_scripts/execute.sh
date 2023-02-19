@@ -76,7 +76,7 @@ for i in $(seq 1 ${8}); do
       cd /home/$4/vm
       ls -a
       chmod +x deploy.sh
-      ./deploy.sh $1 $2 $3 $4 $5
+      ./deploy.sh $1 $2 $3
     ' \
-    --parameters "${PROJECT}" "${IMAGE}" "${INSTANCE}" "${VM_USER}" "vm-app-"
+    --parameters "${PROJECT}" "${IMAGE}" "vm-app-" "${VM_USER}"
 done
