@@ -1,54 +1,23 @@
 version: '3.8'
 
 services:
-  app:
-    image: {IMAGE}
-    volumes:
-      - app-volume:/var/lib/app/content
-    environment:
-      NODE_ENV: {NODE_ENV}
-      VIRTUAL_HOST: {VIRTUAL_HOST}
-    env_file:
-      - ./.env
-    ports:
-      - "8001-8400:{PORT}"
-    restart: always
-    networks:
-      - app-network
-
   nginx-proxy:
-    image: jwilder/nginx-proxy:alpine
-    container_name: nginx-proxy
+    image: jwilder/nginx-proxy
     ports:
       - "80:80"
-      - "443:443"
     volumes:
-      - "/etc/nginx/certs"
-      - "/etc/nginx/vhost.d"
-      - "/usr/share/nginx/html"
-      - "/var/run/docker.sock:/tmp/docker.sock:ro"
-    networks:
-      - app-network
+      - /var/run/docker.sock:/tmp/docker.sock:ro
 
-  letsencrypt-nginx-proxy-companion:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: letsencrypt-nginx-proxy-companion
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "/etc/nginx/certs"
-      - "/etc/nginx/vhost.d"
-      - "/usr/share/nginx/html"
+  app:
+    image: {IMAGE}
+    ports:
+      - "8000-8400:{PORT}"
     environment:
-      NGINX_PROXY_CONTAINER: nginx-proxy
-    restart: always
+      - VIRTUAL_HOST={VIRTUAL_HOST}
+      - NODE_ENV={NODE_ENV}
+    depends_on:
+      - nginx-proxy
     networks:
-      - app-network
-
-volumes:
-  app-volume:
-    external: true
-
-networks:
-  app-network:
-    name: nginx-proxy
-    external: true
+      default:
+        aliases:
+          - bytegum.com

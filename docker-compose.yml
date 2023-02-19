@@ -1,54 +1,23 @@
-version: '3.8'
+version: '3'
 
 services:
-  app:
-    image: devcloudappsacr.azurecr.io/dev/main:latest
-    volumes:
-      - app-volume:/var/lib/app/content
-    environment:
-      NODE_ENV: staging
-      VIRTUAL_HOST: bytegum.localhost
-    env_file:
-      - ./.env
-    ports:
-      - "8001-8400:8000"
-    restart: always
-    networks:
-      - app-network
-
   nginx-proxy:
-    image: jwilder/nginx-proxy:alpine
-    container_name: nginx-proxy
+    image: jwilder/nginx-proxy
     ports:
       - "80:80"
-      - "443:443"
     volumes:
-      - "/etc/nginx/certs"
-      - "/etc/nginx/vhost.d"
-      - "/usr/share/nginx/html"
-      - "/var/run/docker.sock:/tmp/docker.sock:ro"
-    networks:
-      - app-network
+      - /var/run/docker.sock:/tmp/docker.sock:ro
 
-  letsencrypt-nginx-proxy-companion:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: letsencrypt-nginx-proxy-companion
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "/etc/nginx/certs"
-      - "/etc/nginx/vhost.d"
-      - "/usr/share/nginx/html"
+  app:
+    image: devcloudappsacr.azurecr.io/dev/main:latest
+    ports:
+      - "8000-8400:8000"
     environment:
-      NGINX_PROXY_CONTAINER: nginx-proxy
-    restart: always
+      - VIRTUAL_HOST=bytegum.localhost
+      - NODE_ENV=room
+    depends_on:
+      - nginx-proxy
     networks:
-      - app-network
-
-volumes:
-  app-volume:
-    external: true
-
-networks:
-  app-network:
-    name: nginx-proxy
-    external: true
+      default:
+        aliases:
+          - bytegum.com
