@@ -7,27 +7,18 @@ data "azurerm_virtual_network" "vnet" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-resource "azurerm_subnet" "frontend" {
-  name                 = "${var.prefix}-frontend-subnet"
-  resource_group_name  = data.azurerm_resource_group.rg.name
+data "azurerm_subnet" "gw_subnets" {
+  name                 = "${var.prefix}-gw-subnet"
   virtual_network_name = data.azurerm_virtual_network.vnet.name
-  address_prefixes     = [var.frontend_address_prefix]
-}
-
-resource "azurerm_subnet" "backend" {
-  name                 = "${var.prefix}-backend-subnet"
-  resource_group_name  = data.azurerm_resource_group.rg.name
-  virtual_network_name = data.azurerm_virtual_network.vnet.name
-  address_prefixes     = [var.backend_address_prefix]
+  resource_group_name  = data.azurerm_virtual_network.vnet.resource_group_name
 }
 
 resource "azurerm_public_ip" "gw_ip" {
   name                = "${var.prefix}-gw-pip"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
-  allocation_method   = "Dynamic"
-#  allocation_method   = "Static"
-#  sku                 = "Standard"
+  allocation_method   = "Static"
+  sku                 = "Standard"
 }
 
 # since these variables are re-used - a locals block makes this more maintainable
@@ -110,7 +101,7 @@ resource "azurerm_application_gateway" "gw_network" {
         backend_address_pool_name  = "${var.prefix}-${split(":", path_rule.value)[0]}-pool"
         backend_http_settings_name = "${var.prefix}-http-setting"
         paths                      = [
-          "/${split(":", path_rule.value)[1]}",
+          "/${split(":", path_rule.value)[1]}/*",
         ]
       }
     }

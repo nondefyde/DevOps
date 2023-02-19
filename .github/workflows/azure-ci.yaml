@@ -1,9 +1,9 @@
 name: AZR VM TEST CI
 
 on:
-  push:
-    branches:
-      - 'main'
+#  push:
+#    branches:
+#      - 'main'
   workflow_run:
     workflows: [ "AZR DEPLOY VMS" ]
     types:
@@ -69,7 +69,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  current_project: devcloudapps
+  current_project: cloudappsdev
   current_service: dev
   current_port: 8000
   current_hostname_format: "stm-{0}.{1}.bytegum.com"

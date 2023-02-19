@@ -3,7 +3,7 @@ variable "prefix" {
   description = "The prefix for the resource group"
 }
 
-variable "group" {
+variable "location" {
   type = string
 }
 
@@ -27,52 +27,35 @@ variable "client_secret" {
   description = "Client ID"
 }
 
-variable "name" {
-  type = string
-  default = "test"
+variable "public_ip" {
+  type        = string
+  description = "Azure Resource Manager Subscription ID"
 }
 
-variable "suffix" {
+variable "public_ip_id" {
   type = string
-  default = "tst"
 }
 
-variable "protocols" {
-  type = list(string)
-  default = ["https"]
+variable "public_ip_dns_name" {
+  type        = string
+  description = "public dns for cname"
 }
 
-variable "display_name" {
+variable "dns_domain" {
   type = string
-  default = "Test API"
+  description = "DNS domain"
 }
 
-variable "revision" {
+variable "cloudflare_zone_id" {
   type = string
-  default = "1"
+  description = "Cloudflare zone id"
 }
 
-variable "endpoints" {
+variable "service" {
   type = string
-  default = "/*"
-}
-variable "methods" {
-  type = list(string)
-  default = [
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE"
-  ]
 }
 
-variable "header" {
+variable "api_gateway" {
   type = string
-  default = "x-api-key"
-}
-
-variable "service_domain" {
-  type = string
-  default = "bytegum.com"
+  default = "devcloudapps-api.azure-api.net"
 }

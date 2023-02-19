@@ -16,6 +16,13 @@ resource "azurerm_subnet" "app_virtual_subnet" {
   address_prefixes     = [var.address_prefix]
 }
 
+resource "azurerm_subnet" "qw_subnet" {
+  name                 = "${var.prefix}-gw-subnet"
+  resource_group_name  = data.azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.app_virtual_network.name
+  address_prefixes     = [var.gw_address_prefix]
+}
+
 resource "azurerm_network_security_group" "vm_security_group" {
   name                = "${var.prefix}-net-sec-group"
   location            = data.azurerm_resource_group.rg.location

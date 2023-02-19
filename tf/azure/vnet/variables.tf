@@ -31,3 +31,8 @@ variable "address_prefix" {
   type = string
   default = "10.0.2.0/24"
 }
+
+variable "gw_address_prefix" {
+  type = string
+  default = "10.0.3.0/24"
+}
