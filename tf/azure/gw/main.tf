@@ -7,7 +7,7 @@ data "azurerm_virtual_network" "vnet" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-data "azurerm_subnet" "gw_subnets" {
+data "azurerm_subnet" "gw_subnet" {
   name                 = "${var.prefix}-gway-subnet"
   virtual_network_name = data.azurerm_virtual_network.vnet.name
   resource_group_name  = data.azurerm_virtual_network.vnet.resource_group_name
@@ -41,7 +41,7 @@ resource "azurerm_application_gateway" "gw_network" {
 
   gateway_ip_configuration {
     name      = "${var.prefix}-gw-ip-configuration"
-    subnet_id = data.azurerm_subnet.gw_subnets.id
+    subnet_id = data.azurerm_subnet.gw_subnet.id
   }
 
   frontend_port {

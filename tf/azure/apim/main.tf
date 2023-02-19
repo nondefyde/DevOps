@@ -7,8 +7,8 @@ data "azurerm_virtual_network" "vnet" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-data "azurerm_subnet" "gw_subnets" {
-  name                 = "${var.prefix}-gway-subnet"
+data "azurerm_subnet" "apim_subnets" {
+  name                 = "${var.prefix}-apim-subnet"
   virtual_network_name = data.azurerm_virtual_network.vnet.name
   resource_group_name  = data.azurerm_virtual_network.vnet.resource_group_name
 }
@@ -23,6 +23,6 @@ resource "azurerm_api_management" "apim" {
   virtual_network_type = "Internal"
 
   virtual_network_configuration {
-    subnet_id = data.azurerm_subnet.gw_subnets.id
+    subnet_id = data.azurerm_subnet.apim_subnets.id
   }
 }

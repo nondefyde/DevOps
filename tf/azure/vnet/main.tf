@@ -16,8 +16,15 @@ resource "azurerm_subnet" "app_virtual_subnet" {
   address_prefixes     = [var.address_prefix]
 }
 
-resource "azurerm_subnet" "qw_subnet" {
+resource "azurerm_subnet" "gw_subnet" {
   name                 = "${var.prefix}-gway-subnet"
+  resource_group_name  = data.azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.app_virtual_network.name
+  address_prefixes     = [var.gw_address_prefix]
+}
+
+resource "azurerm_subnet" "apim_subnet" {
+  name                 = "${var.prefix}-apim-subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.app_virtual_network.name
   address_prefixes     = [var.gw_address_prefix]
