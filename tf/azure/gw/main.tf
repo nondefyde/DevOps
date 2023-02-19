@@ -64,6 +64,7 @@ resource "azurerm_application_gateway" "gw_network" {
     name                  = "${var.prefix}-http-setting"
     cookie_based_affinity = "Disabled"
     port                  = 8000
+    path                  = "/"
     protocol              = "Http"
     request_timeout       = 60
   }
