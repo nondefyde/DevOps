@@ -7,7 +7,7 @@ services:
       - app-volume:/var/lib/app/content
     environment:
       NODE_ENV: staging
-      VIRTUAL_HOST: localhost
+      VIRTUAL_HOST: bytegum.com
     env_file:
       - ./.env
     ports:
