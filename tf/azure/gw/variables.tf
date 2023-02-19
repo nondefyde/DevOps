@@ -35,12 +35,12 @@ variable "api_suffixes" {
 
 variable "sku_name" {
   type = string
-  default = "Standard_Small"
+  default = "Standard_v2"
 }
 
 variable "sku_tier" {
   type = string
-  default = "Standard"
+  default = "Standard_v2"
 }
 
 variable "sku_capacity" {
