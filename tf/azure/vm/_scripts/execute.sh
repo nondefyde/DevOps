@@ -45,38 +45,38 @@ for i in $(seq 1 ${8}); do
     --name ${PROJECT}-${VM_NAME}-vm-$INDEX \
     --resource-group ${PROJECT}-group \
     --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
-#
-#  echo "Login Azure in VM ${4}-${7}-vm-$INDEX"
-#  az vm run-command invoke \
-#    --command-id RunShellScript \
-#    --name ${4}-${7}-vm-$INDEX \
-#    --resource-group ${4}-group \
-#    --scripts '
-#         az login --service-principal --username ${1} --password ${2} --tenant ${3}
-#      ' \
-#    --parameters ${1} ${2} ${3}
-#
-#  echo "Login docker on VM ${4}-${7}-vm-$INDEX"
-#    az vm run-command invoke \
-#      --command-id RunShellScript \
-#      --name ${4}-${7}-vm-$INDEX \
-#      --resource-group ${4}-group \
-#      --scripts '
-#        echo "Login docker"
-#        docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2
-#      ' \
-#      --parameters "${server}" "${accessToken}"
-#
-#  echo "Deploy Update on VM ${4}-${7}-vm-$INDEX"
-#  az vm run-command invoke \
-#    --command-id RunShellScript \
-#    --name ${4}-${7}-vm-$INDEX \
-#    --resource-group ${4}-group \
-#    --scripts '
-#      cd /home/$4/vm
-#      ls -a
-#      chmod +x deploy.sh
-#      ./deploy.sh $1 $2 $3 $4 $5
-#    ' \
-#    --parameters "${PROJECT}" "${IMAGE}" "${INSTANCE}" "${VM_USER}" "vm-app-"
+
+  echo "Login Azure in VM ${4}-${7}-vm-$INDEX"
+  az vm run-command invoke \
+    --command-id RunShellScript \
+    --name ${4}-${7}-vm-$INDEX \
+    --resource-group ${4}-group \
+    --scripts '
+         az login --service-principal --username ${1} --password ${2} --tenant ${3}
+      ' \
+    --parameters ${1} ${2} ${3}
+
+  echo "Login docker on VM ${4}-${7}-vm-$INDEX"
+    az vm run-command invoke \
+      --command-id RunShellScript \
+      --name ${4}-${7}-vm-$INDEX \
+      --resource-group ${4}-group \
+      --scripts '
+        echo "Login docker"
+        docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2
+      ' \
+      --parameters "${server}" "${accessToken}"
+
+  echo "Deploy Update on VM ${4}-${7}-vm-$INDEX"
+  az vm run-command invoke \
+    --command-id RunShellScript \
+    --name ${4}-${7}-vm-$INDEX \
+    --resource-group ${4}-group \
+    --scripts '
+      cd /home/$4/vm
+      ls -a
+      chmod +x deploy.sh
+      ./deploy.sh $1 $2 $3 $4 $5
+    ' \
+    --parameters "${PROJECT}" "${IMAGE}" "${INSTANCE}" "${VM_USER}" "vm-app-"
 done
