@@ -41,7 +41,7 @@ resource "azurerm_application_gateway" "gw_network" {
 
   gateway_ip_configuration {
     name      = "${var.prefix}-gw-ip-configuration"
-    subnet_id = azurerm_subnet.frontend.id
+    subnet_id = data.azurerm_subnet.gw_subnets.id
   }
 
   frontend_port {
