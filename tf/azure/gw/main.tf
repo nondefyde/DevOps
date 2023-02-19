@@ -25,8 +25,9 @@ resource "azurerm_public_ip" "gw_ip" {
   name                = "${var.prefix}-gw-pip"
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = data.azurerm_resource_group.rg.location
-  allocation_method   = "Static"
-  sku                 = "Standard"
+  allocation_method   = "Dynamic"
+#  allocation_method   = "Static"
+#  sku                 = "Standard"
 }
 
 # since these variables are re-used - a locals block makes this more maintainable
