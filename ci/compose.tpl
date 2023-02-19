@@ -7,7 +7,6 @@ services:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-
   app:
     image: {IMAGE}
     ports:
