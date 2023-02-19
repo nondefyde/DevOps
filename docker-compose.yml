@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: testdevstgacr.azurecr.io/quest/main:latest
+    image: node-server:latest
     volumes:
       - app-volume:/var/lib/app/content
     environment:
