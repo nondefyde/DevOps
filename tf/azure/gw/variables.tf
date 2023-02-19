@@ -32,3 +32,18 @@ variable "api_suffixes" {
   type    = string
   default = "quest:qst"
 }
+
+variable "sku_name" {
+  type = string
+  default = "Standard_Small"
+}
+
+variable "sku_tier" {
+  type = string
+  default = "Standard"
+}
+
+variable "sku_capacity" {
+  type = number
+  default = 2
+}
