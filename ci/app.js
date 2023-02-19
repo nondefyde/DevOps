@@ -10,6 +10,7 @@ app.get('/v1/ping', (req, res) => {
 app.get('/', (req, res) => {
 	res.status(200).json({
 		message: `Hello World! Confirm from ${process.env.NODE_ENV}`,
+		port: `Running port ${process.env.PORT}`,
 		headers: req.headers
 	});
 })

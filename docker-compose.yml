@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
   app:
-    image: node-server:latest
+    image: devcloudappsacr.azurecr.io/dev/main:latest
     volumes:
       - app-volume:/var/lib/app/content
     environment:
       NODE_ENV: staging
-      VIRTUAL_HOST: localhost
+      VIRTUAL_HOST: bytegum.localhost
     env_file:
       - ./.env
     ports:
@@ -20,7 +20,7 @@ services:
     image: jwilder/nginx-proxy:alpine
     container_name: nginx-proxy
     ports:
-      - "8000:80"
+      - "80:80"
       - "443:443"
     volumes:
       - "/etc/nginx/certs"
