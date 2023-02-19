@@ -87,6 +87,7 @@ resource "azurerm_application_gateway" "gw_network" {
     backend_address_pool_name  = "${var.prefix}-sink-pool"
     backend_http_settings_name = "${var.prefix}-http-setting"
     url_path_map_name          = "${var.prefix}-url-path-map"
+    priority                   = 100
   }
 
   url_path_map {
