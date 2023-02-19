@@ -259,4 +259,5 @@ jobs:
           ${{ env.project }} ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest \
           ${{ secrets.AZR_VM_APP_SECRET }} ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }} \
           ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }} adminuser localhost ${{ env.port }} \
-          ${{ env.environment }} ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['instanceCount'] }}
+          ${{ env.environment }}-${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }} \
+          ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['instanceCount'] }}
