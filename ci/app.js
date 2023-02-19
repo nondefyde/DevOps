@@ -8,7 +8,10 @@ app.get('/v1/ping', (req, res) => {
 })
 
 app.get('/', (req, res) => {
-	res.status(200).send(`Hello World! Confirm from ${process.env.NODE_ENV}`);
+	res.status(200).json({
+		message: `Hello World! Confirm from ${process.env.NODE_ENV}`,
+		request: req
+	});
 })
 
 app.listen(port, () => {
