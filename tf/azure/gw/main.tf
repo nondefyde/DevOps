@@ -8,7 +8,7 @@ data "azurerm_virtual_network" "vnet" {
 }
 
 data "azurerm_subnet" "gw_subnets" {
-  name                 = "${var.prefix}-gw-subnet"
+  name                 = "${var.prefix}-gway-subnet"
   virtual_network_name = data.azurerm_virtual_network.vnet.name
   resource_group_name  = data.azurerm_virtual_network.vnet.resource_group_name
 }

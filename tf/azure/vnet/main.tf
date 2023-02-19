@@ -17,7 +17,7 @@ resource "azurerm_subnet" "app_virtual_subnet" {
 }
 
 resource "azurerm_subnet" "qw_subnet" {
-  name                 = "${var.prefix}-gw-subnet"
+  name                 = "${var.prefix}-gway-subnet"
   resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.app_virtual_network.name
   address_prefixes     = [var.gw_address_prefix]
