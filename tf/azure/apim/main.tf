@@ -23,8 +23,6 @@ resource "azurerm_api_management" "apim" {
   virtual_network_type = "Internal"
 
   virtual_network_configuration {
-    subnet_id = azurerm_subnet.gw_subnets.id
+    subnet_id = data.azurerm_subnet.gw_subnets.id
   }
-
-  depends_on = [azurerm_subnet_network_security_group_association.nsg-assoc]
 }
