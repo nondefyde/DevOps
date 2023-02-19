@@ -4,6 +4,8 @@ echo "Project     : $1"
 echo "image       : $2"
 echo "App alias   : $3"
 
+echo "Deploy App $1"
+
 echo "Remove unused images as part of cleaning up"
 docker image prune -a -f
 
