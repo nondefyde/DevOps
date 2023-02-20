@@ -21,59 +21,21 @@ resource "azurerm_key_vault" "apim_keyvault" {
   resource_group_name = data.azurerm_resource_group.rg.name
   tenant_id           = var.tenant_id
   sku_name            = "premium"
+}
+
+resource "azurerm_key_vault" "apim_keyvault" {
+  name                = "${var.prefix}vautl"
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
+  tenant_id           = var.tenant_id
+  sku_name            = "premium"
 
 
   access_policy {
     tenant_id = var.tenant_id
     object_id = data.azurerm_client_config.current.object_id
-
-    certificate_permissions = [
-      "Create",
-      "Delete",
-      "DeleteIssuers",
-      "Get",
-      "GetIssuers",
-      "Import",
-      "List",
-      "ListIssuers",
-      "ManageContacts",
-      "ManageIssuers",
-      "SetIssuers",
-      "Update",
-    ]
-
-    key_permissions = [
-      "Backup",
-      "Create",
-      "Decrypt",
-      "Delete",
-      "Encrypt",
-      "Get",
-      "Import",
-      "List",
-      "Purge",
-      "Recover",
-      "Restore",
-      "Sign",
-      "UnwrapKey",
-      "Update",
-      "Verify",
-      "WrapKey",
-    ]
-
-    secret_permissions = [
-      "Backup",
-      "Delete",
-      "Get",
-      "List",
-      "Purge",
-      "Recover",
-      "Restore",
-      "Set",
-    ]
   }
 }
-
 
 resource "azurerm_api_management" "apim" {
   name                 = "${var.prefix}-api"
@@ -96,6 +58,59 @@ resource "azurerm_api_management" "apim" {
     azurerm_key_vault.apim_keyvault
   ]
 }
+
+resource "azurerm_key_vault_access_policy" "apim_keyvault_policy" {
+  key_vault_id = azurerm_key_vault.apim_keyvault.id
+
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_api_management.apim.identity[0].principal_id
+
+  certificate_permissions = [
+    "Create",
+    "Delete",
+    "DeleteIssuers",
+    "Get",
+    "GetIssuers",
+    "Import",
+    "List",
+    "ListIssuers",
+    "ManageContacts",
+    "ManageIssuers",
+    "SetIssuers",
+    "Update",
+  ]
+
+  key_permissions = [
+    "Backup",
+    "Create",
+    "Decrypt",
+    "Delete",
+    "Encrypt",
+    "Get",
+    "Import",
+    "List",
+    "Purge",
+    "Recover",
+    "Restore",
+    "Sign",
+    "UnwrapKey",
+    "Update",
+    "Verify",
+    "WrapKey",
+  ]
+
+  secret_permissions = [
+    "Backup",
+    "Delete",
+    "Get",
+    "List",
+    "Purge",
+    "Recover",
+    "Restore",
+    "Set",
+  ]
+}
+
 
 resource "azurerm_key_vault_certificate" "apim_certificate" {
   name         = "${var.prefix}-apim-certificate"
@@ -149,7 +164,7 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
   }
 }
 
-resource "azurerm_api_management_custom_domain" "example" {
+resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
   api_management_id = azurerm_api_management.apim.id
 
   gateway {
@@ -164,23 +179,23 @@ resource "azurerm_api_management_custom_domain" "example" {
 }
 
 
-resource "azurerm_private_dns_zone" "apim_dns_zonbe" {
+resource "azurerm_private_dns_zone" "apim_dns_zone" {
   name                = var.custom_domain
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
 resource "azurerm_private_dns_a_record" "dns_record" {
   name                = "api"
-  zone_name           = azurerm_private_dns_zone.example.name
-  resource_group_name = azurerm_private_dns_zone.example.resource_group_name
+  zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
+  resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
   ttl                 = 300
   records             = [azurerm_api_management.apim.private_ip_addresses]
 }
 
 resource "azurerm_private_dns_a_record" "dns_record" {
   name                = "portal"
-  zone_name           = azurerm_private_dns_zone.example.name
-  resource_group_name = azurerm_private_dns_zone.example.resource_group_name
+  zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
+  resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
   ttl                 = 300
   records             = ["10.0.0.5"]
 }
