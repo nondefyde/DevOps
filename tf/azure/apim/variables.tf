@@ -55,14 +55,6 @@ variable "address_prefix" {
   default = "10.0.5.0/24"
 }
 
-variable "account_id" {
-  type = string
-}
-
-variable "admin_password" {
-  type = string
-}
-
 variable "custom_domain" {
   type = string
 }

@@ -88,13 +88,6 @@ resource "azurerm_key_vault" "apim_keyvault" {
   }
 }
 
-resource "azurerm_key_vault_certificate_issuer" "apim_issuer" {
-  name         = "${var.prefix}-apim-issuer"
-  key_vault_id = azurerm_key_vault.apim_keyvault.id
-  account_id   = var.account_id
-  password     = var.admin_password
-}
-
 resource "azurerm_key_vault_certificate" "apim_certificate" {
   name         = "${var.prefix}-apim-certificate"
   key_vault_id = azurerm_key_vault.apim_keyvault.id
