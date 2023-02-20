@@ -25,8 +25,4 @@ resource "azurerm_api_management" "apim" {
   virtual_network_configuration {
     subnet_id = data.azurerm_subnet.apim_subnets.id
   }
-
-  depends_on = [
-    azurerm_key_vault.apim_keyvault
-  ]
 }
