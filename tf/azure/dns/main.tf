@@ -27,7 +27,7 @@ resource "azurerm_private_dns_a_record" "portal_dns_record" {
   zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
   resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
   ttl                 = 300
-  records             = data.azurerm_api_management.apim.private_ip_addresses.
+  records             = ["10.0.5.5"]
 }
 
 resource "azurerm_key_vault" "keyvault" {

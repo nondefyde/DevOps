@@ -356,57 +356,57 @@ jobs:
           echo "management_api_url=${{ env.management_api_url }}" >> $GITHUB_OUTPUT
           echo "portal_url=${{ env.portal_url }}" >> $GITHUB_OUTPUT
           echo "developer_portal_url=${{ env.developer_portal_url }}" >> $GITHUB_OUTPUT
-#  dns:
-#    name: 'DNS Configuration'
-#    needs: [ crg ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    outputs:
-#      key_vault_name: ${{ steps.set-output.outputs.key_vault_name }}
-#      apim_certificate_name: ${{ steps.set-output.outputs.apim_certificate_name }}
-#    env:
-#      dnsEnvFile: "dns.tfvars"
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: convert to json
-#        id: dnsjson
-#        uses: schdck/create-env-json@v1
-#        with:
-#          file-name: ${{ env.dnsEnvFile }}
-#          prefix: ${{ env.project }}
-#          group: ${{ needs.crg.outputs.rg_name }}
-#          service_domain: "stmapi.com"
-#          cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-#          cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-#
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: ${{ env.dnsEnvFile }}
-#          path: ${{ env.dnsEnvFile }}
-#
-#      - name: Instantiate Keys
-#        uses: ./.github/actions/tf-azure-script
-#        id: rg
-#        with:
-#          project: ${{ env.project }}
-#          envFile: ${{ env.dnsEnvFile }}
-#          key: ${{ env.project }}-kvu
-#          working-directory: "tf/azure/dns"
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#        continue-on-error: false
-#
-#      - name: Set output
-#        id: set-output
-#        run: |
-#          echo "key_vault_name=${{ env.key_vault_name }}" >> $GITHUB_OUTPUT
-#          echo "apim_certificate_name=${{ env.apim_certificate_name }}" >> $GITHUB_OUTPUT
-#
+  dns:
+    name: 'DNS Configuration'
+    needs: [ crg ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      key_vault_name: ${{ steps.set-output.outputs.key_vault_name }}
+      apim_certificate_name: ${{ steps.set-output.outputs.apim_certificate_name }}
+    env:
+      dnsEnvFile: "dns.tfvars"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: convert to json
+        id: dnsjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.dnsEnvFile }}
+          prefix: ${{ env.project }}
+          group: ${{ needs.crg.outputs.rg_name }}
+          service_domain: "stmapi.com"
+          cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.dnsEnvFile }}
+          path: ${{ env.dnsEnvFile }}
+
+      - name: Instantiate Keys
+        uses: ./.github/actions/tf-azure-script
+        id: rg
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.dnsEnvFile }}
+          key: ${{ env.project }}-kvu
+          working-directory: "tf/azure/dns"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "key_vault_name=${{ env.key_vault_name }}" >> $GITHUB_OUTPUT
+          echo "apim_certificate_name=${{ env.apim_certificate_name }}" >> $GITHUB_OUTPUT
+
 #  apimp:
 #    name: Api Services ${{ matrix.items }}
 #    needs: [ envs, crg, apim ]
