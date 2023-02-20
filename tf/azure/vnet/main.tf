@@ -84,12 +84,12 @@ resource "azurerm_network_security_group" "apim_security_group" {
   }
 }
 
-resource "azurerm_subnet_network_security_group_association" "nsg-assoc" {
+resource "azurerm_subnet_network_security_group_association" "nsg-assoc_gw" {
   subnet_id                 = azurerm_subnet.gw_subnet.id
   network_security_group_id = azurerm_network_security_group.apim_security_group.id
 }
 
-resource "azurerm_subnet_network_security_group_association" "nsg-assoc" {
+resource "azurerm_subnet_network_security_group_association" "nsg-assoc_apim" {
   subnet_id                 = azurerm_subnet.apim_subnet.id
   network_security_group_id = azurerm_network_security_group.apim_security_group.id
 }
