@@ -34,7 +34,7 @@ resource "azurerm_key_vault" "apim_keyvault" {
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
+    tenant_id = var.tenant_id
     object_id = data.azurerm_client_config.current.object_id
 
     certificate_permissions = [
@@ -93,7 +93,7 @@ resource "azurerm_key_vault_certificate_issuer" "apim_issuer" {
 
 resource "azurerm_key_vault_certificate" "apim_certificate" {
   name         = "${var.prefix}-apim-certificate"
-  key_vault_id = data.azurerm_key_vault.example.id
+  key_vault_id = azurerm_key_vault.apim_keyvault.id
   certificate_policy {
     issuer_parameters {
       name = "Self"
