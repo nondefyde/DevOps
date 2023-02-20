@@ -18,7 +18,7 @@ resource "azurerm_private_dns_a_record" "api_dns_record" {
   name                = var.gateway_subdomain
   zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
   resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
-  ttl                 = 300
+  ttl                 = 3600
   records             = data.azurerm_api_management.apim.private_ip_addresses
 }
 
@@ -26,8 +26,8 @@ resource "azurerm_private_dns_a_record" "portal_dns_record" {
   name                = var.portal_subdomain
   zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
   resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
-  ttl                 = 300
-  records             = ["10.0.5.5"]
+  ttl                 = 3600
+  records             = data.azurerm_api_management.apim.private_ip_addresses
 }
 
 resource "azurerm_key_vault" "keyvault" {
