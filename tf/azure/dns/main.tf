@@ -84,6 +84,11 @@ resource "azurerm_key_vault" "keyvault" {
       "Set",
     ]
   }
+
+  depends_on = [
+    azurerm_private_dns_a_record.api_dns_record,
+    azurerm_private_dns_a_record.portal_dns_record
+  ]
 }
 
 resource "azurerm_key_vault_certificate" "apim_certificate" {
