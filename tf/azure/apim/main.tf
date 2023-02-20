@@ -2,6 +2,8 @@ data "azurerm_resource_group" "rg" {
   name = var.group
 }
 
+data "azurerm_client_config" "current" {}
+
 data "azurerm_virtual_network" "vnet" {
   name                = "${var.prefix}-network"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -31,22 +33,73 @@ resource "azurerm_key_vault" "apim_keyvault" {
   name                = "${var.prefix}-apim-keyvault"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
+
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    certificate_permissions = [
+      "Create",
+      "Delete",
+      "DeleteIssuers",
+      "Get",
+      "GetIssuers",
+      "Import",
+      "List",
+      "ListIssuers",
+      "ManageContacts",
+      "ManageIssuers",
+      "SetIssuers",
+      "Update",
+    ]
+
+    key_permissions = [
+      "Backup",
+      "Create",
+      "Decrypt",
+      "Delete",
+      "Encrypt",
+      "Get",
+      "Import",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Sign",
+      "UnwrapKey",
+      "Update",
+      "Verify",
+      "WrapKey",
+    ]
+
+    secret_permissions = [
+      "Backup",
+      "Delete",
+      "Get",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Set",
+    ]
+  }
 }
 
 resource "azurerm_key_vault_certificate_issuer" "apim_issuer" {
   name         = "${var.prefix}-apim-issuer"
-  key_vault_id = azurerm_key_vault.example_keyvault.id
+  key_vault_id = azurerm_key_vault.apim_keyvault.id
   account_id   = var.account_id
   password     = var.admin_password
 }
 
 resource "azurerm_key_vault_certificate" "apim_certificate" {
   name               = "${var.prefix}-apim-certificate"
-  key_vault_id       = azurerm_key_vault.example_keyvault.id
+  key_vault_id       = azurerm_key_vault.apim_keyvault.id
   certificate_type   = "application/x-pkcs12"
   subject            = "CN=${var.custom_domain}"
   validity_in_months = 12
-  issuer_id          = azurerm_key_vault_certificate_issuer.example_issuer.id
+  issuer_id          = azurerm_key_vault_certificate_issuer.apim_issuer.id
 }
 
 resource "azurerm_api_management_custom_domain" "example_domain" {
