@@ -138,8 +138,6 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
   }
 }
 
-
-
 resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
   api_management_id = data.azurerm_api_management.apim.id
 

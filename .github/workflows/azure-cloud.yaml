@@ -358,7 +358,7 @@ jobs:
           echo "developer_portal_url=${{ env.developer_portal_url }}" >> $GITHUB_OUTPUT
   dns:
     name: 'DNS Configuration'
-    needs: [ crg ]
+    needs: [ envs, crg, apim ]
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
