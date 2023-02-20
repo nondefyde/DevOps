@@ -74,5 +74,4 @@ variable "header" {
 
 variable "service_domain" {
   type = string
-  default = "bytegum.com"
 }

@@ -29,13 +29,15 @@
         "name": "Quest API",
         "suffix": "qt",
         "endpoints": "/*",
-        "header": "x-api-key"
+        "header": "x-api-key",
+        "service_domain": "https://bytegum.com"
       },
       "room": {
         "name": "Room API",
         "suffix": "rm",
         "endpoints": "/*",
-        "header": "x-api-key"
+        "header": "x-api-key",
+        "service_domain": "https://bytegum.com"
       }
     }
   }

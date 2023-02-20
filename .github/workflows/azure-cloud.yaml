@@ -466,72 +466,73 @@ jobs:
           echo "developer_portal_url=${{ env.developer_portal_url }}" >> $GITHUB_OUTPUT
 
 
-#  apimp:
-#    name: Api Services ${{ matrix.items }}
-#    needs: [ envs, crg, apim ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    env:
-#      api_names: ${{ needs.envs.outputs.api_names }}
-#      apimpEnvFile: "apimp-${{ matrix.items }}.tfvars"
-#    outputs:
-#      apim_id: ${{ steps.set-output.outputs.apim_id }}
-#    strategy:
-#      matrix:
-#        items: ${{ fromJSON(needs.envs.outputs.api_names) }}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Get cloud config
-#        id: apimp-cloud-config
-#        uses: ActionsTools/read-json-action@main
-#        with:
-#          file_path: ${{ env.configFile }}
-#          prop_path: "api-management"
-#
-#      - name: Print VM Info
-#        id: vm-info
-#        run: |
-#          echo "publisher name ${{ steps.apimp-cloud-config.outputs.publisher_name }}"
-#          echo "publisher email ${{ steps.apimp-cloud-config.outputs.publisher_email }}"
-#          echo "publisher api ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['name'] }}"
-#
-#      - name: convert to json
-#        id: apimpjson
-#        uses: schdck/create-env-json@v1
-#        with:
-#          file-name: ${{ env.apimpEnvFile }}
-#          prefix: ${{ env.project }}
-#          group: ${{ needs.crg.outputs.rg_name }}
-#          name: ${{ matrix.items }}
-#          display_name: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['name'] }}
-#          suffix: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['suffix'] }}
-#          endpoints: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['endpoints'] }}
-#          header: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['header'] }}
-#
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: ${{ env.apimpEnvFile }}
-#          path: ${{ env.apimpEnvFile }}
-#
-#      - name: Api Setups
-#        uses: ./.github/actions/tf-azure-script
-#        id: apim
-#        with:
-#          project: ${{ env.project }}
-#          envFile: ${{ env.apimpEnvFile }}
-#          key: ${{ env.project }}-${{ matrix.items }}-apimp
-#          working-directory: "tf/azure/apimp"
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#        continue-on-error: false
-#
-#      - name: Set output
-#        id: set-output
-#        run: |
-#          echo "api_management_api_name=${{ env.api_management_api_name }}" >> $GITHUB_OUTPUT
-#          echo "api_management_api_id=${{ env.api_management_api_id }}" >> $GITHUB_OUTPUT
+  apimp:
+    name: Api Services ${{ matrix.items }}
+    needs: [ envs, crg, apim ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      api_names: ${{ needs.envs.outputs.api_names }}
+      apimpEnvFile: "apimp-${{ matrix.items }}.tfvars"
+    outputs:
+      apim_id: ${{ steps.set-output.outputs.apim_id }}
+    strategy:
+      matrix:
+        items: ${{ fromJSON(needs.envs.outputs.api_names) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get cloud config
+        id: apimp-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "api-management"
+
+      - name: Print VM Info
+        id: vm-info
+        run: |
+          echo "publisher name ${{ steps.apimp-cloud-config.outputs.publisher_name }}"
+          echo "publisher email ${{ steps.apimp-cloud-config.outputs.publisher_email }}"
+          echo "publisher api ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['name'] }}"
+
+      - name: convert to json
+        id: apimpjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.apimpEnvFile }}
+          prefix: ${{ env.project }}
+          group: ${{ needs.crg.outputs.rg_name }}
+          name: ${{ matrix.items }}
+          display_name: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['name'] }}
+          suffix: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['suffix'] }}
+          endpoints: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['endpoints'] }}
+          header: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['header'] }}
+          service_domain: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['service_domain'] }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.apimpEnvFile }}
+          path: ${{ env.apimpEnvFile }}
+
+      - name: Api Setups
+        uses: ./.github/actions/tf-azure-script
+        id: apim
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.apimpEnvFile }}
+          key: ${{ env.project }}-${{ matrix.items }}-apimp
+          working-directory: "tf/azure/apimp"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "api_management_api_name=${{ env.api_management_api_name }}" >> $GITHUB_OUTPUT
+          echo "api_management_api_id=${{ env.api_management_api_id }}" >> $GITHUB_OUTPUT
