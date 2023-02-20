@@ -33,8 +33,6 @@ resource "azurerm_key_vault" "apim_keyvault" {
   name                = "${var.prefix}-apim-keyvault"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
-
-
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
@@ -94,19 +92,67 @@ resource "azurerm_key_vault_certificate_issuer" "apim_issuer" {
 }
 
 resource "azurerm_key_vault_certificate" "apim_certificate" {
-  name               = "${var.prefix}-apim-certificate"
-  key_vault_id       = azurerm_key_vault.apim_keyvault.id
-  certificate_type   = "application/x-pkcs12"
-  subject            = "CN=${var.custom_domain}"
-  validity_in_months = 12
-  issuer_id          = azurerm_key_vault_certificate_issuer.apim_issuer.id
+  name         = "${var.prefix}-apim-certificate"
+  key_vault_id = data.azurerm_key_vault.example.id
+  certificate_policy {
+    issuer_parameters {
+      name = "Self"
+    }
+
+    key_properties {
+      exportable = true
+      key_size   = 2048
+      key_type   = "RSA"
+      reuse_key  = true
+    }
+
+    lifetime_action {
+      action {
+        action_type = "AutoRenew"
+      }
+
+      trigger {
+        days_before_expiry = 30
+      }
+    }
+
+    secret_properties {
+      content_type = "application/x-pkcs12"
+    }
+
+    x509_certificate_properties {
+      key_usage = [
+        "cRLSign",
+        "dataEncipherment",
+        "digitalSignature",
+        "keyAgreement",
+        "keyCertSign",
+        "keyEncipherment",
+      ]
+
+      subject            = "CN=${var.custom_domain}"
+      validity_in_months = 12
+
+      subject_alternative_names {
+        dns_names = [
+          "api.example.com",
+          "portal.example.com",
+        ]
+      }
+    }
+  }
 }
 
-resource "azurerm_api_management_custom_domain" "example_domain" {
-  name                   = "${var.prefix}-apim-cust-domain"
-  resource_group_name    = data.azurerm_resource_group.rg.name
-  api_management_name    = azurerm_api_management.apim.name
-  hostname               = var.custom_domain
-  certificate_thumbprint = azurerm_key_vault_certificate.apim_certificate.thumbprint
-  certificate_name       = azurerm_key_vault_certificate.apim_certificate.name
+resource "azurerm_api_management_custom_domain" "example" {
+  api_management_id = azurerm_api_management.apim.id
+
+  gateway {
+    host_name    = "api-${var.custom_domain}"
+    key_vault_id = azurerm_key_vault_certificate.apim_certificate.secret_id
+  }
+
+  developer_portal {
+    host_name    = "portal-${var.custom_domain}"
+    key_vault_id = azurerm_key_vault_certificate.apim_certificate.secret_id
+  }
 }
