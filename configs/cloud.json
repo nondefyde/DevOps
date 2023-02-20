@@ -1,5 +1,5 @@
 {
-  "prefix": "bcloudappsdev",
+  "prefix": "dcloudappsdev",
   "location": "centralus",
   "environment": "development",
   "resource-group": {
