@@ -42,7 +42,12 @@ resource "azurerm_network_security_group" "apim_security_group" {
     destination_address_prefix = "*"
   }
 
-  depends_on = [azurerm_subnet.apim_subnet]
+  depends_on = [data.azurerm_subnet.apim_subnets]
+}
+
+resource "azurerm_subnet_network_security_group_association" "nsg-assoc" {
+  subnet_id                 = azurerm_subnet.gw_subnets.id
+  network_security_group_id = azurerm_network_security_group.apim_security_group.id
 }
 
 resource "azurerm_api_management" "apim" {
@@ -57,9 +62,4 @@ resource "azurerm_api_management" "apim" {
   virtual_network_configuration {
     subnet_id = data.azurerm_subnet.apim_subnets.id
   }
-}
-
-resource "azurerm_subnet_network_security_group_association" "nsg-assoc" {
-  subnet_id                 = azurerm_subnet.gw_subnets.id
-  network_security_group_id = azurerm_network_security_group.apim_security_group.id
 }
