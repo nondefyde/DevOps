@@ -465,7 +465,6 @@ jobs:
           echo "portal_url=${{ env.portal_url }}" >> $GITHUB_OUTPUT
           echo "developer_portal_url=${{ env.developer_portal_url }}" >> $GITHUB_OUTPUT
 
-
   apimp:
     name: Api Services ${{ matrix.items }}
     needs: [ envs, crg, apim ]
