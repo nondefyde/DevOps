@@ -1,4 +1,7 @@
-output "cf_vm_ssl_record" {
-  value     = cloudflare_certificate_pack.cf_vm_ssl_record.hosts
+output "key_vault_name" {
+  value = azurerm_key_vault.keyvault.name
 }
 
+output "apim_certificate_name" {
+  value = azurerm_key_vault_certificate.apim_certificate.name
+}

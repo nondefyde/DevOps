@@ -3,10 +3,6 @@ variable "prefix" {
   description = "The prefix for the resource group"
 }
 
-variable "location" {
-  type = string
-}
-
 variable "subscription_id" {
   type        = string
   description = "Azure Resource Manager Subscription ID"
@@ -27,23 +23,9 @@ variable "client_secret" {
   description = "Client ID"
 }
 
-variable "public_ip" {
-  type        = string
-  description = "Azure Resource Manager Subscription ID"
-}
-
-variable "public_ip_id" {
+variable "cloudflare_api_token" {
   type = string
-}
-
-variable "public_ip_dns_name" {
-  type        = string
-  description = "public dns for cname"
-}
-
-variable "dns_domain" {
-  type = string
-  description = "DNS domain"
+  description = "Cloudflare api token"
 }
 
 variable "cloudflare_zone_id" {
@@ -51,11 +33,11 @@ variable "cloudflare_zone_id" {
   description = "Cloudflare zone id"
 }
 
-variable "service" {
+
+variable "group" {
   type = string
 }
 
-variable "api_gateway" {
+variable "service_domain" {
   type = string
-  default = "devcloudapps-api.azure-api.net"
 }

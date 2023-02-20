@@ -47,3 +47,8 @@ variable "sku_capacity" {
   type = number
   default = 2
 }
+
+variable "private_ip" {
+  type = string
+  default = "10.0.3.5"
+}

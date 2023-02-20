@@ -1,5 +1,5 @@
 {
-  "prefix": "gcloudappsdev",
+  "prefix": "hcloudappsdev",
   "location": "centralus",
   "environment": "development",
   "resource-group": {

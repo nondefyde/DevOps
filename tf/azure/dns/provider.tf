@@ -1,10 +1,12 @@
 terraform {
+  backend "azurerm" {}
   required_version = ">=1.0.8"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "3.41.0"
     }
+
     cloudflare = {
       source  = "cloudflare/cloudflare"
       version = "3.30.0"
@@ -18,4 +20,8 @@ provider "azurerm" {
   tenant_id       = var.tenant_id
   client_id       = var.client_id
   client_secret   = var.client_secret
+}
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
 }

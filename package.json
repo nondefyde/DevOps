@@ -87,6 +87,11 @@
     "az:apply:bst": "cd ./tf/azure/_scripts && ./apply.sh bst testdevstg",
     "az:execute:bst": "yarn az:prepare:bst && yarn az:apply:bst",
 
-    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm && yarn az:execute:bst"
+    "az:prepare:kvu": "cd ./tf/azure/_scripts && ./prepare.sh kvu testdevstg",
+    "az:apply:kvu": "cd ./tf/azure/_scripts && ./apply.sh kvu testdevstg",
+    "az:execute:kvu": "yarn az:prepare:kvu && yarn az:apply:kvu",
+
+    "az:apply:all": "yarn az:setup && yarn az:execute:rg && yarn az:execute:vnet && yarn az:execute:vm && yarn az:execute:gw && az:prepare:gwc && yarn az:execute:bst",
+    "az:apply:kvault": "yarn az:setup && yarn az:execute:rg && yarn az:execute:kvu"
   }
 }
