@@ -135,8 +135,8 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
 
       subject_alternative_names {
         dns_names = [
-          "api.example.com",
-          "portal.example.com",
+          "api-${var.custom_domain}",
+          "portal-${var.custom_domain}"
         ]
       }
     }
