@@ -46,7 +46,7 @@ resource "azurerm_network_security_group" "apim_security_group" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg-assoc" {
-  subnet_id                 = data.azurerm_subnet.gw_subnets.id
+  subnet_id                 = data.azurerm_subnet.apim_subnets.id
   network_security_group_id = azurerm_network_security_group.apim_security_group.id
 }
 
