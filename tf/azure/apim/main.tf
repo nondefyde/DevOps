@@ -185,11 +185,3 @@ resource "azurerm_private_dns_a_record" "dns_record" {
   ttl                 = 300
   records             = [azurerm_api_management.apim.private_ip_addresses]
 }
-
-resource "azurerm_private_dns_a_record" "dns_record" {
-  name                = "portal"
-  zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
-  resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
-  ttl                 = 300
-  records             = ["10.0.0.5"]
-}
