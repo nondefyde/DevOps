@@ -55,7 +55,7 @@ resource "azurerm_subnet_network_security_group_association" "nsg-assoc" {
 
 
 resource "azurerm_network_security_group" "apim_security_group" {
-  name                = "${var.prefix}-apim-net-group"
+  name                = "${var.prefix}-net-group"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
 
