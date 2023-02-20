@@ -153,12 +153,34 @@ resource "azurerm_api_management_custom_domain" "example" {
   api_management_id = azurerm_api_management.apim.id
 
   gateway {
-    host_name    = "api-${var.custom_domain}"
+    host_name    = "api.${var.custom_domain}"
     key_vault_id = azurerm_key_vault_certificate.apim_certificate.secret_id
   }
 
   developer_portal {
-    host_name    = "portal-${var.custom_domain}"
+    host_name    = "portal.${var.custom_domain}"
     key_vault_id = azurerm_key_vault_certificate.apim_certificate.secret_id
   }
+}
+
+
+resource "azurerm_private_dns_zone" "apim_dns_zonbe" {
+  name                = var.custom_domain
+  resource_group_name = data.azurerm_resource_group.rg.name
+}
+
+resource "azurerm_private_dns_a_record" "dns_record" {
+  name                = "api"
+  zone_name           = azurerm_private_dns_zone.example.name
+  resource_group_name = azurerm_private_dns_zone.example.resource_group_name
+  ttl                 = 300
+  records             = [azurerm_api_management.apim.private_ip_addresses]
+}
+
+resource "azurerm_private_dns_a_record" "dns_record" {
+  name                = "portal"
+  zone_name           = azurerm_private_dns_zone.example.name
+  resource_group_name = azurerm_private_dns_zone.example.resource_group_name
+  ttl                 = 300
+  records             = ["10.0.0.5"]
 }

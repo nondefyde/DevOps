@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  project: ecloudappsdev
+  project: fcloudappsdev
   location: centralus
   configFile: "configs/cloud.json"
 
@@ -433,7 +433,7 @@ jobs:
           environment: ${{ needs.envs.outputs.environment }}
           capacity: ${{steps.apim-cloud-config.outputs.capacity }}
           sku: ${{steps.apim-cloud-config.outputs.sku }}
-          custom_domain: "stmapi.azure-api.com"
+          custom_domain: "stmapi.com"
           publisher_name: ${{steps.apim-cloud-config.outputs.publisher_name }}
           publisher_email: ${{steps.apim-cloud-config.outputs.publisher_email}}
 
