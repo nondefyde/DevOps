@@ -31,7 +31,7 @@ resource "azurerm_private_dns_a_record" "portal_dns_record" {
 }
 
 resource "azurerm_key_vault" "keyvault" {
-  name                = "${var.prefix}vaults"
+  name                = "${var.prefix}vault"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   tenant_id           = var.tenant_id
@@ -39,8 +39,8 @@ resource "azurerm_key_vault" "keyvault" {
 
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
-#    object_id = data.azurerm_api_management.apim.identity[0].principal_id
+#    object_id = data.azurerm_client_config.current.object_id
+    object_id = data.azurerm_api_management.apim.identity[0].principal_id
 
     certificate_permissions = [
       "Create",
@@ -93,7 +93,7 @@ resource "azurerm_key_vault" "keyvault" {
 }
 
 resource "azurerm_key_vault_certificate" "apim_certificate" {
-  name         = "${var.prefix}-apim-certificate"
+  name         = "${var.prefix}-apim-cert"
   key_vault_id = azurerm_key_vault.keyvault.id
   certificate_policy {
     issuer_parameters {
