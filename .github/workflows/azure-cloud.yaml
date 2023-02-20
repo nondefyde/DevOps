@@ -14,7 +14,7 @@ permissions:
 #  cancel-in-progress: true
 
 env:
-  project: fcloudappsdev
+  project: ecloudappsdev
   location: centralus
   configFile: "configs/cloud.json"
 
