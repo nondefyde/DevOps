@@ -131,7 +131,7 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
         "keyEncipherment",
       ]
 
-      subject            = "CN=${var.apim_domain}"
+      subject            = "CN=*.${var.apim_domain}"
       validity_in_months = 12
 
       subject_alternative_names {
