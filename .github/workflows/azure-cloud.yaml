@@ -377,7 +377,7 @@ jobs:
           file-name: ${{ env.dnsEnvFile }}
           prefix: ${{ env.project }}
           group: ${{ needs.crg.outputs.rg_name }}
-          apim_domain: "apim.stmapi.com"
+          apim_domain: "stmapi.com"
           cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
 
