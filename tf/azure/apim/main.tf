@@ -33,6 +33,10 @@ resource "azurerm_key_vault" "apim_keyvault" {
   name                = "${var.prefix}-apim-keyvault"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
+  tenant_id           = var.tenant_id
+  sku_name            = "premium"
+
+
   access_policy {
     tenant_id = var.tenant_id
     object_id = data.azurerm_client_config.current.object_id
