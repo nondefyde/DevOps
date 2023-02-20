@@ -43,18 +43,46 @@ resource "azurerm_key_vault" "keyvault" {
 #    object_id = data.azurerm_api_management.apim.identity[0].principal_id
 
     certificate_permissions = [
-      "get",
-      "list",
+      "Create",
+      "Delete",
+      "DeleteIssuers",
+      "Get",
+      "GetIssuers",
+      "Import",
+      "List",
+      "ListIssuers",
+      "ManageContacts",
+      "ManageIssuers",
+      "SetIssuers",
+      "Update",
     ]
-
     key_permissions = [
-      "get",
-      "list",
+      "Backup",
+      "Create",
+      "Decrypt",
+      "Delete",
+      "Encrypt",
+      "Get",
+      "Import",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Sign",
+      "UnwrapKey",
+      "Update",
+      "Verify",
+      "WrapKey",
     ]
-
     secret_permissions = [
-      "get",
-      "list",
+      "Backup",
+      "Delete",
+      "Get",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Set",
     ]
   }
 
