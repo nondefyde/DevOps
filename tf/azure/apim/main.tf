@@ -30,7 +30,7 @@ resource "azurerm_api_management" "apim" {
 }
 
 resource "azurerm_key_vault" "apim_keyvault" {
-  name                = "${var.prefix}apimkeyvault"
+  name                = "${var.prefix}apimvautl"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   tenant_id           = var.tenant_id
