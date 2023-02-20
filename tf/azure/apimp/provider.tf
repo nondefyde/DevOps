@@ -4,13 +4,15 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.43.0"
+      version = "3.44.1"
     }
   }
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    purge_soft_deleted_certificates_on_destroy: true
+  }
   subscription_id = var.subscription_id
   tenant_id       = var.tenant_id
   client_id       = var.client_id
