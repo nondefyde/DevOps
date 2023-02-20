@@ -31,7 +31,7 @@ resource "azurerm_private_dns_a_record" "portal_dns_record" {
 }
 
 resource "azurerm_key_vault" "keyvault" {
-  name                = "${var.prefix}vault"
+  name                = "${var.prefix}vaults"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   tenant_id           = var.tenant_id
