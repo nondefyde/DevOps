@@ -54,7 +54,3 @@ variable "address_prefix" {
   type = string
   default = "10.0.5.0/24"
 }
-
-variable "custom_domain" {
-  type = string
-}

@@ -4,74 +4,86 @@ data "azurerm_resource_group" "rg" {
 
 data "azurerm_client_config" "current" {}
 
-resource "cloudflare_cert_manager_certificate" "ssl_cert" {
-  zone_id          = var
-  common_name      = var.service_domain
-  method           = "dns"
-  dns_names        = [var.service_domain]
-  expiration_days  = 90
-  cloudflare_api_key= var.cloudflare_api_token
+data "azurerm_api_management" "apim" {
+  name                = "${var.prefix}-api"
+  resource_group_name = data.azurerm_resource_group.rg.name
+}
+
+resource "azurerm_private_dns_zone" "apim_dns_zone" {
+  name                = var.apim_domain
+  resource_group_name = data.azurerm_resource_group.rg.name
+}
+
+resource "azurerm_private_dns_a_record" "api_dns_record" {
+  name                = var.gateway_subdomain
+  zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
+  resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
+  ttl                 = 300
+  records             = data.azurerm_api_management.apim.private_ip_addresses
+}
+
+resource "azurerm_private_dns_a_record" "portal_dns_record" {
+  name                = var.portal_subdomain
+  zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
+  resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
+  ttl                 = 300
+  records             = data.azurerm_api_management.apim.private_ip_addresses.
 }
 
 resource "azurerm_key_vault" "keyvault" {
-  name                = "${var.prefix}vautl"
+  name                = "${var.prefix}vault"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   tenant_id           = var.tenant_id
   sku_name            = "premium"
-}
 
-resource "azurerm_key_vault_access_policy" "keyvault_policy" {
-  key_vault_id = azurerm_key_vault.keyvault.id
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
 
-  tenant_id    = var.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
-  certificate_permissions = [
-    "Create",
-    "Delete",
-    "DeleteIssuers",
-    "Get",
-    "GetIssuers",
-    "Import",
-    "List",
-    "ListIssuers",
-    "ManageContacts",
-    "ManageIssuers",
-    "SetIssuers",
-    "Update",
-  ]
-
-  key_permissions = [
-    "Backup",
-    "Create",
-    "Decrypt",
-    "Delete",
-    "Encrypt",
-    "Get",
-    "Import",
-    "List",
-    "Purge",
-    "Recover",
-    "Restore",
-    "Sign",
-    "UnwrapKey",
-    "Update",
-    "Verify",
-    "WrapKey",
-  ]
-
-  secret_permissions = [
-    "Backup",
-    "Delete",
-    "Get",
-    "List",
-    "Purge",
-    "Recover",
-    "Restore",
-    "Set",
-  ]
-
-  depends_on = [azurerm_key_vault.keyvault]
+    certificate_permissions = [
+      "Create",
+      "Delete",
+      "DeleteIssuers",
+      "Get",
+      "GetIssuers",
+      "Import",
+      "List",
+      "ListIssuers",
+      "ManageContacts",
+      "ManageIssuers",
+      "SetIssuers",
+      "Update",
+    ]
+    key_permissions = [
+      "Backup",
+      "Create",
+      "Decrypt",
+      "Delete",
+      "Encrypt",
+      "Get",
+      "Import",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Sign",
+      "UnwrapKey",
+      "Update",
+      "Verify",
+      "WrapKey",
+    ]
+    secret_permissions = [
+      "Backup",
+      "Delete",
+      "Get",
+      "List",
+      "Purge",
+      "Recover",
+      "Restore",
+      "Set",
+    ]
+  }
 }
 
 resource "azurerm_key_vault_certificate" "apim_certificate" {
@@ -113,13 +125,13 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
         "keyEncipherment",
       ]
 
-      subject            = "CN=${var.apim_custom_domain}"
+      subject            = "CN=${var.apim_domain}"
       validity_in_months = 12
 
       subject_alternative_names {
         dns_names = [
-          "api-${var.apim_custom_domain}",
-          "portal-${var.apim_custom_domain}"
+          "api-${var.apim_domain}",
+          "portal-${var.apim_domain}"
         ]
       }
     }
@@ -129,30 +141,16 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
 
 
 resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
-  api_management_id = azurerm_api_management.apim.id
+  api_management_id = data.azurerm_api_management.apim.id
 
   gateway {
-    host_name    = "api.${var.custom_domain}"
+    host_name    = "api.${var.apim_domain}"
     key_vault_id = azurerm_key_vault_certificate.apim_certificate.secret_id
   }
 
   developer_portal {
-    host_name    = "portal.${var.custom_domain}"
+    host_name    = "portal.${var.apim_domain}"
     key_vault_id = azurerm_key_vault_certificate.apim_certificate.secret_id
   }
-}
-
-
-resource "azurerm_private_dns_zone" "apim_dns_zone" {
-  name                = var.custom_domain
-  resource_group_name = data.azurerm_resource_group.rg.name
-}
-
-resource "azurerm_private_dns_a_record" "api_dns_record" {
-  name                = "api"
-  zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
-  resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
-  ttl                 = 300
-  records             = azurerm_api_management.apim.private_ip_addresses
 }
 
