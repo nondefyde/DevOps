@@ -23,14 +23,6 @@ resource "azurerm_key_vault" "apim_keyvault" {
   sku_name            = "premium"
 }
 
-resource "azurerm_key_vault" "apim_keyvault" {
-  name                = "${var.prefix}vautl"
-  location            = data.azurerm_resource_group.rg.location
-  resource_group_name = data.azurerm_resource_group.rg.name
-  tenant_id           = var.tenant_id
-  sku_name            = "premium"
-}
-
 resource "azurerm_api_management" "apim" {
   name                 = "${var.prefix}-api"
   location             = data.azurerm_resource_group.rg.location
@@ -178,7 +170,7 @@ resource "azurerm_private_dns_zone" "apim_dns_zone" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-resource "azurerm_private_dns_a_record" "dns_record" {
+resource "azurerm_private_dns_a_record" "api_dns_record" {
   name                = "api"
   zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
   resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name

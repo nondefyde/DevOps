@@ -9,12 +9,12 @@ permissions:
   id-token: write
   contents: read
 
-#concurrency:
-#  group: ${{ github.workflow }}-${{ github.ref }}
-#  cancel-in-progress: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
-  project: ecloudappsdev
+  project: gcloudappsdev
   location: centralus
   configFile: "configs/cloud.json"
 
