@@ -65,5 +65,4 @@ variable "admin_password" {
 
 variable "custom_domain" {
   type = string
-  default = "stm.azure-api.com"
 }
