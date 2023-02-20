@@ -433,6 +433,7 @@ jobs:
           environment: ${{ needs.envs.outputs.environment }}
           capacity: ${{steps.apim-cloud-config.outputs.capacity }}
           sku: ${{steps.apim-cloud-config.outputs.sku }}
+          custom_domain: "stmapi.azure-api.com"
           account_id: "nondefyde@gmail.com"
           admin_password: ${{ secrets.VM_PASSWORD }}
           publisher_name: ${{steps.apim-cloud-config.outputs.publisher_name }}
