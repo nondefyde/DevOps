@@ -175,5 +175,5 @@ resource "azurerm_private_dns_a_record" "api_dns_record" {
   zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
   resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
   ttl                 = 300
-  records             = [azurerm_api_management.apim.private_ip_addresses]
+  records             = azurerm_api_management.apim.private_ip_addresses
 }
