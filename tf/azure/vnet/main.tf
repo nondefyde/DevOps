@@ -90,7 +90,7 @@ resource "azurerm_network_security_group" "gw_security_group" {
   resource_group_name = data.azurerm_resource_group.rg.name
 
   security_rule {
-    name                       = "${var.prefix}-apim-inbound"
+    name                       = "${var.prefix}-gw-inbound"
     priority                   = 300
     direction                  = "Inbound"
     access                     = "Allow"
@@ -102,7 +102,7 @@ resource "azurerm_network_security_group" "gw_security_group" {
   }
 
   security_rule {
-    name                       = "${var.prefix}-apim-outbound"
+    name                       = "${var.prefix}-gw-outbound"
     priority                   = 300
     direction                  = "Outbound"
     access                     = "Allow"
