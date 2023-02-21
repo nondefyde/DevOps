@@ -10,12 +10,14 @@
       "quest": {
         "name": "quest",
         "vmCount": "1",
-        "port": 8000
+        "port": 8000,
+        "priority": 100
       },
       "room": {
         "name": "room",
         "vmCount": "1",
-        "port": 8000
+        "port": 8000,
+        "priority": 101
       }
     }
   },

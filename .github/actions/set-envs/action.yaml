@@ -116,6 +116,7 @@ runs:
         data=${{ toJson(steps.api-config.outputs.apis) }}
         vmdata=${{ toJson(steps.vm-config.outputs.vms) }}
         port=($(echo $vmdata | jq -r '.[] | .port'))
+        priority=($(echo $vmdata | jq -r '.[] | .priority'))
         suffixes=($(echo $data | jq -r '.[] | .suffix'))
         names=($(echo $data | jq -r 'keys[]'))            
         output=""
@@ -123,6 +124,6 @@ runs:
           if [[ -n "$output" ]]; then
             output="$output,"
           fi
-          output="$output${names[$i]}:${suffixes[$i]}:${port[$i]}"
+          output="$output${names[$i]}:${suffixes[$i]}:${port[$i]}:${priority[$i]}"
         done
         echo "api_suffixes=$output" >> "$GITHUB_ENV"

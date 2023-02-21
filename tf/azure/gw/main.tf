@@ -186,7 +186,7 @@ resource "azurerm_application_gateway" "gw_network" {
     content {
       name                  = "${split(":", backend_http_settings.value)[0]}-http-setting"
       cookie_based_affinity = "Disabled"
-      port                  = "${split(":", backend_http_settings.value)[2]}"
+      port                  = split(":", backend_http_settings.value)[2]
       path                  = "/"
       protocol              = "Http"
       request_timeout       = 60
@@ -201,6 +201,7 @@ resource "azurerm_application_gateway" "gw_network" {
       http_listener_name         = "${split(":", request_routing_rule.value)[0]}-internal-listener"
       backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
       backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-http-setting"
+      priority                   = split(":", request_routing_rule.value)[3]
     }
   }
 

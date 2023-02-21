@@ -30,7 +30,7 @@ variable "client_secret" {
 
 variable "api_suffixes" {
   type    = string
-  default = "quest:qst:8000"
+  default = "quest:qst:8000:200"
 }
 
 variable "sku_name" {
