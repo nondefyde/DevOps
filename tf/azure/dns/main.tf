@@ -37,30 +37,60 @@ resource "azurerm_key_vault" "keyvault" {
   tenant_id           = var.tenant_id
   sku_name            = "premium"
 
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-#    object_id = data.azurerm_client_config.current.object_id
-    object_id = data.azurerm_api_management.apim.identity[0].principal_id
-
-    certificate_permissions = [
-      "get",
-      "list",
-    ]
-
-    key_permissions = [
-      "get",
-      "list",
-    ]
-
-    secret_permissions = [
-      "get",
-      "list",
-    ]
-  }
-
   depends_on = [
     azurerm_private_dns_a_record.api_dns_record,
     azurerm_private_dns_a_record.portal_dns_record
+  ]
+}
+
+
+resource "azurerm_key_vault_access_policy" "vault_policy" {
+  key_vault_id = azurerm_key_vault.keyvault.id
+  tenant_id = data.azurerm_client_config.current.tenant_id
+  #    object_id = data.azurerm_client_config.current.object_id
+  object_id = data.azurerm_api_management.apim.identity[0].principal_id
+
+  certificate_permissions = [
+    "Create",
+    "Delete",
+    "DeleteIssuers",
+    "get",
+    "GetIssuers",
+    "Import",
+    "List",
+    "ListIssuers",
+    "ManageContacts",
+    "ManageIssuers",
+    "SetIssuers",
+    "Update",
+  ]
+  key_permissions = [
+    "Backup",
+    "Create",
+    "Decrypt",
+    "Delete",
+    "Encrypt",
+    "get",
+    "Import",
+    "List",
+    "Purge",
+    "Recover",
+    "Restore",
+    "Sign",
+    "UnwrapKey",
+    "Update",
+    "Verify",
+    "WrapKey",
+  ]
+  secret_permissions = [
+    "Backup",
+    "Delete",
+    "get",
+    "List",
+    "Purge",
+    "Recover",
+    "Restore",
+    "Set",
   ]
 }
 
@@ -115,6 +145,8 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
       }
     }
   }
+
+  depends_on = [azurerm_key_vault_access_policy.vault_policy]
 }
 
 resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
