@@ -116,6 +116,12 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
   depends_on = [azurerm_key_vault_access_policy.vault_policy]
 }
 
+resource "azurerm_key_vault_secret" "public_key_secret" {
+  name         = "${var.prefix}-apim-public-key"
+  value        = azurerm_key_vault_certificate.apim_certificate.certificate_data
+  key_vault_id = azurerm_key_vault.keyvault.id
+}
+
 resource "azurerm_private_dns_zone" "dns_zone" {
   name                = var.apim_domain
   resource_group_name = data.azurerm_resource_group.rg.name

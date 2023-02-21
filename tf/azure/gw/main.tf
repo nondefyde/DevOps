@@ -28,6 +28,11 @@ data "azurerm_key_vault_certificate" "apim_certificate" {
   key_vault_id = data.azurerm_key_vault.keyvault.id
 }
 
+data "azurerm_key_vault_secret" "apim_public_key" {
+  name         = "${var.prefix}-apim-public-key"
+  key_vault_id = data.azurerm_key_vault.keyvault.id
+}
+
 resource "azurerm_public_ip" "gw_ip" {
   name                = "${var.prefix}-gw-pip"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -89,7 +94,7 @@ resource "azurerm_application_gateway" "gw_network" {
     request_timeout       = 60
 
     authentication_certificates {
-      name = data.azurerm_key_vault_certificate.apim_certificate.name
+      name = data.azurerm_key_vault_secret.name
     }
   }
 
