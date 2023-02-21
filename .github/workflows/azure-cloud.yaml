@@ -314,6 +314,7 @@ jobs:
         with:
           file-name: ${{ env.vmEnvFile }}
           prefix: ${{ env.project }}
+          apim_domain: ${{ env.service_domain }}
           group: ${{ needs.crg.outputs.rg_name }}
           name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
           vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}

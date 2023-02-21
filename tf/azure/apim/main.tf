@@ -23,11 +23,6 @@ data "azurerm_key_vault_certificate" "apim_certificate" {
   key_vault_id = data.azurerm_key_vault.keyvault.id
 }
 
-data "azurerm_key_vault_certificate" "apim_certificate" {
-  name         = "${var.prefix}-apim-cert"
-  resource_group_name  = data.azurerm_resource_group.rg.name
-}
-
 data "azurerm_private_dns_zone" "dns_zone" {
   name                = var.apim_domain
   resource_group_name = data.azurerm_resource_group.rg.name
