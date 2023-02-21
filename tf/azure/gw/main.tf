@@ -97,7 +97,7 @@ resource "azurerm_application_gateway" "gw_network" {
     name                  = "${var.prefix}-backend-setting"
     cookie_based_affinity = "Disabled"
     port                  = 80
-    protocol              = "Https"
+    protocol              = "Http"
     request_timeout       = 60
 
 #    authentication_certificate {
