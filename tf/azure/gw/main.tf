@@ -79,7 +79,6 @@ resource "azurerm_application_gateway" "gw_network" {
     frontend_ip_configuration_name = local.frontend_ip_configuration_name
     frontend_port_name             = local.frontend_port_name
     protocol                       = "Https"
-    ssl_certificate_name = data.azurerm_key_vault_certificate.apim_certificate.name
   }
 
   backend_http_settings {
