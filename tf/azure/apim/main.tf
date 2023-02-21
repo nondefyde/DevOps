@@ -43,26 +43,26 @@ resource "azurerm_api_management" "apim" {
 
 data "azurerm_key_vault_certificate" "apim_certificate" {
   name         = "${var.prefix}-apim-cert"
-  resource_group_name  = data.azurerm_virtual_network.vnet.resource_group_name
+  resource_group_name  = data.azurerm_resource_group.rg.name
 }
 
-resource "azurerm_private_dns_zone" "apim_dns_zone" {
+data "azurerm_private_dns_zone" "dns_zone" {
   name                = var.apim_domain
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
 resource "azurerm_private_dns_a_record" "api_dns_record" {
   name                = var.gateway_subdomain
-  zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
-  resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
+  zone_name           = data.azurerm_private_dns_zone.dns_zone.name
+  resource_group_name = data.azurerm_resource_group.rg.name
   ttl                 = 3600
   records             = azurerm_api_management.apim.private_ip_addresses
 }
 
 resource "azurerm_private_dns_a_record" "portal_dns_record" {
   name                = var.portal_subdomain
-  zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
-  resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
+  zone_name           = data.azurerm_private_dns_zone.dns_zone.name
+  resource_group_name = data.azurerm_resource_group.rg.name
   ttl                 = 3600
   records             = azurerm_api_management.apim.private_ip_addresses
 }

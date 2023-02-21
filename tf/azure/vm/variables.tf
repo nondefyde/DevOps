@@ -57,3 +57,7 @@ variable "vm_count" {
 variable "name" {
   type = string
 }
+
+variable "apim_domain" {
+  type = string
+}

@@ -58,3 +58,17 @@ resource "azurerm_linux_virtual_machine" "vm" {
     environment = var.environment
   }
 }
+
+data "azurerm_private_dns_zone" "dns_zone" {
+  name                = var.apim_domain
+  resource_group_name = "${var.prefix}-group"
+}
+
+resource "azurerm_private_dns_a_record" "api_dns_record" {
+  count               = var.vm_count
+  name                = "${var.prefix}-${var.name}-${count.index}"
+  zone_name           = data.azurerm_private_dns_zone.dns_zone.name
+  resource_group_name = "${var.prefix}-group"
+  ttl                 = 3600
+  records             = azurerm_linux_virtual_machine.vm.private_ip_addresses[count.index]
+}
