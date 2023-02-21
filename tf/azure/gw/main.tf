@@ -112,7 +112,7 @@ resource "azurerm_application_gateway" "gw_network" {
 
   ssl_certificate {
     name                = data.azurerm_key_vault_certificate.apim_certificate.name
-    data                = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
+    data                = filebase64(data.azurerm_key_vault_certificate.apim_certificate.certificate_data)
     password            = "password"
   }
 
