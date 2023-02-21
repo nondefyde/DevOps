@@ -66,12 +66,12 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   frontend_port {
-    name = local.frontend_port_name
+    name = "${var.prefix}-80"
     port = 80
   }
 
   frontend_port {
-    name = "https-port"
+    name = "${var.prefix}-443"
     port = 443
   }
 
@@ -88,7 +88,9 @@ resource "azurerm_application_gateway" "gw_network" {
   http_listener {
     name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = local.frontend_ip_configuration_name
+    frontend_port_name             = "${var.prefix}-443"
     protocol                       = "Https"
+    ssl_certificate_name           = data.azurerm_key_vault_certificate.apim_certificate.name
   }
 
   backend_http_settings {
@@ -97,6 +99,10 @@ resource "azurerm_application_gateway" "gw_network" {
     port                  = 80
     protocol              = "Https"
     request_timeout       = 60
+
+#    authentication_certificate {
+#      name = data.azurerm_key_vault_certificate.apim_certificate.name
+#    }
   }
 
 #  authentication_certificate {
@@ -104,8 +110,15 @@ resource "azurerm_application_gateway" "gw_network" {
 #    data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
 #  }
 
+  ssl_certificate {
+    name                = data.azurerm_key_vault_certificate.apim_certificate.name
+    data                = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
+    password            = "password"
+    key_vault_secret_id = data.azurerm_key_vault.keyvault.id
+  }
+
   backend_address_pool {
-    name = "${var.prefix}-apim-pool"
+    name  = "${var.prefix}-apim-pool"
     fqdns = [
       "api.stmapi.com"
     ]
