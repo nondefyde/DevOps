@@ -91,13 +91,13 @@ resource "azurerm_application_gateway" "gw_network" {
     authentication_certificates = [
       {
         name = "apim-cert"
-        data = data.azurerm_key_vault_secret.ssl_cert.value
+        data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
       },
     ]
     trusted_root_certificates = [
       {
         name = "apim-cert"
-        data = data.azurerm_key_vault_secret.ssl_cert.value
+        data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
       },
     ]
 
