@@ -208,7 +208,7 @@ resource "azurerm_application_gateway" "gw_network" {
 
 resource "azurerm_private_dns_a_record" "api_dns_record" {
   count               = length(local.api_names)
-  name                = "${split(":", local.api_names[count.index])[1]}.${var.apim_domain}"
+  name                = "${split(":", local.api_names[count.index])[1]}"
   zone_name           = data.azurerm_private_dns_zone.dns_zone.name
   resource_group_name = data.azurerm_resource_group.rg.name
   ttl                 = 3600

@@ -2,6 +2,12 @@ data "azurerm_resource_group" "rg" {
   name = var.group
 }
 
+data "azurerm_virtual_network" "vnet" {
+  name                = "${var.prefix}-network"
+  resource_group_name = data.azurerm_resource_group.rg.name
+}
+
+
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "keyvault" {
@@ -125,4 +131,13 @@ resource "azurerm_key_vault_secret" "public_key_secret" {
 resource "azurerm_private_dns_zone" "dns_zone" {
   name                = var.apim_domain
   resource_group_name = data.azurerm_resource_group.rg.name
+}
+
+resource "azurerm_private_dns_virtual_network_link" "example" {
+  name                  = "${var.prefix}-network-link"
+  virtual_network_id    = data.azurerm_virtual_network.vnet.id
+  resource_group_name   = data.azurerm_resource_group.rg.name
+  private_dns_zone_name = azurerm_private_dns_zone.dns_zone.name
+
+  depends_on = [azurerm_private_dns_zone.dns_zone]
 }
