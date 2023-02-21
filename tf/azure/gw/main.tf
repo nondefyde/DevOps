@@ -93,7 +93,7 @@ resource "azurerm_application_gateway" "gw_network" {
     protocol              = "Https"
     request_timeout       = 60
 
-    authentication_certificates {
+    authentication_certificate {
       name = data.azurerm_key_vault_secret.name
     }
   }
