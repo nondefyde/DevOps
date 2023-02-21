@@ -112,7 +112,7 @@ resource "azurerm_application_gateway" "gw_network" {
 
   ssl_certificate {
     name                = data.azurerm_key_vault_certificate.apim_certificate.name
-    key_vault_secret_id = data.azurerm_key_vault_secret.apim_public_key.id
+    key_vault_secret_id = data.azurerm_key_vault_certificate.apim_certificate.id
   }
 
   backend_address_pool {
