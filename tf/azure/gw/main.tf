@@ -151,7 +151,7 @@ resource "azurerm_application_gateway" "gw_network" {
         backend_address_pool_name  = "${var.prefix}-apim-pool"
         backend_http_settings_name = "${var.prefix}-backend-setting"
         paths                      = [
-          "/${split(":", path_rule.value)[1]}/*",
+          "/${split(":", path_rule.value)[1]}/*"
         ]
       }
     }
@@ -170,7 +170,7 @@ resource "azurerm_application_gateway" "gw_network" {
       frontend_ip_configuration_name = "${var.prefix}-gw-private-ip"
       frontend_port_name             = "${var.prefix}-80"
       protocol                       = "Http"
-      host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}",
+      host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
     }
   }
 
