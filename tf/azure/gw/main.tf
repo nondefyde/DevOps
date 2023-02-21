@@ -94,7 +94,7 @@ resource "azurerm_application_gateway" "gw_network" {
     request_timeout       = 60
 
     authentication_certificate {
-      name = data.azurerm_key_vault_secret.name
+      name = data.azurerm_key_vault_secret.apim_public_key.name
     }
   }
 
