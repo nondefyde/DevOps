@@ -73,7 +73,7 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
 
-  ////////////////////// APIM SETUPS /////////////////////// External routinh
+  ////////////////////////////////// APIM SETUPS ///////////////////////////////////
   http_listener {
     name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = local.frontend_ip_configuration_name
@@ -94,16 +94,6 @@ resource "azurerm_application_gateway" "gw_network" {
         data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
       },
     ]
-    trusted_root_certificates = [
-      {
-        name = "apim-cert"
-        data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
-      },
-    ]
-
-    authentication_certificate {
-      name = data.azurerm_key_vault_certificate.apim_certificate.name
-    }
   }
 
   backend_address_pool {
@@ -144,7 +134,8 @@ resource "azurerm_application_gateway" "gw_network" {
     }
   }
 
-  ////////////////////// APIM SETUPS ENDS /////////////////////// External routinh
+
+  ////////////////////////////////// APIM SETUPS ENDS /////////////////////////////////////////
 
 #
 #
