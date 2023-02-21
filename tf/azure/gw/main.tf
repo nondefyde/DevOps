@@ -18,6 +18,11 @@ data "azurerm_private_dns_zone" "dns_zone" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
+data "azurerm_key_vault_certificate" "apim_certificate" {
+  name         = "${var.prefix}-apim-cert"
+  key_vault_id = data.azurerm_key_vault.keyvault.id
+}
+
 resource "azurerm_public_ip" "gw_ip" {
   name                = "${var.prefix}-gw-pip"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -69,7 +74,9 @@ resource "azurerm_application_gateway" "gw_network" {
       frontend_ip_configuration_name = local.frontend_ip_configuration_name
       frontend_port_name             = local.frontend_port_name
       protocol                       = "Http"
-      host_name = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
+      host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
+
+      ssl_certificate_name = data.azurerm_key_vault_certificate.apim_certificate.name
     }
   }
 
