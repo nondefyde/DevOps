@@ -72,6 +72,6 @@ variable "header" {
   default = "x-api-key"
 }
 
-variable "service_domain" {
+variable "apim_domain" {
   type = string
 }

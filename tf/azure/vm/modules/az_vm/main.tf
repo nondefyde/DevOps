@@ -70,5 +70,5 @@ resource "azurerm_private_dns_a_record" "api_dns_record" {
   zone_name           = data.azurerm_private_dns_zone.dns_zone.name
   resource_group_name = "${var.prefix}-group"
   ttl                 = 3600
-  records             = azurerm_linux_virtual_machine.vm.private_ip_addresses[count.index]
+  records             = element(azurerm_linux_virtual_machine.vm.*.private_ip_addresses, count.index)
 }
