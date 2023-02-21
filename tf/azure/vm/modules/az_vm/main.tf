@@ -66,7 +66,7 @@ data "azurerm_private_dns_zone" "dns_zone" {
 
 resource "azurerm_private_dns_a_record" "api_dns_record" {
   count               = var.vm_count
-  name                = "${var.prefix}-${var.name}-${count.index}"
+  name                = "${var.name}-${count.index}"
   zone_name           = data.azurerm_private_dns_zone.dns_zone.name
   resource_group_name = "${var.prefix}-group"
   ttl                 = 3600
