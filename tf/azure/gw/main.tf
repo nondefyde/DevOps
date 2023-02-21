@@ -88,9 +88,9 @@ resource "azurerm_application_gateway" "gw_network" {
   http_listener {
     name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = local.frontend_ip_configuration_name
-    frontend_port_name             = "${var.prefix}-443"
-    protocol                       = "Https"
-    ssl_certificate_name           = data.azurerm_key_vault_certificate.apim_certificate.name
+    frontend_port_name             = "${var.prefix}-80"
+    protocol                       = "Http"
+#    ssl_certificate_name           = data.azurerm_key_vault_certificate.apim_certificate.name
   }
 
   backend_http_settings {
@@ -110,11 +110,11 @@ resource "azurerm_application_gateway" "gw_network" {
 #    data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
 #  }
 
-  ssl_certificate {
-    name                = data.azurerm_key_vault_certificate.apim_certificate.name
-    data                = data.azurerm_key_vault_certificate.apim_certificate.certificate_data_base64
-    password            = "password"
-  }
+#  ssl_certificate {
+#    name                = data.azurerm_key_vault_certificate.apim_certificate.name
+#    data                = data.azurerm_key_vault_certificate.apim_certificate.certificate_data_base64
+#    password            = "password"
+#  }
 
   backend_address_pool {
     name  = "${var.prefix}-apim-pool"
