@@ -481,57 +481,59 @@ jobs:
           echo "api_management_api_name=${{ env.api_management_api_name }}" >> $GITHUB_OUTPUT
           echo "api_management_api_id=${{ env.api_management_api_id }}" >> $GITHUB_OUTPUT
 
-#  gw:
-#    name: Application Gateway
-#    needs: [ envs, crg, vms ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    outputs:
-#      gw_name: ${{ steps.set-output.outputs.gw_name }}
-#    env:
-#      app_names: ${{ needs.envs.outputs.app_names }}
-#      api_suffixes: ${{ needs.envs.outputs.api_suffixes }}
-#      vm: ${{ needs.envs.outputs.vm_names }}
-#      gwEnvFile: "gw.tfvars"
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: convert to json
-#        id: gwjson
-#        uses: schdck/create-env-json@v1
-#        with:
-#          file-name: ${{ env.gwEnvFile }}
-#          prefix: ${{ env.project }}
-#          group: ${{ needs.crg.outputs.rg_name }}
-#          app_names: ${{ env.app_names }}
-#          api_suffixes: ${{ env.api_suffixes }}
-#
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: ${{ env.gwEnvFile }}
-#          path: ${{ env.gwEnvFile }}
-#
-#      - name: Initialize Gateway
-#        uses: ./.github/actions/tf-azure-script
-#        id: vm
-#        with:
-#          project: ${{ env.project }}
-#          envFile: ${{ env.gwEnvFile }}
-#          key: ${{ env.project }}-gw
-#          working-directory: "tf/azure/gw"
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#        continue-on-error: false
-#
-#      - name: Set output
-#        id: set-output
-#        run: |
-#          echo "gw_name=${{ env.gw_name }}" >> $GITHUB_OUTPUT
-#
+
+  gw:
+    name: Application Gateway
+    needs: [ envs, crg, apim ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      gw_name: ${{ steps.set-output.outputs.gw_name }}
+    env:
+      app_names: ${{ needs.envs.outputs.app_names }}
+      api_suffixes: ${{ needs.envs.outputs.api_suffixes }}
+      vm: ${{ needs.envs.outputs.vm_names }}
+      gwEnvFile: "gw.tfvars"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: convert to json
+        id: gwjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.gwEnvFile }}
+          prefix: ${{ env.project }}
+          group: ${{ needs.crg.outputs.rg_name }}
+          app_names: ${{ env.app_names }}
+          api_suffixes: ${{ env.api_suffixes }}
+          apim_domain: ${{ env.service_domain }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.gwEnvFile }}
+          path: ${{ env.gwEnvFile }}
+
+      - name: Initialize Gateway
+        uses: ./.github/actions/tf-azure-script
+        id: vm
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.gwEnvFile }}
+          key: ${{ env.project }}-gw
+          working-directory: "tf/azure/gw"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "gw_name=${{ env.gw_name }}" >> $GITHUB_OUTPUT
+
 #  gwc:
 #    name: Gateway Config ${{ matrix.items }}
 #    needs: [ envs, crg, gw ]
