@@ -453,7 +453,7 @@ jobs:
           suffix: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['suffix'] }}
           endpoints: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['endpoints'] }}
           header: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['header'] }}
-          apim_domain: ${{ env.service_domain }}
+          apim_domain: ${{ env.apim_domain }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
