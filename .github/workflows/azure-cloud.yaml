@@ -68,7 +68,7 @@ jobs:
         continue-on-error: false
 
   crg:
-    name: 'Res Group & Registry'
+    name: 'Res & Cr'
     needs: [ sa ]
     permissions: write-all
     runs-on: ubuntu-latest
@@ -124,7 +124,7 @@ jobs:
           echo "rg_name=${{ env.rg_name }}" >> $GITHUB_OUTPUT
 
   vn:
-    name: 'Virtual Network'
+    name: 'VNet'
     needs: [ crg ]
     permissions: write-all
     runs-on: ubuntu-latest
