@@ -18,6 +18,11 @@ data "azurerm_private_dns_zone" "dns_zone" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
+data "azurerm_key_vault" "keyvault" {
+  name                = "${var.prefix}vault"
+  resource_group_name = data.azurerm_resource_group.rg.name
+}
+
 data "azurerm_key_vault_certificate" "apim_certificate" {
   name         = "${var.prefix}-apim-cert"
   key_vault_id = data.azurerm_key_vault.keyvault.id
@@ -76,25 +81,21 @@ resource "azurerm_application_gateway" "gw_network" {
     protocol                       = "Http"
   }
 
-  backend_http_settings {
-    name                  = "${var.prefix}-http-setting"
-    cookie_based_affinity = "Disabled"
-    port                  = 80
-    path                  = "/"
-    protocol              = "Http"
-    request_timeout       = 60
+  dynamic "backend_http_settings" {
+    for_each = local.api_suffixes
+    content {
+      name                  = "${split(":", backend_http_settings.value)[0]}-backend-setting"
+      cookie_based_affinity = "Disabled"
+      port                  = 80
+      path                  = "/${split(":", backend_http_settings.value)[1]}"
+      protocol              = "Http"
+      request_timeout       = 60
+    }
   }
 
   backend_address_pool {
-    name = "${var.prefix}-sink-pool"
-  }
-
-  dynamic "backend_address_pool" {
-    for_each = local.api_suffixes
-    content {
-      name = "${split(":", backend_address_pool.value)[0]}-apim-pool"
-      fqdns = "${split(":", backend_address_pool.value)[1]}.${var.apim_domain}"
-    }
+    name = "${var.prefix}-apim-pool"
+    fqdns = "https://api.stmapi.com"
   }
 
   request_routing_rule {
@@ -116,8 +117,8 @@ resource "azurerm_application_gateway" "gw_network" {
       for_each = local.api_suffixes
       content {
         name                       = "${split(":", path_rule.value)[0]}-apim-url-path-rule"
-        backend_address_pool_name  = "${split(":", path_rule.value)[0]}-apim-pool"
-        backend_http_settings_name = "${var.prefix}-http-setting"
+        backend_address_pool_name  = "${var.prefix}-apim-pool"
+        backend_http_settings_name = "${split(":", path_rule.value)[0]}-backend-setting"
         paths                      = [
           "/${split(":", path_rule.value)[1]}/*",
         ]
