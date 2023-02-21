@@ -96,20 +96,6 @@ resource "azurerm_application_gateway" "gw_network" {
     }
   }
 
-
-
-  dynamic "backend_http_settings" {
-    for_each = local.api_suffixes
-    content {
-      name                  = "${split(":", backend_http_settings.value)[0]}-backend-setting"
-      cookie_based_affinity = "Disabled"
-      port                  = 80
-      path                  = "/${split(":", backend_http_settings.value)[1]}"
-      protocol              = "Http"
-      request_timeout       = 60
-    }
-  }
-
   backend_address_pool {
     name = "${var.prefix}-apim-pool"
     fqdns = [
