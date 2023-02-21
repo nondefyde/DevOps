@@ -4,51 +4,18 @@ data "azurerm_resource_group" "rg" {
 
 data "azurerm_client_config" "current" {}
 
-data "azurerm_api_management" "apim" {
-  name                = "${var.prefix}-api"
-  resource_group_name = data.azurerm_resource_group.rg.name
-}
-
-resource "azurerm_private_dns_zone" "apim_dns_zone" {
-  name                = var.apim_domain
-  resource_group_name = data.azurerm_resource_group.rg.name
-}
-
-resource "azurerm_private_dns_a_record" "api_dns_record" {
-  name                = var.gateway_subdomain
-  zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
-  resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
-  ttl                 = 3600
-  records             = data.azurerm_api_management.apim.private_ip_addresses
-}
-
-resource "azurerm_private_dns_a_record" "portal_dns_record" {
-  name                = var.portal_subdomain
-  zone_name           = azurerm_private_dns_zone.apim_dns_zone.name
-  resource_group_name = azurerm_private_dns_zone.apim_dns_zone.resource_group_name
-  ttl                 = 3600
-  records             = data.azurerm_api_management.apim.private_ip_addresses
-}
-
 resource "azurerm_key_vault" "keyvault" {
   name                = "${var.prefix}vault"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   tenant_id           = var.tenant_id
   sku_name            = "premium"
-
-  depends_on = [
-    azurerm_private_dns_a_record.api_dns_record,
-    azurerm_private_dns_a_record.portal_dns_record
-  ]
 }
-
 
 resource "azurerm_key_vault_access_policy" "vault_policy" {
   key_vault_id = azurerm_key_vault.keyvault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = data.azurerm_client_config.current.object_id
-  #  object_id = data.azurerm_api_management.apim.identity[0].principal_id
 
   certificate_permissions = [
     "Create",

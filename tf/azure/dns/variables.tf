@@ -23,17 +23,6 @@ variable "client_secret" {
   description = "Client ID"
 }
 
-variable "cloudflare_api_token" {
-  type = string
-  description = "Cloudflare api token"
-}
-
-variable "cloudflare_zone_id" {
-  type = string
-  description = "Cloudflare zone id"
-}
-
-
 variable "group" {
   type = string
 }
