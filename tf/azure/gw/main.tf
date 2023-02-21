@@ -77,8 +77,9 @@ resource "azurerm_application_gateway" "gw_network" {
 
   frontend_ip_configuration {
     name                          = "${var.prefix}-gw-private-ip"
-    private_ip_address_allocation = "Dynamic"
-    subnet_id                     = data.azurerm_subnet.gw_subnet.id
+    private_ip_address_allocation = "Static"
+    private_ip_address            = var.private_ip
+    subnet_id = data.azurerm_subnet.gw_subnet.id
   }
 
   frontend_ip_configuration {
