@@ -14,7 +14,7 @@ resource "azurerm_api_management_api" "apimp" {
   revision              = var.revision
   display_name          = var.display_name
   protocols             = var.protocols
-  service_url           = "https://${var.suffix}.${var.apim_domain}"
+  service_url           = "https://${var.suffix}.${var.apim_domain}:${var.port}"
   subscription_required = false
 }
 
