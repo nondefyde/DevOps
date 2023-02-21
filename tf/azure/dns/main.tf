@@ -133,7 +133,7 @@ resource "azurerm_private_dns_zone" "dns_zone" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-resource "azurerm_private_dns_virtual_network_link" "example" {
+resource "azurerm_private_dns_zone_virtual_network_link" "example" {
   name                  = "${var.prefix}-network-link"
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
   resource_group_name   = data.azurerm_resource_group.rg.name
