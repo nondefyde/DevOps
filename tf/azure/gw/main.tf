@@ -39,7 +39,7 @@ resource "azurerm_public_ip" "gw_ip" {
 # since these variables are re-used - a locals block makes this more maintainable
 locals {
   api_suffixes                   = toset(split(",", var.api_suffixes))
-  api_name                       = split(",", var.api_suffixes)
+  api_names                       = split(",", var.api_suffixes)
   frontend_port_name             = "${var.prefix}-gw-feport"
   frontend_ip_configuration_name = "${var.prefix}-gw-feip"
 }
@@ -175,8 +175,8 @@ resource "azurerm_application_gateway" "gw_network" {
 }
 
 resource "azurerm_private_dns_a_record" "api_dns_record" {
-  count               = length(local.api_name)
-  name                = "${split(":", var.api_name)[1]}.${var.apim_domain}"
+  count               = length(local.api_names)
+  name                = "${split(":", local.api_names)[1]}.${var.apim_domain}"
   zone_name           = data.azurerm_private_dns_zone.dns_zone.name
   resource_group_name = data.azurerm_resource_group.rg.name
   ttl                 = 3600
