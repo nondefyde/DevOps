@@ -88,9 +88,8 @@ resource "azurerm_application_gateway" "gw_network" {
     protocol              = "Https"
     request_timeout       = 60
 
-    ssl_certificate {
-      name = "apim-cert"
-      data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
+    authentication_certificates {
+      name = data.azurerm_key_vault_certificate.apim_certificate.name
     }
   }
 
