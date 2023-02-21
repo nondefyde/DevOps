@@ -24,20 +24,19 @@
     "publisher_email": "nondefyde@gmail.com",
     "capacity": "1",
     "sku": "Developer",
+    "domain": "https://bytegum.com",
     "apis": {
       "quest": {
         "name": "Quest API",
         "suffix": "qt",
         "endpoints": "/*",
-        "header": "x-api-key",
-        "service_domain": "https://bytegum.com"
+        "header": "x-api-key"
       },
       "room": {
         "name": "Room API",
         "suffix": "rm",
         "endpoints": "/*",
-        "header": "x-api-key",
-        "service_domain": "https://bytegum.com"
+        "header": "x-api-key"
       }
     }
   }
