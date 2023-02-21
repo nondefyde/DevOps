@@ -502,6 +502,7 @@ jobs:
         with:
           file-name: ${{ env.gwEnvFile }}
           prefix: ${{ env.project }}
+          group: ${{ needs.crg.outputs.rg_name }}
           api_suffixes: ${{ env.api_suffixes }}
           apim_domain: ${{ env.service_domain }}
 
