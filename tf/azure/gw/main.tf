@@ -160,50 +160,52 @@ resource "azurerm_application_gateway" "gw_network" {
 
   ////////////////////////////////// APIM SETUPS ENDS /////////////////////////////////////////
 
-#
-#
-#  dynamic "http_listener" {
-#    for_each = local.api_suffixes
-#    content {
-#      name                           = "${split(":", http_listener.value)[0]}-listener"
-#      frontend_ip_configuration_name = local.frontend_ip_configuration_name
-#      frontend_port_name             = local.frontend_port_name
-#      protocol                       = "Http"
-#      host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
-#      ssl_certificate_name = data.azurerm_key_vault_certificate.apim_certificate.name
-#    }
-#  }
-#
-#  dynamic "backend_http_settings" {
-#    for_each = local.api_suffixes
-#    content {
-#      name                  = "${split(":", backend_http_settings.value)[0]}-http-setting"
-#      cookie_based_affinity = "Disabled"
-#      port                  = 8000
-#      path                  = "/"
-#      protocol              = "Http"
-#      request_timeout       = 60
-#    }
-#  }
-#
-#  dynamic "backend_address_pool" {
-#    for_each = local.api_suffixes
-#    content {
-#      name = "${split(":", backend_address_pool.value)[0]}-pool"
-#    }
-#  }
-#
-#  dynamic "request_routing_rule" {
-#    for_each = local.api_suffixes
-#    content {
-#      name                       = "${split(":", request_routing_rule.value)[0]}-routing-tb"
-#      rule_type                  = "Basic"
-#      http_listener_name         = "${split(":", request_routing_rule.value)[0]}-listener"
-#      backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
-#      backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-http-setting"
-#      priority                   = 100
-#    }
-#  }
+
+  ////////////////////////////////// BACKEND SETUPS /////////////////////////////////////////
+
+  dynamic "http_listener" {
+    for_each = local.api_suffixes
+    content {
+      name                           = "${var.prefix}-internal-listener"
+      frontend_ip_configuration_name = "${var.prefix}-gw-private-ip"
+      frontend_port_name             = "${var.prefix}-80"
+      protocol                       = "Http"
+      host_name                      = "${split(":", path_rule.value)[1]}.${var.apim_domain}",
+    }
+  }
+
+  dynamic "request_routing_rule" {
+    for_each = local.api_suffixes
+    content {
+      name                       = "${split(":", request_routing_rule.value)[0]}-routing-tb"
+      rule_type                  = "Basic"
+      http_listener_name         = "${split(":", request_routing_rule.value)[0]}-listener"
+      backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
+      backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-http-setting"
+      priority                   = 100
+    }
+  }
+
+  dynamic "backend_http_settings" {
+    for_each = local.api_suffixes
+    content {
+      name                  = "${split(":", backend_http_settings.value)[0]}-http-setting"
+      cookie_based_affinity = "Disabled"
+      port                  = 8000
+      path                  = "/"
+      protocol              = "Http"
+      request_timeout       = 60
+    }
+  }
+
+  dynamic "backend_address_pool" {
+    for_each = local.api_suffixes
+    content {
+      name = "${split(":", backend_address_pool.value)[0]}-pool"
+    }
+  }
+
+  ////////////////////////////////// END BACKEND SETUPS /////////////////////////////////////////
 }
 
 resource "azurerm_private_dns_a_record" "api_dns_record" {
