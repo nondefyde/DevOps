@@ -10,12 +10,12 @@
       "quest": {
         "name": "quest",
         "vmCount": "1",
-        "instanceCount": "2"
+        "port": 8000
       },
       "room": {
         "name": "room",
         "vmCount": "1",
-        "instanceCount": "2"
+        "port": 8000
       }
     }
   },

@@ -114,13 +114,15 @@ runs:
       shell: bash
       run: |
         data=${{ toJson(steps.api-config.outputs.apis) }}
+        vmdata=${{ toJson(steps.vm-config.outputs.vms) }}
+        port=($(echo $data | jq -r '.[] | .port'))
         suffixes=($(echo $data | jq -r '.[] | .suffix'))
-        names=($(echo $data | jq -r 'keys[]'))        
+        names=($(echo $data | jq -r 'keys[]'))            
         output=""
         for i in ${!suffixes[@]}; do
           if [[ -n "$output" ]]; then
             output="$output,"
           fi
-          output="$output${names[$i]}:${suffixes[$i]}"
+          output="$output${names[$i]}:${suffixes[$i]}:${port[$i]}"
         done
         echo "api_suffixes=$output" >> "$GITHUB_ENV"
