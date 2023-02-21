@@ -70,6 +70,12 @@ resource "azurerm_application_gateway" "gw_network" {
     port = 80
   }
 
+  frontend_port {
+    name = "https-port"
+    port = 443
+  }
+
+
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
     public_ip_address_id = azurerm_public_ip.gw_ip.id
@@ -82,8 +88,7 @@ resource "azurerm_application_gateway" "gw_network" {
   http_listener {
     name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = local.frontend_ip_configuration_name
-    frontend_port_name             = local.frontend_port_name
-    protocol                       = "Http"
+    protocol                       = "Https"
   }
 
   backend_http_settings {
@@ -92,16 +97,12 @@ resource "azurerm_application_gateway" "gw_network" {
     port                  = 80
     protocol              = "Https"
     request_timeout       = 60
-
-    authentication_certificate {
-      name = data.azurerm_key_vault_certificate.apim_certificate.name
-    }
   }
 
-  authentication_certificate {
-    name = data.azurerm_key_vault_certificate.apim_certificate.name
-    data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
-  }
+#  authentication_certificate {
+#    name = data.azurerm_key_vault_certificate.apim_certificate.name
+#    data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
+#  }
 
   backend_address_pool {
     name = "${var.prefix}-apim-pool"
