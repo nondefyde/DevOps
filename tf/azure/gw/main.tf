@@ -80,7 +80,7 @@ resource "azurerm_application_gateway" "gw_network" {
     name                 = local.frontend_ip_configuration_name
     public_ip_address_id = azurerm_public_ip.gw_ip.id
     private_ip_address_allocation = "Static"
-    private_ip_address = var.private_ip
+#    private_ip_address = var.private_ip
   }
 
 
