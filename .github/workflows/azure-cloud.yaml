@@ -393,7 +393,7 @@ jobs:
         with:
           project: ${{ env.project }}
           envFile: ${{ env.dnsEnvFile }}
-          key: ${{ env.project }}-kvu
+          key: ${{ env.project }}-dns
           working-directory: "tf/azure/dns"
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}

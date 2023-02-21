@@ -148,18 +148,18 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
 
   depends_on = [azurerm_key_vault_access_policy.vault_policy]
 }
-
-resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
-  api_management_id = data.azurerm_api_management.apim.id
-
-  gateway {
-    host_name    = "api.${var.apim_domain}"
-    key_vault_id = azurerm_key_vault_certificate.apim_certificate.secret_id
-  }
-
-  developer_portal {
-    host_name    = "portal.${var.apim_domain}"
-    key_vault_id = azurerm_key_vault_certificate.apim_certificate.secret_id
-  }
-}
-
+#
+#resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
+#  api_management_id = data.azurerm_api_management.apim.id
+#
+#  gateway {
+#    host_name    = "api.${var.apim_domain}"
+#    key_vault_id = azurerm_key_vault_certificate.apim_certificate.secret_id
+#  }
+#
+#  developer_portal {
+#    host_name    = "portal.${var.apim_domain}"
+#    key_vault_id = azurerm_key_vault_certificate.apim_certificate.secret_id
+#  }
+#}
+#
