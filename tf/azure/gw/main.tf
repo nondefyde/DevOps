@@ -166,11 +166,18 @@ resource "azurerm_application_gateway" "gw_network" {
   dynamic "http_listener" {
     for_each = local.api_suffixes
     content {
-      name                           = "${var.prefix}-internal-listener"
+      name                           = "${split(":", http_listener.value)[0]}-internal-listener"
       frontend_ip_configuration_name = "${var.prefix}-gw-private-ip"
       frontend_port_name             = "${var.prefix}-80"
       protocol                       = "Http"
-      host_name                      = "${split(":", path_rule.value)[1]}.${var.apim_domain}",
+      host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}",
+    }
+  }
+
+  dynamic "backend_address_pool" {
+    for_each = local.api_suffixes
+    content {
+      name = "${split(":", backend_address_pool.value)[0]}-pool"
     }
   }
 
@@ -195,13 +202,6 @@ resource "azurerm_application_gateway" "gw_network" {
       path                  = "/"
       protocol              = "Http"
       request_timeout       = 60
-    }
-  }
-
-  dynamic "backend_address_pool" {
-    for_each = local.api_suffixes
-    content {
-      name = "${split(":", backend_address_pool.value)[0]}-pool"
     }
   }
 
