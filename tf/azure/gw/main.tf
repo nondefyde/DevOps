@@ -201,7 +201,6 @@ resource "azurerm_application_gateway" "gw_network" {
       http_listener_name         = "${split(":", request_routing_rule.value)[0]}-internal-listener"
       backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
       backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-http-setting"
-      priority                   = 100
     }
   }
 
