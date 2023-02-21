@@ -95,7 +95,9 @@ resource "azurerm_application_gateway" "gw_network" {
 
   backend_address_pool {
     name = "${var.prefix}-apim-pool"
-    fqdns = "https://api.stmapi.com"
+    fqdns = [
+      "https://api.stmapi.com"
+    ]
   }
 
   request_routing_rule {
