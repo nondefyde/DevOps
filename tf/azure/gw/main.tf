@@ -75,19 +75,23 @@ resource "azurerm_application_gateway" "gw_network" {
     port = 443
   }
 
+  frontend_ip_configuration {
+    name                          = "${var.prefix}-gw-private-ip"
+    private_ip_address_allocation = "Static"
+    private_ip_address            = var.private_ip
+  }
+
 
   frontend_ip_configuration {
-    name                 = local.frontend_ip_configuration_name
+    name                 = "${var.prefix}-gw-public-ip"
     public_ip_address_id = azurerm_public_ip.gw_ip.id
-    private_ip_address_allocation = "Static"
-#    private_ip_address = var.private_ip
   }
 
 
   ////////////////////////////////// APIM SETUPS ///////////////////////////////////
   http_listener {
     name                           = "${var.prefix}-apim-http-listener"
-    frontend_ip_configuration_name = local.frontend_ip_configuration_name
+    frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
     frontend_port_name             = "${var.prefix}-80"
     protocol                       = "Http"
 #    ssl_certificate_name           = data.azurerm_key_vault_certificate.apim_certificate.name
