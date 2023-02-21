@@ -75,11 +75,28 @@ resource "azurerm_application_gateway" "gw_network" {
 
   ////////////////////// APIM SETUPS /////////////////////// External routinh
   http_listener {
-    name                           = "${var.prefix}-http-listener"
+    name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = local.frontend_ip_configuration_name
     frontend_port_name             = local.frontend_port_name
-    protocol                       = "Http"
+    protocol                       = "Https"
+    ssl_certificate_name = data.azurerm_key_vault_certificate.apim_certificate.name
   }
+
+  backend_http_settings {
+    name                  = "${var.prefix}-backend-setting"
+    cookie_based_affinity = "Disabled"
+    port                  = 80
+    path                  = "/${split(":", backend_http_settings.value)[1]}"
+    protocol              = "Https"
+    request_timeout       = 60
+
+    authentication_certificate {
+      name = data.azurerm_key_vault_certificate.apim_certificate.name
+      id   = data.azurerm_key_vault_certificate.apim_certificate.id
+    }
+  }
+
+
 
   dynamic "backend_http_settings" {
     for_each = local.api_suffixes
@@ -96,8 +113,12 @@ resource "azurerm_application_gateway" "gw_network" {
   backend_address_pool {
     name = "${var.prefix}-apim-pool"
     fqdns = [
-      "https://api.stmapi.com"
+      "api.stmapi.com"
     ]
+  }
+
+  backend_address_pool {
+    name = "${var.prefix}-sink-pool"
   }
 
   request_routing_rule {
@@ -105,7 +126,7 @@ resource "azurerm_application_gateway" "gw_network" {
     rule_type                  = "PathBasedRouting"
     http_listener_name         = "${var.prefix}-apim-http-listener"
     backend_address_pool_name  = "${var.prefix}-apim-sink-pool"
-    backend_http_settings_name = "${var.prefix}-apim-http-be-setting"
+    backend_http_settings_name = "${var.prefix}-backend-setting"
     url_path_map_name          = "${var.prefix}-apim-url-path-map"
     priority                   = 100
   }
@@ -117,7 +138,7 @@ resource "azurerm_application_gateway" "gw_network" {
       content {
         name                       = "${split(":", path_rule.value)[0]}-apim-url-path-rule"
         backend_address_pool_name  = "${var.prefix}-apim-pool"
-        backend_http_settings_name = "${split(":", path_rule.value)[0]}-backend-setting"
+        backend_http_settings_name = "${var.prefix}-backend-setting"
         paths                      = [
           "/${split(":", path_rule.value)[1]}/*",
         ]
