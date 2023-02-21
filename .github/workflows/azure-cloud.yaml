@@ -480,8 +480,6 @@ jobs:
         run: |
           echo "api_management_api_name=${{ env.api_management_api_name }}" >> $GITHUB_OUTPUT
           echo "api_management_api_id=${{ env.api_management_api_id }}" >> $GITHUB_OUTPUT
-
-
   gw:
     name: Application Gateway
     needs: [ envs, crg, apim ]
@@ -504,8 +502,6 @@ jobs:
         with:
           file-name: ${{ env.gwEnvFile }}
           prefix: ${{ env.project }}
-          group: ${{ needs.crg.outputs.rg_name }}
-          app_names: ${{ env.app_names }}
           api_suffixes: ${{ env.api_suffixes }}
           apim_domain: ${{ env.service_domain }}
 
