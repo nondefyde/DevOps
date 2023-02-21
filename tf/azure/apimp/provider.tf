@@ -10,9 +10,6 @@ terraform {
 }
 
 provider "azurerm" {
-  features {
-    purge_soft_deleted_certificates_on_destroy: true
-  }
   subscription_id = var.subscription_id
   tenant_id       = var.tenant_id
   client_id       = var.client_id
