@@ -50,7 +50,7 @@ variable "sku_capacity" {
 
 variable "private_ip" {
   type = string
-  default = "10.0.3.5"
+  default = "10.0.3.10"
 }
 
 variable "apim_domain" {
