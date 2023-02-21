@@ -46,9 +46,9 @@ resource "azurerm_key_vault" "keyvault" {
 
 resource "azurerm_key_vault_access_policy" "vault_policy" {
   key_vault_id = azurerm_key_vault.keyvault.id
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  #    object_id = data.azurerm_client_config.current.object_id
-  object_id = data.azurerm_api_management.apim.identity[0].principal_id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_client_config.current.object_id
+  #  object_id = data.azurerm_api_management.apim.identity[0].principal_id
 
   certificate_permissions = [
     "Create",
