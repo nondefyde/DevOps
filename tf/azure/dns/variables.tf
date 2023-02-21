@@ -30,13 +30,3 @@ variable "group" {
 variable "apim_domain" {
   type = string
 }
-
-variable "gateway_subdomain" {
-  type = string
-  default = "api"
-}
-
-variable "portal_subdomain" {
-  type = string
-  default = "portal"
-}
