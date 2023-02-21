@@ -95,7 +95,6 @@ resource "azurerm_application_gateway" "gw_network" {
 
     authentication_certificate {
       name = data.azurerm_key_vault_certificate.apim_certificate.name
-      data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
     }
   }
 
