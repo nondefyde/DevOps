@@ -81,12 +81,10 @@ resource "azurerm_application_gateway" "gw_network" {
     private_ip_address            = var.private_ip
   }
 
-
   frontend_ip_configuration {
     name                 = "${var.prefix}-gw-public-ip"
     public_ip_address_id = azurerm_public_ip.gw_ip.id
   }
-
 
   ////////////////////////////////// APIM SETUPS ///////////////////////////////////
   http_listener {
