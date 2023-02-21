@@ -229,7 +229,7 @@ jobs:
 
   dns:
     name: 'DNS Configuration'
-    needs: [ envs, crg, vn ]
+    needs: [ envs, crg ]
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
