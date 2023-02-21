@@ -115,7 +115,7 @@ runs:
       run: |
         data=${{ toJson(steps.api-config.outputs.apis) }}
         vmdata=${{ toJson(steps.vm-config.outputs.vms) }}
-        port=($(echo $data | jq -r '.[] | .port'))
+        port=($(echo $vmdata | jq -r '.[] | .port'))
         suffixes=($(echo $data | jq -r '.[] | .suffix'))
         names=($(echo $data | jq -r 'keys[]'))            
         output=""
