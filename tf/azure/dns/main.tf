@@ -81,6 +81,8 @@ resource "null_resource" "openssl" {
 
 data "local_file" "cert" {
   filename = "cert.pfx"
+
+  depends_on = [null_resource.openssl]
 }
 
 resource "azurerm_key_vault_certificate" "apim_certificate" {
