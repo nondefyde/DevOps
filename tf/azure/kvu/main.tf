@@ -74,7 +74,7 @@ data "azurerm_storage_account" "devops_sa" {
 }
 
 data "azurerm_storage_blob" "devops_container" {
-  name                   = "exampleblob"
+  name                   = var.cert_name
   storage_account_name   = data.azurerm_storage_account.devops_sa.name
   storage_container_name = var.cert_container_name
 
