@@ -74,7 +74,6 @@ env:
   hostname_format: "stm-{0}.{1}.bytegum.com"
   image-name: stm-quest
   dockerfile: './ci/Dockerfile'
-  location: 'centralus'
   environment: 'stg'
   appSecret: ${{ secrets.AZR_VM_APP_SECRET }}
   configFile: "configs/cloud.json"
