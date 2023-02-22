@@ -7,5 +7,6 @@ output "key_vault_name" {
 #}
 
 output "cert" {
+  sensitive = true
   value = local_sensitive_file.cert_key.content
 }
