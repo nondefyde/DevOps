@@ -273,9 +273,8 @@ jobs:
         run: |
           echo "key_vault_name=${{ env.key_vault_name }}" >> $GITHUB_OUTPUT
           echo "apim_certificate_name=${{ env.apim_certificate_name }}" >> $GITHUB_OUTPUT
-
   vms:
-    name: Virtual Machines ${{ matrix.items }}
+    name: VM ${{ matrix.items }}
     needs: [ envs, crg, vn, kvu ]
     permissions: write-all
     runs-on: ubuntu-latest
