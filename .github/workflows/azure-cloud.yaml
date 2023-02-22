@@ -132,8 +132,6 @@ jobs:
     outputs:
       virtual_network_id: ${{ steps.set-output.outputs.virtual_network_id }}
       virtual_network_name: ${{ steps.set-output.outputs.virtual_network_name }}
-      baston_dns: ${{ steps.set-output.outputs.baston_dns }}
-      baston_id: ${{ steps.set-output.outputs.baston_id }}
     env:
       vnEnvFile: "vn.tfvars"
     steps:
@@ -175,16 +173,12 @@ jobs:
         run: |
           echo "virtual_network_id=${{ env.virtual_network_id }}" >> $GITHUB_OUTPUT
           echo "virtual_network_name=${{ env.virtual_network_name }}" >> $GITHUB_OUTPUT
-          echo "baston_dns=${{ env.baston_dns }}" >> $GITHUB_OUTPUT
-          echo "baston_id=${{ env.baston_id }}" >> $GITHUB_OUTPUT
   bst:
     name: 'Baston Host'
     needs: [ crg, vn ]
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
-      virtual_network_id: ${{ steps.set-output.outputs.virtual_network_id }}
-      virtual_network_name: ${{ steps.set-output.outputs.virtual_network_name }}
       baston_dns: ${{ steps.set-output.outputs.baston_dns }}
       baston_id: ${{ steps.set-output.outputs.baston_id }}
     env:
