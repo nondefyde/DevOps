@@ -111,15 +111,26 @@ data "http" "cert_file" {
   url = "${data.azurerm_storage_account.devops_sa.primary_blob_endpoint}${var.cert_container_name}/${var.cert_name}${data.azurerm_storage_account_blob_container_sas.sa_cert_sas.sas}"
 }
 
+resource "null_resource" "save_cert" {
+  provisioner "local-exec" {
+    command = "echo ${data.http.cert_file.response_body} > ${path.module}/${var.cert_name}"
+  }
+  depends_on = [data.http.cert_file]
+}
+
 resource "azurerm_key_vault_certificate" "apim_certificate" {
   name         = "${var.prefix}-apim-cert"
   key_vault_id = azurerm_key_vault.keyvault.id
 
   certificate {
-    contents = base64decode(data.http.cert_file.response_body)
+    contents = filebase64("${path.module}/${var.cert_name}")
     password = var.cert_password
   }
-  depends_on = [azurerm_key_vault_access_policy.vault_policy, data.azurerm_storage_blob.devops_container]
+  depends_on = [
+    null_resource.save_cert,
+    azurerm_key_vault_access_policy.vault_policy,
+    data.azurerm_storage_blob.devops_container
+  ]
 }
 
 resource "azurerm_key_vault_secret" "public_key_secret" {
