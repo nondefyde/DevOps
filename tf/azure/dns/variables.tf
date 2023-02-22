@@ -43,3 +43,8 @@ variable "cert_password" {
   type = string
   default = "password"
 }
+
+variable "trigger_flag" {
+  type = number
+  default = 1
+}

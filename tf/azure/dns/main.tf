@@ -71,7 +71,7 @@ resource "azurerm_key_vault_access_policy" "vault_policy" {
 
 resource "random_id" "refresh" {
   keepers = {
-    resource_group = var.group
+    trigger_flag = var.trigger_flag
   }
   byte_length = 2
 }
@@ -90,7 +90,6 @@ resource "null_resource" "openssl" {
   triggers = {
     refresh = random_id.refresh.hex
   }
-
   provisioner "local-exec" {
     command = <<EOT
       openssl pkcs12 -export -out ${path.module}/cert.pfx -inkey ${path.module}/${local_sensitive_file.cert_key.filename} -in ${path.module}/${local_sensitive_file.cert_pem.filename} -passout pass:${var.cert_password}

@@ -18,6 +18,7 @@ env:
   location: centralus
   configFile: "configs/cloud.json"
   service_domain: "stardevs.xyz"
+  trigger_flag: 2
 
 jobs:
   envs:
@@ -251,6 +252,7 @@ jobs:
           cert: ${{ secrets.SSL_CERTIFICATE_CSR }}
           cert_key: ${{ secrets.SSL_CERTIFICATE_PRV }}
           cert_password: ${{ secrets.VM_PASSWORD }}
+          trigger_flag: ${{ env.trigger_flag }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
