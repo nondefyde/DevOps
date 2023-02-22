@@ -237,8 +237,8 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           rm: true
-          source: "vm/."
-          target: "vm"
+          source: "vm/deploy.sh"
+          target: "app"
 
       - name: Build & Push
         uses: docker/build-push-action@v2

@@ -7,7 +7,6 @@ data "azurerm_virtual_network" "vnet" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "keyvault" {
@@ -91,11 +90,7 @@ resource "null_resource" "openssl" {
     refresh = random_id.refresh.hex
   }
   provisioner "local-exec" {
-    command = <<EOT
-      openssl pkcs12 -export -out ${path.module}/cert.pfx -inkey ${path.module}/${local_sensitive_file.cert_key.filename} -in ${path.module}/${local_sensitive_file.cert_pem.filename} -passout pass:${var.cert_password}
-      cat ${path.module}/cert.pfx
-      ls -a
-    EOT
+    command = "openssl pkcs12 -export -out ${path.module}/cert.pfx -inkey ${path.module}/${local_sensitive_file.cert_key.filename} -in ${path.module}/${local_sensitive_file.cert_pem.filename} -passout pass:${var.cert_password}"
   }
   depends_on = [
     local_sensitive_file.cert_pem,
@@ -105,7 +100,6 @@ resource "null_resource" "openssl" {
 
 data "local_sensitive_file" "cert" {
   filename = "${path.module}/cert.pfx"
-
   depends_on = [null_resource.openssl]
 }
 
