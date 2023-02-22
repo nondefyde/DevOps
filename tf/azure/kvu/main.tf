@@ -78,7 +78,7 @@ data "azurerm_storage_blob" "devops_container" {
   storage_account_name   = data.azurerm_storage_account.devops_sa.name
   storage_container_name = var.cert_container_name
 
-  depends_on = [data.azurerm_storage_account]
+  depends_on = [data.azurerm_storage_account.devops_sa]
 }
 
 data "azurerm_storage_account_blob_container_sas" "sa_cert_sas" {
@@ -106,7 +106,7 @@ data "azurerm_storage_account_blob_container_sas" "sa_cert_sas" {
   content_language    = "en-US"
   content_type        = "application/json"
 
-  depends_on = [data.azurerm_storage_account]
+  depends_on = [data.azurerm_storage_account.devops_sa]
 }
 
 data "http" "cert_file" {
