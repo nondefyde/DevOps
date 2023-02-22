@@ -81,51 +81,50 @@ resource "local_sensitive_file" "cert_key" {
 resource "null_resource" "openssl" {
   provisioner "local-exec" {
     command = <<EOT
-      openssl pkcs12 -export -out ${path.module}/cert.pfx -inkey ${local_sensitive_file.cert_key.filename} -in ${local_sensitive_file.cert_pem.filename} -passout pass:${var.cert_password}
+      openssl pkcs12 -export -out ${path.module}/cert.pfx -inkey ${path.module}/${local_sensitive_file.cert_key.filename} -in ${path.module}/${local_sensitive_file.cert_pem.filename} -passout pass:${var.cert_password}
       cat ${path.module}/cert.pfx
       ls -a
     EOT
   }
-
   depends_on = [
     local_sensitive_file.cert_pem,
     local_sensitive_file.cert_key
   ]
 }
 
-data "local_file" "cert" {
+data "local_sensitive_file" "cert" {
   filename = "${path.module}/cert.pfx"
 
   depends_on = [null_resource.openssl]
 }
-
-resource "azurerm_key_vault_certificate" "apim_certificate" {
-  name         = "${var.prefix}-apim-cert"
-  key_vault_id = azurerm_key_vault.keyvault.id
-
-  certificate {
-    contents = data.local_file.cert.content_base64
-    password = var.cert_password
-  }
-  depends_on = [azurerm_key_vault_access_policy.vault_policy, data.local_file.cert]
-}
-
-resource "azurerm_key_vault_secret" "public_key_secret" {
-  name         = "${var.prefix}-apim-public-key"
-  value        = azurerm_key_vault_certificate.apim_certificate.certificate_data
-  key_vault_id = azurerm_key_vault.keyvault.id
-}
-
-resource "azurerm_private_dns_zone" "dns_zone" {
-  name                = var.apim_domain
-  resource_group_name = data.azurerm_resource_group.rg.name
-}
-
-resource "azurerm_private_dns_zone_virtual_network_link" "example" {
-  name                  = "${var.prefix}-network-link"
-  virtual_network_id    = data.azurerm_virtual_network.vnet.id
-  resource_group_name   = data.azurerm_resource_group.rg.name
-  private_dns_zone_name = azurerm_private_dns_zone.dns_zone.name
-
-  depends_on = [azurerm_private_dns_zone.dns_zone]
-}
+#
+#resource "azurerm_key_vault_certificate" "apim_certificate" {
+#  name         = "${var.prefix}-apim-cert"
+#  key_vault_id = azurerm_key_vault.keyvault.id
+#
+#  certificate {
+#    contents = data.local_file.cert.content_base64
+#    password = var.cert_password
+#  }
+#  depends_on = [azurerm_key_vault_access_policy.vault_policy, data.local_file.cert]
+#}
+#
+#resource "azurerm_key_vault_secret" "public_key_secret" {
+#  name         = "${var.prefix}-apim-public-key"
+#  value        = azurerm_key_vault_certificate.apim_certificate.certificate_data
+#  key_vault_id = azurerm_key_vault.keyvault.id
+#}
+#
+#resource "azurerm_private_dns_zone" "dns_zone" {
+#  name                = var.apim_domain
+#  resource_group_name = data.azurerm_resource_group.rg.name
+#}
+#
+#resource "azurerm_private_dns_zone_virtual_network_link" "example" {
+#  name                  = "${var.prefix}-network-link"
+#  virtual_network_id    = data.azurerm_virtual_network.vnet.id
+#  resource_group_name   = data.azurerm_resource_group.rg.name
+#  private_dns_zone_name = azurerm_private_dns_zone.dns_zone.name
+#
+#  depends_on = [azurerm_private_dns_zone.dns_zone]
+#}
