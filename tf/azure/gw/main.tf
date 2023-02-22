@@ -19,12 +19,12 @@ data "azurerm_private_dns_zone" "dns_zone" {
 }
 
 data "azurerm_key_vault" "keyvault" {
-  name                = "${var.prefix}vault"
-  resource_group_name = data.azurerm_resource_group.rg.name
+  name                = var.vaultName
+  resource_group_name = var.vaultRg
 }
 
-data "azurerm_key_vault_certificate" "apim_certificate" {
-  name         = "${var.prefix}-apim-cert"
+data "azurerm_key_vault_certificate" "ssl_certificate" {
+  name         = var.certName
   key_vault_id = data.azurerm_key_vault.keyvault.id
 }
 

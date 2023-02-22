@@ -56,3 +56,20 @@ variable "private_ip" {
 variable "apim_domain" {
   type = string
 }
+
+variable "cert_password" {
+  type = string
+  default = "password"
+}
+
+variable "vault_name" {
+  type = string
+}
+
+variable "vault_rg" {
+  type = string
+}
+
+variable "cert_name" {
+  type = string
+}

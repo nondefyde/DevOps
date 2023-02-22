@@ -68,3 +68,20 @@ variable "portal_subdomain" {
   type = string
   default = "portal"
 }
+
+variable "cert_password" {
+  type = string
+  default = "password"
+}
+
+variable "vault_name" {
+  type = string
+}
+
+variable "vault_rg" {
+  type = string
+}
+
+variable "cert_name" {
+  type = string
+}

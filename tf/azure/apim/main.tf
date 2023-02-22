@@ -13,16 +13,6 @@ data "azurerm_subnet" "apim_subnets" {
   resource_group_name  = data.azurerm_virtual_network.vnet.resource_group_name
 }
 
-data "azurerm_key_vault" "keyvault" {
-  name                = "${var.prefix}vault"
-  resource_group_name = data.azurerm_resource_group.rg.name
-}
-
-data "azurerm_key_vault_certificate" "apim_certificate" {
-  name         = "${var.prefix}-apim-cert"
-  key_vault_id = data.azurerm_key_vault.keyvault.id
-}
-
 data "azurerm_private_dns_zone" "dns_zone" {
   name                = var.apim_domain
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -62,17 +52,27 @@ resource "azurerm_private_dns_a_record" "portal_dns_record" {
   records             = azurerm_api_management.apim.private_ip_addresses
 }
 
+data "azurerm_key_vault" "keyvault" {
+  name                = var.vaultName
+  resource_group_name = var.vaultRg
+}
+
+data "azurerm_key_vault_certificate" "ssl_certificate" {
+  name         = var.certName
+  key_vault_id = data.azurerm_key_vault.keyvault.id
+}
+
 resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
   api_management_id = azurerm_api_management.apim.id
 
   gateway {
     host_name    = "${var.gateway_subdomain}.${var.apim_domain}"
-    key_vault_id = data.azurerm_key_vault_certificate.apim_certificate.secret_id
+    key_vault_id = data.azurerm_key_vault_certificate.ssl_certificate.secret_id
   }
 
   developer_portal {
     host_name    = "${var.portal_subdomain}.${var.apim_domain}"
-    key_vault_id = data.azurerm_key_vault_certificate.apim_certificate.secret_id
+    key_vault_id = data.azurerm_key_vault_certificate.ssl_certificate.secret_id
   }
 
   depends_on = [azurerm_api_management.apim]
