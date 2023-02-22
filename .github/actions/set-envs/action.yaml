@@ -45,7 +45,7 @@ runs:
       run: |
         CONFIG_PROJECT="${{ steps.config.outputs.prefix }}"
         CONFIG_LOCATION="${{ steps.config.outputs.location }}"
-        CONFIG_SERVICE_DOMAIN="${{ steps.config.outputs.location }}"
+        CONFIG_SERVICE_DOMAIN="${{ steps.config.outputs.service_domain }}"
         
         EP="${{inputs.project}}"
         LC="${{inputs.location}}"
