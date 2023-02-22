@@ -92,8 +92,9 @@ resource "null_resource" "openssl" {
   ]
 }
 
-data "local_file" "cert" {
+data "local_sensitive_file" "cert" {
   filename = "${path.module}/cert.pfx"
+
   depends_on = [null_resource.openssl]
 }
 
@@ -105,7 +106,7 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
     contents = data.local_sensitive_file.cert.content_base64
     password = var.cert_password
   }
-  depends_on = [azurerm_key_vault_access_policy.vault_policy, null_resource.openssl]
+  depends_on = [azurerm_key_vault_access_policy.vault_policy, local_sensitive_file.cert_key]
 }
 
 resource "azurerm_key_vault_secret" "public_key_secret" {
