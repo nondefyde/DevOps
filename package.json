@@ -13,6 +13,7 @@
   },
   "scripts": {
     "start": "node app/app.js",
+    "cert": "awk 'NF {sub(/\\r/, \"\"); printf \"%s\\\\n\",$0;}' certificate.crt > cert.crt",
     "secret:dev": "cd ./scripts && cat ../_env/env.yml | ./base64.sh",
     "secret:chv": "cd ./scripts && cat ../_env/chowville.yml | ./base64.sh",
     "secret:ksh": "cd ./scripts && cat ../_env/kassh.yml | ./base64.sh",
