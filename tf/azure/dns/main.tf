@@ -78,12 +78,17 @@ resource "null_resource" "openssl" {
   }
 }
 
+
+data "local_file" "cert" {
+  filename = "cert.pfx"
+}
+
 resource "azurerm_key_vault_certificate" "apim_certificate" {
   name         = "${var.prefix}-apim-cert"
   key_vault_id = azurerm_key_vault.keyvault.id
 
   certificate {
-    contents = filebase64("${path.module}/cert.pfx")
+    contents = filebase64(data.local_file.cert.content)
     password = var.cert_password
   }
   depends_on = [azurerm_key_vault_access_policy.vault_policy, null_resource.openssl]
