@@ -99,3 +99,19 @@ resource "azurerm_subnet_network_security_group_association" "nsg-assoc_apim" {
   subnet_id                 = azurerm_subnet.apim_subnet.id
   network_security_group_id = azurerm_network_security_group.apim_security_group.id
 }
+
+
+resource "azurerm_private_dns_zone" "dns_zone" {
+  name                = var.apim_domain
+  resource_group_name = data.azurerm_resource_group.rg.name
+  depends_on = [azurerm_virtual_network.app_virtual_network]
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "example" {
+  name                  = "${var.prefix}-network-link"
+  virtual_network_id    = azurerm_virtual_network.app_virtual_network.id
+  resource_group_name   = data.azurerm_resource_group.rg.name
+  private_dns_zone_name = azurerm_private_dns_zone.dns_zone.name
+
+  depends_on = [azurerm_private_dns_zone.dns_zone]
+}

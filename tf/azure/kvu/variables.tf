@@ -27,10 +27,6 @@ variable "group" {
   type = string
 }
 
-variable "apim_domain" {
-  type = string
-}
-
 variable "cert" {
   type = string
 }
