@@ -1,5 +1,5 @@
 {
-  "prefix": "pcloudappsdev",
+  "prefix": "rcloudappsdev",
   "location": "centralus",
   "environment": "development",
   "service_domain": "stardevs.xyz",
