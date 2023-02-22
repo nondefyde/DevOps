@@ -53,8 +53,8 @@ resource "azurerm_private_dns_a_record" "portal_dns_record" {
 }
 
 data "azurerm_key_vault" "keyvault" {
-  name                = var.vaultName
-  resource_group_name = var.vaultRg
+  name                = var.vault_name
+  resource_group_name = var.vault_rg
 }
 
 data "azurerm_key_vault_certificate" "ssl_certificate" {
