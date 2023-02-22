@@ -83,7 +83,7 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
 
   certificate {
     contents = filebase64("cert.pfx")
-    password = var
+    password = var.cert_password
   }
   depends_on = [azurerm_key_vault_access_policy.vault_policy]
 }
