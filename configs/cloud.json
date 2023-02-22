@@ -5,8 +5,8 @@
   "storage_account": {
     "sa_name": "stmapps",
     "sa_resource_group": "devops",
-    "cert_container_name": "centralus",
-    "cert_name": "cert"
+    "cert_container_name": "certs",
+    "cert_name": "certificate.crt"
   },
   "resource-group": {
     "prevent_resource_deletion": false
