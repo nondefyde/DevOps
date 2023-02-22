@@ -18,7 +18,7 @@ env:
   location: centralus
   configFile: "configs/cloud.json"
   service_domain: "stardevs.xyz"
-  trigger_flag: 1
+  trigger_flag: 2
 
 jobs:
   envs:
