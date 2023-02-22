@@ -36,10 +36,10 @@ resource "azurerm_api_management" "apim" {
   publisher_email      = var.publisher_email
   sku_name             = "${var.sku}_${var.capacity}"
   virtual_network_type = "Internal"
-
-  identity {
-    type = "SystemAssigned"
-  }
+#
+#  identity {
+#    type = "SystemAssigned"
+#  }
 
   virtual_network_configuration {
     subnet_id = data.azurerm_subnet.apim_subnets.id
