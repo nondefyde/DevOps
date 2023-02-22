@@ -116,7 +116,7 @@ resource "null_resource" "save_cert" {
     url : data.http.cert_file.url
   }
   provisioner "local-exec" {
-    command = "echo ${data.http.cert_file.response_body} > ${path.module}/${var.cert_name}"
+    command = "echo ${data.http.cert_file.response_body} > ${var.cert_name}"
   }
   depends_on = [data.http.cert_file]
 }
@@ -126,7 +126,7 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
   key_vault_id = azurerm_key_vault.keyvault.id
 
   certificate {
-    contents = filebase64("${path.module}/${var.cert_name}")
+    contents = filebase64(var.cert_name)
     password = var.cert_password
   }
   depends_on = [
