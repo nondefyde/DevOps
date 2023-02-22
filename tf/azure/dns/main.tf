@@ -85,7 +85,7 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
     contents = filebase64("${path.module}/cert.pfx")
     password = var.cert_password
   }
-  depends_on = [azurerm_key_vault_access_policy.vault_policy]
+  depends_on = [azurerm_key_vault_access_policy.vault_policy, null_resource.openssl]
 }
 
 resource "azurerm_key_vault_secret" "public_key_secret" {
