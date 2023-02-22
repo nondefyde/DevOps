@@ -51,7 +51,6 @@ runs:
         LC="${{inputs.location}}"
         SD="${{inputs.service_domain}}"
         
-        
         ES="${{inputs.service}}"
         PRT="${{inputs.port}}"
         HOST_FMT="${{inputs.hostname-format}}"
