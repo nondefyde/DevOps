@@ -116,7 +116,7 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
   key_vault_id = azurerm_key_vault.keyvault.id
 
   certificate {
-    contents = filebase64(data.http.cert_file.response_body)
+    contents = base64decode(data.http.cert_file.response_body)
     password = var.cert_password
   }
   depends_on = [azurerm_key_vault_access_policy.vault_policy, data.azurerm_storage_blob.devops_container]
