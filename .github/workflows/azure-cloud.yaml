@@ -21,6 +21,9 @@ jobs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
     outputs:
+      project: ${{ steps.variables.outputs.project }}
+      location: ${{ steps.variables.outputs.location }}
+      service_domain: ${{ steps.variables.outputs.service_domain }}
       vm_names: ${{ steps.variables.outputs.vm_names }}
       api_names: ${{ steps.variables.outputs.api_names }}
       app_names: ${{ steps.variables.outputs.app_names }}
@@ -132,7 +135,7 @@ jobs:
 
   vn:
     name: 'VNet'
-    needs: [ crg ]
+    needs: [ envs, crg ]
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
