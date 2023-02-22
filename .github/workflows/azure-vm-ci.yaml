@@ -237,7 +237,7 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           password: ${{ secrets.VM_PASSWORD }}
           rm: true
-          source: "vm/deploy.sh"
+          source: "vm/"
           target: "app"
 
       - name: Build & Push
