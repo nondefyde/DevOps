@@ -27,10 +27,6 @@ variable "group" {
   type = string
 }
 
-variable "cert_name" {
-  type = string
-}
-
 variable "cert_password" {
   type = string
   default = "password"
@@ -41,9 +37,8 @@ variable "cert_container_name" {
   default = "cert"
 }
 
-variable "trigger_flag" {
-  type = number
-  default = 1
+variable "cert_name" {
+  type = string
 }
 
 variable "devops_sa" {

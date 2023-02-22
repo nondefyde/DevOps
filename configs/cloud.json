@@ -2,6 +2,12 @@
   "prefix": "mcloudappsdev",
   "location": "centralus",
   "environment": "development",
+  "storage_account": {
+    "sa_name": "stmapps",
+    "sa_resource_group": "centralus",
+    "cert_container_name": "centralus",
+    "cert_name": "cert"
+  },
   "resource-group": {
     "prevent_resource_deletion": false
   },

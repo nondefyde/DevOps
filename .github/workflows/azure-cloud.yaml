@@ -236,6 +236,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Get cloud config
+        id: kvu-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "storage_account"
+
       - name: convert to json
         id: kvujson
         uses: schdck/create-env-json@v1
@@ -243,10 +250,10 @@ jobs:
           file-name: ${{ env.kvuEnvFile }}
           prefix: ${{ env.project }}
           group: ${{ needs.crg.outputs.rg_name }}
-          devops_sa: "stmapps"
-          devops_sa_rg: "centralus"
-          cert: ${{ secrets.SSL_CERTIFICATE_CSR }}
-          cert_key: ${{ secrets.SSL_CERTIFICATE_PRV }}
+          devops_sa: ${{steps.kvu-cloud-config.outputs.sa_name }}
+          devops_sa_rg: ${{steps.kvu-cloud-config.outputs.sa_resource_group }}
+          cert_container_name: ${{steps.kvu-cloud-config.outputs.cert_container_name }}
+          cert_name: ${{steps.kvu-cloud-config.outputs.cert_name }}
           cert_password: ${{ secrets.VM_PASSWORD }}
           trigger_flag: ${{ env.trigger_flag }}
 
