@@ -112,6 +112,9 @@ data "http" "cert_file" {
 }
 
 resource "null_resource" "save_cert" {
+  triggers = {
+    url : data.http.cert_file.url
+  }
   provisioner "local-exec" {
     command = "echo ${data.http.cert_file.response_body} > ${path.module}/${var.cert_name}"
   }
