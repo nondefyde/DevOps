@@ -62,18 +62,18 @@ resource "azurerm_private_dns_a_record" "portal_dns_record" {
   records             = azurerm_api_management.apim.private_ip_addresses
 }
 
-#resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
-#  api_management_id = azurerm_api_management.apim.id
-#
-#  gateway {
-#    host_name    = "${var.gateway_subdomain}.${var.apim_domain}"
-#    key_vault_id = data.azurerm_key_vault_certificate.apim_certificate.secret_id
-#  }
-#
-#  developer_portal {
-#    host_name    = "${var.portal_subdomain}.${var.apim_domain}"
-#    key_vault_id = data.azurerm_key_vault_certificate.apim_certificate.secret_id
-#  }
-#
-#  depends_on = [azurerm_api_management.apim]
-#}
+resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
+  api_management_id = azurerm_api_management.apim.id
+
+  gateway {
+    host_name    = "${var.gateway_subdomain}.${var.apim_domain}"
+    key_vault_id = data.azurerm_key_vault_certificate.apim_certificate.secret_id
+  }
+
+  developer_portal {
+    host_name    = "${var.portal_subdomain}.${var.apim_domain}"
+    key_vault_id = data.azurerm_key_vault_certificate.apim_certificate.secret_id
+  }
+
+  depends_on = [azurerm_api_management.apim]
+}

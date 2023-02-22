@@ -38,3 +38,8 @@ variable "cert" {
 variable "cert_key" {
   type = string
 }
+
+variable "cert_password" {
+  type = string
+  default = "password"
+}

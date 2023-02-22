@@ -70,16 +70,9 @@ resource "azurerm_key_vault_access_policy" "vault_policy" {
 resource "null_resource" "openssl" {
   provisioner "local-exec" {
     command = <<EOT
-      echo '${var.cert_key}' > private.key
-      echo '${var.cert}' > certificate.crt
-      openssl req \
-        -x509 \
-        -newkey rsa:4096 \
-        -keyout private.key \
-        -out certificate.crt \
-        -days 365 \
-        -nodes \
-        -subj "/CN=mydomain.com"
+      echo '${var.cert_key}' > cert.key
+      echo '${var.cert}' > cert.pfx
+      openssl pkcs12 -export -out cert.pfx -inkey cert.key -in cert.pem -passout pass:'${var.cert_password}'
     EOT
   }
 }
@@ -87,55 +80,11 @@ resource "null_resource" "openssl" {
 resource "azurerm_key_vault_certificate" "apim_certificate" {
   name         = "${var.prefix}-apim-cert"
   key_vault_id = azurerm_key_vault.keyvault.id
-  certificate_policy {
-    issuer_parameters {
-      name = "Self"
-    }
 
-    key_properties {
-      exportable = true
-      key_size   = 2048
-      key_type   = "RSA"
-      reuse_key  = true
-    }
-
-    lifetime_action {
-      action {
-        action_type = "AutoRenew"
-      }
-
-      trigger {
-        days_before_expiry = 30
-      }
-    }
-
-    secret_properties {
-      content_type = "application/x-pkcs12"
-    }
-
-    x509_certificate_properties {
-      key_usage = [
-        "cRLSign",
-        "dataEncipherment",
-        "digitalSignature",
-        "keyAgreement",
-        "keyCertSign",
-        "keyEncipherment",
-      ]
-
-      subject            = "CN=${var.apim_domain}"
-      validity_in_months = 12
-
-      subject_alternative_names {
-        dns_names = [
-          "*.${var.apim_domain}",
-          "api.${var.apim_domain}",
-          "portal.${var.apim_domain}"
-        ]
-      }
-    }
+  certificate {
+    contents = filebase64("cert.pfx")
+    password = var
   }
-
   depends_on = [azurerm_key_vault_access_policy.vault_policy]
 }
 
