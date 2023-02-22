@@ -273,73 +273,73 @@ jobs:
         run: |
           echo "key_vault_name=${{ env.key_vault_name }}" >> $GITHUB_OUTPUT
           echo "apim_certificate_name=${{ env.apim_certificate_name }}" >> $GITHUB_OUTPUT
-#
-#  vms:
-#    name: Virtual Machines ${{ matrix.items }}
-#    needs: [ envs, crg, vn, kvu ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    env:
-#      vm: ${{ needs.envs.outputs.vm_names }}
-#      vmEnvFile: "vms-${{ matrix.items }}.tfvars"
-#    strategy:
-#      matrix:
-#        items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
-#    outputs:
-#      vm_names: ${{ steps.set-output.outputs.vm_names }}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Get cloud config
-#        id: vm-cloud-config
-#        uses: ActionsTools/read-json-action@main
-#        with:
-#          file_path: ${{ env.configFile }}
-#          prop_path: "virtual-machine"
-#
-#      - name: Print VM Info
-#        id: vm-info
-#        run: |
-#          echo "vm name ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}"
-#          echo "vm count ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}"
-#
-#      - name: convert to json
-#        id: vmjson
-#        uses: schdck/create-env-json@v1
-#        with:
-#          file-name: ${{ env.vmEnvFile }}
-#          prefix: ${{ env.project }}
-#          apim_domain: ${{ env.service_domain }}
-#          group: ${{ needs.crg.outputs.rg_name }}
-#          name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
-#          vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
-#          admin_password: ${{ secrets.VM_PASSWORD }}
-#
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: ${{ env.vmEnvFile }}
-#          path: ${{ env.vmEnvFile }}
-#
-#      - name: Instantiate VMachine(s)
-#        uses: ./.github/actions/tf-azure-script
-#        id: vm
-#        with:
-#          project: ${{ env.project }}
-#          envFile: ${{ env.vmEnvFile }}
-#          key: ${{ env.project }}-${{ matrix.items }}-vm
-#          working-directory: "tf/azure/vm"
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#        continue-on-error: false
-#
-#      - name: Set output
-#        id: set-output
-#        run: |
-#          echo "vm_names=${{ env.vm_names }}" >> $GITHUB_OUTPUT
+
+  vms:
+    name: Virtual Machines ${{ matrix.items }}
+    needs: [ envs, crg, vn, kvu ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      vm: ${{ needs.envs.outputs.vm_names }}
+      vmEnvFile: "vms-${{ matrix.items }}.tfvars"
+    strategy:
+      matrix:
+        items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
+    outputs:
+      vm_names: ${{ steps.set-output.outputs.vm_names }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get cloud config
+        id: vm-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "virtual-machine"
+
+      - name: Print VM Info
+        id: vm-info
+        run: |
+          echo "vm name ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}"
+          echo "vm count ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}"
+
+      - name: convert to json
+        id: vmjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.vmEnvFile }}
+          prefix: ${{ env.project }}
+          apim_domain: ${{ env.service_domain }}
+          group: ${{ needs.crg.outputs.rg_name }}
+          name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
+          vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
+          admin_password: ${{ secrets.VM_PASSWORD }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.vmEnvFile }}
+          path: ${{ env.vmEnvFile }}
+
+      - name: Instantiate VMachine(s)
+        uses: ./.github/actions/tf-azure-script
+        id: vm
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.vmEnvFile }}
+          key: ${{ env.project }}-${{ matrix.items }}-vm
+          working-directory: "tf/azure/vm"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "vm_names=${{ env.vm_names }}" >> $GITHUB_OUTPUT
 #  apim:
 #    name: Api Management Service
 #    needs: [ envs, crg, kvu ]
