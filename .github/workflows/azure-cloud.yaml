@@ -239,7 +239,7 @@ jobs:
 
   vms:
     name: VM ${{ matrix.items }}
-    needs: [ envs, crg, vn, kvu ]
+    needs: [ envs, crg, vn ]
     permissions: write-all
     runs-on: ubuntu-latest
     env:
