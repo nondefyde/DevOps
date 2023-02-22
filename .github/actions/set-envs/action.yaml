@@ -54,14 +54,14 @@ runs:
         ES="${{inputs.service}}"
         PRT="${{inputs.port}}"
         HOST_FMT="${{inputs.hostname-format}}"
-        ENV_HOST_FMT="${{ env.current_hostname_format }}"
+        ENV_HOST_FMT="${{ env.hostname_format }}"
         DOCFILE="${{ inputs.dockerfile }}"
 
         PROJECT="${EP:-$CONFIG_PROJECT}"
         LOCATION="${LC:-$CONFIG_LOCATION}"
         SERVICE_DOMAIN="${SD:-$CONFIG_SERVICE_DOMAIN}"
-        SERVICE="${ES:-${{env.current_service}}}"
-        PORT="${PRT:-${{env.current_port}}}"
+        SERVICE="${ES:-${{env.service}}}"
+        PORT="${PRT:-${{env.port}}}"
 
         HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
         DOCKER_FILE="${DOCFILE:-${{ env.dockerfile }}}"

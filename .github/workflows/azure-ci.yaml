@@ -69,10 +69,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  current_project: mcloudappsdev
-  current_service: dev
-  current_port: 8000
-  current_hostname_format: "stm-{0}.{1}.bytegum.com"
+  service: dev
+  port: 8000
+  hostname_format: "stm-{0}.{1}.bytegum.com"
   image-name: stm-quest
   dockerfile: './ci/Dockerfile'
   location: 'centralus'
