@@ -148,6 +148,7 @@ jobs:
           prefix: ${{ env.project }}
           location: ${{ needs.crg.outputs.rg_location }}
           group: ${{ needs.crg.outputs.rg_name }}
+          apim_domain: ${{ env.service_domain }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
@@ -215,7 +216,6 @@ jobs:
           envFile: ${{ env.vnEnvFile }}
           key: ${{ env.project }}-bst
           working-directory: "tf/azure/bst"
-          apim_domain: ${{ env.service_domain }}
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
           AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
