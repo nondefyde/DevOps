@@ -2,6 +2,7 @@
   "prefix": "mcloudappsdev",
   "location": "centralus",
   "environment": "development",
+  "service_domain": "stardevs.xyz",
   "storage_account": {
     "sa_name": "stmapps",
     "sa_resource_group": "devops",
@@ -32,7 +33,6 @@
     "publisher_email": "nondefyde@gmail.com",
     "capacity": "1",
     "sku": "Developer",
-    "domain": "https://bytegum.com",
     "apis": {
       "quest": {
         "name": "Quest API",

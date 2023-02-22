@@ -22,28 +22,11 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Initialize environments
-      shell: bash
-      run: |
-        EP="${{inputs.project}}"
-        ES="${{inputs.service}}"
-        PRT="${{inputs.port}}"
-        HOST_FMT="${{inputs.hostname-format}}"
-        ENV_HOST_FMT="${{env.current_hostname_format}}"
-        DOCFILE="${{ inputs.dockerfile }}"
-
-        PROJECT="${EP:-${{env.current_project}}}"
-        SERVICE="${ES:-${{env.current_service}}}"
-        PORT="${PRT:-${{env.current_port}}}"
-
-        HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
-        DOCKER_FILE="${DOCFILE:-${{ env.dockerfile }}}"
-
-        echo "project=${PROJECT}" >> "$GITHUB_ENV"
-        echo "service=${SERVICE}" >> "$GITHUB_ENV"
-        echo "port=${PORT}" >> "$GITHUB_ENV"
-        echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
-        echo "dockerfile=${DOCKER_FILE}" >> "$GITHUB_ENV"
+    - name: Cloud Config
+      id: env-config
+      uses: ActionsTools/read-json-action@main
+      with:
+        file_path: ${{ inputs.configFile }}
 
     - name: Check file existence
       id: check_files
@@ -51,11 +34,46 @@ runs:
       with:
         files: ${{ inputs.configFile }}
 
-    - name: Cloud Config
-      id: env-config
+    - name: APP config
+      id: config
       uses: ActionsTools/read-json-action@main
       with:
         file_path: ${{ inputs.configFile }}
+
+    - name: Initialize environments
+      shell: bash
+      run: |
+        CONFIG_PROJECT="${{ steps.config.outputs.prefix }}"
+        CONFIG_LOCATION="${{ steps.config.outputs.location }}"
+        CONFIG_SERVICE_DOMAIN="${{ steps.config.outputs.location }}"
+        
+        EP="${{inputs.project}}"
+        LC="${{inputs.location}}"
+        SD="${{inputs.service_domain}}"
+        
+        
+        ES="${{inputs.service}}"
+        PRT="${{inputs.port}}"
+        HOST_FMT="${{inputs.hostname-format}}"
+        ENV_HOST_FMT="${{ env.current_hostname_format }}"
+        DOCFILE="${{ inputs.dockerfile }}"
+
+        PROJECT="${EP:-$CONFIG_PROJECT}"
+        LOCATION="${LC:-$CONFIG_LOCATION}"
+        SERVICE_DOMAIN="${SD:-$CONFIG_SERVICE_DOMAIN}"
+        SERVICE="${ES:-${{env.current_service}}}"
+        PORT="${PRT:-${{env.current_port}}}"
+
+        HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
+        DOCKER_FILE="${DOCFILE:-${{ env.dockerfile }}}"
+
+        echo "project=${PROJECT}" >> "$GITHUB_ENV"
+        echo "location=${LOCATION}" >> "$GITHUB_ENV"
+        echo "service_domain=${SERVICE_DOMAIN}" >> "$GITHUB_ENV"
+        echo "service=${SERVICE}" >> "$GITHUB_ENV"
+        echo "port=${PORT}" >> "$GITHUB_ENV"
+        echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
+        echo "dockerfile=${DOCKER_FILE}" >> "$GITHUB_ENV"
 
     - name: VM config
       id: vm-config

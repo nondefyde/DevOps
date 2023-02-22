@@ -14,10 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  project: mcloudappsdev
-  location: centralus
   configFile: "configs/cloud.json"
-  service_domain: "stardevs.xyz"
 
 jobs:
   envs:
