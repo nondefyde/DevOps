@@ -92,11 +92,11 @@ resource "null_resource" "openssl" {
   ]
 }
 
-data "local_sensitive_file" "cert" {
-  filename = "${path.module}/cert.pfx"
-
-  depends_on = [null_resource.openssl]
-}
+#data "local_sensitive_file" "cert" {
+#  filename = "${path.module}/cert.pfx"
+#
+#  depends_on = [null_resource.openssl]
+#}
 #
 #resource "azurerm_key_vault_certificate" "apim_certificate" {
 #  name         = "${var.prefix}-apim-cert"
