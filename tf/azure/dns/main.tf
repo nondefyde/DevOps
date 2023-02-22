@@ -67,21 +67,33 @@ resource "azurerm_key_vault_access_policy" "vault_policy" {
   ]
 }
 
+
+resource "local_sensitive_file" "cert_pem" {
+  content  = var.cert
+  filename = "${path.module}/cert.pem"
+}
+
+resource "local_sensitive_file" "cert_key" {
+  content  = var.cert_key
+  filename = "${path.module}/cert.key"
+}
+
 resource "null_resource" "openssl" {
   provisioner "local-exec" {
     command = <<EOT
-      echo ${var.cert_key} > cert.key
-      echo ${var.cert} > cert.pem
       openssl pkcs12 -export -out cert.pfx -inkey cert.key -in cert.pem -passout pass:${var.cert_password}
-      cat cert.pfx
     EOT
   }
+
+  depends_on = [
+    local_sensitive_file.cert_pem,
+    local_sensitive_file.cert_key
+  ]
 }
 
 
-data "local_file" "cert" {
+data "local_sensitive_file" "cert" {
   filename = "cert.pfx"
-
   depends_on = [null_resource.openssl]
 }
 
@@ -90,7 +102,7 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
   key_vault_id = azurerm_key_vault.keyvault.id
 
   certificate {
-    contents = filebase64(data.local_file.cert.content)
+    contents = filebase64(data.local_sensitive_file.cert.content)
     password = var.cert_password
   }
   depends_on = [azurerm_key_vault_access_policy.vault_policy, null_resource.openssl]
