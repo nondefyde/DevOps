@@ -6,6 +6,11 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "3.44.1"
     }
+
+    http = {
+      source = "hashicorp/http"
+      version = "3.2.1"
+    }
   }
 }
 
@@ -16,3 +21,5 @@ provider "azurerm" {
   client_id       = var.client_id
   client_secret   = var.client_secret
 }
+
+provider "http" {}
