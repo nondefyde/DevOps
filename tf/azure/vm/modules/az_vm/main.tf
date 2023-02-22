@@ -10,7 +10,7 @@ data "template_file" "vm_init" {
 resource "random_id" "random_id" {
   keepers = {
     # Generate a new ID only when a new resource group is defined
-    resource_group = "${var.prefix}-${var.name}-group"
+    resource_group = "${var.prefix}-group"
   }
   byte_length = 2
 }
