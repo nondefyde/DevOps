@@ -70,9 +70,9 @@ resource "azurerm_key_vault_access_policy" "vault_policy" {
 resource "null_resource" "openssl" {
   provisioner "local-exec" {
     command = <<EOT
-      echo '${var.cert_key}' > cert.key
-      echo '${var.cert}' > cert.pfx
-      openssl pkcs12 -export -out cert.pfx -inkey cert.key -in cert.pem -passout pass:'${var.cert_password}'
+      echo ${var.cert_key} > cert.key
+      echo ${var.cert} > cert.pfx
+      openssl pkcs12 -export -out cert.pfx -inkey cert.key -in cert.pem -passout pass:${var.cert_password}
     EOT
   }
 }
