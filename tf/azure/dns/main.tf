@@ -67,6 +67,23 @@ resource "azurerm_key_vault_access_policy" "vault_policy" {
   ]
 }
 
+resource "null_resource" "openssl" {
+  provisioner "local-exec" {
+    command = <<EOT
+      echo '${var.cert_key}' > private.key
+      echo '${var.cert}' > certificate.crt
+      openssl req \
+        -x509 \
+        -newkey rsa:4096 \
+        -keyout private.key \
+        -out certificate.crt \
+        -days 365 \
+        -nodes \
+        -subj "/CN=mydomain.com"
+    EOT
+  }
+}
+
 resource "azurerm_key_vault_certificate" "apim_certificate" {
   name         = "${var.prefix}-apim-cert"
   key_vault_id = azurerm_key_vault.keyvault.id

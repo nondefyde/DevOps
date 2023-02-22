@@ -251,6 +251,8 @@ jobs:
           apim_domain: ${{ env.service_domain }}
           cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          cert: ${{ secrets.SSL_CERTIFICATE_CSR }}
+          cert_key: ${{ secrets.SSL_CERTIFICATE_PRV }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2

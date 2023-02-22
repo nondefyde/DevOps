@@ -30,3 +30,11 @@ variable "group" {
 variable "apim_domain" {
   type = string
 }
+
+variable "cert" {
+  type = string
+}
+
+variable "cert_key" {
+  type = string
+}
