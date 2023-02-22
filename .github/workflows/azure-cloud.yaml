@@ -243,6 +243,8 @@ jobs:
           file-name: ${{ env.kvuEnvFile }}
           prefix: ${{ env.project }}
           group: ${{ needs.crg.outputs.rg_name }}
+          devops_sa: "stmapps"
+          devops_sa_rg: "centralus"
           cert: ${{ secrets.SSL_CERTIFICATE_CSR }}
           cert_key: ${{ secrets.SSL_CERTIFICATE_PRV }}
           cert_password: ${{ secrets.VM_PASSWORD }}
