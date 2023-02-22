@@ -73,6 +73,7 @@ resource "null_resource" "openssl" {
       echo ${var.cert_key} > cert.key
       echo ${var.cert} > cert.pem
       openssl pkcs12 -export -out cert.pfx -inkey cert.key -in cert.pem -passout pass:${var.cert_password}
+      cat cert.pfx
     EOT
   }
 }
