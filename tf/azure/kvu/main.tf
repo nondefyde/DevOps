@@ -68,39 +68,49 @@ resource "azurerm_key_vault_access_policy" "vault_policy" {
   ]
 }
 
-resource "random_id" "refresh" {
-  keepers = {
-    trigger_flag = var.trigger_flag
+data "azurerm_storage_account" "devops_sa" {
+  name                = var.devops_sa
+  resource_group_name = var.devops_sa_rg
+}
+
+data "azurerm_storage_blob" "devops_container" {
+  name                   = "exampleblob"
+  storage_account_name   = data.azurerm_storage_account.devops_sa.name
+  storage_container_name = var.cert_container_name
+
+  depends_on = [data.azurerm_storage_account]
+}
+
+data "azurerm_storage_account_blob_container_sas" "sa_cert_sas" {
+  connection_string = data.azurerm_storage_account.devops_sa.primary_connection_string
+  container_name    = var.cert_container_name
+  https_only        = true
+
+  ip_address = "168.1.5.65"
+
+  start  = "2018-03-21"
+  expiry = "2018-03-21"
+
+  permissions {
+    read   = true
+    add    = true
+    create = false
+    write  = false
+    delete = true
+    list   = true
   }
-  byte_length = 2
+
+  cache_control       = "max-age=5"
+  content_disposition = "inline"
+  content_encoding    = "deflate"
+  content_language    = "en-US"
+  content_type        = "application/json"
+
+  depends_on = [data.azurerm_storage_account]
 }
 
-resource "local_sensitive_file" "cert_pem" {
-  content  = var.cert
-  filename = "${path.module}/cert.pem"
-}
-
-resource "local_sensitive_file" "cert_key" {
-  content  = var.cert_key
-  filename = "${path.module}/cert.key"
-}
-
-resource "null_resource" "openssl" {
-  triggers = {
-    refresh = random_id.refresh.keepers.trigger_flag
-  }
-  provisioner "local-exec" {
-    command = "openssl pkcs12 -export -out ${path.module}/cert.pfx -inkey ${path.module}/${local_sensitive_file.cert_key.filename} -in ${path.module}/${local_sensitive_file.cert_pem.filename} -passout pass:${var.cert_password}"
-  }
-  depends_on = [
-    local_sensitive_file.cert_pem,
-    local_sensitive_file.cert_key
-  ]
-}
-
-data "local_sensitive_file" "cert" {
-  filename = "${path.module}/cert.pfx"
-  depends_on = [null_resource.openssl]
+data "http" "cert_file" {
+  url = "${data.azurerm_storage_account.devops_sa.primary_blob_endpoint}/${var.cert_container_name}/${var.cert_name}?${data.azurerm_storage_account_blob_container_sas.sa_cert_sas}"
 }
 
 resource "azurerm_key_vault_certificate" "apim_certificate" {
@@ -108,10 +118,10 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
   key_vault_id = azurerm_key_vault.keyvault.id
 
   certificate {
-    contents = data.local_sensitive_file.cert.content_base64
+    contents = base64decode(data.http.cert_file.body)
     password = var.cert_password
   }
-  depends_on = [azurerm_key_vault_access_policy.vault_policy, data.local_sensitive_file.cert]
+  depends_on = [azurerm_key_vault_access_policy.vault_policy, data.azurerm_storage_blob.devops_container]
 }
 
 resource "azurerm_key_vault_secret" "public_key_secret" {
