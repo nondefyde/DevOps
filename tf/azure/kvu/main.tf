@@ -86,10 +86,8 @@ data "azurerm_storage_account_blob_container_sas" "sa_cert_sas" {
   container_name    = var.cert_container_name
   https_only        = true
 
-  ip_address = "168.1.5.65"
-
-  start  = "2018-03-21"
-  expiry = "2018-03-21"
+  start  = timestamp()
+  expiry = timeadd(timestamp(), "24h")
 
   permissions {
     read   = true
@@ -110,7 +108,7 @@ data "azurerm_storage_account_blob_container_sas" "sa_cert_sas" {
 }
 
 data "http" "cert_file" {
-  url = "${data.azurerm_storage_account.devops_sa.primary_blob_endpoint}/${var.cert_container_name}/${var.cert_name}?${data.azurerm_storage_account_blob_container_sas.sa_cert_sas.sas}"
+  url = "${data.azurerm_storage_account.devops_sa.primary_blob_endpoint}${var.cert_container_name}/${var.cert_name}?${data.azurerm_storage_account_blob_container_sas.sa_cert_sas.sas}"
 }
 
 resource "azurerm_key_vault_certificate" "apim_certificate" {
