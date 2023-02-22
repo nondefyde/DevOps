@@ -102,7 +102,7 @@ resource "azurerm_key_vault_certificate" "apim_certificate" {
   key_vault_id = azurerm_key_vault.keyvault.id
 
   certificate {
-    contents = filebase64(data.local_sensitive_file.cert.filename)
+    contents = data.local_sensitive_file.cert.content_base64
     password = var.cert_password
   }
   depends_on = [azurerm_key_vault_access_policy.vault_policy, null_resource.openssl]
