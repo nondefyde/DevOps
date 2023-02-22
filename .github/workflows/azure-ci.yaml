@@ -166,8 +166,6 @@ jobs:
           echo "hostname=${{ env.hostname }}" >> $GITHUB_OUTPUT
           echo "docker-tag=${{ env.docker-tag }}" >> $GITHUB_OUTPUT
 
-
-
   deploy-image:
     name: 'Push Image'
     needs: [ envs, config ]

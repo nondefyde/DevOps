@@ -39,6 +39,9 @@ jobs:
         id: variables
         shell: bash
         run: |
+          echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
+          echo "location=${{ env.location }}" >> $GITHUB_OUTPUT
+          echo "service_domain=${{ env.service_domain }}" >> $GITHUB_OUTPUT
           echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
           echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
           echo "app_names=${{ env.app_names }}" >> $GITHUB_OUTPUT
@@ -49,6 +52,10 @@ jobs:
     needs: [ envs ]
     permissions: write-all
     runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      location: ${{ needs.envs.outputs.location }}
+      service_domain: ${{ needs.envs.outputs.service_domain }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -66,13 +73,16 @@ jobs:
 
   crg:
     name: 'Res & Cr'
-    needs: [ sa ]
+    needs: [ envs, sa ]
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
       rg_location: ${{ steps.set-output.outputs.rg_location }}
       rg_name: ${{ steps.set-output.outputs.rg_name }}
     env:
+      project: ${{ needs.envs.outputs.project }}
+      location: ${{ needs.envs.outputs.location }}
+      service_domain: ${{ needs.envs.outputs.service_domain }}
       rgEnvFile: "rg.tfvars"
     steps:
       - name: Checkout
@@ -129,6 +139,9 @@ jobs:
       virtual_network_id: ${{ steps.set-output.outputs.virtual_network_id }}
       virtual_network_name: ${{ steps.set-output.outputs.virtual_network_name }}
     env:
+      project: ${{ needs.envs.outputs.project }}
+      location: ${{ needs.envs.outputs.location }}
+      service_domain: ${{ needs.envs.outputs.service_domain }}
       vnEnvFile: "vn.tfvars"
     steps:
       - name: Checkout
@@ -178,6 +191,9 @@ jobs:
       baston_dns: ${{ steps.set-output.outputs.baston_dns }}
       baston_id: ${{ steps.set-output.outputs.baston_id }}
     env:
+      project: ${{ needs.envs.outputs.project }}
+      location: ${{ needs.envs.outputs.location }}
+      service_domain: ${{ needs.envs.outputs.service_domain }}
       vnEnvFile: "vn.tfvars"
     steps:
       - name: Checkout
@@ -227,6 +243,9 @@ jobs:
       key_vault_name: ${{ steps.set-output.outputs.key_vault_name }}
       apim_certificate_name: ${{ steps.set-output.outputs.apim_certificate_name }}
     env:
+      project: ${{ needs.envs.outputs.project }}
+      location: ${{ needs.envs.outputs.location }}
+      service_domain: ${{ needs.envs.outputs.service_domain }}
       kvuEnvFile: "kvu.tfvars"
     steps:
       - name: Checkout
