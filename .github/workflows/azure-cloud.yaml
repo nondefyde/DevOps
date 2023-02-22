@@ -187,7 +187,7 @@ jobs:
           echo "virtual_network_name=${{ env.virtual_network_name }}" >> $GITHUB_OUTPUT
   bst:
     name: 'Baston Host'
-    needs: [ crg, vn ]
+    needs: [ envs, crg, vn ]
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
