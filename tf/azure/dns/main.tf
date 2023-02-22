@@ -82,6 +82,7 @@ resource "null_resource" "openssl" {
   provisioner "local-exec" {
     command = <<EOT
       openssl pkcs12 -export -out ${path.module}/cert.pfx -inkey ${local_sensitive_file.cert_key.filename} -in ${local_sensitive_file.cert_pem.filename} -passout pass:${var.cert_password}
+      cat ${path.module}/cert.pfx
       ls -a
     EOT
   }
