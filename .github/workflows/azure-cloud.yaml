@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  project: kcloudappsdev
+  project: lcloudappsdev
   location: centralus
   configFile: "configs/cloud.json"
   service_domain: "stardevs.xyz"
@@ -229,7 +229,7 @@ jobs:
 
   dns:
     name: 'DNS Configuration'
-    needs: [ envs, crg ]
+    needs: [ envs, vn, crg ]
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:

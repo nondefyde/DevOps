@@ -1,5 +1,5 @@
 {
-  "prefix": "kcloudappsdev",
+  "prefix": "lcloudappsdev",
   "location": "centralus",
   "environment": "development",
   "resource-group": {
