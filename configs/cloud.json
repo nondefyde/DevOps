@@ -7,7 +7,7 @@
     "sa_name": "stmapps",
     "sa_resource_group": "devops",
     "cert_container_name": "certs",
-    "cert_name": "certificate.crt"
+    "cert_name": "cert.pfx"
   },
   "resource-group": {
     "prevent_resource_deletion": false

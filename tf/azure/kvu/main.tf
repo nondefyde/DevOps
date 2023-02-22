@@ -108,7 +108,7 @@ data "azurerm_storage_account_blob_container_sas" "sa_cert_sas" {
 }
 
 data "http" "cert_file" {
-  url = "${data.azurerm_storage_account.devops_sa.primary_blob_endpoint}${var.cert_container_name}/${var.cert_name}?${data.azurerm_storage_account_blob_container_sas.sa_cert_sas.sas}"
+  url = "${data.azurerm_storage_account.devops_sa.primary_blob_endpoint}${var.cert_container_name}/${var.cert_name}${data.azurerm_storage_account_blob_container_sas.sa_cert_sas.sas}"
 }
 
 resource "azurerm_key_vault_certificate" "apim_certificate" {
