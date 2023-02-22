@@ -228,7 +228,7 @@ jobs:
           VIRTUAL_HOST: ${{ needs.config.outputs.hostname }}
           PORT: ${{ env.port }}
           NODE_ENV: ${{ env.environment }}
-        run: cat ./ci/docker-compose.yml | envsubst > ./vm/docker-compose.yml
+        run: cat ./stm/docker-compose.yml | envsubst > ./vm/docker-compose.yml
 
       - name: Push File to VM
         uses: appleboy/scp-action@master
