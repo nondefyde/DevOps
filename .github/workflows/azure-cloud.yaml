@@ -18,7 +18,6 @@ env:
   location: centralus
   configFile: "configs/cloud.json"
   service_domain: "stardevs.xyz"
-  trigger_flag: 2
 
 jobs:
   envs:
@@ -255,7 +254,6 @@ jobs:
           cert_container_name: ${{steps.kvu-cloud-config.outputs.cert_container_name }}
           cert_name: ${{steps.kvu-cloud-config.outputs.cert_name }}
           cert_password: ${{ secrets.VM_PASSWORD }}
-          trigger_flag: ${{ env.trigger_flag }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
