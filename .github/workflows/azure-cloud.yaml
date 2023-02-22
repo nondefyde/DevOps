@@ -308,7 +308,7 @@ jobs:
           echo "vm_names=${{ env.vm_names }}" >> $GITHUB_OUTPUT
   apim:
     name: Api Management Service
-    needs: [ envs, crg ]
+    needs: [ envs, crg, vn ]
     permissions: write-all
     runs-on: ubuntu-latest
     env:
