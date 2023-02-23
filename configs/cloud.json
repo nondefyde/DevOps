@@ -1,5 +1,5 @@
 {
-  "prefix": "rcloudappsdev",
+  "prefix": "scloudappsdev",
   "location": "centralus",
   "environment": "development",
   "service_domain": "stardevs.xyz",
