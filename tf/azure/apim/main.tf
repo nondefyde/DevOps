@@ -30,7 +30,7 @@ resource "azurerm_api_management" "apim" {
   virtual_network_type = "Internal"
 
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
   }
 
   virtual_network_configuration {
