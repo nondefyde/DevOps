@@ -60,7 +60,7 @@ data "azurerm_key_vault" "keyvault" {
 }
 
 resource "azurerm_key_vault_access_policy" "vault_policy" {
-  key_vault_id = data.azurerm_key_vault.example.id
+  key_vault_id = data.azurerm_key_vault.keyvault.id
 
   tenant_id = azurerm_api_management.apim.identity[0].tenant_id
   object_id = azurerm_api_management.apim.identity[0].principal_id
@@ -77,7 +77,7 @@ resource "azurerm_key_vault_access_policy" "vault_policy" {
     "ManageContacts",
     "ManageIssuers",
     "SetIssuers",
-    "Update",
+    "Update"
   ]
 
   key_permissions = [
@@ -96,7 +96,7 @@ resource "azurerm_key_vault_access_policy" "vault_policy" {
     "UnwrapKey",
     "Update",
     "Verify",
-    "WrapKey",
+    "WrapKey"
   ]
 
   secret_permissions = [
@@ -107,7 +107,7 @@ resource "azurerm_key_vault_access_policy" "vault_policy" {
     "Purge",
     "Recover",
     "Restore",
-    "Set",
+    "Set"
   ]
 }
 
