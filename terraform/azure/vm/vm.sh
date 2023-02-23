@@ -21,6 +21,7 @@ sudo apt update
 sudo apt install -y docker-ce
 
 sudo docker pull jwilder/nginx-proxy:latest
+sudo docker volume create app-volume
 sudo docker run -d --name reverse_proxy -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
 
 #Install Docker compose
