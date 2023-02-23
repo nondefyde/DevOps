@@ -26,11 +26,7 @@ data "azurerm_key_vault" "keyvault" {
 data "azurerm_key_vault_certificate" "ssl_certificate" {
   name         = var.cert_name
   key_vault_id = data.azurerm_key_vault.keyvault.id
-}
-
-data "azurerm_key_vault_secret" "apim_public_key" {
-  name         = "${var.prefix}-apim-public-key"
-  key_vault_id = data.azurerm_key_vault.keyvault.id
+  depends_on = [azurerm_key_vault_access_policy.vault_policy]
 }
 
 resource "azurerm_public_ip" "gw_ip" {
