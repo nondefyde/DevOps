@@ -6,7 +6,7 @@
   "key-vault": {
     "vaultName": "stmdevopsvault",
     "vaultRg": "devops",
-    "certName": "sslcert"
+    "certName": "stardevs"
   },
   "resource-group": {
     "prevent_resource_deletion": false
