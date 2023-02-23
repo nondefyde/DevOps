@@ -24,7 +24,7 @@ data "azurerm_key_vault" "keyvault" {
 }
 
 data "azurerm_key_vault_certificate" "ssl_certificate" {
-  name         = var.certName
+  name         = var.cert_name
   key_vault_id = data.azurerm_key_vault.keyvault.id
 }
 
