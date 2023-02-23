@@ -24,7 +24,14 @@ sudo docker pull jwilder/nginx-proxy:latest
 sudo docker run -d --name reverse_proxy -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
 
 #Install Docker compose
-sudo mkdir -p /home/adminuser/.docker/cli-plugins
-sudo curl -SL https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64 -o /home/adminuser/.docker/cli-plugins/docker-compose
-sudo chmod +x /home/adminuser/.docker/cli-plugins/docker-compose
+sudo mkdir -p /usr/local/lib/docker/cli-plugins
+sudo curl -SL https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 sudo docker compose version
+
+sudo groupadd docker
+sudo usermod -aG docker adminuser
+newgrp docker
+
+sudo curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+sudo apt-get install jq --yes
