@@ -59,18 +59,62 @@ data "azurerm_key_vault" "keyvault" {
   resource_group_name = var.vault_rg
 }
 
-resource "azurerm_key_vault_access_policy" "example" {
+resource "azurerm_key_vault_access_policy" "vault_policy" {
   key_vault_id = data.azurerm_key_vault.example.id
 
   tenant_id = azurerm_api_management.apim.identity[0].tenant_id
   object_id = azurerm_api_management.apim.identity[0].principal_id
 
-  secret_permissions = ["get"]
+  certificate_permissions = [
+    "Create",
+    "Delete",
+    "DeleteIssuers",
+    "Get",
+    "GetIssuers",
+    "Import",
+    "List",
+    "ListIssuers",
+    "ManageContacts",
+    "ManageIssuers",
+    "SetIssuers",
+    "Update",
+  ]
+
+  key_permissions = [
+    "Backup",
+    "Create",
+    "Decrypt",
+    "Delete",
+    "Encrypt",
+    "Get",
+    "Import",
+    "List",
+    "Purge",
+    "Recover",
+    "Restore",
+    "Sign",
+    "UnwrapKey",
+    "Update",
+    "Verify",
+    "WrapKey",
+  ]
+
+  secret_permissions = [
+    "Backup",
+    "Delete",
+    "Get",
+    "List",
+    "Purge",
+    "Recover",
+    "Restore",
+    "Set",
+  ]
 }
 
 data "azurerm_key_vault_certificate" "ssl_certificate" {
   name         = var.cert_name
   key_vault_id = data.azurerm_key_vault.keyvault.id
+  depends_on = [azurerm_key_vault_access_policy.vault_policy]
 }
 
 resource "azurerm_api_management_custom_domain" "apim_custom_domain" {

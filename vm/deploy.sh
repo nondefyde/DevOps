@@ -15,8 +15,8 @@ if [ $IMAGE_COUNT -gt 0 ]; then
   NEWCOUNT=$((IMAGE_COUNT+1))
   echo "Spin up new container with updated image to scale up to ${NEWCOUNT}"
 
-  docker compose pull app
-  docker compose up -d --scale app=$NEWCOUNT --no-recreate
+  sudo docker compose pull app
+  sudo docker compose up -d --scale app=$NEWCOUNT --no-recreate
 
   UPDATED_IMAGE_COUNT=$(sudo docker ps --filter="name=vm-app-*" | grep vm-app- | wc -l)
   echo "Updated image >>>>> ${UPDATED_IMAGE_COUNT} >>>>> new Image count ${NEWCOUNT}"
@@ -27,9 +27,9 @@ if [ $IMAGE_COUNT -gt 0 ]; then
       sudo docker rm -f $id
     done
     echo "Scaling down to 1"
-    docker compose up -d --scale app=1 --no-recreate
+    sudo docker compose up -d --scale app=1 --no-recreate
   fi
 else
   echo "Spin up new container"
-  docker compose up -d --scale app=1 --no-recreate
+  sudo docker compose up -d --scale app=1 --no-recreate
 fi
