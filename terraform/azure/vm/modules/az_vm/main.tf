@@ -4,12 +4,12 @@ resource "random_id" "random_id" {
     # Generate a new ID only when a new resource group is defined
     resource_group = "${var.prefix}-group"
   }
-  byte_length = 4
+  byte_length = 2
 }
 
 # Create storage account for boot diagnostics
 resource "azurerm_storage_account" "vm_storage_account" {
-  name                     = "${var.prefix}diag${random_id.random_id.hex}"
+  name                     = "${var.prefix}dia${random_id.random_id.hex}"
   location                 = var.location
   resource_group_name      = "${var.prefix}-group"
   account_tier             = "Standard"

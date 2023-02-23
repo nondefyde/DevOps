@@ -18,6 +18,7 @@
     "secret:chv": "cd ./scripts && cat ../_env/chowville.yml | ./base64.sh",
     "secret:ksh": "cd ./scripts && cat ../_env/kassh.yml | ./base64.sh",
     "secret:stm": "cd ./scripts && cat ../_env/stm | ./base64.sh",
+    "secret:eco": "cd ./scripts && cat ../_env/eco | ./base64.sh",
     "secret:rpa": "cd ./scripts && cat ../_env/getreepa.yml | ./base64.sh",
     "secret:qst": "cd ./scripts && cat ../_env/qst | ./base64.sh",
 
