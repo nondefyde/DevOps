@@ -15,9 +15,10 @@ resource "azurerm_api_management_api" "apimp" {
   display_name          = var.display_name
   protocols             = var.protocols
   path                  = var.suffix
-  service_url           = "https://${var.apim_domain}"
+  service_url           = "https://${var.gw_subdomain}.${var.apim_domain}"
   subscription_required = false
 }
+
 #
 #resource "azurerm_api_management_api_operation" "apimp_operations" {
 #  count               = length(var.methods)

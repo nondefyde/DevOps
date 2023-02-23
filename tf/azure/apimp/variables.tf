@@ -75,3 +75,8 @@ variable "header" {
 variable "apim_domain" {
   type = string
 }
+
+variable "gw_subdomain" {
+  type = string
+  default = "gw"
+}
