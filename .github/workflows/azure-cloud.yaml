@@ -3,7 +3,8 @@ name: AZR DEPLOY VMS
 on:
   push:
     branches:
-      - 'mainddd'
+      - 'main'
+
 permissions:
   id-token: write
   contents: read
