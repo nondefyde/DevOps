@@ -67,7 +67,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
+        echo "Execute Release locked files : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
         mkdir -p _state
         terraform force-unlock \
           -backend-config="resource_group_name=${{ inputs.project }}-tfstate" \
