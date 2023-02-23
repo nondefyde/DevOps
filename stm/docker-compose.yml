@@ -12,11 +12,3 @@ services:
     restart: always
     networks:
       - app-network
-volumes:
-  app-volume:
-    external: true
-
-networks:
-  app-network:
-    name: nginx-proxy
-    external: true
