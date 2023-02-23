@@ -59,6 +59,15 @@ data "azurerm_key_vault" "keyvault" {
   resource_group_name = var.vault_rg
 }
 
+resource "azurerm_key_vault_access_policy" "example" {
+  key_vault_id = data.azurerm_key_vault.example.id
+
+  tenant_id = azurerm_api_management.apim.identity[0].tenant_id
+  object_id = azurerm_api_management.apim.identity[0].principal_id
+
+  secret_permissions = ["get"]
+}
+
 data "azurerm_key_vault_certificate" "ssl_certificate" {
   name         = var.cert_name
   key_vault_id = data.azurerm_key_vault.keyvault.id
