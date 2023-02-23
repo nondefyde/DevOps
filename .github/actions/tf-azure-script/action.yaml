@@ -62,24 +62,6 @@ runs:
       with:
         terraform_wrapper: false
 
-    - name: Terraform Free Locked file
-      id: force-unlock
-      working-directory: ${{ inputs.working-directory }}
-      shell: bash
-      run: |
-        echo "Execute Release locked files : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
-        mkdir -p _state
-        terraform force-unlock \
-          -backend-config="resource_group_name=${{ inputs.project }}-tfstate" \
-          -backend-config="storage_account_name=${{ inputs.project }}storage" \
-          -backend-config="container_name=${{ inputs.project }}tfstate" \
-          -backend-config="key=${{ inputs.key }}.terraform.tfstate" \
-          -backend-config="subscription_id=${{ inputs.AZR_SUBSCRIPTION_ID }}" \
-          -backend-config="tenant_id=${{ inputs.AZR_TENANT_ID }}" \
-          -backend-config="client_id=${{ inputs.AZR_CLIENT_ID }}" \
-          -backend-config="client_secret=${{ inputs.AZR_CLIENT_SECRET }}"
-      continue-on-error: false
-
     - name: Terraform Init
       id: init
       working-directory: ${{ inputs.working-directory }}
