@@ -236,7 +236,7 @@ resource "azurerm_application_gateway" "gw_network" {
   dynamic "backend_http_settings" {
     for_each = local.api_suffixes
     content {
-      name                  = "${split(":", http_listener.value)[0]}-internal-listener"
+      name                  = "${split(":", backend_http_settings.value)[0]}-internal-listener"
       cookie_based_affinity = "Disabled"
       port                  = split(":", backend_http_settings.value)[2]
       path                  = "/"
