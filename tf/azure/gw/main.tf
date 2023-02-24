@@ -36,18 +36,7 @@ resource "azurerm_public_ip" "gw_ip" {
   sku                 = "Standard"
 }
 
-# since these variables are re-used - a locals block makes this more maintainable
-locals {
-  api_suffixes                   = toset(split(",", var.api_suffixes))
-  api_names                      = split(",", var.api_suffixes)
-  frontend_port_name             = "${var.prefix}-gw-feport"
-  frontend_ip_configuration_name = "${var.prefix}-gw-feip"
-
-  http_frontend_port_name  = "${var.prefix}-80"
-  https_frontend_port_name = "${var.prefix}-443"
-
-}
-
+data "azurerm_client_config" "current" {}
 resource "azurerm_user_assigned_identity" "appgw_identity" {
   name                = "${var.prefix}-gw-identity"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -61,16 +50,61 @@ resource "azurerm_key_vault_access_policy" "vault_policy" {
   object_id = azurerm_user_assigned_identity.appgw_identity.principal_id
 
   certificate_permissions = [
+    "Create",
+    "Delete",
+    "DeleteIssuers",
+    "Get",
+    "GetIssuers",
+    "Import",
+    "List",
+    "ListIssuers",
+    "ManageContacts",
+    "ManageIssuers",
+    "SetIssuers",
+    "Update"
+  ]
+
+  key_permissions = [
+    "Backup",
+    "Create",
+    "Decrypt",
+    "Delete",
+    "Encrypt",
     "Get",
     "Import",
-    "List"
+    "List",
+    "Purge",
+    "Recover",
+    "Restore",
+    "Sign",
+    "UnwrapKey",
+    "Update",
+    "Verify",
+    "WrapKey"
   ]
-  key_permissions = [
-    "Get"
-  ]
+
   secret_permissions = [
-    "Get"
+    "Backup",
+    "Delete",
+    "Get",
+    "List",
+    "Purge",
+    "Recover",
+    "Restore",
+    "Set"
   ]
+}
+
+# since these variables are re-used - a locals block makes this more maintainable
+locals {
+  api_suffixes                   = toset(split(",", var.api_suffixes))
+  api_names                      = split(",", var.api_suffixes)
+  frontend_port_name             = "${var.prefix}-gw-feport"
+  frontend_ip_configuration_name = "${var.prefix}-gw-feip"
+
+  http_frontend_port_name  = "${var.prefix}-80"
+  https_frontend_port_name = "${var.prefix}-443"
+
 }
 
 resource "azurerm_application_gateway" "gw_network" {
