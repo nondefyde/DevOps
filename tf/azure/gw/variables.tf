@@ -73,3 +73,4 @@ variable "vault_rg" {
 variable "cert_name" {
   type = string
 }
+

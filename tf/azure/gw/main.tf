@@ -88,7 +88,7 @@ resource "azurerm_application_gateway" "gw_network" {
     frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
     frontend_port_name             = "${var.prefix}-80"
     protocol                       = "Http"
-#    ssl_certificate_name           = data.azurerm_key_vault_certificate.apim_certificate.name
+#    ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
   }
 
   backend_http_settings {
@@ -98,21 +98,21 @@ resource "azurerm_application_gateway" "gw_network" {
     protocol              = "Http"
     request_timeout       = 60
 
-#    authentication_certificate {
-#      name = data.azurerm_key_vault_certificate.apim_certificate.name
-#    }
+    authentication_certificate {
+      name = data.azurerm_key_vault_certificate.apim_certificate.name
+    }
   }
 
-#  authentication_certificate {
-#    name = data.azurerm_key_vault_certificate.apim_certificate.name
-#    data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
-#  }
+  authentication_certificate {
+    name = data.azurerm_key_vault_certificate.apim_certificate.name
+    data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
+  }
 
-#  ssl_certificate {
-#    name                = data.azurerm_key_vault_certificate.apim_certificate.name
-#    data                = data.azurerm_key_vault_certificate.apim_certificate.certificate_data_base64
-#    password            = "password"
-#  }
+  ssl_certificate {
+    name                = data.azurerm_key_vault_certificate.ssl_certificate.name
+    data                = data.azurerm_key_vault_certificate.apim_certificate.certificate_data_base64
+    password            = var.cert_password
+  }
 
   backend_address_pool {
     name  = "${var.prefix}-apim-pool"
