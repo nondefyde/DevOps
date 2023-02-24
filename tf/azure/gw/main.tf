@@ -91,7 +91,7 @@ resource "azurerm_application_gateway" "gw_network" {
     name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
     frontend_port_name             = local.http_frontend_port_name
-    protocol                       = "Https"
+    protocol                       = "Http"
   }
 
   backend_http_settings {
