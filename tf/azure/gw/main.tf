@@ -36,7 +36,6 @@ resource "azurerm_public_ip" "gw_ip" {
   sku                 = "Standard"
 }
 
-data "azurerm_client_config" "current" {}
 resource "azurerm_user_assigned_identity" "appgw_identity" {
   name                = "${var.prefix}-gw-identity"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -120,7 +119,7 @@ resource "azurerm_application_gateway" "gw_network" {
 
   identity {
     type               = "UserAssigned"
-    identity_ids       = [azurerm_user_assigned_identity.appgw_identity.principal_id]
+    identity_ids       = [azurerm_user_assigned_identity.appgw_identity.id]
   }
 
   gateway_ip_configuration {
