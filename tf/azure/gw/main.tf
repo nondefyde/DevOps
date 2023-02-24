@@ -159,9 +159,7 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   ssl_certificate {
-    name     = data.azurerm_key_vault_certificate.ssl_certificate.name
-    data     = data.azurerm_key_vault_certificate.ssl_certificate.certificate_data
-    password = var.cert_password
+    key_vault_secret_id = data.azurerm_key_vault_certificate.ssl_certificate.secret_id
   }
 
   dynamic "backend_address_pool" {
