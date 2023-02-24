@@ -16,7 +16,7 @@ data "azurerm_network_interface" "net_interface" {
 
 # since these variables are re-used - a locals block makes this more maintainable
 locals {
-  backend_pool_name = "${var.prefix}-${var.name}-pool"
+  backend_pool_name = "${var.name}-pool"
   backend_pool      = [for pool in data.azurerm_application_gateway.gw_network.backend_address_pool : pool if pool.name == local.backend_pool_name][0]
 }
 
