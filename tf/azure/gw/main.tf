@@ -46,7 +46,7 @@ resource "azurerm_user_assigned_identity" "appgw_identity" {
 resource "azurerm_key_vault_access_policy" "vault_policy" {
   key_vault_id = data.azurerm_key_vault.keyvault.id
 
-  tenant_id = var.tenant_id
+  tenant_id = azurerm_user_assigned_identity.appgw_identity.tenant_id
   object_id = azurerm_user_assigned_identity.appgw_identity.principal_id
 
   certificate_permissions = [
