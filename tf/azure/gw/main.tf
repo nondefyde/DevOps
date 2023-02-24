@@ -212,7 +212,7 @@ resource "azurerm_application_gateway" "gw_network" {
   dynamic "http_listener" {
     for_each = local.api_suffixes
     content {
-      name                           = "${split(":", http_listener.value)[0]}-internal-listener"
+      name                           = "${split(":", http_listener.value)[0]}-http-listener"
       frontend_ip_configuration_name = "${var.prefix}-gw-private-ip"
       frontend_port_name             = local.https_frontend_port_name
       protocol                       = "Https"
@@ -236,7 +236,7 @@ resource "azurerm_application_gateway" "gw_network" {
   dynamic "backend_http_settings" {
     for_each = local.api_suffixes
     content {
-      name                  = "${split(":", http_listener.value)[0]}-backend-listener"
+      name                  = "${split(":", backend_http_settings.value)[0]}-backend-listener"
       cookie_based_affinity = "Disabled"
       port                  = split(":", backend_http_settings.value)[2]
       path                  = "/"
@@ -250,7 +250,7 @@ resource "azurerm_application_gateway" "gw_network" {
     content {
       name                       = "${split(":", request_routing_rule.value)[0]}-routing-tb"
       rule_type                  = "Basic"
-      http_listener_name         = "${split(":", request_routing_rule.value)[0]}-internal-listener"
+      http_listener_name         = "${split(":", request_routing_rule.value)[0]}-http-listener"
       backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
       backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-backend-listener"
       priority                   = split(":", request_routing_rule.value)[3]
