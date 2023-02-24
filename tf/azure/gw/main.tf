@@ -120,7 +120,7 @@ resource "azurerm_application_gateway" "gw_network" {
 
   identity {
     type               = "UserAssigned"
-    identity_ids       = [azurerm_user_assigned_identity.appgw_identity.id]
+    identity_ids       = [azurerm_user_assigned_identity.appgw_identity.principal_id]
   }
 
   gateway_ip_configuration {
