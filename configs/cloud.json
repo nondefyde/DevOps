@@ -36,14 +36,12 @@
       "quest": {
         "name": "Quest API",
         "suffix": "qt",
-        "endpoints": "/*",
-        "header": "x-api-key"
+        "endpoints": "/*"
       },
       "room": {
         "name": "Room API",
         "suffix": "rm",
-        "endpoints": "/*",
-        "header": "x-api-key"
+        "endpoints": "/*"
       }
     }
   }

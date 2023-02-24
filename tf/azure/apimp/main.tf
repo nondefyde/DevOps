@@ -47,7 +47,7 @@ resource "azurerm_api_management_api_operation_policy" "api_operation_policy" {
   xml_content = <<XML
 <policies>
     <inbound>
-        <set-variable name="base64EncodedValue" value="@(context.Request.Headers.GetValueOrDefault(${var.header}, ""))" />
+        <set-variable name="base64EncodedValue" value="@(context.Request.Headers.GetValueOrDefault("x-api-key", ""))" />
         <set-variable name="decodedValue" value="@{
                 try{
                     var base64EncodedBytes = System.Convert.FromBase64String(context.Variables
