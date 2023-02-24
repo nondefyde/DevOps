@@ -102,12 +102,6 @@ resource "azurerm_application_gateway" "gw_network" {
     request_timeout       = 60
   }
 
-  ssl_certificate {
-    name                = data.azurerm_key_vault_certificate.ssl_certificate.name
-    data                = data.azurerm_key_vault_certificate.ssl_certificate.certificate_data_base64
-    password            = var.cert_password
-  }
-
   backend_address_pool {
     name  = "${var.prefix}-apim-pool"
     fqdns = [
