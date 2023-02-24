@@ -103,18 +103,18 @@ resource "azurerm_application_gateway" "gw_network" {
     request_timeout       = 60
 
     authentication_certificate {
-      name = data.azurerm_key_vault_certificate.apim_certificate.name
+      name = data.azurerm_key_vault_certificate.ssl_certificate.name
     }
   }
 
   authentication_certificate {
-    name = data.azurerm_key_vault_certificate.apim_certificate.name
-    data = data.azurerm_key_vault_certificate.apim_certificate.certificate_data
+    name = data.azurerm_key_vault_certificate.ssl_certificate.name
+    data = data.azurerm_key_vault_certificate.ssl_certificate.certificate_data
   }
 
   ssl_certificate {
     name                = data.azurerm_key_vault_certificate.ssl_certificate.name
-    data                = data.azurerm_key_vault_certificate.apim_certificate.certificate_data_base64
+    data                = data.azurerm_key_vault_certificate.ssl_certificate.certificate_data_base64
     password            = var.cert_password
   }
 
