@@ -154,7 +154,7 @@ resource "azurerm_application_gateway" "gw_network" {
       frontend_port_name             = local.https_frontend_port_name
       protocol                       = "Https"
       host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
-      ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate
+      ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
     }
   }
 
