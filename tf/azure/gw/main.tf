@@ -116,7 +116,7 @@ resource "azurerm_application_gateway" "gw_network" {
     public_ip_address_id = azurerm_public_ip.gw_ip.id
   }
 
-  ////////////////////////////////// APIM SETUPS ///////////////////////////////////
+  ////////////////////////////////// APIM SETUPS ////////////////////////////////
   http_listener {
     name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
