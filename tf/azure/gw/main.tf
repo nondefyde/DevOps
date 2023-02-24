@@ -39,9 +39,13 @@ resource "azurerm_public_ip" "gw_ip" {
 # since these variables are re-used - a locals block makes this more maintainable
 locals {
   api_suffixes                   = toset(split(",", var.api_suffixes))
-  api_names                       = split(",", var.api_suffixes)
+  api_names                      = split(",", var.api_suffixes)
   frontend_port_name             = "${var.prefix}-gw-feport"
   frontend_ip_configuration_name = "${var.prefix}-gw-feip"
+
+  http_frontend_port_name  = "${var.prefix}-80"
+  https_frontend_port_name = "${var.prefix}-443"
+
 }
 
 resource "azurerm_application_gateway" "gw_network" {
@@ -61,12 +65,12 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   frontend_port {
-    name = "${var.prefix}-80"
+    name = local.http_frontend_port_name
     port = 80
   }
 
   frontend_port {
-    name = "${var.prefix}-443"
+    name = local.https_frontend_port_name
     port = 443
   }
 
@@ -86,7 +90,7 @@ resource "azurerm_application_gateway" "gw_network" {
   http_listener {
     name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
-    frontend_port_name             = "${var.prefix}-80"
+    frontend_port_name             = local.http_frontend_port_name
     protocol                       = "Http"
 #    ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
   }
@@ -95,7 +99,7 @@ resource "azurerm_application_gateway" "gw_network" {
     name                  = "${var.prefix}-backend-setting"
     cookie_based_affinity = "Disabled"
     port                  = 80
-    protocol              = "Http"
+    protocol              = "Https"
     request_timeout       = 60
 
     authentication_certificate {
