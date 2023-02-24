@@ -48,6 +48,30 @@ locals {
 
 }
 
+resource "azurerm_user_assigned_identity" "appgw_identity" {
+  name                = "${var.prefix}-gw-identity"
+  resource_group_name = data.azurerm_resource_group.rg.name
+}
+
+resource "azurerm_key_vault_access_policy" "vault_policy" {
+  key_vault_id = data.azurerm_key_vault.keyvault.id
+
+  tenant_id = var.tenant_id
+  object_id = azurerm_user_assigned_identity.appgw_identity.id
+
+  certificate_permissions = [
+    "Get",
+    "Import",
+    "List"
+  ]
+  key_permissions = [
+    "Get"
+  ]
+  secret_permissions = [
+    "Get"
+  ]
+}
+
 resource "azurerm_application_gateway" "gw_network" {
   name                = "${var.prefix}-app-gateway"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -57,6 +81,11 @@ resource "azurerm_application_gateway" "gw_network" {
     name     = var.sku_name
     tier     = var.sku_tier
     capacity = var.sku_capacity
+  }
+
+  identity {
+    type               = "UserAssigned"
+    identity_ids       = [azurerm_user_assigned_identity.appgw_identity.id]
   }
 
   gateway_ip_configuration {
