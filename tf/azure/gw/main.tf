@@ -91,25 +91,15 @@ resource "azurerm_application_gateway" "gw_network" {
     name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
     frontend_port_name             = local.http_frontend_port_name
-    protocol                       = "Http"
-#    ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
+    protocol                       = "Https"
   }
 
   backend_http_settings {
     name                  = "${var.prefix}-backend-setting"
     cookie_based_affinity = "Disabled"
-    port                  = 80
+    port                  = 443
     protocol              = "Https"
     request_timeout       = 60
-
-    authentication_certificate {
-      name = data.azurerm_key_vault_certificate.ssl_certificate.name
-    }
-  }
-
-  authentication_certificate {
-    name = data.azurerm_key_vault_certificate.ssl_certificate.name
-    data = data.azurerm_key_vault_certificate.ssl_certificate.certificate_data
   }
 
   ssl_certificate {
