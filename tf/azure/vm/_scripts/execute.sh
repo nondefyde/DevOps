@@ -18,6 +18,7 @@ echo "Container Inst.   : ${13}"
 echo "Cert name"        : ${14}
 echo "Cert vault"       : ${15}
 echo "Cert path"        : ${16}
+echo "Cert pass"        : ${17}
 
 PROJECT=${4}
 IMAGE=${5}
@@ -32,6 +33,7 @@ INSTANCE=${13}
 CERT_NAME=${14}
 CERT_VAULT=${15}
 CERT_PATH="/home/${9}/vm/${16}"
+CERT_PASS=${17}
 
 PREP_SCRIPT="https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh"
 
@@ -50,7 +52,7 @@ for i in $(seq 1 ${8}); do
     --command-id RunShellScript \
     --name ${PROJECT}-${VM_NAME}-vm-$INDEX \
     --resource-group ${PROJECT}-group \
-    --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER} ${CERT_PATH} ${APP_SECRET}"
+    --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER} ${CERT_PATH} ${CERT_PASS}"
 
   echo "Login Azure in VM ${4}-${7}-vm-$INDEX"
   az vm run-command invoke \
