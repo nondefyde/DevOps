@@ -31,7 +31,7 @@ ENV=${12}
 INSTANCE=${13}
 CERT_NAME=${14}
 CERT_VAULT=${15}
-CERT_PATH="/home/${7}/vm/${16}"
+CERT_PATH="/home/${9}/vm/${16}"
 
 PREP_SCRIPT="https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh"
 
