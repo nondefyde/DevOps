@@ -67,7 +67,7 @@ for i in $(seq 1 ${8}); do
       --resource-group ${4}-group \
       --scripts '
            mkdir "/home/${3}/vm"
-           az keyvault certificate download --file cert.pfx --name ${2} --vault-name ${1}
+           az keyvault certificate download --file /home/${3}/vm/cert.pfx --name ${2} --vault-name ${1}
         ' \
       --parameters ${CERT_VAULT} ${CERT_NAME} ${VM_USER}
 
