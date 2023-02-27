@@ -13,7 +13,6 @@ services:
       - ./.env
     ports:
       - "8000:{PORT}"
-    restart: always
     networks:
       - app-network
 
