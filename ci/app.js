@@ -11,8 +11,8 @@ const options = {
 	passphrase: 'Cloud_1@###'
 };
 
-const httpPort = 8000
-const httpsPort = 4443
+const httpsPort = 8000
+const httpPort = 8080
 
 http.createServer(app)
 	.listen(httpPort, () => {
