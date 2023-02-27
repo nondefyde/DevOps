@@ -18,12 +18,12 @@ const httpPort = 8080
 
 http.createServer(app)
 	.listen(httpPort, () => {
-		console.log(`HTTP app listening on port >>>>>> ${httpPort}  --- env --- ${process.env.NODE_ENV}`);
+		console.log(`HTTP app listening on port >>>> ${httpPort}  --- env --- ${process.env.NODE_ENV}`);
 	});
 
 https.createServer(options, app)
 	.listen(httpsPort, () => {
-		console.log(`HTTPS app listening on port >>>>>> ${httpsPort}  --- env --- ${process.env.NODE_ENV}`);
+		console.log(`HTTPS app listening on port >>>> ${httpsPort}  --- env --- ${process.env.NODE_ENV}`);
 	});
 
 app.get('/v1/ping', (req, res) => {
