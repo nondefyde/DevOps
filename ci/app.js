@@ -5,6 +5,8 @@ const http = require("http");
 
 const app = express()
 
+console.log('__dirname ::: ', __dirname);
+console.log('__filename ::: ', __filename);
 console.log('process.env.CERT_PATH ::: ', process.env.CERT_PATH);
 const options = {
 	pfx: fs.readFileSync('./cert.pfx'),
