@@ -267,4 +267,4 @@ jobs:
           ./execute.sh ${{secrets.AZR_CLIENT_ID}} ${{secrets.AZR_CLIENT_SECRET}} ${{secrets.AZR_TENANT_ID}} \
           ${{ env.project }} ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest \
           ${{ secrets.AZR_VM_APP_SECRET }} $VM_NAME $VM_COUNT adminuser ${VM_NAME}.bytegum.com ${{ env.port }} \
-          ${{ env.environment }}-$VM_NAME 1 $INSTANCE_COUNT $CERT_NAME $CERT_VAULT ${{ secrets.VM_PASSWORD }}
+          ${{ env.environment }}-$VM_NAME 1 $INSTANCE_COUNT $CERT_NAME $CERT_VAULT $CERT_FILE ${{ secrets.VM_PASSWORD }}
