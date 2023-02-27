@@ -17,6 +17,7 @@ echo "Environment       : ${12}"
 echo "Container Inst.   : ${13}"
 echo "Cert name"        : ${14}
 echo "Cert vault"       : ${15}
+echo "Cert path"        : ${16}
 
 PROJECT=${4}
 IMAGE=${5}
@@ -48,7 +49,7 @@ for i in $(seq 1 ${8}); do
     --command-id RunShellScript \
     --name ${PROJECT}-${VM_NAME}-vm-$INDEX \
     --resource-group ${PROJECT}-group \
-    --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER}"
+    --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER} ${CERT_PATH}"
 
   echo "Login Azure in VM ${4}-${7}-vm-$INDEX"
   az vm run-command invoke \
@@ -60,15 +61,15 @@ for i in $(seq 1 ${8}); do
       ' \
     --parameters ${1} ${2} ${3}
 
-    echo "Download cert file from Azure Vault VM ${4}-${7}-vm-$INDEX"
-    az vm run-command invoke \
-      --command-id RunShellScript \
-      --name ${4}-${7}-vm-$INDEX \
-      --resource-group ${4}-group \
-      --scripts '
-           az keyvault certificate download --file /home/${3}/vm/cert.pfx --name ${2} --vault-name ${1}
-        ' \
-      --parameters ${CERT_VAULT} ${CERT_NAME} ${VM_USER}
+  echo "Download cert file from Azure Vault VM ${4}-${7}-vm-$INDEX"
+  az vm run-command invoke \
+    --command-id RunShellScript \
+    --name ${4}-${7}-vm-$INDEX \
+    --resource-group ${4}-group \
+    --scripts '
+         az keyvault certificate download --file /home/${3}/vm/cert.pfx --name ${2} --vault-name ${1}
+      ' \
+    --parameters ${CERT_VAULT} ${CERT_NAME} ${VM_USER}
 
   echo "Login docker on VM ${4}-${7}-vm-$INDEX"
     az vm run-command invoke \

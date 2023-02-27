@@ -17,13 +17,15 @@
         "name": "quest",
         "vmCount": "1",
         "port": 8000,
-        "priority": 100
+        "priority": 100,
+        "certFile": "cert.pfx"
       },
       "room": {
         "name": "room",
         "vmCount": "1",
         "port": 8000,
-        "priority": 101
+        "priority": 101,
+        "certFile": "cert.pfx"
       }
     }
   },

@@ -258,6 +258,7 @@ jobs:
         run: |
           VM_COUNT=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
           VM_NAME=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
+          CERT_FILE=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['certFile'] }}
           INSTANCE_COUNT=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['instanceCount'] }}
           CERT_VAULT=${{ steps.vault-cloud-config.outputs.vaultName }}
           CERT_NAME=${{ steps.vault-cloud-config.outputs.certName }}
@@ -266,4 +267,4 @@ jobs:
           ./execute.sh ${{secrets.AZR_CLIENT_ID}} ${{secrets.AZR_CLIENT_SECRET}} ${{secrets.AZR_TENANT_ID}} \
           ${{ env.project }} ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest \
           ${{ secrets.AZR_VM_APP_SECRET }} $VM_NAME $VM_COUNT adminuser ${VM_NAME}.bytegum.com ${{ env.port }} \
-          ${{ env.environment }}-$VM_NAME 1 $INSTANCE_COUNT $CERT_NAME $CERT_VAULT
+          ${{ env.environment }}-$VM_NAME 1 $INSTANCE_COUNT $CERT_NAME $CERT_VAULT $CERT_FILE

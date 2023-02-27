@@ -8,6 +8,7 @@ services:
     environment:
       NODE_ENV: {NODE_ENV}
       VIRTUAL_HOST: {VIRTUAL_HOST}
+      CERT_PATH: {CERT_PATH}
     env_file:
       - ./.env
     ports:
