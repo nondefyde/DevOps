@@ -50,7 +50,7 @@ for i in $(seq 1 ${8}); do
     --command-id RunShellScript \
     --name ${PROJECT}-${VM_NAME}-vm-$INDEX \
     --resource-group ${PROJECT}-group \
-    --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER} ${CERT_PATH}"
+    --scripts "curl -s ${PREP_SCRIPT} | bash -s ${PROJECT} ${APP_SECRET} ${IMAGE} ${ENV} ${VIRTUAL_HOST} ${PORT} ${VM_USER} ${CERT_PATH} ${APP_SECRET}"
 
   echo "Login Azure in VM ${4}-${7}-vm-$INDEX"
   az vm run-command invoke \

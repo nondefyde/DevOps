@@ -8,7 +8,7 @@ const app = express()
 console.log('process.env.CERT_PATH ::: ', process.env.CERT_PATH);
 const options = {
 	pfx: fs.readFileSync('./cert.pfx'),
-	passphrase: 'Cloud_1@###'
+	passphrase: process.env.CERT_PASS
 };
 
 const httpsPort = 8000

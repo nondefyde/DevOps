@@ -9,6 +9,7 @@ services:
       NODE_ENV: {NODE_ENV}
       VIRTUAL_HOST: {VIRTUAL_HOST}
       CERT_PATH: {CERT_PATH}
+      CERT_PASS: {CERT_PASS}
     env_file:
       - ./.env
     ports:
