@@ -1,9 +1,9 @@
 name: AZR VM TEST CI
 
 on:
-#  push:
-#    branches:
-#      - 'main'
+  push:
+    branches:
+      - 'main'
   workflow_run:
     workflows: [ "AZR DEPLOY VMS" ]
     types:
@@ -259,8 +259,8 @@ jobs:
           VM_COUNT=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
           VM_NAME=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
           INSTANCE_COUNT=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['instanceCount'] }}
-          CERT_VAULT=${{ fromJson(steps.vault-cloud-config.outputs.vaultName }}
-          CERT_NAME=${{ fromJson(steps.vault-cloud-config.outputs.certName }}
+          CERT_VAULT=${{ fromJson(steps.vault-cloud-config.outputs.vaultName) }}
+          CERT_NAME=${{ fromJson(steps.vault-cloud-config.outputs.certName) }}
           echo "Run Deployment"
           chmod +x execute.sh
           ./execute.sh ${{secrets.AZR_CLIENT_ID}} ${{secrets.AZR_CLIENT_SECRET}} ${{secrets.AZR_TENANT_ID}} \

@@ -24,11 +24,6 @@ https.createServer(options, app)
 		console.log(`HTTPS Example app listening on port >>>>>> update ${httpsPort}  --- env --- ${process.env.NODE_ENV}`);
 	});
 
-app.get('/', function (req, res) {
-	res.header('Content-type', 'text/html');
-	return res.end('<h1>Hello, Secure World!</h1>');
-});
-
 app.get('/v1/ping', (req, res) => {
 	res.status(200).send(`Ping Successful ${new Date().toISOString()} --- environment --- ${process.env.NODE_ENV}`);
 });
