@@ -7,7 +7,7 @@ const app = express()
 
 console.log('process.env.CERT_PATH ::: ', process.env.CERT_PATH);
 const options = {
-	pfx: fs.readFileSync(process.env.CERT_PATH || 'cert/cert.pfx'),
+	pfx: fs.readFileSync(process.env.CERT_PATH || './cert.pfx'),
 	passphrase: 'Cloud_1@###'
 };
 
