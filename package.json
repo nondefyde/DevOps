@@ -12,7 +12,7 @@
     "express": "^4.18.2"
   },
   "scripts": {
-    "start": "node app/app.js",
+    "start": "node ci/app.js",
     "cert": "awk 'NF {sub(/\\r/, \"\"); printf \"%s\\\\n\",$0;}' certificate.crt > cert.crt",
     "secret:dev": "cd ./scripts && cat ../_env/env.yml | ./base64.sh",
     "secret:chv": "cd ./scripts && cat ../_env/chowville.yml | ./base64.sh",

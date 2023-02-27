@@ -15,6 +15,8 @@ echo "Virtual Host      : ${10}"
 echo "Port Host         : ${11}"
 echo "Environment       : ${12}"
 echo "Container Inst.   : ${13}"
+echo "Cert name"        : ${14}
+echo "Cert vault"       : ${15}
 
 PROJECT=${4}
 IMAGE=${5}
@@ -26,6 +28,8 @@ VIRTUAL_HOST=${10}
 PORT=${11}
 ENV=${12}
 INSTANCE=${13}
+CERT_NAME=${14}
+CERT_VAULT=${15}
 
 PREP_SCRIPT="https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh"
 
@@ -55,6 +59,17 @@ for i in $(seq 1 ${8}); do
          az login --service-principal --username ${1} --password ${2} --tenant ${3}
       ' \
     --parameters ${1} ${2} ${3}
+
+    echo "Download cert file from Azure Vault VM ${4}-${7}-vm-$INDEX"
+    az vm run-command invoke \
+      --command-id RunShellScript \
+      --name ${4}-${7}-vm-$INDEX \
+      --resource-group ${4}-group \
+      --scripts '
+           mkdir "/home/${3}/vm"
+           az keyvault certificate download --file cert.pfx --name ${2} --vault-name ${1}
+        ' \
+      --parameters ${CERT_VAULT} ${CERT_NAME} ${VM_USER}
 
   echo "Login docker on VM ${4}-${7}-vm-$INDEX"
     az vm run-command invoke \

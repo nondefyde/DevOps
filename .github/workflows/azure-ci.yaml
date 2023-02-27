@@ -234,12 +234,19 @@ jobs:
           rm -r "${{ inputs.repository }}"
           ls -a
 
-      - name: Get cloud config
+      - name: Get vm config
         id: vm-cloud-config
         uses: ActionsTools/read-json-action@main
         with:
           file_path: ${{ env.configFile }}
           prop_path: "virtual-machine"
+
+      - name: Get vault config
+        id: vault-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "key-vault"
 
       - name: Login Azure
         id: login
@@ -252,9 +259,11 @@ jobs:
           VM_COUNT=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
           VM_NAME=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
           INSTANCE_COUNT=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['instanceCount'] }}
+          CERT_VAULT=${{ fromJson(steps.vault-cloud-config.outputs.vaultName }}
+          CERT_NAME=${{ fromJson(steps.vault-cloud-config.outputs.certName }}
           echo "Run Deployment"
           chmod +x execute.sh
           ./execute.sh ${{secrets.AZR_CLIENT_ID}} ${{secrets.AZR_CLIENT_SECRET}} ${{secrets.AZR_TENANT_ID}} \
           ${{ env.project }} ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest \
           ${{ secrets.AZR_VM_APP_SECRET }} $VM_NAME $VM_COUNT adminuser ${VM_NAME}.bytegum.com ${{ env.port }} \
-          ${{ env.environment }}-$VM_NAME $INSTANCE_COUNT
+          ${{ env.environment }}-$VM_NAME $INSTANCE_COUNT ${CERT_VAULT} ${CERT_NAME}
