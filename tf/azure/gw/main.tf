@@ -191,6 +191,7 @@ resource "azurerm_application_gateway" "gw_network" {
     http_listener_name         = "${var.prefix}-apim-http-listener"
     backend_address_pool_name  = "${var.prefix}-apim-pool"
     backend_http_settings_name = "${var.prefix}-backend-setting"
+    priority                   = 10
 #    name                       = "${var.prefix}-apim-rule"
 #    rule_type                  = "PathBasedRouting"
 #    http_listener_name         = "${var.prefix}-apim-http-listener"
