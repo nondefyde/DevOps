@@ -161,8 +161,9 @@ resource "azurerm_application_gateway" "gw_network" {
     name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
     frontend_port_name             = local.http_frontend_port_name
-    protocol                       = "Http"
+    protocol                       = "Https"
     host_name                      = "${var.public_subdomain}.${var.apim_domain}"
+    ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
   }
 
   backend_http_settings {
@@ -176,7 +177,7 @@ resource "azurerm_application_gateway" "gw_network" {
   backend_address_pool {
     name  = "${var.prefix}-apim-pool"
     fqdns = [
-      "quest-0.stardevs.xyz"
+      "api.stardevs.xyz"
     ]
   }
 
@@ -210,7 +211,6 @@ resource "azurerm_application_gateway" "gw_network" {
       }
     }
   }
-
 
   ////////////////////////////////// APIM SETUPS ENDS /////////////////////////////////////////
 
