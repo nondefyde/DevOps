@@ -187,36 +187,30 @@ resource "azurerm_application_gateway" "gw_network" {
 
   request_routing_rule {
     name                       = "${var.prefix}-apim-rule"
-    rule_type                  = "Basic"
+    rule_type                  = "PathBasedRouting"
     http_listener_name         = "${var.prefix}-apim-http-listener"
     backend_address_pool_name  = "${var.prefix}-apim-pool"
     backend_http_settings_name = "${var.prefix}-backend-setting"
+    url_path_map_name          = "${var.prefix}-apim-url-path-map"
     priority                   = 10
-#    name                       = "${var.prefix}-apim-rule"
-#    rule_type                  = "PathBasedRouting"
-#    http_listener_name         = "${var.prefix}-apim-http-listener"
-#    backend_address_pool_name  = "${var.prefix}-apim-sink-pool"
-#    backend_http_settings_name = "${var.prefix}-backend-setting"
-#    url_path_map_name          = "${var.prefix}-apim-url-path-map"
-#    priority                   = 10
   }
 
-#  url_path_map {
-#    name                               = "${var.prefix}-apim-url-path-map"
-#    default_backend_address_pool_name  = "${var.prefix}-sink-pool"
-#    default_backend_http_settings_name = "${var.prefix}-backend-setting"
-#    dynamic "path_rule" {
-#      for_each = local.api_suffixes
-#      content {
-#        name                       = "${split(":", path_rule.value)[0]}-apim-url-path-rule"
-#        backend_address_pool_name  = "${var.prefix}-apim-pool"
-#        backend_http_settings_name = "${var.prefix}-backend-setting"
-#        paths                      = [
-#          "/${split(":", path_rule.value)[1]}/*"
-#        ]
-#      }
-#    }
-#  }
+  url_path_map {
+    name                               = "${var.prefix}-apim-url-path-map"
+    default_backend_address_pool_name  = "${var.prefix}-sink-pool"
+    default_backend_http_settings_name = "${var.prefix}-backend-setting"
+    dynamic "path_rule" {
+      for_each = local.api_suffixes
+      content {
+        name                       = "${split(":", path_rule.value)[0]}-apim-url-path-rule"
+        backend_address_pool_name  = "${var.prefix}-apim-pool"
+        backend_http_settings_name = "${var.prefix}-backend-setting"
+        paths                      = [
+          "/${split(":", path_rule.value)[1]}/*"
+        ]
+      }
+    }
+  }
 
   ////////////////////////////////// APIM SETUPS ENDS /////////////////////////////////////////
 
