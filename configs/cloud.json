@@ -16,14 +16,12 @@
       "quest": {
         "name": "quest",
         "vmCount": "1",
-        "port": 8000,
         "priority": 100,
         "certFile": "cert.pfx"
       },
       "room": {
         "name": "room",
         "vmCount": "1",
-        "port": 8000,
         "priority": 101,
         "certFile": "cert.pfx"
       }
@@ -38,11 +36,13 @@
       "quest": {
         "name": "Quest API",
         "suffix": "qt",
+        "port": 8000,
         "endpoints": "/*"
       },
       "room": {
         "name": "Room API",
         "suffix": "rm",
+        "port": 8000,
         "endpoints": "/*"
       }
     }

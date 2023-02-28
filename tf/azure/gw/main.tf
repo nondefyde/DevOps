@@ -226,7 +226,7 @@ resource "azurerm_application_gateway" "gw_network" {
     content {
       name                           = "${split(":", http_listener.value)[0]}-http-listener"
       frontend_ip_configuration_name = "${var.prefix}-gw-private-ip"
-      frontend_port_name             = local.http_frontend_port_name
+      frontend_port_name             = local.http_frontend_port_name_service
       protocol                       = "Http"
       host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
     }
