@@ -2,40 +2,12 @@ version: '3.8'
 
 services:
   app:
-    build:
-      context: .
-      dockerfile: ci/Dockerfile
-#    image: node-server:latest
-    volumes:
-      - app-volume:/var/lib/app/content
+    image: node-server:latest
     environment:
       NODE_ENV: staging
-      VIRTUAL_HOST: qt.stardevs.xyz
-      CERT_NAME: stardevs
+      VIRTUAL_HOST: bytegum.localhost
     env_file:
       - ./.env
     ports:
-      - "8000:8000"
+      - "80:8000"
     restart: always
-
-  nginx-proxy:
-    image: jwilder/nginx-proxy:alpine
-    container_name: nginx-proxy
-    ports:
-      - "80:80"
-    environment:
-      DEFAULT_HOST: stardevs.com
-      CERT_NAME: stardevs
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    networks:
-      - app-network
-
-volumes:
-  app-volume:
-    external: true
-
-networks:
-  app-network:
-    name: nginx-proxy
-    external: true
