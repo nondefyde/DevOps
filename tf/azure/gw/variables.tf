@@ -74,3 +74,8 @@ variable "cert_name" {
   type = string
 }
 
+variable "public_subdomain" {
+  type = string
+  default = "stmapi"
+}
+
