@@ -291,6 +291,6 @@ resource "azurerm_network_security_group" "gw_security_group" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg-assoc_gw" {
-  subnet_id                 = azurerm_subnet.gw_subnet.id
+  subnet_id                 = data.azurerm_subnet.gw_subnet.id
   network_security_group_id = azurerm_network_security_group.gw_security_group.id
 }
