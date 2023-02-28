@@ -7,12 +7,6 @@ data "azurerm_api_management" "apim" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-data "azurerm_api_management_api_version_set" "apim_version" {
-  resource_group_name = data.azurerm_resource_group.rg.name
-  api_management_name = data.azurerm_api_management.apim.name
-  name                = "${var.prefix}-apim-version"
-}
-
 resource "azurerm_api_management_api" "apimp" {
   name                  = "${var.prefix}-${var.name}-http-api"
   resource_group_name   = data.azurerm_resource_group.rg.name
@@ -20,7 +14,6 @@ resource "azurerm_api_management_api" "apimp" {
   revision              = var.revision
   display_name          = var.display_name
   protocols             = var.protocols
-  version_set_id        = data.azurerm_api_management_api_version_set.apim_version.id
   service_url           = "http://${var.suffix}.${var.apim_domain}:${var.port}"
   subscription_required = false
 }

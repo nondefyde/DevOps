@@ -132,11 +132,3 @@ resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
 
   depends_on = [azurerm_api_management.apim]
 }
-
-resource "azurerm_api_management_api_version_set" "apim_version" {
-  name                = "${var.prefix}-apim-version"
-  resource_group_name   = data.azurerm_resource_group.rg.name
-  api_management_name   = azurerm_api_management.apim.name
-  display_name        = "STEMULI"
-  versioning_scheme   = "Segment"
-}
