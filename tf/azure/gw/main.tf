@@ -176,7 +176,7 @@ resource "azurerm_application_gateway" "gw_network" {
   backend_address_pool {
     name  = "${var.prefix}-apim-pool"
     fqdns = [
-      "quest-0.stmapi.com"
+      "quest-0.stardevs.xyz"
     ]
   }
 
