@@ -66,13 +66,25 @@ resource "azurerm_network_security_group" "gw_security_group" {
   resource_group_name = data.azurerm_resource_group.rg.name
 
   security_rule {
-    name                       = "${var.prefix}-gw-inbound"
+    name                       = "${var.prefix}-gw-inbound-http"
     priority                   = 300
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "${var.prefix}-gw-inbound-https"
+    priority                   = 301
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
