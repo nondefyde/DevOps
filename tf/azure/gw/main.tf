@@ -102,6 +102,7 @@ locals {
   frontend_ip_configuration_name = "${var.prefix}-gw-feip"
 
   http_frontend_port_name  = "${var.prefix}-80"
+  http_frontend_port_name_service  = "${var.prefix}-8000"
   https_frontend_port_name = "${var.prefix}-443"
 
 }
@@ -167,15 +168,15 @@ resource "azurerm_application_gateway" "gw_network" {
   backend_http_settings {
     name                  = "${var.prefix}-backend-setting"
     cookie_based_affinity = "Disabled"
-    port                  = 443
-    protocol              = "Https"
+    port                  = 8000
+    protocol              = "Http"
     request_timeout       = 60
   }
 
   backend_address_pool {
     name  = "${var.prefix}-apim-pool"
     fqdns = [
-      "api.stmapi.com"
+      "quest-0.stmapi.com"
     ]
   }
 
@@ -216,47 +217,47 @@ resource "azurerm_application_gateway" "gw_network" {
 
   ////////////////////////////////// BACKEND SETUPS /////////////////////////////////////////
 
-  dynamic "http_listener" {
-    for_each = local.api_suffixes
-    content {
-      name                           = "${split(":", http_listener.value)[0]}-http-listener"
-      frontend_ip_configuration_name = "${var.prefix}-gw-private-ip"
-      frontend_port_name             = local.http_frontend_port_name
-      protocol                       = "Http"
-      host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
-    }
-  }
-
-  dynamic "backend_address_pool" {
-    for_each = local.api_suffixes
-    content {
-      name = "${split(":", backend_address_pool.value)[0]}-pool"
-    }
-  }
-
-  dynamic "backend_http_settings" {
-    for_each = local.api_suffixes
-    content {
-      name                  = "${split(":", backend_http_settings.value)[0]}-backend-listener"
-      cookie_based_affinity = "Disabled"
-      port                  = split(":", backend_http_settings.value)[2]
-      path                  = "/"
-      protocol              = "Http"
-      request_timeout       = 60
-    }
-  }
-
-  dynamic "request_routing_rule" {
-    for_each = local.api_suffixes
-    content {
-      name                       = "${split(":", request_routing_rule.value)[0]}-routing-tb"
-      rule_type                  = "Basic"
-      http_listener_name         = "${split(":", request_routing_rule.value)[0]}-http-listener"
-      backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
-      backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-backend-listener"
-      priority                   = split(":", request_routing_rule.value)[3]
-    }
-  }
+#  dynamic "http_listener" {
+#    for_each = local.api_suffixes
+#    content {
+#      name                           = "${split(":", http_listener.value)[0]}-http-listener"
+#      frontend_ip_configuration_name = "${var.prefix}-gw-private-ip"
+#      frontend_port_name             = local.http_frontend_port_name_service
+#      protocol                       = "Http"
+#      host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
+#    }
+#  }
+#
+#  dynamic "backend_address_pool" {
+#    for_each = local.api_suffixes
+#    content {
+#      name = "${split(":", backend_address_pool.value)[0]}-pool"
+#    }
+#  }
+#
+#  dynamic "backend_http_settings" {
+#    for_each = local.api_suffixes
+#    content {
+#      name                  = "${split(":", backend_http_settings.value)[0]}-backend-listener"
+#      cookie_based_affinity = "Disabled"
+#      port                  = split(":", backend_http_settings.value)[2]
+#      path                  = "/"
+#      protocol              = "Http"
+#      request_timeout       = 60
+#    }
+#  }
+#
+#  dynamic "request_routing_rule" {
+#    for_each = local.api_suffixes
+#    content {
+#      name                       = "${split(":", request_routing_rule.value)[0]}-routing-tb"
+#      rule_type                  = "Basic"
+#      http_listener_name         = "${split(":", request_routing_rule.value)[0]}-http-listener"
+#      backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
+#      backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-backend-listener"
+#      priority                   = split(":", request_routing_rule.value)[3]
+#    }
+#  }
 
   ////////////////////////////////// END BACKEND SETUPS /////////////////////////////////////////
 }
