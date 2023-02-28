@@ -286,7 +286,7 @@ resource "azurerm_network_security_group" "gw_security_group" {
     protocol                   = "Tcp"
     source_address_prefix      = "${azurerm_public_ip.gw_ip.ip_address}/32"
     destination_address_prefix = "${data.azurerm_subnet.gw_subnet.address_prefix}"
-    destination_port_range     = "${local.https_frontend_port}"
+    destination_port_range     = "${local.http_frontend_port_name}"
   }
 }
 

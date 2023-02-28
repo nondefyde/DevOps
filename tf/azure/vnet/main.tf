@@ -60,41 +60,6 @@ resource "azurerm_network_security_group" "apim_security_group" {
   }
 }
 
-resource "azurerm_network_security_group" "gw_security_group" {
-  name                = "${var.prefix}-gw-nsg-group"
-  location            = data.azurerm_resource_group.rg.location
-  resource_group_name = data.azurerm_resource_group.rg.name
-
-  security_rule {
-    name                       = "${var.prefix}-gw-inbound"
-    priority                   = 300
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "${var.prefix}-gw-outbound"
-    priority                   = 300
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-}
-
-resource "azurerm_subnet_network_security_group_association" "nsg-assoc_gw" {
-  subnet_id                 = azurerm_subnet.gw_subnet.id
-  network_security_group_id = azurerm_network_security_group.gw_security_group.id
-}
-
 resource "azurerm_subnet_network_security_group_association" "nsg-assoc_apim" {
   subnet_id                 = azurerm_subnet.apim_subnet.id
   network_security_group_id = azurerm_network_security_group.apim_security_group.id
