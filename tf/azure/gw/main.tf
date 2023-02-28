@@ -160,7 +160,7 @@ resource "azurerm_application_gateway" "gw_network" {
   http_listener {
     name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
-    frontend_port_name             = local.http_frontend_port_name
+    frontend_port_name             = local.https_frontend_port_name
     protocol                       = "Https"
     host_name                      = "${var.public_subdomain}.${var.apim_domain}"
     ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
