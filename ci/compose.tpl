@@ -12,8 +12,6 @@ services:
       - ./.env
     ports:
       - "8000:{PORT}"
-    networks:
-      - app-network
 
   nginx-proxy:
     image: jwilder/nginx-proxy:alpine
@@ -21,18 +19,4 @@ services:
     ports:
       - "80:80"
     volumes:
-      - "/etc/nginx/certs"
-      - "/etc/nginx/vhost.d"
-      - "/usr/share/nginx/html"
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
-    networks:
-      - app-network
-
-volumes:
-  app-volume:
-    external: true
-
-networks:
-  app-network:
-    name: nginx-proxy
-    external: true
