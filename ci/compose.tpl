@@ -9,4 +9,4 @@ services:
     env_file:
       - ./.env
     ports:
-      - "80:{PORT}"
+      - "8000:{PORT}"
