@@ -8,12 +8,23 @@ services:
     environment:
       NODE_ENV: {NODE_ENV}
       VIRTUAL_HOST: {VIRTUAL_HOST}
-      CERT_PATH: {CERT_PATH}
-      CERT_PASS: {CERT_PASS}
     env_file:
       - ./.env
     ports:
       - "8000:{PORT}"
+    networks:
+      - app-network
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy:alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - "/etc/nginx/certs"
+      - "/etc/nginx/vhost.d"
+      - "/usr/share/nginx/html"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
     networks:
       - app-network
 

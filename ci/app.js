@@ -1,30 +1,14 @@
 const express = require('express')
-const fs = require("fs");
-const https = require("https");
-const http = require("http");
 
+const port = 8000;
 const app = express()
 
 console.log('__dirname ::: ', __dirname);
 console.log('__filename ::: ', __filename);
-console.log('process.env.CERT_PATH ::: ', process.env.CERT_PATH);
-const options = {
-	pfx: fs.readFileSync('./cert.pfx'),
-	passphrase: process.env.CERT_PASS
-};
 
-const httpsPort = 8000
-const httpPort = 8080
-
-http.createServer(app)
-	.listen(httpPort, () => {
-		console.log(`HTTP app listening on port >>>> ${httpPort}  --- env --- ${process.env.NODE_ENV}`);
-	});
-
-https.createServer(options, app)
-	.listen(httpsPort, () => {
-		console.log(`HTTPS app listening on port >>>> ${httpsPort}  --- env --- ${process.env.NODE_ENV}`);
-	});
+app.listen(port, () => {
+	console.log(`HTTP app listening on port >>>> ${port}`);
+});
 
 app.get('/v1/ping', (req, res) => {
 	res.status(200).send(`Ping Successful ${new Date().toISOString()} --- environment --- ${process.env.NODE_ENV}`);

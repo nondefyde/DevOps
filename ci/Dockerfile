@@ -12,5 +12,4 @@ COPY ./ci/app.js ./
 RUN yarn install
 
 EXPOSE 8000
-EXPOSE 8080
 CMD [ "node", "app.js" ]
