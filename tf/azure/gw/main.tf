@@ -149,12 +149,19 @@ resource "azurerm_application_gateway" "gw_network" {
     public_ip_address_id = azurerm_public_ip.gw_ip.id
   }
 
+
+  ssl_certificate {
+    name                = data.azurerm_key_vault_certificate.ssl_certificate.name
+    key_vault_secret_id = data.azurerm_key_vault_certificate.ssl_certificate.secret_id
+  }
+
   ////////////////////////////////// APIM SETUPS ////////////////////////////////
   http_listener {
     name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
-    frontend_port_name             = local.http_frontend_port_name
-    protocol                       = "Http"
+    frontend_port_name             = local.https_frontend_port_name
+    protocol                       = "Https"
+    ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
   }
 
   backend_http_settings {
@@ -217,14 +224,7 @@ resource "azurerm_application_gateway" "gw_network" {
       frontend_port_name             = local.http_frontend_port_name
       protocol                       = "Http"
       host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
-#      ssl_certificate_name           = "${var.prefix}-gw-ssl"
     }
-  }
-
-  ssl_certificate {
-#    name                = "${var.prefix}-gw-ssl"
-    name                = data.azurerm_key_vault_certificate.ssl_certificate.name
-    key_vault_secret_id = data.azurerm_key_vault_certificate.ssl_certificate.secret_id
   }
 
   dynamic "backend_address_pool" {
