@@ -524,65 +524,65 @@ jobs:
         run: |
           echo "gw_name=${{ env.gw_name }}" >> $GITHUB_OUTPUT
 
-#  gwc:
-#    name: Gateway Config ${{ matrix.items }}
-#    needs: [ envs, crg, gw ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    outputs:
-#      gw_name: ${{ steps.set-output.outputs.gw_name }}
-#    env:
-#      project: ${{ needs.envs.outputs.project }}
-#      location: ${{ needs.envs.outputs.location }}
-#      service_domain: ${{ needs.envs.outputs.service_domain }}
-#      vm: ${{ needs.envs.outputs.vm_names }}
-#      gwcEnvFile: "gwc-${{ matrix.items }}.tfvars"
-#    strategy:
-#      matrix:
-#        items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Get cloud config
-#        id: vm-cloud-config
-#        uses: ActionsTools/read-json-action@main
-#        with:
-#          file_path: ${{ env.configFile }}
-#          prop_path: "virtual-machine"
-#
-#      - name: convert to json
-#        id: gwcjson
-#        uses: schdck/create-env-json@v1
-#        with:
-#          file-name: ${{ env.gwcEnvFile }}
-#          prefix: ${{ env.project }}
-#          group: ${{ needs.crg.outputs.rg_name }}
-#          name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
-#          vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
-#
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: ${{ env.gwcEnvFile }}
-#          path: ${{ env.gwcEnvFile }}
-#
-#      - name: Configure Gateway
-#        uses: ./.github/actions/tf-azure-script
-#        id: vm
-#        with:
-#          project: ${{ env.project }}
-#          envFile: ${{ env.gwcEnvFile }}
-#          key: ${{ env.project }}-${{ matrix.items }}-gwc
-#          working-directory: "tf/azure/gwc"
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#        continue-on-error: false
-#
-#      - name: Set output
-#        id: set-output
-#        run: |
-#          echo "gw_name=${{ env.gw_name }}" >> $GITHUB_OUTPUT
-#          echo "backend_pool_name=${{ env.backend_pool_name }}" >> $GITHUB_OUTPUT
+  gwc:
+    name: Gateway Config ${{ matrix.items }}
+    needs: [ envs, crg, gw ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      gw_name: ${{ steps.set-output.outputs.gw_name }}
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      location: ${{ needs.envs.outputs.location }}
+      service_domain: ${{ needs.envs.outputs.service_domain }}
+      vm: ${{ needs.envs.outputs.vm_names }}
+      gwcEnvFile: "gwc-${{ matrix.items }}.tfvars"
+    strategy:
+      matrix:
+        items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get cloud config
+        id: vm-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "virtual-machine"
+
+      - name: convert to json
+        id: gwcjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.gwcEnvFile }}
+          prefix: ${{ env.project }}
+          group: ${{ needs.crg.outputs.rg_name }}
+          name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
+          vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.gwcEnvFile }}
+          path: ${{ env.gwcEnvFile }}
+
+      - name: Configure Gateway
+        uses: ./.github/actions/tf-azure-script
+        id: vm
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.gwcEnvFile }}
+          key: ${{ env.project }}-${{ matrix.items }}-gwc
+          working-directory: "tf/azure/gwc"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "gw_name=${{ env.gw_name }}" >> $GITHUB_OUTPUT
+          echo "backend_pool_name=${{ env.backend_pool_name }}" >> $GITHUB_OUTPUT
