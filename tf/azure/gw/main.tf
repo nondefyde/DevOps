@@ -185,16 +185,6 @@ resource "azurerm_application_gateway" "gw_network" {
     ]
   }
 
-
-
-  request_routing_rule {
-    name                       = "${split(":", request_routing_rule.value)[0]}-routing-tb"
-    rule_type                  = "Basic"
-    http_listener_name         = "${split(":", request_routing_rule.value)[0]}-http-listener"
-    backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
-    backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-backend-listener"
-    priority                   = split(":", request_routing_rule.value)[3]
-  }
   request_routing_rule {
     name                       = "${var.prefix}-apim-rule"
     rule_type                  = "Basic"
