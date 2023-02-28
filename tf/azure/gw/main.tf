@@ -274,7 +274,7 @@ resource "azurerm_private_dns_a_record" "api_dns_record" {
 
 
 resource "azurerm_network_security_group" "gw_security_group" {
-  name                = "${var.prefix}-gw-nsg-group"
+  name                = "${var.prefix}-gw-nsg-private-group"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
 
