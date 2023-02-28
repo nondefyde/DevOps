@@ -287,7 +287,7 @@ resource "azurerm_network_security_group" "gw_security_group" {
     source_address_prefix      = "${azurerm_public_ip.gw_ip.ip_address}/32"
     destination_address_prefix = "${data.azurerm_subnet.gw_subnet.address_prefix}"
     source_port_range          = "*"
-    destination_port_range     = "*"
+    destination_port_range     = "443"
   }
 }
 
