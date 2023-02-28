@@ -39,7 +39,7 @@ variable "suffix" {
 
 variable "protocols" {
   type = list(string)
-  default = ["https"]
+  default = ["http"]
 }
 
 variable "display_name" {
