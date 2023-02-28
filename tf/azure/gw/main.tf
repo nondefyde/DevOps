@@ -271,27 +271,3 @@ resource "azurerm_private_dns_a_record" "api_dns_record" {
 
   depends_on = [azurerm_application_gateway.gw_network]
 }
-
-
-resource "azurerm_network_security_group" "gw_security_group" {
-  name                = "${var.prefix}-gw-nsg-private-group"
-  location            = data.azurerm_resource_group.rg.location
-  resource_group_name = data.azurerm_resource_group.rg.name
-
-  security_rule {
-    name                       = "${var.prefix}-gw-public-to-private"
-    priority                   = 301
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_address_prefix      = "${azurerm_public_ip.gw_ip.ip_address}/32"
-    destination_address_prefix = "${data.azurerm_subnet.gw_subnet.address_prefix}"
-    source_port_range          = "*"
-    destination_port_range     = "443"
-  }
-}
-
-resource "azurerm_subnet_network_security_group_association" "nsg-assoc_gw" {
-  subnet_id                 = data.azurerm_subnet.gw_subnet.id
-  network_security_group_id = azurerm_network_security_group.gw_security_group.id
-}
