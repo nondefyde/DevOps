@@ -18,25 +18,25 @@ resource "azurerm_api_management_api" "apimp" {
   subscription_required = false
 }
 
-#resource "azurerm_api_management_api_operation" "apimp_operations" {
-#  count               = length(var.methods)
-#  operation_id        = "${var.prefix}-${var.name}-operation-${count.index}"
-#  api_name            = azurerm_api_management_api.apimp.name
-#  api_management_name = data.azurerm_api_management.apim.name
-#  resource_group_name = data.azurerm_resource_group.rg.name
-#  display_name        = "${var.methods[count.index]} Res"
-#  method              = var.methods[count.index]
-#  url_template        = var.endpoints
-#
-#  request {
-#    header {
-#      name     = var.header
-#      type     = "string"
-#      required = true
-#    }
-#  }
-#}
-#
+resource "azurerm_api_management_api_operation" "apimp_operations" {
+  count               = length(var.methods)
+  operation_id        = "${var.prefix}-${var.name}-operation-${count.index}"
+  api_name            = azurerm_api_management_api.apimp.name
+  api_management_name = data.azurerm_api_management.apim.name
+  resource_group_name = data.azurerm_resource_group.rg.name
+  display_name        = "${var.methods[count.index]} Res"
+  method              = var.methods[count.index]
+  url_template        = var.endpoints
+
+  request {
+    header {
+      name     = var.header
+      type     = "string"
+      required = false
+    }
+  }
+}
+
 #resource "azurerm_api_management_api_operation_policy" "api_operation_policy" {
 #  count               = length(var.methods)
 #  api_name            = azurerm_api_management_api.apimp.name
