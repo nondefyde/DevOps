@@ -49,11 +49,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "16.04-LTS"
     version   = "latest"
   }
-
   boot_diagnostics {
     storage_account_uri = azurerm_storage_account.vm_storage_account.primary_blob_endpoint
   }
-
   tags = {
     environment = var.environment
   }
