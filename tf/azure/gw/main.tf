@@ -185,84 +185,95 @@ resource "azurerm_application_gateway" "gw_network" {
     ]
   }
 
-  backend_address_pool {
-    name = "${var.prefix}-sink-pool"
-  }
+
 
   request_routing_rule {
+    name                       = "${split(":", request_routing_rule.value)[0]}-routing-tb"
+    rule_type                  = "Basic"
+    http_listener_name         = "${split(":", request_routing_rule.value)[0]}-http-listener"
+    backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
+    backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-backend-listener"
+    priority                   = split(":", request_routing_rule.value)[3]
+  }
+  request_routing_rule {
     name                       = "${var.prefix}-apim-rule"
-    rule_type                  = "PathBasedRouting"
+    rule_type                  = "Basic"
     http_listener_name         = "${var.prefix}-apim-http-listener"
-    backend_address_pool_name  = "${var.prefix}-apim-sink-pool"
+    backend_address_pool_name  = "${var.prefix}-apim-pool"
     backend_http_settings_name = "${var.prefix}-backend-setting"
-    url_path_map_name          = "${var.prefix}-apim-url-path-map"
-    priority                   = 10
+#    name                       = "${var.prefix}-apim-rule"
+#    rule_type                  = "PathBasedRouting"
+#    http_listener_name         = "${var.prefix}-apim-http-listener"
+#    backend_address_pool_name  = "${var.prefix}-apim-sink-pool"
+#    backend_http_settings_name = "${var.prefix}-backend-setting"
+#    url_path_map_name          = "${var.prefix}-apim-url-path-map"
+#    priority                   = 10
   }
 
-  url_path_map {
-    name                               = "${var.prefix}-apim-url-path-map"
-    default_backend_address_pool_name  = "${var.prefix}-sink-pool"
-    default_backend_http_settings_name = "${var.prefix}-backend-setting"
-    dynamic "path_rule" {
-      for_each = local.api_suffixes
-      content {
-        name                       = "${split(":", path_rule.value)[0]}-apim-url-path-rule"
-        backend_address_pool_name  = "${var.prefix}-apim-pool"
-        backend_http_settings_name = "${var.prefix}-backend-setting"
-        paths                      = [
-          "/${split(":", path_rule.value)[1]}/*"
-        ]
-      }
-    }
-  }
+#  url_path_map {
+#    name                               = "${var.prefix}-apim-url-path-map"
+#    default_backend_address_pool_name  = "${var.prefix}-sink-pool"
+#    default_backend_http_settings_name = "${var.prefix}-backend-setting"
+#    dynamic "path_rule" {
+#      for_each = local.api_suffixes
+#      content {
+#        name                       = "${split(":", path_rule.value)[0]}-apim-url-path-rule"
+#        backend_address_pool_name  = "${var.prefix}-apim-pool"
+#        backend_http_settings_name = "${var.prefix}-backend-setting"
+#        paths                      = [
+#          "/${split(":", path_rule.value)[1]}/*"
+#        ]
+#      }
+#    }
+#  }
 
   ////////////////////////////////// APIM SETUPS ENDS /////////////////////////////////////////
 
 
   ////////////////////////////////// BACKEND SETUPS /////////////////////////////////////////
 
-  dynamic "http_listener" {
-    for_each = local.api_suffixes
-    content {
-      name                           = "${split(":", http_listener.value)[0]}-http-listener"
-      frontend_ip_configuration_name = "${var.prefix}-gw-private-ip"
-      frontend_port_name             = local.http_frontend_port_name_service
-      protocol                       = "Http"
-      host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
-    }
-  }
-
-  dynamic "backend_address_pool" {
-    for_each = local.api_suffixes
-    content {
-      name = "${split(":", backend_address_pool.value)[0]}-pool"
-    }
-  }
-
-  dynamic "backend_http_settings" {
-    for_each = local.api_suffixes
-    content {
-      name                  = "${split(":", backend_http_settings.value)[0]}-backend-listener"
-      cookie_based_affinity = "Disabled"
-      port                  = split(":", backend_http_settings.value)[2]
-      path                  = "/"
-      protocol              = "Http"
-      request_timeout       = 60
-    }
-  }
-
-  dynamic "request_routing_rule" {
-    for_each = local.api_suffixes
-    content {
-      name                       = "${split(":", request_routing_rule.value)[0]}-routing-tb"
-      rule_type                  = "Basic"
-      http_listener_name         = "${split(":", request_routing_rule.value)[0]}-http-listener"
-      backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
-      backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-backend-listener"
-      priority                   = split(":", request_routing_rule.value)[3]
-    }
-  }
-
+#  dynamic "http_listener" {
+#    for_each = local.api_suffixes
+#    content {
+#      name                           = "${split(":", http_listener.value)[0]}-http-listener"
+#      frontend_ip_configuration_name = "${var.prefix}-gw-private-ip"
+#      frontend_port_name             = local.http_frontend_port_name_service
+#      protocol                       = "Http"
+#      host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
+#    }
+#  }
+#
+#  dynamic "backend_address_pool" {
+#    for_each = local.api_suffixes
+#    content {
+#      name = "${split(":", backend_address_pool.value)[0]}-pool"
+#    }
+#  }
+#
+#  dynamic "backend_http_settings" {
+#    for_each = local.api_suffixes
+#    content {
+#      name                  = "${split(":", backend_http_settings.value)[0]}-backend-listener"
+#      cookie_based_affinity = "Disabled"
+#      port                  = split(":", backend_http_settings.value)[2]
+#      path                  = "/"
+#      protocol              = "Http"
+#      request_timeout       = 60
+#    }
+#  }
+#
+#  dynamic "request_routing_rule" {
+#    for_each = local.api_suffixes
+#    content {
+#      name                       = "${split(":", request_routing_rule.value)[0]}-routing-tb"
+#      rule_type                  = "Basic"
+#      http_listener_name         = "${split(":", request_routing_rule.value)[0]}-http-listener"
+#      backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
+#      backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-backend-listener"
+#      priority                   = split(":", request_routing_rule.value)[3]
+#    }
+#  }
+#
   ////////////////////////////////// END BACKEND SETUPS /////////////////////////////////////////
 }
 
