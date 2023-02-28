@@ -139,7 +139,7 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   frontend_port {
-    name = local.https_frontend_port_name_service
+    name = local.http_frontend_port_name_service
     port = 8000
   }
 
