@@ -102,6 +102,7 @@ locals {
   frontend_ip_configuration_name = "${var.prefix}-gw-feip"
 
   http_frontend_port_name  = "${var.prefix}-80"
+  http_frontend_port_name_service  = "${var.prefix}-8000"
   https_frontend_port_name = "${var.prefix}-443"
 
 }
@@ -135,6 +136,11 @@ resource "azurerm_application_gateway" "gw_network" {
   frontend_port {
     name = local.https_frontend_port_name
     port = 443
+  }
+
+  frontend_port {
+    name = local.https_frontend_port_name_service
+    port = 8000
   }
 
   frontend_ip_configuration {
