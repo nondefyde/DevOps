@@ -10,3 +10,11 @@ services:
       - ./.env
     ports:
       - "8000:{PORT}"
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy:alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
