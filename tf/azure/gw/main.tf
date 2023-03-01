@@ -103,26 +103,26 @@ resource "azurerm_key_vault_access_policy" "vault_policy" {
 locals {
   api_suffixes                   = toset(split(",", var.api_suffixes))
   api_names                      = split(",", var.api_suffixes)
-  frontend_port_name             = "${var.prefix}-gw-feport"
-  frontend_ip_configuration_name = "${var.prefix}-gw-feip"
+  frontend_port_name             = "gw-feport"
+  frontend_ip_configuration_name = "gw-feip"
 
-  http_frontend_port_name         = "${var.prefix}-80"
-  http_frontend_port_name_service = "${var.prefix}-8000"
-  https_frontend_port_name        = "${var.prefix}-443"
+  http_frontend_port_name         = "port-80"
+  http_frontend_port_name_service = "port-8000"
+  https_frontend_port_name        = "port-443"
 
-  gw_public_ip  = "${var.prefix}-gw-public-ip"
-  gw_private_ip = "${var.prefix}-gw-private-ip"
+  gw_public_ip  = "gw-public-ip"
+  gw_private_ip = "gw-private-ip"
 
-  apim_http_setting      = "${var.prefix}-apim-http-listener"
-  apim_backend_setting   = "${var.prefix}-apim-backend-setting"
-  apim_backend_pool      = "${var.prefix}-apim-pool"
-  apim_url_path_map_name = "${var.prefix}-apim-url-path-map"
-  apim_routing_rule      = "${var.prefix}-apim-rule"
+  apim_http_setting      = "apim-http-listener"
+  apim_backend_setting   = "apim-backend-setting"
+  apim_backend_pool      = "apim-pool"
+  apim_url_path_map_name = "apim-url-path-map"
+  apim_routing_rule      = "apim-rule"
 
-  portal_http_setting    = "${var.prefix}-portal-http-setting"
-  portal_backend_setting = "${var.prefix}-portal-backend-setting"
-  portal_backend_pool    = "${var.prefix}-portal-pool"
-  portal_routing_rule    = "${var.prefix}-portal-rule"
+  portal_http_setting    = "portal-http-setting"
+  portal_backend_setting = "portal-backend-setting"
+  portal_backend_pool    = "portal-pool"
+  portal_routing_rule    = "portal-rule"
 
 }
 
@@ -143,7 +143,7 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   gateway_ip_configuration {
-    name      = "${var.prefix}-gw-ip-configuration"
+    name      = "gw-ip-configuration"
     subnet_id = data.azurerm_subnet.gw_subnet.id
   }
 
@@ -243,6 +243,7 @@ resource "azurerm_application_gateway" "gw_network" {
     port                  = 443
     protocol              = "Https"
     request_timeout       = 60
+    trusted_root_certificate_names : [data.azurerm_key_vault_certificate.ssl_certificate.name]
   }
 
   http_listener {
