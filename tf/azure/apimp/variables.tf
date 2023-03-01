@@ -44,7 +44,7 @@ variable "port" {
 
 variable "protocols" {
   type = list(string)
-  default = ["http"]
+  default = ["https"]
 }
 
 variable "display_name" {

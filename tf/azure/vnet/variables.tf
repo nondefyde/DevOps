@@ -45,13 +45,3 @@ variable "apim_address_prefix" {
 variable "apim_domain" {
   type = string
 }
-
-variable "gw_private_ip" {
-  type = string
-  default = "10.0.3.10"
-}
-
-variable "apim_private_ip" {
-  type = string
-  default = "10.0.4.5"
-}

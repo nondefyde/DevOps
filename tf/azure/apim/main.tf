@@ -29,6 +29,7 @@ resource "azurerm_api_management" "apim" {
   sku_name             = "${var.sku}_${var.capacity}"
   virtual_network_type = "Internal"
 
+
   identity {
     type = "SystemAssigned"
   }
