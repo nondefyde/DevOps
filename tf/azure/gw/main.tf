@@ -173,7 +173,7 @@ resource "azurerm_application_gateway" "gw_network" {
   backend_http_settings {
     name                  = "${var.prefix}-backend-setting"
     cookie_based_affinity = "Disabled"
-    port                  = 8000
+    port                  = 80
     protocol              = "Http"
     request_timeout       = 60
   }
