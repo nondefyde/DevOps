@@ -144,13 +144,13 @@ resource "azurerm_network_security_group" "apim_security_group" {
   }
 
   security_rule {
-    name                       = "Outbound-vault-1433"
+    name                       = "Outbound-vault-443"
     priority                   = 302
     direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "1433"
+    destination_port_range     = "443"
     source_address_prefix      = "VirtualNetwork"
     destination_address_prefix = "AzureKeyVault"
   }
