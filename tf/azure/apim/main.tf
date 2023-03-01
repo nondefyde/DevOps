@@ -140,26 +140,49 @@ resource "azurerm_network_security_group" "apim_security_group" {
   resource_group_name = data.azurerm_resource_group.rg.name
 
   security_rule {
-    name                       = "allow-management"
+    name                       = "Internet-HTTPS"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "${var.gw_private_ip}/24"
+    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
+  }
+
+  security_rule {
+    name                       = "Internet-HTTP"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "${var.gw_private_ip}/24"
+    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
+  }
+
+  security_rule {
+    name                       = "AzureLoadBalancer"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "6390"
+    source_address_prefix      = "${var.gw_private_ip}/24"
+    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
+  }
+
+  security_rule {
+    name                       = "ApiManagement"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "3443"
-    source_address_prefix      = "${var.gw_private_ip}/24"
-    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
-  }
-
-
-  security_rule {
-    name                       = "allow-management"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "*"
     source_address_prefix      = "${var.gw_private_ip}/24"
     destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
   }
