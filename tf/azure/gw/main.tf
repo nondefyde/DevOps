@@ -243,7 +243,6 @@ resource "azurerm_application_gateway" "gw_network" {
     port                           = 443
     protocol                       = "Https"
     request_timeout                = 60
-    trusted_root_certificate_names = [data.azurerm_key_vault_certificate.ssl_certificate.name]
   }
 
   http_listener {
