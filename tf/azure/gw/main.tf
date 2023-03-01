@@ -240,23 +240,25 @@ resource "azurerm_application_gateway" "gw_network" {
   backend_http_settings {
     name                           = local.portal_backend_setting
     cookie_based_affinity          = "Disabled"
-    port                           = 443
-    protocol                       = "Https"
+    port                           = 80
+    protocol                       = "Http"
     request_timeout                = 60
   }
 
   http_listener {
     name                           = local.portal_http_setting
     frontend_ip_configuration_name = local.gw_public_ip
-    frontend_port_name             = local.https_frontend_port_name
-    protocol                       = "Https"
+    frontend_port_name             = local.http_frontend_port_name
+    protocol                       = "Http"
     host_name                      = "${var.portal_subdomain}.${var.apim_domain}"
-    ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
+#    ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
   }
 
   backend_address_pool {
     name  = local.portal_backend_pool
-    fqdns = data.azurerm_api_management.apim.private_ip_addresses
+    fqdns = [
+      "${var.portal_subdomain}.${var.apim_domain}"
+    ]
   }
 
   request_routing_rule {
