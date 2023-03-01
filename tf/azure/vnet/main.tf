@@ -65,7 +65,6 @@ resource "azurerm_subnet_network_security_group_association" "nsg-assoc_gw" {
   network_security_group_id = azurerm_network_security_group.gw_security_group.id
 }
 
-
 resource "azurerm_network_security_group" "apim_security_group" {
   name                = "${var.prefix}-apim-nsg"
   location            = data.azurerm_resource_group.rg.location
@@ -130,6 +129,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     source_address_prefix      = var.apim_address_prefix
     destination_address_prefix = var.gw_address_prefix
   }
+
+  depends_on = [azurerm_subnet.apim_subnet]
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg-assoc_apim" {
