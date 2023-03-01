@@ -19,6 +19,7 @@ app.get('/', (req, res) => {
 		message: `Hello from ${process.env.NODE_ENV}`,
 		headers: req.headers,
 		params: req.params,
+		body: req.body,
 	});
 });
 
@@ -27,5 +28,6 @@ app.get('/:url', (req, res) => {
 		message: `Hello from url ${process.env.NODE_ENV}`,
 		headers: req.headers,
 		params: req.params,
+		body: req.body,
 	});
 });
