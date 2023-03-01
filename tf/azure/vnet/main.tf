@@ -71,63 +71,88 @@ resource "azurerm_network_security_group" "apim_security_group" {
   resource_group_name = data.azurerm_resource_group.rg.name
 
   security_rule {
-    name                       = "Internet-HTTPS"
+    name                       = "Inbound-HTTPS"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "443"
-    source_address_prefix      = azurerm_virtual_network.app_virtual_network.address_space[0]
-    destination_address_prefix = var.apim_private_ip
+    source_address_prefix      = "Internet"
+    destination_address_prefix = "VirtualNetwork"
   }
 
   security_rule {
-    name                       = "Internet-HTTP"
+    name                       = "Inbound-HTTP"
     priority                   = 101
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "80"
-    source_address_prefix      = azurerm_virtual_network.app_virtual_network.address_space[0]
-    destination_address_prefix = var.apim_private_ip
+    source_address_prefix      = "Internet"
+    destination_address_prefix = "VirtualNetwork"
   }
 
   security_rule {
-    name                       = "AzureLoadBalancer"
+    name                       = "Inbound-APIM"
     priority                   = 102
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "6390"
-    source_address_prefix      = azurerm_virtual_network.app_virtual_network.address_space[0]
-    destination_address_prefix = var.apim_private_ip
+    destination_port_range     = "3443"
+    source_address_prefix      = "ApiManagement"
+    destination_address_prefix = "VirtualNetwork"
   }
 
   security_rule {
-    name                       = "ApiManagement"
+    name                       = "Inbound-LB"
     priority                   = 103
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "3443"
-    source_address_prefix      = azurerm_virtual_network.app_virtual_network.address_space[0]
-    destination_address_prefix = var.apim_private_ip
+    destination_port_range     = "6390"
+    source_address_prefix      = "AzureLoadBalancer"
+    destination_address_prefix = "VirtualNetwork"
   }
 
+
   security_rule {
-    name                       = "${var.prefix}-apim-outbound"
+    name                       = "Outbound-storage-443"
     priority                   = 300
     direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = var.apim_private_ip
-    destination_address_prefix = azurerm_virtual_network.app_virtual_network.address_space[0]
+    destination_port_range     = "443"
+    source_address_prefix      = "VirtualNetwork"
+    destination_address_prefix = "Storage"
+  }
+
+  security_rule {
+    name                       = "Outbound-sql-1433"
+    priority                   = 301
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "1433"
+    source_address_prefix      = "VirtualNetwork"
+    destination_address_prefix = "SQL"
+  }
+
+  security_rule {
+    name                       = "Outbound-vault-1433"
+    priority                   = 302
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "1433"
+    source_address_prefix      = "VirtualNetwork"
+    destination_address_prefix = "AzureKeyVault"
   }
 
   depends_on = [azurerm_subnet.apim_subnet]
