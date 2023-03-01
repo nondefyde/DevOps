@@ -121,7 +121,7 @@ locals {
 
   portal_http_setting    = "${var.prefix}-portal-http-setting"
   portal_backend_setting = "${var.prefix}-portal-backend-setting"
-  portal_backend_pool    = "${var.prefix}-portal-backend-pool"
+  portal_backend_pool    = "${var.prefix}-portal-pool"
   portal_routing_rule    = "${var.prefix}-portal-rule"
 
 }
@@ -237,6 +237,17 @@ resource "azurerm_application_gateway" "gw_network" {
   /// <<<<>>>> APIM SETUPS <<<<>>>> ////////
 
   /// <<<<>>>> APIM PORTAL SETUPS  <<<<>>>> ////////
+  backend_http_settings {
+    name                  = local.portal_backend_setting
+    cookie_based_affinity = "Disabled"
+    port                  = 443
+    protocol              = "Https"
+    request_timeout       = 60
+    authentication_certificate {
+      name = data.azurerm_key_vault_certificate.ssl_certificate.name
+    }
+  }
+
   http_listener {
     name                           = local.portal_http_setting
     frontend_ip_configuration_name = local.gw_public_ip
@@ -249,17 +260,6 @@ resource "azurerm_application_gateway" "gw_network" {
   backend_address_pool {
     name  = local.portal_backend_pool
     fqdns = data.azurerm_api_management.apim.private_ip_addresses
-  }
-
-  backend_http_settings {
-    name                  = local.portal_backend_setting
-    cookie_based_affinity = "Disabled"
-    port                  = 443
-    protocol              = "Https"
-    request_timeout       = 60
-    authentication_certificate {
-      name = data.azurerm_key_vault_certificate.ssl_certificate.name
-    }
   }
 
   request_routing_rule {
