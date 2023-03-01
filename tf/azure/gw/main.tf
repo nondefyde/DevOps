@@ -243,9 +243,6 @@ resource "azurerm_application_gateway" "gw_network" {
     port                  = 443
     protocol              = "Https"
     request_timeout       = 60
-    authentication_certificate {
-      name = data.azurerm_key_vault_certificate.ssl_certificate.name
-    }
   }
 
   http_listener {
@@ -279,7 +276,7 @@ resource "azurerm_application_gateway" "gw_network" {
     for_each = local.api_suffixes
     content {
       name                           = "${split(":", http_listener.value)[0]}-http-listener"
-      frontend_ip_configuration_name = "${var.prefix}-gw-private-ip"
+      frontend_ip_configuration_name = local.gw_private_ip
       frontend_port_name             = local.http_frontend_port_name_service
       protocol                       = "Http"
       host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
