@@ -106,9 +106,23 @@ locals {
   frontend_port_name             = "${var.prefix}-gw-feport"
   frontend_ip_configuration_name = "${var.prefix}-gw-feip"
 
-  http_frontend_port_name  = "${var.prefix}-80"
-  http_frontend_port_name_service  = "${var.prefix}-8000"
-  https_frontend_port_name = "${var.prefix}-443"
+  http_frontend_port_name         = "${var.prefix}-80"
+  http_frontend_port_name_service = "${var.prefix}-8000"
+  https_frontend_port_name        = "${var.prefix}-443"
+
+  gw_public_ip  = "${var.prefix}-gw-public-ip"
+  gw_private_ip = "${var.prefix}-gw-private-ip"
+
+  apim_http_setting      = "${var.prefix}-apim-http-listener"
+  apim_backend_setting   = "${var.prefix}-apim-backend-setting"
+  apim_backend_pool      = "${var.prefix}-apim-pool"
+  apim_url_path_map_name = "${var.prefix}-apim-url-path-map"
+  apim_routing_rule      = "${var.prefix}-apim-rule"
+
+  portal_http_setting    = "${var.prefix}-portal-http-setting"
+  portal_backend_setting = "${var.prefix}-portal-backend-setting";
+  portal_backend_pool    = "${var.prefix}-portal-backend-pool"
+  portal_routing_rule    = "${var.prefix}-portal-rule"
 
 }
 
@@ -149,14 +163,14 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   frontend_ip_configuration {
-    name                          = "${var.prefix}-gw-private-ip"
+    name                          = local.gw_private_ip
     private_ip_address_allocation = "Static"
     private_ip_address            = var.private_ip
-    subnet_id = data.azurerm_subnet.gw_subnet.id
+    subnet_id                     = data.azurerm_subnet.gw_subnet.id
   }
 
   frontend_ip_configuration {
-    name                 = "${var.prefix}-gw-public-ip"
+    name                 = local.gw_public_ip
     public_ip_address_id = azurerm_public_ip.gw_ip.id
   }
 
@@ -170,8 +184,8 @@ resource "azurerm_application_gateway" "gw_network" {
 
   /// <<<<>>>> APIM SETUPS <<<<>>>> ////////
   http_listener {
-    name                           = "${var.prefix}-apim-http-listener"
-    frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
+    name                           = local.apim_http_setting
+    frontend_ip_configuration_name = local.gw_public_ip
     frontend_port_name             = local.https_frontend_port_name
     protocol                       = "Https"
     host_name                      = "${var.public_subdomain}.${var.apim_domain}"
@@ -179,7 +193,7 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   backend_http_settings {
-    name                  = "${var.prefix}-backend-setting"
+    name                  = local.apim_backend_setting
     cookie_based_affinity = "Disabled"
     port                  = 80
     protocol              = "Http"
@@ -187,32 +201,32 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   backend_address_pool {
-    name  = "${var.prefix}-apim-pool"
+    name  = local.apim_backend_pool
     fqdns = [
       "api.stardevs.xyz"
     ]
   }
 
   request_routing_rule {
-    name                       = "${var.prefix}-apim-rule"
+    name                       = local.apim_routing_rule
     rule_type                  = "PathBasedRouting"
-    http_listener_name         = "${var.prefix}-apim-http-listener"
-    backend_address_pool_name  = "${var.prefix}-apim-pool"
-    backend_http_settings_name = "${var.prefix}-backend-setting"
-    url_path_map_name          = "${var.prefix}-apim-url-path-map"
+    http_listener_name         = local.apim_http_setting
+    backend_address_pool_name  = local.apim_backend_pool
+    backend_http_settings_name = local.apim_backend_setting
+    url_path_map_name          = local.apim_url_path_map_name
     priority                   = 10
   }
 
   url_path_map {
-    name                               = "${var.prefix}-apim-url-path-map"
-    default_backend_address_pool_name  = "${var.prefix}-apim-pool"
-    default_backend_http_settings_name = "${var.prefix}-backend-setting"
+    name                               = local.apim_url_path_map_name
+    default_backend_address_pool_name  = local.apim_backend_pool
+    default_backend_http_settings_name = local.apim_backend_setting
     dynamic "path_rule" {
       for_each = local.api_suffixes
       content {
-        name                       = "${split(":", path_rule.value)[0]}-apim-url-path-rule"
-        backend_address_pool_name  = "${var.prefix}-apim-pool"
-        backend_http_settings_name = "${var.prefix}-backend-setting"
+        name                       = "${split(":", path_rule.value)[0]}-path-rule"
+        backend_address_pool_name  = local.apim_backend_pool
+        backend_http_settings_name = local.apim_backend_setting
         paths                      = [
           "/${split(":", path_rule.value)[1]}/*"
         ]
@@ -224,8 +238,8 @@ resource "azurerm_application_gateway" "gw_network" {
 
   /// <<<<>>>> APIM PORTAL SETUPS  <<<<>>>> ////////
   http_listener {
-    name                           = "${var.prefix}-portal-http-listener"
-    frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
+    name                           = local.portal_http_setting
+    frontend_ip_configuration_name = local.gw_public_ip
     frontend_port_name             = local.https_frontend_port_name
     protocol                       = "Https"
     host_name                      = "${var.portal_subdomain}.${var.apim_domain}"
@@ -233,12 +247,12 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   backend_address_pool {
-    name  = "${var.prefix}-portal-pool"
+    name  = local.portal_backend_pool
     fqdns = data.azurerm_api_management.apim.private_ip_addresses
   }
 
   backend_http_settings {
-    name                  = "${var.prefix}-backend-setting"
+    name                  = local.portal_backend_setting
     cookie_based_affinity = "Disabled"
     port                  = 443
     protocol              = "Https"
@@ -249,11 +263,11 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   request_routing_rule {
-    name                       = "${var.prefix}-apim-rule"
+    name                       = local.portal_routing_rule
     rule_type                  = "Basic"
-    http_listener_name         = "${var.prefix}-portal-http-listener"
-    backend_address_pool_name  = "${var.prefix}-portal-pool"
-    backend_http_settings_name = "${var.prefix}-backend-setting"
+    http_listener_name         = local.portal_http_setting
+    backend_address_pool_name  = local.portal_backend_pool
+    backend_http_settings_name = local.portal_backend_setting
     priority                   = 11
   }
   ////////////////////////////////// APIM SETUPS ENDS /////////////////////////////////////////
