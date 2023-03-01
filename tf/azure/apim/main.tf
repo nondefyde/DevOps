@@ -139,6 +139,18 @@ resource "azurerm_network_security_group" "apim_security_group" {
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
 
+  security_rule {
+    name                       = "allow-management"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "3443"
+    source_address_prefix      = "${var.gw_private_ip}/24"
+    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
+  }
+
 
   security_rule {
     name                       = "allow-management"
