@@ -85,3 +85,8 @@ variable "vault_rg" {
 variable "cert_name" {
   type = string
 }
+
+variable "gw_private_ip" {
+  type = string
+  default = "10.0.3.10"
+}

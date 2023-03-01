@@ -132,3 +132,38 @@ resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
 
   depends_on = [azurerm_api_management.apim]
 }
+
+resource "azurerm_network_security_group" "apim_security_group" {
+  name                = "${var.prefix}-apim-nsg-group"
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
+
+  security_rule {
+    name                       = "allow-apim-inbound-443"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = var.gw_private_ip
+    destination_address_prefix = "${azurerm_api_management.apim.private_ip_address}/32"
+  }
+
+  security_rule {
+    name                       = "allow-apim-inbound-80"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = var.gw_private_ip
+    destination_address_prefix = "${azurerm_api_management.apim.private_ip_address}/32"
+  }
+}
+
+resource "azurerm_subnet_network_security_group_association" "nsg-assoc_apim" {
+  subnet_id                 = azurerm_subnet.apim_subnet.id
+  network_security_group_id = azurerm_network_security_group.apim_security_group.id
+}
