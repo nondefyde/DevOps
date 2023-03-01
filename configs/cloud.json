@@ -1,5 +1,5 @@
 {
-  "prefix": "ucloudappsdev",
+  "prefix": "vcloudappsdev",
   "location": "centralus",
   "environment": "development",
   "service_domain": "stardevs.xyz",
