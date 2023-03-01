@@ -7,7 +7,7 @@ data "azurerm_virtual_network" "vnet" {
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-data "azurerm_subnet" "apim_subnets" {
+data "azurerm_subnet" "apim_subnet" {
   name                 = "${var.prefix}-apim-subnet"
   virtual_network_name = data.azurerm_virtual_network.vnet.name
   resource_group_name  = data.azurerm_virtual_network.vnet.resource_group_name
@@ -34,7 +34,7 @@ resource "azurerm_api_management" "apim" {
   }
 
   virtual_network_configuration {
-    subnet_id = data.azurerm_subnet.apim_subnets.id
+    subnet_id = data.azurerm_subnet.apim_subnet.id
   }
 }
 
@@ -133,37 +133,38 @@ resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
   depends_on = [azurerm_api_management.apim]
 }
 
+
 resource "azurerm_network_security_group" "apim_security_group" {
   name                = "${var.prefix}-apim-nsg-group"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
 
   security_rule {
-    name                       = "allow-apim-inbound-443"
+    name                       = "${var.prefix}-apim-inbound"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "443"
+    destination_port_range     = "*"
     source_address_prefix      = var.gw_private_ip
-    destination_address_prefix = "${azurerm_api_management.apim.private_ip_address}/32"
+    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses}/32"
   }
 
   security_rule {
-    name                       = "allow-apim-inbound-80"
-    priority                   = 110
-    direction                  = "Inbound"
+    name                       = "${var.prefix}-apim-outbound"
+    priority                   = 300
+    direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "80"
+    destination_port_range     = "*"
     source_address_prefix      = var.gw_private_ip
-    destination_address_prefix = "${azurerm_api_management.apim.private_ip_address}/32"
+    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses}/32"
   }
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg-assoc_apim" {
-  subnet_id                 = azurerm_subnet.apim_subnet.id
+  subnet_id                 = data.azurerm_subnet.apim_subnet.id
   network_security_group_id = azurerm_network_security_group.apim_security_group.id
 }

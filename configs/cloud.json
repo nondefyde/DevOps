@@ -27,6 +27,9 @@
       }
     }
   },
+  "gateway": {
+    "private_ip": "10.0.3.10"
+  },
   "api-management": {
     "publisher_name": "Stemuli",
     "publisher_email": "nondefyde@gmail.com",
