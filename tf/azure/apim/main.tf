@@ -147,8 +147,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "443"
-    source_address_prefix      = "${var.gw_private_ip}/24"
-    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
+    source_address_prefix      = var.gw_address_prefix
+    destination_address_prefix = var.apim_address_prefix
   }
 
   security_rule {
@@ -159,8 +159,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "80"
-    source_address_prefix      = "${var.gw_private_ip}/24"
-    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
+    source_address_prefix      = var.gw_address_prefix
+    destination_address_prefix = var.apim_address_prefix
   }
 
   security_rule {
@@ -171,8 +171,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "6390"
-    source_address_prefix      = "${var.gw_private_ip}/24"
-    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
+    source_address_prefix      = var.gw_address_prefix
+    destination_address_prefix = var.apim_address_prefix
   }
 
   security_rule {
@@ -183,8 +183,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "3443"
-    source_address_prefix      = "${var.gw_private_ip}/24"
-    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
+    source_address_prefix      = var.gw_address_prefix
+    destination_address_prefix = var.apim_address_prefix
   }
 
   security_rule {
@@ -195,8 +195,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefix      = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
-    destination_address_prefix = "${var.gw_private_ip}/24"
+    source_address_prefix      = var.apim_address_prefix
+    destination_address_prefix = var.gw_address_prefix
   }
 }
 
