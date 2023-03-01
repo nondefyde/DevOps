@@ -17,6 +17,15 @@ app.get('/v1/ping', (req, res) => {
 app.get('/', (req, res) => {
 	res.status(200).json({
 		message: `Hello from ${process.env.NODE_ENV}`,
-		headers: req.headers
+		headers: req.headers,
+		params: req.params,
+	});
+});
+
+app.get('/:url', (req, res) => {
+	res.status(200).json({
+		message: `Hello from url ${process.env.NODE_ENV}`,
+		headers: req.headers,
+		params: req.params,
 	});
 });
