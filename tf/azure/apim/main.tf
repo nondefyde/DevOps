@@ -141,14 +141,14 @@ resource "azurerm_network_security_group" "apim_security_group" {
 
   security_rule {
     name                       = "${var.prefix}-apim-inbound"
-    priority                   = 100
+    priority                   = 200
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "*"
     source_address_prefix      = var.gw_private_ip
-    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
+    destination_address_prefix = azurerm_api_management.apim.private_ip_addresses[0]
   }
 
   security_rule {
@@ -159,8 +159,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefix      = var.gw_private_ip
-    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
+    source_address_prefix      = azurerm_api_management.apim.private_ip_addresses[0]
+    destination_address_prefix = var.gw_private_ip
   }
 }
 

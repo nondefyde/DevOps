@@ -30,7 +30,6 @@ resource "azurerm_subnet" "apim_subnet" {
   address_prefixes     = [var.apim_address_prefix]
 }
 
-
 resource "azurerm_network_security_group" "gw_security_group" {
   name                = "${var.prefix}-gw-nsg-group"
   location            = data.azurerm_resource_group.rg.location
