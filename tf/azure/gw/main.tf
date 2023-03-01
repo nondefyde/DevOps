@@ -238,12 +238,12 @@ resource "azurerm_application_gateway" "gw_network" {
 
   /// <<<<>>>> APIM PORTAL SETUPS  <<<<>>>> ////////
   backend_http_settings {
-    name                  = local.portal_backend_setting
-    cookie_based_affinity = "Disabled"
-    port                  = 443
-    protocol              = "Https"
-    request_timeout       = 60
-    trusted_root_certificate_names : [data.azurerm_key_vault_certificate.ssl_certificate.name]
+    name                           = local.portal_backend_setting
+    cookie_based_affinity          = "Disabled"
+    port                           = 443
+    protocol                       = "Https"
+    request_timeout                = 60
+    trusted_root_certificate_names = [data.azurerm_key_vault_certificate.ssl_certificate.name]
   }
 
   http_listener {
