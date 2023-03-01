@@ -78,8 +78,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "443"
-    source_address_prefix      = var.gw_address_prefix
-    destination_address_prefix = var.apim_address_prefix
+    source_address_prefix      = var.gw_private_ip
+    destination_address_prefix = var.apim_private_ip
   }
 
   security_rule {
@@ -90,8 +90,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "80"
-    source_address_prefix      = var.gw_address_prefix
-    destination_address_prefix = var.apim_address_prefix
+    source_address_prefix      = var.gw_private_ip
+    destination_address_prefix = var.apim_private_ip
   }
 
   security_rule {
@@ -102,8 +102,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "6390"
-    source_address_prefix      = var.gw_address_prefix
-    destination_address_prefix = var.apim_address_prefix
+    source_address_prefix      = var.gw_private_ip
+    destination_address_prefix = var.apim_private_ip
   }
 
   security_rule {
@@ -114,8 +114,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "3443"
-    source_address_prefix      = var.gw_address_prefix
-    destination_address_prefix = var.apim_address_prefix
+    source_address_prefix      = var.gw_private_ip
+    destination_address_prefix = var.apim_private_ip
   }
 
   security_rule {
@@ -126,8 +126,8 @@ resource "azurerm_network_security_group" "apim_security_group" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefix      = var.apim_address_prefix
-    destination_address_prefix = var.gw_address_prefix
+    source_address_prefix      = var.apim_private_ip
+    destination_address_prefix = var.gw_private_ip
   }
 
   depends_on = [azurerm_subnet.apim_subnet]
