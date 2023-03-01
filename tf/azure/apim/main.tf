@@ -148,7 +148,7 @@ resource "azurerm_network_security_group" "apim_security_group" {
     source_port_range          = "*"
     destination_port_range     = "*"
     source_address_prefix      = var.gw_private_ip
-    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses}/32"
+    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
   }
 
   security_rule {
@@ -160,7 +160,7 @@ resource "azurerm_network_security_group" "apim_security_group" {
     source_port_range          = "*"
     destination_port_range     = "*"
     source_address_prefix      = var.gw_private_ip
-    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses}/32"
+    destination_address_prefix = "${azurerm_api_management.apim.private_ip_addresses[0]}/32"
   }
 }
 
