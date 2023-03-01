@@ -28,6 +28,11 @@ data "azurerm_key_vault_certificate" "ssl_certificate" {
   key_vault_id = data.azurerm_key_vault.keyvault.id
 }
 
+data "azurerm_api_management" "apim" {
+  name                = "${var.prefix}-api"
+  resource_group_name = data.azurerm_resource_group.rg.name
+}
+
 resource "azurerm_public_ip" "gw_ip" {
   name                = "${var.prefix}-gw-pip"
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -162,12 +167,15 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   ////////////////////////////////// APIM SETUPS ////////////////////////////////
+
+  /// <<<<>>>> APIM SETUPS <<<<>>>> ////////
   http_listener {
     name                           = "${var.prefix}-apim-http-listener"
     frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
-    frontend_port_name             = local.http_frontend_port_name
-    protocol                       = "Http"
+    frontend_port_name             = local.https_frontend_port_name
+    protocol                       = "Https"
     host_name                      = "${var.public_subdomain}.${var.apim_domain}"
+    ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
   }
 
   backend_http_settings {
@@ -212,6 +220,42 @@ resource "azurerm_application_gateway" "gw_network" {
     }
   }
 
+  /// <<<<>>>> APIM SETUPS <<<<>>>> ////////
+
+  /// <<<<>>>> APIM PORTAL SETUPS  <<<<>>>> ////////
+  http_listener {
+    name                           = "${var.prefix}-portal-http-listener"
+    frontend_ip_configuration_name = "${var.prefix}-gw-public-ip"
+    frontend_port_name             = local.https_frontend_port_name
+    protocol                       = "Https"
+    host_name                      = "${var.portal_subdomain}.${var.apim_domain}"
+    ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
+  }
+
+  backend_address_pool {
+    name  = "${var.prefix}-portal-pool"
+    fqdns = data.azurerm_api_management.apim.private_ip_addresses
+  }
+
+  backend_http_settings {
+    name                  = "${var.prefix}-backend-setting"
+    cookie_based_affinity = "Disabled"
+    port                  = 443
+    protocol              = "Https"
+    request_timeout       = 60
+    authentication_certificate {
+      name = data.azurerm_key_vault_certificate.ssl_certificate.name
+    }
+  }
+
+  request_routing_rule {
+    name                       = "${var.prefix}-apim-rule"
+    rule_type                  = "Basic"
+    http_listener_name         = "${var.prefix}-portal-http-listener"
+    backend_address_pool_name  = "${var.prefix}-portal-pool"
+    backend_http_settings_name = "${var.prefix}-backend-setting"
+    priority                   = 11
+  }
   ////////////////////////////////// APIM SETUPS ENDS /////////////////////////////////////////
 
 
