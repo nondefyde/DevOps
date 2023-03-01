@@ -110,8 +110,8 @@ locals {
   http_frontend_port_name_service = "port-8000"
   https_frontend_port_name        = "port-443"
 
-  gw_public_ip  = "gw-public-ip"
-  gw_private_ip = "gw-private-ip"
+  gw_public_ip  = "${var.prefix}-gw-public-ip"
+  gw_private_ip = "${var.prefix}-gw-private-ip"
 
   apim_http_setting      = "apim-http-listener"
   apim_backend_setting   = "apim-backend-setting"
