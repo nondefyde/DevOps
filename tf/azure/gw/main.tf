@@ -120,7 +120,7 @@ locals {
   apim_routing_rule      = "${var.prefix}-apim-rule"
 
   portal_http_setting    = "${var.prefix}-portal-http-setting"
-  portal_backend_setting = "${var.prefix}-portal-backend-setting";
+  portal_backend_setting = "${var.prefix}-portal-backend-setting"
   portal_backend_pool    = "${var.prefix}-portal-backend-pool"
   portal_routing_rule    = "${var.prefix}-portal-rule"
 
