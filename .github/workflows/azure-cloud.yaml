@@ -95,7 +95,6 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.rgEnvFile }}
-          project: ${{ env.project }}
           location: ${{ env.location }}
           prevent_resource_deletion:  ${{ env.prevent_resource_deletion }}
 
@@ -147,7 +146,6 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.vnEnvFile }}
-          project: ${{ env.project }}
           prefix: ${{ env.prefix }}
           group: ${{ needs.crg.outputs.rg_name }}
           base_domain: ${{ env.base_domain }}
@@ -165,6 +163,7 @@ jobs:
           prefix: ${{ env.prefix }}
           envFile: ${{ env.vnEnvFile }}
           key: ${{ env.project }}-vn
+          project: ${{ env.project }}
           working-directory: ${{ env.scriptPath}}/vnet
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
@@ -200,7 +199,6 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.vnEnvFile }}
-          project: ${{ env.project }}
           prefix: ${{ env.prefix }}
           group: ${{ needs.crg.outputs.rg_name }}
 
