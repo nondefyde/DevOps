@@ -55,7 +55,7 @@ runs:
     - name: Initialize environments
       shell: bash
       run: |
-        echo "location: ${{ steps.config.outputs.prefix }}"
+        echo "prefix: ${{ steps.config.outputs.prefix }}"
 #        INPUT_PREFIX="${{inputs.prefix}}"
 #         LC="${{inputs.location}}"
 #         SD="${{inputs.service_domain}}"
