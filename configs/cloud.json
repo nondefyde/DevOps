@@ -1,6 +1,6 @@
 {
   "prefix": "vcl",
-  "name": "vcloudappsdev",
+  "name": "stemulidev",
   "service": {
     "environment": "staging",
     "location": "centralus",
