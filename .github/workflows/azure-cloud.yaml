@@ -227,7 +227,6 @@ jobs:
         run: |
           echo "baston_dns=${{ env.baston_dns }}" >> $GITHUB_OUTPUT
           echo "baston_id=${{ env.baston_id }}" >> $GITHUB_OUTPUT
-
 #  vms:
 #    name: VM ${{ matrix.items }}
 #    needs: [ envs, crg, vn ]
