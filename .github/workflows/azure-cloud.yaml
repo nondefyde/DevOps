@@ -30,6 +30,7 @@ jobs:
       api_names: ${{ steps.variables.outputs.api_names }}
       app_names: ${{ steps.variables.outputs.app_names }}
       api_suffixes: ${{ steps.variables.outputs.api_suffixes }}
+      prevent_resource_deletion: ${{ steps.variables.outputs.prevent_resource_deletion }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -53,6 +54,7 @@ jobs:
           echo "location=${{ env.location }}" >> $GITHUB_OUTPUT
           echo "base_domain=${{ env.base_domain }}" >> $GITHUB_OUTPUT
           echo "api_subdomain=${{ env.api_subdomain }}" >> $GITHUB_OUTPUT
+          echo "prevent_resource_deletion=${{ env.prevent_resource_deletion }}" >> $GITHUB_OUTPUT
   sa:
     name: 'Storage Account'
     needs: [ envs ]
