@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "3.44.1"
     }
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "3.30.0"
+    }
   }
 }
 
@@ -15,4 +19,8 @@ provider "azurerm" {
   tenant_id       = var.tenant_id
   client_id       = var.client_id
   client_secret   = var.client_secret
+}
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
 }

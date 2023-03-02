@@ -507,6 +507,8 @@ jobs:
           vault_name: ${{steps.kvu-cloud-config.outputs.vaultName }}
           vault_rg: ${{steps.kvu-cloud-config.outputs.vaultRg }}
           cert_name: ${{steps.kvu-cloud-config.outputs.certName }}
+          cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2

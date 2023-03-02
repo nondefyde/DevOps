@@ -28,6 +28,16 @@ variable "client_secret" {
   description = "Client Secret"
 }
 
+variable "cloudflare_api_token" {
+  type = string
+  description = "Cloudflare api token"
+}
+
+variable "cloudflare_zone_id" {
+  type = string
+  description = "Cloudflare zone id"
+}
+
 variable "api_suffixes" {
   type    = string
   default = "quest:qst:8000:200"
@@ -55,11 +65,6 @@ variable "private_ip" {
 
 variable "apim_domain" {
   type = string
-}
-
-variable "cert_password" {
-  type = string
-  default = "password"
 }
 
 variable "vault_name" {
