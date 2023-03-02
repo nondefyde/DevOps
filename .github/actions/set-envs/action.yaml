@@ -94,8 +94,8 @@ runs:
       run: |
         data_vm=${{ toJson(steps.config.outputs.virtual-machine) }}
         data_api=${{ toJson(steps.config.outputs.api-management) }}
-        vmdata=$(echo $data | jq '.vms')
-        apidata=$(echo $data | jq '.apis')
+        vmdata=$(echo $data_vm | jq '.vms')
+        apidata=$(echo $data_api | jq '.apis')
         
         port=($(echo $vmdata | jq -r '.[] | .port'))
         priority=($(echo $vmdata | jq -r '.[] | .priority'))
