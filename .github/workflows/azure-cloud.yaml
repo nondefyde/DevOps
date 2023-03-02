@@ -20,17 +20,17 @@ jobs:
   envs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
-    outputs:
-      prefix: ${{ steps.variables.outputs.prefix }}
-      project: ${{ steps.variables.outputs.project }}
-      location: ${{ steps.variables.outputs.location }}
-      base_domain: ${{ steps.variables.outputs.base_domain }}
-      api_subdomain: ${{ steps.variables.outputs.api_subdomain }}
-      vm_names: ${{ steps.variables.outputs.vm_names }}
-      api_names: ${{ steps.variables.outputs.api_names }}
-      app_names: ${{ steps.variables.outputs.app_names }}
-      api_suffixes: ${{ steps.variables.outputs.api_suffixes }}
-      prevent_resource_deletion: ${{ steps.variables.outputs.prevent_resource_deletion }}
+    outputs: ${{ steps.variables.outputs }}
+#      prefix: ${{ steps.variables.outputs.prefix }}
+#      project: ${{ steps.variables.outputs.project }}
+#      location: ${{ steps.variables.outputs.location }}
+#      base_domain: ${{ steps.variables.outputs.base_domain }}
+#      api_subdomain: ${{ steps.variables.outputs.api_subdomain }}
+#      vm_names: ${{ steps.variables.outputs.vm_names }}
+#      api_names: ${{ steps.variables.outputs.api_names }}
+#      app_names: ${{ steps.variables.outputs.app_names }}
+#      api_suffixes: ${{ steps.variables.outputs.api_suffixes }}
+#      prevent_resource_deletion: ${{ steps.variables.outputs.prevent_resource_deletion }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -47,17 +47,7 @@ jobs:
           for VAR in $(compgen -e); do
             echo "${VAR,,}=${!VAR}" >> $GITHUB_ENV
           done
-#          echo "prefix=${{ env.prefix }}" >> $GITHUB_OUTPUT
-#          echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
-#          echo "name=${{ env.name }}" >> $GITHUB_OUTPUT
-#          echo "app_names=${{ env.app_names }}" >> $GITHUB_OUTPUT
-#          echo "api_names=${{ env.api_names }}" >> $GITHUB_OUTPUT
-#          echo "api_suffixes=${{ env.api_suffixes }}" >> $GITHUB_OUTPUT
-#          echo "vm_names=${{ env.vm_names }}" >> $GITHUB_OUTPUT
-#          echo "location=${{ env.location }}" >> $GITHUB_OUTPUT
-#          echo "base_domain=${{ env.base_domain }}" >> $GITHUB_OUTPUT
-#          echo "api_subdomain=${{ env.api_subdomain }}" >> $GITHUB_OUTPUT
-#          echo "prevent_resource_deletion=${{ env.prevent_resource_deletion }}" >> $GITHUB_OUTPUT
+
 #  sa:
 #    name: 'Storage Account'
 #    needs: [ envs ]
