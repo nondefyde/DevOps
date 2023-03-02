@@ -66,7 +66,7 @@ runs:
       id: set-apis
       shell: bash
       run: |
-        data=${{ fromJson(steps.config.outputs.api-management)['apis'] }}
+        data=${{ fromJson(steps.config.outputs.api-management) }}
 #        names=$(echo $data | jq -r 'keys[]')
 #        names_array=($names)
 #        string_array=""
