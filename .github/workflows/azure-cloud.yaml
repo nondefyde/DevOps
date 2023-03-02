@@ -49,134 +49,134 @@ jobs:
             echo "${VAR,,}=${!VAR}" >> $GITHUB_ENV
           done
 
-#  sa:
-#    name: 'Storage Account'
-#    needs: [ envs ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    env:
-#      project: ${{ needs.envs.outputs.project }}
-#      location: ${{ needs.envs.outputs.location }}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Instantiate SA
-#        uses: ./.github/actions/create-azure-sa
-#        id: sa
-#        with:
-#          project: ${{ env.project }}
-#          location: ${{ env.location }}
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#        continue-on-error: false
-#
-#  crg:
-#    name: 'Res & Cr'
-#    needs: [ envs, sa ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    outputs:
-#      rg_location: ${{ steps.set-output.outputs.rg_location }}
-#      rg_name: ${{ steps.set-output.outputs.rg_name }}
-#    env:
-#      project: ${{ needs.envs.outputs.project }}
-#      location: ${{ needs.envs.outputs.location }}
-#      service_domain: ${{ needs.envs.outputs.service_domain }}
-#      prevent_resource_deletion: ${{ needs.envs.outputs.prevent_resource_deletion }}
-#      rgEnvFile: "rg.tfvars"
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: convert to json
-#        id: rgjson
-#        uses: schdck/create-env-json@v1
-#        with:
-#          file-name: ${{ env.rgEnvFile }}
-#          project: ${{ env.project }}
-#          location: ${{ env.location }}
-#          prevent_resource_deletion:  ${{ env.prevent_resource_deletion }}
-#
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: ${{ env.rgEnvFile }}
-#          path: ${{ env.rgEnvFile }}
-#
-#      - name: Instantiate RG & CR
-#        uses: ./.github/actions/tf-azure-script
-#        id: rg
-#        with:
-#          project: ${{ env.project }}
-#          envFile: ${{ env.rgEnvFile }}
-#          key: ${{ env.project }}-rg
-#          working-directory: ${{ env.scriptPath}}/crg
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#        continue-on-error: false
-#
-#      - name: Set output
-#        id: set-output
-#        run: |
-#          echo "rg_location=${{ env.rg_location }}" >> $GITHUB_OUTPUT
-#          echo "rg_name=${{ env.rg_name }}" >> $GITHUB_OUTPUT
-#
-#  vn:
-#    name: 'VNet'
-#    needs: [ envs, crg ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    outputs:
-#      virtual_network_id: ${{ steps.set-output.outputs.virtual_network_id }}
-#      virtual_network_name: ${{ steps.set-output.outputs.virtual_network_name }}
-#    env:
-#      project: ${{ needs.envs.outputs.project }}
-#      location: ${{ needs.envs.outputs.location }}
-#      service_domain: ${{ needs.envs.outputs.service_domain }}
-#      vnEnvFile: "vn.tfvars"
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: convert to json
-#        id: vmjson
-#        uses: schdck/create-env-json@v1
-#        with:
-#          file-name: ${{ env.vnEnvFile }}
-#          prefix: ${{ env.project }}
-#          location: ${{ needs.crg.outputs.rg_location }}
-#          group: ${{ needs.crg.outputs.rg_name }}
-#          base_domain: ${{ env.base_domain }}
-#
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: ${{ env.vnEnvFile }}
-#          path: ${{ env.vnEnvFile }}
-#
-#      - name: Instantiate VNet
-#        uses: ./.github/actions/tf-azure-script
-#        id: vn
-#        with:
-#          project: ${{ env.project }}
-#          envFile: ${{ env.vnEnvFile }}
-#          key: ${{ env.project }}-vn
-#          working-directory: ${{ env.scriptPath}}/vnet
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#        continue-on-error: false
-#
-#      - name: Set output
-#        id: set-output
-#        run: |
-#          echo "virtual_network_id=${{ env.virtual_network_id }}" >> $GITHUB_OUTPUT
-#          echo "virtual_network_name=${{ env.virtual_network_name }}" >> $GITHUB_OUTPUT
+  sa:
+    name: 'Storage Account'
+    needs: [ envs ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      location: ${{ needs.envs.outputs.location }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Instantiate SA
+        uses: ./.github/actions/create-azure-sa
+        id: sa
+        with:
+          project: ${{ env.project }}
+          location: ${{ env.location }}
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+  crg:
+    name: 'Res & Cr'
+    needs: [ envs, sa ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      rg_location: ${{ steps.set-output.outputs.rg_location }}
+      rg_name: ${{ steps.set-output.outputs.rg_name }}
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      location: ${{ needs.envs.outputs.location }}
+      service_domain: ${{ needs.envs.outputs.service_domain }}
+      prevent_resource_deletion: ${{ needs.envs.outputs.prevent_resource_deletion }}
+      rgEnvFile: "rg.tfvars"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: convert to json
+        id: rgjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.rgEnvFile }}
+          project: ${{ env.project }}
+          location: ${{ env.location }}
+          prevent_resource_deletion:  ${{ env.prevent_resource_deletion }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.rgEnvFile }}
+          path: ${{ env.rgEnvFile }}
+
+      - name: Instantiate RG & CR
+        uses: ./.github/actions/tf-azure-script
+        id: rg
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.rgEnvFile }}
+          key: ${{ env.project }}-rg
+          working-directory: ${{ env.scriptPath}}/crg
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "rg_location=${{ env.rg_location }}" >> $GITHUB_OUTPUT
+          echo "rg_name=${{ env.rg_name }}" >> $GITHUB_OUTPUT
+
+  vn:
+    name: 'VNet'
+    needs: [ envs, crg ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      virtual_network_id: ${{ steps.set-output.outputs.virtual_network_id }}
+      virtual_network_name: ${{ steps.set-output.outputs.virtual_network_name }}
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      location: ${{ needs.envs.outputs.location }}
+      service_domain: ${{ needs.envs.outputs.service_domain }}
+      vnEnvFile: "vn.tfvars"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: convert to json
+        id: vmjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.vnEnvFile }}
+          prefix: ${{ env.project }}
+          location: ${{ needs.crg.outputs.rg_location }}
+          group: ${{ needs.crg.outputs.rg_name }}
+          base_domain: ${{ env.base_domain }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.vnEnvFile }}
+          path: ${{ env.vnEnvFile }}
+
+      - name: Instantiate VNet
+        uses: ./.github/actions/tf-azure-script
+        id: vn
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.vnEnvFile }}
+          key: ${{ env.project }}-vn
+          working-directory: ${{ env.scriptPath}}/vnet
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "virtual_network_id=${{ env.virtual_network_id }}" >> $GITHUB_OUTPUT
+          echo "virtual_network_name=${{ env.virtual_network_name }}" >> $GITHUB_OUTPUT
 
 #  bst:
 #    name: 'Baston Host'
