@@ -3,6 +3,7 @@
   "location": "centralus",
   "environment": "development",
   "service_domain": "stardevs.xyz",
+  "api_subdomain": "stemuli",
   "key-vault": {
     "vaultName": "stmdevopsvault",
     "vaultRg": "devops",
@@ -27,9 +28,6 @@
       }
     }
   },
-  "gateway": {
-    "private_ip": "10.0.3.10"
-  },
   "api-management": {
     "publisher_name": "Stemuli",
     "publisher_email": "nondefyde@gmail.com",
@@ -38,13 +36,13 @@
     "apis": {
       "quest": {
         "name": "Quest API",
-        "suffix": "qt",
+        "suffix": "quest",
         "endpoints": "/*",
         "port": 8000
       },
       "room": {
         "name": "Room API",
-        "suffix": "rm",
+        "suffix": "room",
         "endpoints": "/*",
         "port": 8000
       }

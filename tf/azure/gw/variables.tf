@@ -79,7 +79,7 @@ variable "public_subdomain" {
   default = "stmapi"
 }
 
-variable "gateway_subdomain" {
+variable "api_subdomain" {
   type = string
   default = "api"
 }

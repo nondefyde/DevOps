@@ -203,7 +203,7 @@ resource "azurerm_application_gateway" "gw_network" {
   backend_address_pool {
     name  = local.apim_backend_pool
     fqdns = [
-      "${var.gateway_subdomain}.${var.apim_domain}"
+      "${var.api_subdomain}.${var.apim_domain}"
     ]
   }
 
@@ -328,4 +328,32 @@ resource "azurerm_private_dns_a_record" "api_dns_record" {
   records             = [var.private_ip]
 
   depends_on = [azurerm_application_gateway.gw_network]
+}
+
+
+resource "cloudflare_record" "cf_vm_subdomain_cname_record" {
+  zone_id         = var.cloudflare_zone_id
+  name            = "${var.api_subdomain}.${var.apim_domain}"
+  value           = azurerm_public_ip.gw_ip.ip_address
+  type            = "A"
+  proxied         = true
+  allow_overwrite = true
+}
+
+resource "cloudflare_record" "cf_vm_subdomain_cname_record" {
+  zone_id         = var.cloudflare_zone_id
+  name            = "${var.portal_subdomain}.${var.apim_domain}"
+  value           = azurerm_public_ip.gw_ip.ip_address
+  type            = "A"
+  proxied         = true
+  allow_overwrite = true
+}
+
+resource "cloudflare_record" "cf_vm_subdomain_cname_record" {
+  zone_id         = var.cloudflare_zone_id
+  name            = var.apim_domain
+  value           = azurerm_public_ip.gw_ip.ip_address
+  type            = "A"
+  proxied         = true
+  allow_overwrite = true
 }

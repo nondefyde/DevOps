@@ -23,6 +23,7 @@ jobs:
       project: ${{ steps.variables.outputs.project }}
       location: ${{ steps.variables.outputs.location }}
       service_domain: ${{ steps.variables.outputs.service_domain }}
+      api_subdomain: ${{ steps.variables.outputs.api_subdomain }}
       vm_names: ${{ steps.variables.outputs.vm_names }}
       api_names: ${{ steps.variables.outputs.api_names }}
       app_names: ${{ steps.variables.outputs.app_names }}
@@ -44,6 +45,7 @@ jobs:
           echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
           echo "location=${{ env.location }}" >> $GITHUB_OUTPUT
           echo "service_domain=${{ env.service_domain }}" >> $GITHUB_OUTPUT
+          echo "api_subdomain=${{ env.api_subdomain }}" >> $GITHUB_OUTPUT
           echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
           echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
           echo "app_names=${{ env.app_names }}" >> $GITHUB_OUTPUT
@@ -184,6 +186,7 @@ jobs:
         run: |
           echo "virtual_network_id=${{ env.virtual_network_id }}" >> $GITHUB_OUTPUT
           echo "virtual_network_name=${{ env.virtual_network_name }}" >> $GITHUB_OUTPUT
+
   bst:
     name: 'Baston Host'
     needs: [ envs, crg, vn ]
@@ -305,6 +308,7 @@ jobs:
         id: set-output
         run: |
           echo "vm_names=${{ env.vm_names }}" >> $GITHUB_OUTPUT
+
   apim:
     name: Api Management Service
     needs: [ envs, crg, vn ]
@@ -314,6 +318,7 @@ jobs:
       project: ${{ needs.envs.outputs.project }}
       location: ${{ needs.envs.outputs.location }}
       service_domain: ${{ needs.envs.outputs.service_domain }}
+      api_subdomain: ${{ needs.envs.outputs.api_subdomain }}
       apimEnvFile: "apim.tfvars"
     outputs:
       apim_id: ${{ steps.set-output.outputs.apim_id }}
@@ -350,12 +355,12 @@ jobs:
           capacity: ${{steps.apim-cloud-config.outputs.capacity }}
           sku: ${{steps.apim-cloud-config.outputs.sku }}
           apim_domain: ${{ env.service_domain }}
+          api_subdomain: ${{ env.api_subdomain }}
           publisher_name: ${{steps.apim-cloud-config.outputs.publisher_name }}
           publisher_email: ${{steps.apim-cloud-config.outputs.publisher_email}}
           vault_name: ${{steps.kvu-cloud-config.outputs.vaultName }}
           vault_rg: ${{steps.kvu-cloud-config.outputs.vaultRg }}
           cert_name: ${{steps.kvu-cloud-config.outputs.certName }}
-          cert_password: ${{ secrets.VM_PASSWORD }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
@@ -385,6 +390,7 @@ jobs:
           echo "management_api_url=${{ env.management_api_url }}" >> $GITHUB_OUTPUT
           echo "portal_url=${{ env.portal_url }}" >> $GITHUB_OUTPUT
           echo "developer_portal_url=${{ env.developer_portal_url }}" >> $GITHUB_OUTPUT
+
   apimp:
     name: Api Services ${{ matrix.items }}
     needs: [ envs, crg, apim ]
@@ -394,6 +400,7 @@ jobs:
       project: ${{ needs.envs.outputs.project }}
       location: ${{ needs.envs.outputs.location }}
       service_domain: ${{ needs.envs.outputs.service_domain }}
+      api_subdomain: ${{ needs.envs.outputs.api_subdomain }}
       api_names: ${{ needs.envs.outputs.api_names }}
       apimpEnvFile: "apimp-${{ matrix.items }}.tfvars"
     outputs:
@@ -432,6 +439,7 @@ jobs:
           port: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['port'] }}
           endpoints: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['endpoints'] }}
           apim_domain: ${{ env.service_domain }}
+          api_subdomain: ${{ env.api_subdomain }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
@@ -470,6 +478,7 @@ jobs:
       project: ${{ needs.envs.outputs.project }}
       location: ${{ needs.envs.outputs.location }}
       service_domain: ${{ needs.envs.outputs.service_domain }}
+      api_subdomain: ${{ needs.envs.outputs.api_subdomain }}
       app_names: ${{ needs.envs.outputs.app_names }}
       api_suffixes: ${{ needs.envs.outputs.api_suffixes }}
       vm: ${{ needs.envs.outputs.vm_names }}
@@ -494,10 +503,10 @@ jobs:
           group: ${{ needs.crg.outputs.rg_name }}
           api_suffixes: ${{ env.api_suffixes }}
           apim_domain: ${{ env.service_domain }}
+          api_subdomain: ${{ env.api_subdomain }}
           vault_name: ${{steps.kvu-cloud-config.outputs.vaultName }}
           vault_rg: ${{steps.kvu-cloud-config.outputs.vaultRg }}
           cert_name: ${{steps.kvu-cloud-config.outputs.certName }}
-          cert_password: ${{ secrets.VM_PASSWORD }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2

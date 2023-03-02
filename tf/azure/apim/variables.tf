@@ -50,16 +50,11 @@ variable "capacity" {
   default = 1
 }
 
-variable "address_prefix" {
-  type = string
-  default = "10.0.5.0/24"
-}
-
 variable "apim_domain" {
   type = string
 }
 
-variable "gateway_subdomain" {
+variable "api_subdomain" {
   type = string
   default = "api"
 }
@@ -67,11 +62,6 @@ variable "gateway_subdomain" {
 variable "portal_subdomain" {
   type = string
   default = "portal"
-}
-
-variable "cert_password" {
-  type = string
-  default = "password"
 }
 
 variable "vault_name" {
@@ -84,9 +74,4 @@ variable "vault_rg" {
 
 variable "cert_name" {
   type = string
-}
-
-variable "gw_private_ip" {
-  type    = string
-  default = "10.0.3.10"
 }
