@@ -147,6 +147,7 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.vnEnvFile }}
+          project: ${{ env.project }}
           prefix: ${{ env.prefix }}
           group: ${{ needs.crg.outputs.rg_name }}
           base_domain: ${{ env.base_domain }}
@@ -199,6 +200,7 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.vnEnvFile }}
+          project: ${{ env.project }}
           prefix: ${{ env.prefix }}
           group: ${{ needs.crg.outputs.rg_name }}
 
