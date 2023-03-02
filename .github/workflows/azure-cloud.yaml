@@ -44,7 +44,7 @@ jobs:
         run: |
           echo "prefix=${{ env.prefix }}" >> $GITHUB_OUTPUT
           echo "name=${{ env.name }}" >> $GITHUB_OUTPUT
-#          echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
+          echo "api_names=${{ env.api_names }}" >> $GITHUB_OUTPUT
 #          echo "location=${{ env.location }}" >> $GITHUB_OUTPUT
 #          echo "service_domain=${{ env.service_domain }}" >> $GITHUB_OUTPUT
 #          echo "api_subdomain=${{ env.api_subdomain }}" >> $GITHUB_OUTPUT
