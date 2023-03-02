@@ -56,6 +56,8 @@ runs:
     - name: Initialize environments
       shell: bash
       run: |
+          echo "prefix config ${{ steps.config.outputs.prefix }}"
+          echo "prefix input ${{ inputs.prefix }}"
 #        CONFIG_PROJECT="${{ steps.config.outputs.prefix }}"
 #        CONFIG_LOCATION="${{ steps.config.outputs.location }}"
 #        CONFIG_BASE_DOMAIN="${{ steps.config.outputs.base_domain }}"
@@ -72,7 +74,7 @@ runs:
 #        ENV_HOST_FMT="${{ env.hostname_format }}"
 #        DOCFILE="${{ inputs.dockerfile }}"
 #
-         PREFIX="${{ inputs.prefix:-${{ steps.config.outputs.prefix }}}"
+#         PREFIX="${{ inputs.prefix:-${{ steps.config.outputs.prefix }}}"
 #        PREFIX="${${{inputs.prefix}}:-${{ steps.config.outputs.prefix }}}"
 #        PROJECT="${EP:-$CONFIG_PROJECT}"
 #        LOCATION="${LC:-$CONFIG_LOCATION}"
@@ -84,7 +86,7 @@ runs:
 #        HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
 #        DOCKER_FILE="${DOCFILE:-${{ env.dockerfile }}}"
 #
-        echo "prefix=${PREFIX}" >> "$GITHUB_ENV"
+#        echo "prefix=${PREFIX}" >> "$GITHUB_ENV"
 #        echo "location=${LOCATION}" >> "$GITHUB_ENV"
 #        echo "service_domain=${SERVICE_DOMAIN}" >> "$GITHUB_ENV"
 #        echo "api_subdomain=${API_SUB_DOMAIN}" >> "$GITHUB_ENV"
