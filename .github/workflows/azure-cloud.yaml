@@ -52,28 +52,28 @@ jobs:
           echo "location=${{ env.location }}" >> $GITHUB_OUTPUT
           echo "base_domain=${{ env.base_domain }}" >> $GITHUB_OUTPUT
           echo "api_subdomain=${{ env.api_subdomain }}" >> $GITHUB_OUTPUT
-#  sa:
-#    name: 'Storage Account'
-#    needs: [ envs ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    env:
-#      project: ${{ needs.envs.outputs.project }}
-#      location: ${{ needs.envs.outputs.location }}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Instantiate SA
-#        uses: ./.github/actions/create-azure-sa
-#        id: sa
-#        with:
-#          project: ${{ env.project }}
-#          location: ${{ env.location }}
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#        continue-on-error: false
+  sa:
+    name: 'Storage Account'
+    needs: [ envs ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      location: ${{ needs.envs.outputs.location }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Instantiate SA
+        uses: ./.github/actions/create-azure-sa
+        id: sa
+        with:
+          project: ${{ env.project }}
+          location: ${{ env.location }}
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
 
 #  crg:
 #    name: 'Res & Cr'
