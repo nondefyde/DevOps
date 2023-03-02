@@ -1,16 +1,17 @@
 {
-  "prefix": "vcloudappsdev",
-  "location": "centralus",
-  "environment": "development",
-  "service_domain": "stardevs.xyz",
-  "api_subdomain": "stemuli",
-  "key-vault": {
+  "prefix": "vcl",
+  "name": "vcloudappsdev",
+  "service": {
+    "environment": "staging",
+    "location": "centralus",
+    "base-domain": "stardevs.xyz",
+    "api-subdomain": "stemuli",
+    "prevent_resource_deletion": true
+  },
+  "keyVault": {
     "vaultName": "stmdevopsvault",
     "vaultRg": "devops",
     "certName": "stardevs"
-  },
-  "resource-group": {
-    "prevent_resource_deletion": false
   },
   "virtual-machine": {
     "vms" : {
