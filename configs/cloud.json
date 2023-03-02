@@ -8,7 +8,7 @@
     "api_subdomain": "stemuli",
     "prevent_resource_deletion": true
   },
-  "keyVault": {
+  "key-vault": {
     "vaultName": "stmdevopsvault",
     "vaultRg": "devops",
     "certName": "stardevs"
