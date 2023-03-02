@@ -6,6 +6,8 @@ inputs:
   prefix:
     type: string
     required: true
+  config-file:
+    required: true
   service:
     type: string
   hostname-format:
@@ -16,9 +18,6 @@ inputs:
   dockerfile:
     type: string
     default: "./Dockerfile"
-  config-file:
-    required: true
-    default: "configs/cloud.json"
   environment:
     type: string
     default: "staging"
@@ -56,7 +55,6 @@ runs:
     - name: Initialize environments
       shell: bash
       run: |
-
 #        INPUT_PREFIX="${{inputs.prefix}}"
 #         LC="${{inputs.location}}"
 #         SD="${{inputs.service_domain}}"
