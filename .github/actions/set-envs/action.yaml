@@ -3,33 +3,27 @@ author: Emmanuel Okafor
 decription: A generic action to get app global based envs
 
 inputs:
-  prefix:
-    type: string
-    required: true
-  name:
-    type: string
-    required: true
   config-file:
     required: true
   service:
     type: string
-  hostname-format:
-    type: string
-  base-domain:
-    type: string
-    default: "stardevs.xyz"
-  dockerfile:
-    type: string
-    default: "./Dockerfile"
-  environment:
-    type: string
-    default: "staging"
-  api-subdomain:
-    type: string
-    default: "servicies"
-  port:
-    type: number
-    default: 8000
+#  hostname-format:
+#    type: string
+#  base-domain:
+#    type: string
+#    default: "stardevs.xyz"
+#  dockerfile:
+#    type: string
+#    default: "./Dockerfile"
+#  environment:
+#    type: string
+#    default: "staging"
+#  api-subdomain:
+#    type: string
+#    default: "servicies"
+#  port:
+#    type: number
+#    default: 8000
 
 runs:
   using: 'composite'
@@ -57,16 +51,9 @@ runs:
 
     - name: Initialize environments
       shell: bash
-      run: |
-        INPUT_PREFIX="${{ inputs.prefix }}"
-        INPUT_NAME="${{ inputs.name }}"
-        
-        SERVICE_JSON=${{ fromJson(steps.config.outputs.service) }}
-        
+      run: |        
+        SERVICE_JSON=${{ fromJson(steps.config.outputs.service) }}    
         echo "SERVICE_JSON $SERVICE_JSON"
-        
-        PREFIX="${INPUT_PREFIX:-${{ steps.config.outputs.prefix }}}"
-        NAME="${INPUT_NAME:-${{ steps.config.outputs.name }}}"
 #         LC="${{inputs.location}}"
 #         SD="${{inputs.service_domain}}"
 #         AD="${{inputs.api_subdomain}}"
@@ -95,7 +82,7 @@ runs:
 #        HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
 #        DOCKER_FILE="${DOCFILE:-${{ env.dockerfile }}}"
 #
-#        echo "prefix=${PREFIX}" >> "$GITHUB_ENV"
+        echo "prefix=${{ steps.config.outputs.prefix }}}" >> "$GITHUB_ENV"
 #        echo "location=${LOCATION}" >> "$GITHUB_ENV"
 #        echo "service_domain=${SERVICE_DOMAIN}" >> "$GITHUB_ENV"
 #        echo "api_subdomain=${API_SUB_DOMAIN}" >> "$GITHUB_ENV"
