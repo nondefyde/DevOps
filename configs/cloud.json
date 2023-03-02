@@ -4,8 +4,8 @@
   "service": {
     "environment": "staging",
     "location": "centralus",
-    "base-domain": "stardevs.xyz",
-    "api-subdomain": "stemuli",
+    "base_domain": "stardevs.xyz",
+    "api_subdomain": "stemuli",
     "prevent_resource_deletion": true
   },
   "keyVault": {
