@@ -59,9 +59,8 @@ runs:
 #         LC="${{inputs.location}}"
 #         SD="${{inputs.service_domain}}"
 #         AD="${{inputs.api_subdomain}}"
-#
-#
-        CONFIG_PREFIX="${{ steps.config.outputs.prefix }}"
+
+         CONFIG_PREFIX="hello"
          echo "PREFIX ${CONFIG_PREFIX}"
 #        CONFIG_LOCATION="${{ steps.config.outputs.location }}"
 #        CONFIG_BASE_DOMAIN="${{ steps.config.outputs.base_domain }}"
