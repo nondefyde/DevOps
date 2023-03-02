@@ -1,9 +1,9 @@
 name: AZR VM TEST CI
 
 on:
-#  push:
-#    branches:
-#      - 'main'
+  push:
+    branches:
+      - 'main'
   workflow_run:
     workflows: [ "AZR DEPLOY VMS" ]
     types:
@@ -234,11 +234,26 @@ jobs:
           rm -r "${{ inputs.repository }}"
           ls -a
 
-      - name: APP config
-        id: config
+      - name: Get api config
+        id: apimp-cloud-config
         uses: ActionsTools/read-json-action@main
         with:
-          file_path: ${{ inputs.configFile }}
+          file_path: ${{ env.configFile }}
+          prop_path: "api-management"
+
+      - name: Get vm config
+        id: vm-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "virtual-machine"
+
+      - name: Get vault config
+        id: vault-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "key-vault"
 
       - name: Login Azure
         id: login
@@ -248,13 +263,13 @@ jobs:
         id: deploy-vm
         working-directory: "tf/azure/vm/_scripts"
         run: |
-          API_SUFFIX=${{ fromJson(steps.config.outputs.api-management.apis)[matrix.items]['suffix'] }}
-          VM_COUNT=${{ fromJson(steps.config.outputs.virtual-machine.vms)[matrix.items]['vmCount'] }}
-          VM_NAME=${{ fromJson(steps.config.outputs.virtual-machine.vms)[matrix.items]['name'] }}
-          CERT_FILE=${{ fromJson(steps.config.outputs.virtual-machine.vms)[matrix.items]['certFile'] }}
-          INSTANCE_COUNT=${{ fromJson(steps.config.outputs.virtual-machine.vms)[matrix.items]['instanceCount'] }}
-          CERT_VAULT=${{ steps.config.outputs.key-vault.vaultName }}
-          CERT_NAME=${{ steps.config.outputs.key-vault.certName }}
+          API_SUFFIX=${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['suffix'] }}
+          VM_COUNT=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
+          VM_NAME=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
+          CERT_FILE=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['certFile'] }}
+          INSTANCE_COUNT=${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['instanceCount'] }}
+          CERT_VAULT=${{ steps.vault-cloud-config.outputs.vaultName }}
+          CERT_NAME=${{ steps.vault-cloud-config.outputs.certName }}
           echo "Run Deployment"
           chmod +x execute.sh
           ./execute.sh ${{secrets.AZR_CLIENT_ID}} ${{secrets.AZR_CLIENT_SECRET}} ${{secrets.AZR_TENANT_ID}} \
