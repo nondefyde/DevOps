@@ -6,6 +6,9 @@ inputs:
   prefix:
     type: string
     required: true
+  name:
+    type: string
+    required: true
   config-file:
     required: true
   service:
@@ -55,13 +58,15 @@ runs:
     - name: Initialize environments
       shell: bash
       run: |
-        CONFIG_PREFIX="${{ steps.config.outputs.prefix }}"
         INPUT_PREFIX="${{ inputs.prefix }}"
+        INPUT_NAME="${{ inputs.name }}"
         
-        PREFIX="${inputs.prefix:-${{ steps.config.outputs.prefix }}}"
-        echo "inputs PREFIX: $PREFIX"
+        SERVICE_JSON=${{ fromJson(steps.config.outputs.service) }}
         
-
+        echo "SERVICE_JSON $SERVICE_JSON"
+        
+        PREFIX="${INPUT_PREFIX:-${{ steps.config.outputs.prefix }}}"
+        NAME="${INPUT_NAME:-${{ steps.config.outputs.name }}}"
 #         LC="${{inputs.location}}"
 #         SD="${{inputs.service_domain}}"
 #         AD="${{inputs.api_subdomain}}"

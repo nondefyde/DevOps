@@ -12,8 +12,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  configFile: "configs/cloud.json"
+env: ${{fromJson(file('configs/cloud.json'))}}
 
 jobs:
   envs:
@@ -37,7 +36,7 @@ jobs:
         id: get-envs
         uses: ./.github/actions/set-envs
         with:
-          config-file: ${{ env.configFile }}
+          config-file: "configs/cloud.json"
 
 #      - name: Set Outputs
 #        id: variables
