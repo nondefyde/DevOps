@@ -197,7 +197,7 @@ resource "azurerm_application_gateway" "gw_network" {
     port                                = 443
     protocol                            = "Https"
     request_timeout                     = 60
-    pick_host_name_from_backend_address = true,
+    pick_host_name_from_backend_address = true
   }
 
   backend_address_pool {
@@ -251,7 +251,7 @@ resource "azurerm_application_gateway" "gw_network" {
     frontend_port_name                  = local.http_frontend_port_name
     protocol                            = "Http"
     host_name                           = "${var.portal_subdomain}.${var.apim_domain}"
-    pick_host_name_from_backend_address = true,
+    pick_host_name_from_backend_address = true
   }
 
   backend_address_pool {
