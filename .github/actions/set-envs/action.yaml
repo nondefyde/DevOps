@@ -71,7 +71,7 @@ runs:
 #        HOST_FMT="${{inputs.hostname-format}}"
 #        ENV_HOST_FMT="${{ env.hostname_format }}"
 #        DOCFILE="${{ inputs.dockerfile }}"
-
+#
         PREFIX="${{ inputs.prefix or steps.config.outputs.prefix }}"
 #        PREFIX="${${{inputs.prefix}}:-${{ steps.config.outputs.prefix }}}"
 #        PROJECT="${EP:-$CONFIG_PROJECT}"
@@ -83,7 +83,7 @@ runs:
 #
 #        HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
 #        DOCKER_FILE="${DOCFILE:-${{ env.dockerfile }}}"
-
+#
         echo "prefix=${PREFIX}" >> "$GITHUB_ENV"
 #        echo "location=${LOCATION}" >> "$GITHUB_ENV"
 #        echo "service_domain=${SERVICE_DOMAIN}" >> "$GITHUB_ENV"
@@ -92,7 +92,7 @@ runs:
 #        echo "port=${PORT}" >> "$GITHUB_ENV"
 #        echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
 #        echo "dockerfile=${DOCKER_FILE}" >> "$GITHUB_ENV"
-
+#
 #    - name: VM config
 #      id: vm-config
 #      uses: ActionsTools/read-json-action@main
