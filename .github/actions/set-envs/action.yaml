@@ -67,7 +67,6 @@ runs:
       shell: bash
       run: |
         data=${{ steps.config.outputs.api-management }}
-        data=${{ steps.config.outputs.api-management['apis'] }}
         data=${{ fromJson(teps.config.outputs.api-management).apis }}
 #        names=$(echo $data | jq -r 'keys[]')
 #        names_array=($names)
