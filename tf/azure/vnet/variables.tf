@@ -42,6 +42,6 @@ variable "apim_address_prefix" {
   default = "10.0.4.0/24"
 }
 
-variable "apim_domain" {
+variable "base_domain" {
   type = string
 }

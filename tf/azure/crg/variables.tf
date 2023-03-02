@@ -1,4 +1,4 @@
-variable "prefix" {
+variable "project" {
   type        = string
   description = "The prefix for the resource group"
 }
@@ -29,5 +29,5 @@ variable "client_secret" {
 
 variable "prevent_resource_deletion" {
   type = bool
-  default = true
+  default = false
 }

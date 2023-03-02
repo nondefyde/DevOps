@@ -6,7 +6,7 @@
     "location": "centralus",
     "base_domain": "stardevs.xyz",
     "api_subdomain": "stemuli",
-    "prevent_resource_deletion": true
+    "prevent_resource_deletion": false
   },
   "key-vault": {
     "vaultName": "stmdevopsvault",

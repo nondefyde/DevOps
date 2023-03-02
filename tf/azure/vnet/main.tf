@@ -164,7 +164,7 @@ resource "azurerm_subnet_network_security_group_association" "nsg-assoc_apim" {
 }
 
 resource "azurerm_private_dns_zone" "dns_zone" {
-  name                = var.apim_domain
+  name                = var.base_domain
   resource_group_name = data.azurerm_resource_group.rg.name
   depends_on = [azurerm_virtual_network.app_virtual_network]
 }
