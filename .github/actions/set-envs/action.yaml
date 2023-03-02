@@ -5,8 +5,7 @@ decription: A generic action to get app global based envs
 inputs:
   config-file:
     required: true
-  service:
-    type: string
+    default: "configs/cloud.json"
 
 runs:
   using: 'composite'
@@ -35,6 +34,7 @@ runs:
     - name: Initialize environments
       shell: bash
       run: |
+        echo "project=${{ steps.config.outputs.prefix }}${{ steps.config.outputs.name }}" >> "$GITHUB_ENV"
         echo "prefix=${{ steps.config.outputs.prefix }}" >> "$GITHUB_ENV"
         echo "name=${{ steps.config.outputs.name }}" >> "$GITHUB_ENV"
         
@@ -44,25 +44,12 @@ runs:
           echo "$property=$value" >> "$GITHUB_ENV"
         done
 
-#        ES="${{inputs.service}}"
-#        PROJECT="${EP:-$CONFIG_PROJECT}"
-#        echo "prefix=${{ steps.config.outputs.prefix }}}" >> "$GITHUB_ENV"
-#
-#    - name: VM config
-#      id: vm-config
-#      uses: ActionsTools/read-json-action@main
-#      with:
-#        file_path: ${{ inputs.configFile }}
-#        prop_path: "virtual-machine"
-#
-#    - name: API config
-#      id: api-config
-#      uses: ActionsTools/read-json-action@main
-#      with:
-#        file_path: ${{ inputs.configFile }}
-#        prop_path: "api-management"
-#
-    - name: Output api names
+    #        ES="${{inputs.service}}"
+    #        PROJECT="${EP:-$CONFIG_PROJECT}"
+    #        echo "prefix=${{ steps.config.outputs.prefix }}}" >> "$GITHUB_ENV"
+    #
+
+    - name: Output api and app names
       id: set-apis
       shell: bash
       run: |
@@ -76,46 +63,43 @@ runs:
         done
         string_array=${string_array%?}
         echo "api_names=$string_array" >> "$GITHUB_ENV"
-#
-#    - name: Output vm names
-#      id: set-vm
-#      shell: bash
-#      run: |
-#        data=${{ toJson(steps.vm-config.outputs.vms) }}
-#        names=$(echo $data | jq -r 'keys[]')
-#        names_array=($names)
-#        string_array=""
-#        for name in "${names_array[@]}"; do
-#          string_array+="'$name',"
-#        done
-#        string_array=${string_array%?}
-#        echo "vm_names=$string_array" >> "$GITHUB_ENV"
-#
-#    - name: Output app names
-#      id: set-name
-#      shell: bash
-#      run: |
-#        data=${{ toJson(steps.api-config.outputs.apis) }}
-#        names=$(echo $data | jq -r 'keys[]')
-#        names_array=($names)
-#        string_array=$( IFS=','; echo "${names_array[*]}" )
-#        echo "app_names=$string_array" >> "$GITHUB_ENV"
-#
-#    - name: Output api suffixes
-#      id: set-api-suffixes
-#      shell: bash
-#      run: |
-#        data=${{ toJson(steps.api-config.outputs.apis) }}
-#        vmdata=${{ toJson(steps.vm-config.outputs.vms) }}
-#        port=($(echo $vmdata | jq -r '.[] | .port'))
-#        priority=($(echo $vmdata | jq -r '.[] | .priority'))
-#        suffixes=($(echo $data | jq -r '.[] | .suffix'))
-#        names=($(echo $data | jq -r 'keys[]'))
-#        output=""
-#        for i in ${!suffixes[@]}; do
-#          if [[ -n "$output" ]]; then
-#            output="$output,"
-#          fi
-#          output="$output${names[$i]}:${suffixes[$i]}:${port[$i]}:${priority[$i]}"
-#        done
-#        echo "api_suffixes=$output" >> "$GITHUB_ENV"
+        
+        string_array=$( IFS=','; echo "${names_array[*]}" )
+        echo "app_names=$string_array" >> "$GITHUB_ENV"
+
+    - name: Output vm names
+      id: set-vm
+      shell: bash
+      run: |
+        data=${{ toJson(steps.config.outputs.virtual-machine) }}
+        vms=$(echo $data | jq '.vms')
+        names=$(echo $data | jq -r 'keys[]')
+        names_array=($names)
+        string_array=""
+        for name in "${names_array[@]}"; do
+          string_array+="'$name',"
+        done
+        string_array=${string_array%?}
+        echo "vm_names=$string_array" >> "$GITHUB_ENV"
+
+    - name: Output api suffixes
+      id: set-api-suffixes
+      shell: bash
+      run: |
+        data_vm=${{ toJson(steps.config.outputs.virtual-machine) }}
+        data_api=${{ toJson(steps.config.outputs.api-management) }}
+        vmdata=$(echo $data | jq '.vms')
+        apidata=$(echo $data | jq '.apis')
+        
+        port=($(echo $vmdata | jq -r '.[] | .port'))
+        priority=($(echo $vmdata | jq -r '.[] | .priority'))
+        suffixes=($(echo $apidata | jq -r '.[] | .suffix'))
+        names=($(echo $apidata | jq -r 'keys[]'))
+        output=""
+        for i in ${!suffixes[@]}; do
+          if [[ -n "$output" ]]; then
+            output="$output,"
+          fi
+          output="$output${names[$i]}:${suffixes[$i]}:${port[$i]}:${priority[$i]}"
+        done
+        echo "api_suffixes=$output" >> "$GITHUB_ENV"
