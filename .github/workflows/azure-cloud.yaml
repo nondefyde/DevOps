@@ -44,8 +44,8 @@ jobs:
         id: variables
         shell: bash
         run: |
-          for var in $(compgen -e); do
-            echo "$var"
+          for VAR in $(compgen -e); do
+            echo "${VAR,,}=${!VAR}" >> $GITHUB_ENV
           done
 #          echo "prefix=${{ env.prefix }}" >> $GITHUB_OUTPUT
 #          echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
