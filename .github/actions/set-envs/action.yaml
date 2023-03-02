@@ -74,7 +74,7 @@ runs:
 #        ENV_HOST_FMT="${{ env.hostname_format }}"
 #        DOCFILE="${{ inputs.dockerfile }}"
 #
-         PREFIX=${{ inputs.prefix }}:-${{ steps.config.outputs.prefix }}
+         PREFIX="${{ inputs.prefix:-${{ steps.config.outputs.prefix }}}}"
 #        PREFIX="${${{inputs.prefix}}:-${{ steps.config.outputs.prefix }}}"
 #        PROJECT="${EP:-$CONFIG_PROJECT}"
 #        LOCATION="${LC:-$CONFIG_LOCATION}"
