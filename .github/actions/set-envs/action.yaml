@@ -7,23 +7,6 @@ inputs:
     required: true
   service:
     type: string
-#  hostname-format:
-#    type: string
-#  base-domain:
-#    type: string
-#    default: "stardevs.xyz"
-#  dockerfile:
-#    type: string
-#    default: "./Dockerfile"
-#  environment:
-#    type: string
-#    default: "staging"
-#  api-subdomain:
-#    type: string
-#    default: "servicies"
-#  port:
-#    type: number
-#    default: 8000
 
 runs:
   using: 'composite'
@@ -51,51 +34,19 @@ runs:
 
     - name: Initialize environments
       shell: bash
-      env:
-        prefix: ${{ steps.config.outputs.prefix }}
-        name: ${{ steps.config.outputs.name }}
-      run: |        
+      run: |
+        echo "prefix=${{ steps.config.outputs.prefix }}}" >> "$GITHUB_ENV"
+        echo "name=${{ steps.config.outputs.name }}}" >> "$GITHUB_ENV"
+        
         json_string=${{ toJson(steps.config.outputs.service) }}
         for property in $(echo $json_string | jq -r 'keys[]'); do
           value=$(echo $json_string | jq -r ".$property")
           echo "$property=$value" >> "$GITHUB_ENV"
         done
-#         LC="${{inputs.location}}"
-#         SD="${{inputs.service_domain}}"
-#         AD="${{inputs.api_subdomain}}"
-#
-#         CONFIG_PREFIX="hello"
-#         echo "PREFIX ${CONFIG_PREFIX}"
-#        CONFIG_LOCATION="${{ steps.config.outputs.location }}"
-#        CONFIG_BASE_DOMAIN="${{ steps.config.outputs.base_domain }}"
-#        CONFIG_API_SUB_DOMAIN="${{ steps.config.outputs.api_subdomain }}"
-#
-#
+
 #        ES="${{inputs.service}}"
-#        PRT="${{inputs.port}}"
-#        HOST_FMT="${{inputs.hostname-format}}"
-#        ENV_HOST_FMT="${{ env.hostname_format }}"
-#        DOCFILE="${{ inputs.dockerfile }}"
-#
-#        PREFIX="${${{inputs.prefix}}:-${{ steps.config.outputs.prefix }}}"
 #        PROJECT="${EP:-$CONFIG_PROJECT}"
-#        LOCATION="${LC:-$CONFIG_LOCATION}"
-#        SERVICE_DOMAIN="${SD:-$CONFIG_SERVICE_DOMAIN}"
-#        API_SUB_DOMAIN="${AD:-$CONFIG_API_SUB_DOMAIN}"
-#        SERVICE="${ES:-${{env.service}}}"
-#        PORT="${PRT:-${{env.port}}}"
-#
-#        HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
-#        DOCKER_FILE="${DOCFILE:-${{ env.dockerfile }}}"
-#
 #        echo "prefix=${{ steps.config.outputs.prefix }}}" >> "$GITHUB_ENV"
-#        echo "location=${LOCATION}" >> "$GITHUB_ENV"
-#        echo "service_domain=${SERVICE_DOMAIN}" >> "$GITHUB_ENV"
-#        echo "api_subdomain=${API_SUB_DOMAIN}" >> "$GITHUB_ENV"
-#        echo "service=${SERVICE}" >> "$GITHUB_ENV"
-#        echo "port=${PORT}" >> "$GITHUB_ENV"
-#        echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
-#        echo "dockerfile=${DOCKER_FILE}" >> "$GITHUB_ENV"
 #
 #    - name: VM config
 #      id: vm-config
