@@ -60,8 +60,8 @@ runs:
 #         SD="${{inputs.service_domain}}"
 #         AD="${{inputs.api_subdomain}}"
 
-         CONFIG_PREFIX="hello"
-         echo "PREFIX ${CONFIG_PREFIX}"
+#         CONFIG_PREFIX="hello"
+#         echo "PREFIX ${CONFIG_PREFIX}"
 #        CONFIG_LOCATION="${{ steps.config.outputs.location }}"
 #        CONFIG_BASE_DOMAIN="${{ steps.config.outputs.base_domain }}"
 #        CONFIG_API_SUB_DOMAIN="${{ steps.config.outputs.api_subdomain }}"
