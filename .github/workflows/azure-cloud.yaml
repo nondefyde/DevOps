@@ -19,7 +19,7 @@ jobs:
   envs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
-    outputs:
+#    outputs:
 #      prefix: ${{ steps.variables.outputs.prefix }}
 #      project: ${{ steps.variables.outputs.project }}
 #      location: ${{ steps.variables.outputs.location }}
