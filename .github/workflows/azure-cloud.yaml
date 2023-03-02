@@ -200,7 +200,6 @@ jobs:
         with:
           file-name: ${{ env.vnEnvFile }}
           prefix: ${{ env.prefix }}
-          location: ${{ needs.crg.outputs.rg_location }}
           group: ${{ needs.crg.outputs.rg_name }}
 
       - name: Upload Artifact
