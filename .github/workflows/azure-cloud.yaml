@@ -37,7 +37,7 @@ jobs:
         id: get-envs
         uses: ./.github/actions/set-envs
         with:
-          configFile: ${{ env.configFile }}
+          config-file: ${{ env.config-file }}
 
       - name: Set Outputs
         id: variables
