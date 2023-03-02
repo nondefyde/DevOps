@@ -58,7 +58,7 @@ runs:
         CONFIG_PREFIX="${{ steps.config.outputs.prefix }}"
         INPUT_PREFIX="${{ inputs.prefix }}"
         
-        PREFIX="${INPUT_PREFIX:-$CONFIG_PREFIX}"
+        PREFIX="${INPUT_PREFIX:-${{ steps.config.outputs.prefix }}}"
         echo "inputs PREFIX: $PREFIX"
         
 
