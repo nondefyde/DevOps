@@ -20,7 +20,7 @@ jobs:
   envs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
-    outputs: ${{ steps.variables.outputs }}
+    outputs:
       prevent_resource_deletion: ${{ steps.variables.outputs.prevent_resource_deletion }}
       prefix: ${{ steps.variables.outputs.prefix }}
       project: ${{ steps.variables.outputs.project }}
