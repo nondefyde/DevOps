@@ -45,7 +45,8 @@ jobs:
         shell: bash
         run: |
           for var in $(printenv); do
-            echo "$var" >> $GITHUB_OUTPUT
+            echo "$var"
+#            echo "$var" >> $GITHUB_OUTPUT
           done
 #          echo "prefix=${{ env.prefix }}" >> $GITHUB_OUTPUT
 #          echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
