@@ -21,11 +21,12 @@ jobs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
     outputs: ${{ steps.variables.outputs }}
-#      prefix: ${{ steps.variables.outputs.prefix }}
-#      project: ${{ steps.variables.outputs.project }}
-#      location: ${{ steps.variables.outputs.location }}
-#      base_domain: ${{ steps.variables.outputs.base_domain }}
-#      api_subdomain: ${{ steps.variables.outputs.api_subdomain }}
+      prevent_resource_deletion: ${{ steps.variables.outputs.prevent_resource_deletion }}
+      prefix: ${{ steps.variables.outputs.prefix }}
+      project: ${{ steps.variables.outputs.project }}
+      location: ${{ steps.variables.outputs.location }}
+      base_domain: ${{ steps.variables.outputs.base_domain }}
+      api_subdomain: ${{ steps.variables.outputs.api_subdomain }}
 #      vm_names: ${{ steps.variables.outputs.vm_names }}
 #      api_names: ${{ steps.variables.outputs.api_names }}
 #      app_names: ${{ steps.variables.outputs.app_names }}
