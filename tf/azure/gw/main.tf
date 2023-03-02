@@ -189,15 +189,15 @@ resource "azurerm_application_gateway" "gw_network" {
     frontend_port_name             = local.http_frontend_port_name
     protocol                       = "Http"
     host_name                      = "${var.public_subdomain}.${var.apim_domain}"
-#    ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
   }
 
   backend_http_settings {
-    name                  = local.apim_backend_setting
-    cookie_based_affinity = "Disabled"
-    port                  = 443
-    protocol              = "Https"
-    request_timeout       = 60
+    name                                = local.apim_backend_setting
+    cookie_based_affinity               = "Disabled"
+    port                                = 443
+    protocol                            = "Https"
+    request_timeout                     = 60
+    pick_host_name_from_backend_address = true,
   }
 
   backend_address_pool {
@@ -246,12 +246,12 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   http_listener {
-    name                           = local.portal_http_setting
-    frontend_ip_configuration_name = local.gw_public_ip
-    frontend_port_name             = local.http_frontend_port_name
-    protocol                       = "Http"
-    host_name                      = "${var.portal_subdomain}.${var.apim_domain}"
-#    ssl_certificate_name           = data.azurerm_key_vault_certificate.ssl_certificate.name
+    name                                = local.portal_http_setting
+    frontend_ip_configuration_name      = local.gw_public_ip
+    frontend_port_name                  = local.http_frontend_port_name
+    protocol                            = "Http"
+    host_name                           = "${var.portal_subdomain}.${var.apim_domain}"
+    pick_host_name_from_backend_address = true,
   }
 
   backend_address_pool {
