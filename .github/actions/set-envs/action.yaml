@@ -57,8 +57,9 @@ runs:
       run: |
         CONFIG_PREFIX="${{ steps.config.outputs.prefix }}"
         INPUT_PREFIX="${{ inputs.prefix }}"
-        echo "inputs prefix: $INPUT_PREFIX"
-        echo "config prefix: $CONFIG_PREFIX"
+        
+        PREFIX="${INPUT_PREFIX:-$CONFIG_PREFIX}"
+        echo "inputs PREFIX: $PREFIX"
         
 
 #         LC="${{inputs.location}}"
@@ -78,7 +79,6 @@ runs:
 #        ENV_HOST_FMT="${{ env.hostname_format }}"
 #        DOCFILE="${{ inputs.dockerfile }}"
 #
-#         PREFIX="${INPUT_PREFIX:-$CONFIG_PREFIX}"
 #        PREFIX="${${{inputs.prefix}}:-${{ steps.config.outputs.prefix }}}"
 #        PROJECT="${EP:-$CONFIG_PROJECT}"
 #        LOCATION="${LC:-$CONFIG_LOCATION}"
