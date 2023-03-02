@@ -51,9 +51,9 @@ runs:
 
     - name: Initialize environments
       shell: bash
+      env: ${{ fromJson(steps.config.outputs.service) }}
       run: |        
-        SERVICE_JSON=${{ fromJson(steps.config.outputs.service)['environment'] }}    
-        echo "SERVICE_JSON ${SERVICE_JSON}"
+        echo "Hello"
 #         LC="${{inputs.location}}"
 #         SD="${{inputs.service_domain}}"
 #         AD="${{inputs.api_subdomain}}"
@@ -82,7 +82,7 @@ runs:
 #        HOST_FORMAT="${HOST_FMT:-$ENV_HOST_FMT}"
 #        DOCKER_FILE="${DOCFILE:-${{ env.dockerfile }}}"
 #
-        echo "prefix=${{ steps.config.outputs.prefix }}}" >> "$GITHUB_ENV"
+#        echo "prefix=${{ steps.config.outputs.prefix }}}" >> "$GITHUB_ENV"
 #        echo "location=${LOCATION}" >> "$GITHUB_ENV"
 #        echo "service_domain=${SERVICE_DOMAIN}" >> "$GITHUB_ENV"
 #        echo "api_subdomain=${API_SUB_DOMAIN}" >> "$GITHUB_ENV"
