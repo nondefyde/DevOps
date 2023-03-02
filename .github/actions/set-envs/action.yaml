@@ -79,7 +79,7 @@ runs:
       run: |
         data=${{ toJson(steps.config.outputs.virtual-machine) }}
         vms=$(echo $data | jq '.vms')
-        names=$(echo $data | jq -r 'keys[]')
+        names=$(echo $vms | jq -r 'keys[]')
         names_array=($names)
         string_array=""
         for name in "${names_array[@]}"; do
