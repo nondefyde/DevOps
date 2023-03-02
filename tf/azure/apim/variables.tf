@@ -54,7 +54,7 @@ variable "apim_domain" {
   type = string
 }
 
-variable "api_subdomain" {
+variable "gateway_subdomain" {
   type = string
   default = "api"
 }

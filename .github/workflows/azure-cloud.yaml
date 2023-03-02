@@ -439,7 +439,6 @@ jobs:
           port: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['port'] }}
           endpoints: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['endpoints'] }}
           apim_domain: ${{ env.service_domain }}
-          api_subdomain: ${{ env.api_subdomain }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2

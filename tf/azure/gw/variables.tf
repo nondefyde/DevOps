@@ -79,11 +79,6 @@ variable "cert_name" {
   type = string
 }
 
-variable "public_subdomain" {
-  type = string
-  default = "stmapi"
-}
-
 variable "api_subdomain" {
   type = string
   default = "api"
@@ -92,5 +87,10 @@ variable "api_subdomain" {
 variable "portal_subdomain" {
   type = string
   default = "portal"
+}
+
+variable "gateway_subdomain" {
+  type = string
+  default = "api"
 }
 

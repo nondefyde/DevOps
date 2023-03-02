@@ -188,7 +188,7 @@ resource "azurerm_application_gateway" "gw_network" {
     frontend_ip_configuration_name = local.gw_public_ip
     frontend_port_name             = local.http_frontend_port_name
     protocol                       = "Http"
-    host_name                      = "${var.public_subdomain}.${var.apim_domain}"
+    host_name                      = "${var.api_subdomain}.${var.apim_domain}"
   }
 
   backend_http_settings {
@@ -203,7 +203,7 @@ resource "azurerm_application_gateway" "gw_network" {
   backend_address_pool {
     name  = local.apim_backend_pool
     fqdns = [
-      "${var.api_subdomain}.${var.apim_domain}"
+      "${var.gateway_subdomain}.${var.apim_domain}"
     ]
   }
 

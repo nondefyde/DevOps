@@ -40,7 +40,7 @@ resource "azurerm_api_management" "apim" {
 }
 
 resource "azurerm_private_dns_a_record" "api_dns_record" {
-  name                = var.api_subdomain
+  name                = var.gateway_subdomain
   zone_name           = data.azurerm_private_dns_zone.dns_zone.name
   resource_group_name = data.azurerm_resource_group.rg.name
   ttl                 = 3600
@@ -122,7 +122,7 @@ resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
   api_management_id = azurerm_api_management.apim.id
 
   gateway {
-    host_name    = "${var.api_subdomain}.${var.apim_domain}"
+    host_name    = "${var.gateway_subdomain}.${var.apim_domain}"
     key_vault_id = data.azurerm_key_vault_certificate.ssl_certificate.secret_id
   }
 
