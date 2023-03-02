@@ -51,7 +51,10 @@ runs:
 
     - name: Initialize environments
       shell: bash
-      env: ${{ fromJson(steps.config.outputs.service) }}
+      env:
+        prefix: steps.config.outputs.prefix
+        name: steps.config.outputs.name
+        ${{ fromJson(steps.config.outputs.service) }}
       run: |        
         echo "Hello"
 #         LC="${{inputs.location}}"
