@@ -35,8 +35,8 @@ runs:
     - name: Initialize environments
       shell: bash
       run: |
-        echo "prefix=${{ steps.config.outputs.prefix }}}" >> "$GITHUB_ENV"
-        echo "name=${{ steps.config.outputs.name }}}" >> "$GITHUB_ENV"
+        echo "prefix=${{ steps.config.outputs.prefix }}" >> "$GITHUB_ENV"
+        echo "name=${{ steps.config.outputs.name }}" >> "$GITHUB_ENV"
         
         json_string=${{ toJson(steps.config.outputs.service) }}
         for property in $(echo $json_string | jq -r 'keys[]'); do
@@ -66,7 +66,8 @@ runs:
       id: set-apis
       shell: bash
       run: |
-        data=${{ toJson(steps.api-config.outputs.api-management)['apis'] }}
+        data=${{ toJson(steps.api-config.outputs.api-management) }}
+        echo "data $data"
         names=$(echo $data | jq -r 'keys[]')
         names_array=($names)
         string_array=""
