@@ -64,6 +64,7 @@ runs:
 #
 #
         CONFIG_PREFIX="${{ steps.config.outputs.prefix }}"
+         echo "PREFIX $CONFIG_PREFIX"
 #        CONFIG_LOCATION="${{ steps.config.outputs.location }}"
 #        CONFIG_BASE_DOMAIN="${{ steps.config.outputs.base_domain }}"
 #        CONFIG_API_SUB_DOMAIN="${{ steps.config.outputs.api_subdomain }}"
@@ -76,7 +77,6 @@ runs:
 #        DOCFILE="${{ inputs.dockerfile }}"
 #
 #         PREFIX="${INPUT_PREFIX:-$CONFIG_PREFIX}"
-          echo "PREFIX $CONFIG_PREFIX"
 #        PREFIX="${${{inputs.prefix}}:-${{ steps.config.outputs.prefix }}}"
 #        PROJECT="${EP:-$CONFIG_PROJECT}"
 #        LOCATION="${LC:-$CONFIG_LOCATION}"

@@ -20,7 +20,7 @@ jobs:
     name: 'Set Environments'
     runs-on: ubuntu-latest
     outputs:
-      prefix: ${{ steps.variables.outputs.prefix }}
+#      prefix: ${{ steps.variables.outputs.prefix }}
 #      project: ${{ steps.variables.outputs.project }}
 #      location: ${{ steps.variables.outputs.location }}
 #      service_domain: ${{ steps.variables.outputs.service_domain }}
@@ -39,11 +39,11 @@ jobs:
         with:
           config-file: ${{ env.configFile }}
 
-      - name: Set Outputs
-        id: variables
-        shell: bash
-        run: |
-          echo "prefix=${{ env.prefix }}" >> $GITHUB_OUTPUT
+#      - name: Set Outputs
+#        id: variables
+#        shell: bash
+#        run: |
+#          echo "prefix=${{ env.prefix }}" >> $GITHUB_OUTPUT
 #          echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
 #          echo "location=${{ env.location }}" >> $GITHUB_OUTPUT
 #          echo "service_domain=${{ env.service_domain }}" >> $GITHUB_OUTPUT
