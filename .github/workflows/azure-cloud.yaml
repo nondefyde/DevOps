@@ -18,7 +18,7 @@ env:
 
 jobs:
   envs:
-    name: 'Set Environments'
+    name: 'Set Envs'
     runs-on: ubuntu-latest
     outputs:
       prevent_resource_deletion: ${{ steps.variables.outputs.prevent_resource_deletion }}
@@ -46,7 +46,7 @@ jobs:
         shell: bash
         run: |
           for VAR in $(compgen -e); do
-            echo "${VAR,,}=${!VAR}" >> $GITHUB_ENV
+            echo "${VAR,,}=${!VAR}" >> $GITHUB_OUTPUT
           done
 
   sa:
