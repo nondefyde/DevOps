@@ -136,7 +136,7 @@ jobs:
     env:
       project: ${{ needs.envs.outputs.project }}
       location: ${{ needs.envs.outputs.location }}
-      service_domain: ${{ needs.envs.outputs.service_domain }}
+      base_domain: ${{ needs.envs.outputs.base_domain }}
       vnEnvFile: "vn.tfvars"
     steps:
       - name: Checkout
@@ -148,7 +148,6 @@ jobs:
         with:
           file-name: ${{ env.vnEnvFile }}
           prefix: ${{ env.prefix }}
-          location: ${{ needs.crg.outputs.rg_location }}
           group: ${{ needs.crg.outputs.rg_name }}
           base_domain: ${{ env.base_domain }}
 
