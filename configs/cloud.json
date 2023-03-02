@@ -37,13 +37,13 @@
     "apis": {
       "quest": {
         "name": "Quest API",
-        "suffix": "quest",
+        "suffix": "qt",
         "endpoints": "/*",
         "port": 8000
       },
       "room": {
         "name": "Room API",
-        "suffix": "room",
+        "suffix": "rm",
         "endpoints": "/*",
         "port": 8000
       }
