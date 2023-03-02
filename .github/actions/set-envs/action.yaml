@@ -52,8 +52,8 @@ runs:
     - name: Initialize environments
       shell: bash
       env:
-        prefix: steps.config.outputs.prefix
-        name: steps.config.outputs.name
+        prefix: ${{ steps.config.outputs.prefix }}
+        name: ${{ steps.config.outputs.name }}
       run: |        
         json_string=${{ toJson(steps.config.outputs.service) }}
         for property in $(echo $json_string | jq -r 'keys[]'); do
