@@ -52,8 +52,8 @@ runs:
     - name: Initialize environments
       shell: bash
       run: |        
-        SERVICE_JSON=${{ steps.config.outputs.service }}    
-        echo "SERVICE_JSON $SERVICE_JSON"
+        SERVICE_JSON=${{ fromJson(steps.config.outputs.service) }}    
+        echo "SERVICE_JSON ${SERVICE_JSON}"
 #         LC="${{inputs.location}}"
 #         SD="${{inputs.service_domain}}"
 #         AD="${{inputs.api_subdomain}}"
