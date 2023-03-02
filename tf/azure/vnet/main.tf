@@ -169,7 +169,7 @@ resource "azurerm_private_dns_zone" "dns_zone" {
   depends_on = [azurerm_virtual_network.app_virtual_network]
 }
 
-resource "azurerm_private_dns_zone_virtual_network_link" "vnet_link" {
+resource "azurerm_private_dns_zone_virtual_network_link" "example" {
   name                  = "${var.prefix}-network-link"
   virtual_network_id    = azurerm_virtual_network.app_virtual_network.id
   resource_group_name   = data.azurerm_resource_group.rg.name
