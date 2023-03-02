@@ -52,7 +52,7 @@ runs:
     - name: Initialize environments
       shell: bash
       run: |        
-        SERVICE_JSON=${{ fromJson(steps.config.outputs.service) }}    
+        SERVICE_JSON=${{ fromJson(steps.config.outputs.service)['environment'] }}    
         echo "SERVICE_JSON ${SERVICE_JSON}"
 #         LC="${{inputs.location}}"
 #         SD="${{inputs.service_domain}}"
