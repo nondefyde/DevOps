@@ -56,17 +56,18 @@ runs:
     - name: Initialize environments
       shell: bash
       run: |
-          echo "prefix config ${{ steps.config.outputs.prefix }}"
-          echo "prefix input ${{ inputs.prefix }}"
-#        CONFIG_PROJECT="${{ steps.config.outputs.prefix }}"
+             
+         INPUT_PREFIX="${{inputs.prefix}}"
+#         LC="${{inputs.location}}"
+#         SD="${{inputs.service_domain}}"
+#         AD="${{inputs.api_subdomain}}"
+#
+#
+#        CONFIG_PREFIX="${{ steps.config.outputs.prefix }}"
 #        CONFIG_LOCATION="${{ steps.config.outputs.location }}"
 #        CONFIG_BASE_DOMAIN="${{ steps.config.outputs.base_domain }}"
 #        CONFIG_API_SUB_DOMAIN="${{ steps.config.outputs.api_subdomain }}"
 #
-#        EP="${{inputs.project}}"
-#        LC="${{inputs.location}}"
-#        SD="${{inputs.service_domain}}"
-#        AD="${{inputs.api_subdomain}}"
 #
 #        ES="${{inputs.service}}"
 #        PRT="${{inputs.port}}"
@@ -74,7 +75,8 @@ runs:
 #        ENV_HOST_FMT="${{ env.hostname_format }}"
 #        DOCFILE="${{ inputs.dockerfile }}"
 #
-         PREFIX="${{ inputs.prefix:-${{ steps.config.outputs.prefix }}}}"
+         PREFIX="${INPUT_PREFIX:-${{ steps.config.outputs.prefix }}}"
+        echo "PREFIX $PREFIX"
 #        PREFIX="${${{inputs.prefix}}:-${{ steps.config.outputs.prefix }}}"
 #        PROJECT="${EP:-$CONFIG_PROJECT}"
 #        LOCATION="${LC:-$CONFIG_LOCATION}"
