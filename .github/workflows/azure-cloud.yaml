@@ -136,6 +136,7 @@ jobs:
       virtual_network_name: ${{ steps.set-output.outputs.virtual_network_name }}
     env:
       project: ${{ needs.envs.outputs.project }}
+      prefix: ${{ needs.envs.outputs.prefix }}
       location: ${{ needs.envs.outputs.location }}
       base_domain: ${{ needs.envs.outputs.base_domain }}
       vnEnvFile: "vn.tfvars"
@@ -188,6 +189,7 @@ jobs:
       baston_id: ${{ steps.set-output.outputs.baston_id }}
     env:
       project: ${{ needs.envs.outputs.project }}
+      prefix: ${{ needs.envs.outputs.prefix }}
       location: ${{ needs.envs.outputs.location }}
       service_domain: ${{ needs.envs.outputs.service_domain }}
       vnEnvFile: "vn.tfvars"
