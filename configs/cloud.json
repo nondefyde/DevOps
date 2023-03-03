@@ -1,6 +1,6 @@
 {
   "prefix": "wxl",
-  "name": "stemulidev",
+  "name": "stemxdev",
   "service": {
     "environment": "staging",
     "location": "centralus",
