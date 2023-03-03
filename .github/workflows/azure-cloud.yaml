@@ -95,7 +95,7 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.rgEnvFile }}
-          prefix: ${{ env.prefix }}
+          project: ${{ env.project }}
           location: ${{ env.location }}
           prevent_resource_deletion:  ${{ env.prevent_resource_deletion }}
 
