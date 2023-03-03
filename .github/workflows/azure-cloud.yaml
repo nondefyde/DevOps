@@ -418,7 +418,7 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.apimpEnvFile }}
-          prefix: ${{ env.project }}
+          prefix: ${{ env.prefix }}
           group: ${{ needs.crg.outputs.rg_name }}
           name: ${{ matrix.items }}
           display_name: ${{ fromJson(steps.config.outputs.apis)[matrix.items]['name'] }}
@@ -485,7 +485,7 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.gwEnvFile }}
-          prefix: ${{ env.project }}
+          prefix: ${{ env.prefix }}
           group: ${{ needs.crg.outputs.rg_name }}
           api_suffixes: ${{ env.api_suffixes }}
           base_domain: ${{ env.base_domain }}
