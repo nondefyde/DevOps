@@ -113,17 +113,20 @@ locals {
   gw_public_ip  = "${var.prefix}-gw-public-ip"
   gw_private_ip = "${var.prefix}-gw-private-ip"
 
-  apim_http_setting      = "apim-http-listener"
-  apim_backend_setting   = "apim-backend-setting"
-  apim_backend_pool      = "apim-pool"
-  apim_url_path_map_name = "apim-url-path-map"
-  apim_routing_rule      = "apim-rule"
+  apim_http_setting         = "apim-http-listener"
+  apim_backend_setting      = "apim-backend-setting"
+  apim_backend_ping_setting = "apim-backend-ping-setting"
+  apim_backend_pool         = "apim-pool"
+  apim_url_path_map_name    = "apim-url-path-map"
+  apim_routing_rule         = "apim-rule"
 
   portal_http_setting    = "portal-http-setting"
   portal_backend_setting = "portal-backend-setting"
   portal_backend_pool    = "portal-pool"
   portal_routing_rule    = "portal-rule"
 
+  ping_pool = "apis-pool"
+  fqdns     = [for prefix in local.api_names : "${prefix}.${var.base_domain}"]
 }
 
 resource "azurerm_application_gateway" "gw_network" {
@@ -174,7 +177,6 @@ resource "azurerm_application_gateway" "gw_network" {
     public_ip_address_id = azurerm_public_ip.gw_ip.id
   }
 
-
   ssl_certificate {
     name                = data.azurerm_key_vault_certificate.ssl_certificate.name
     key_vault_secret_id = data.azurerm_key_vault_certificate.ssl_certificate.secret_id
@@ -190,6 +192,24 @@ resource "azurerm_application_gateway" "gw_network" {
     protocol                       = "Http"
     host_name                      = "${var.api_subdomain}.${var.base_domain}"
   }
+
+  /////////////////// Ping settings /////////////////////
+  backend_http_settings {
+    name                                = local.apim_backend_ping_setting
+    cookie_based_affinity               = "Disabled"
+    port                                = 443
+    protocol                            = "Https"
+    request_timeout                     = 60
+    path                                = "/ping"
+    pick_host_name_from_backend_address = true
+  }
+
+  backend_address_pool {
+    for_each = local.api_suffixes
+    name     = local.ping_pool
+    fqdns    = local.fqdns
+  }
+  //////////////////// Ping settings ///////////////////////
 
   backend_http_settings {
     name                                = local.apim_backend_setting
@@ -220,7 +240,7 @@ resource "azurerm_application_gateway" "gw_network" {
   url_path_map {
     name                               = local.apim_url_path_map_name
     default_backend_address_pool_name  = local.apim_backend_pool
-    default_backend_http_settings_name = local.apim_backend_setting
+    default_backend_http_settings_name = local.apim_backend_ping_setting
     dynamic "path_rule" {
       for_each = local.api_suffixes
       content {

@@ -18,7 +18,7 @@ app.listen(port, () => {
 	console.log(`HTTP app listening on port >>>> ${port}`);
 });
 
-app.get('/v1/ping', (req, res) => {
+app.get('/ping', (req, res) => {
 	const containerIp = containerInterface.address;
 	res.status(200).send(`Ping Successful ${new Date().toISOString()} --- containerIp --- ${containerIp}`);
 });
