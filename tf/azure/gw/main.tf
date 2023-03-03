@@ -330,7 +330,7 @@ resource "azurerm_application_gateway" "gw_network" {
       rule_type                  = "Basic"
       http_listener_name         = "${split(":", request_routing_rule.value)[0]}-http-listener"
       backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
-      backend_http_settings_name = "${split(":", backend_http_settings.value)[0]}-backend-setting"
+      backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-backend-setting"
       priority                   = split(":", request_routing_rule.value)[3]
     }
   }
