@@ -275,8 +275,8 @@ jobs:
           environment: ${{ env.environment }}
           base_domain: ${{ env.base_domain }}
           group: ${{ needs.crg.outputs.rg_name }}
-          name: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['name'] }}
-          vm_count: ${{ fromJson(steps.vm-cloud-config.outputs.vms)[matrix.items]['vmCount'] }}
+          name: ${{ fromJson(steps.config.outputs.vms)[matrix.items]['name'] }}
+          vm_count: ${{ fromJson(steps.config.outputs.vms)[matrix.items]['vmCount'] }}
           admin_password: ${{ secrets.VM_PASSWORD }}
 
       - name: Upload Artifact
