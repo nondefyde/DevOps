@@ -72,3 +72,7 @@ variable "cloud_init_file" {
   type        = string
   description = "The File initialization file path"
 }
+
+variable "base_domain" {
+  type = string
+}
