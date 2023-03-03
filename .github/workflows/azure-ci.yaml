@@ -85,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       project: ${{ steps.variables.outputs.project }}
-      service: ${{ steps.variables.outputs.service }}
+      prefix: ${{ steps.variables.outputs.project }}
       port: ${{ steps.variables.outputs.port }}
       hostname-format: ${{ steps.variables.outputs.hostname-format }}
       dockerfile: ${{ steps.variables.outputs.dockerfile }}
@@ -96,28 +96,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Get App Envs
+      - name: Set App Envs
         id: get-envs
         uses: ./.github/actions/set-envs
         with:
-          configFile: ${{ env.configFile }}
-          project: ${{ inputs.project}}
-          service: ${{ inputs.service}}
-          port: ${{ inputs.port}}
-          hostname-format: ${{ inputs.hostname-format}}
-          dockerfile: ${{ inputs.dockerfile}}
+          config-file: ${{ env.configFile }}
 
       - name: Set Env
         id: variables
         run: |
-          echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
-          echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
-          echo "port=${{ env.port }}" >> $GITHUB_OUTPUT
-          echo "hostname-format=${{env.hostname-format}}" >> $GITHUB_OUTPUT
-          echo "dockerfile=${{ env.dockerfile }}" >> $GITHUB_OUTPUT
+          for VAR in $(compgen -e); do
+            echo "${VAR,,}=${!VAR}" >> $GITHUB_OUTPUT
+          done
+          
           echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
           echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
-          echo "environment=${{ steps.env-config.outputs.environment }}" >> $GITHUB_OUTPUT
 
   config:
     name: 'Setup Config Variables'
@@ -210,6 +203,7 @@ jobs:
     env:
       vm: ${{ needs.envs.outputs.vm_names }}
       project: ${{ needs.envs.outputs.project }}
+      prefix: ${{ needs.envs.outputs.prefix }}
       service: ${{ needs.envs.outputs.service }}
       port: ${{ needs.envs.outputs.port }}
     strategy:
