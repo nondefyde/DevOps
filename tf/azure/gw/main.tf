@@ -200,7 +200,7 @@ resource "azurerm_application_gateway" "gw_network" {
     port                                = 8000
     protocol                            = "Http"
     request_timeout                     = 60
-    path                                = "/ping"
+    path                                = var.probe_url
     pick_host_name_from_backend_address = true
   }
 

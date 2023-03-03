@@ -6,6 +6,7 @@
     "location": "centralus",
     "base_domain": "stardevs.xyz",
     "api_subdomain": "stemuli",
+    "probe_url": "/ping",
     "prevent_resource_deletion": false
   },
   "key-vault": {

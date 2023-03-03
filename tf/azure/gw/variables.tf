@@ -94,3 +94,8 @@ variable "gateway_subdomain" {
   default = "api"
 }
 
+variable "probe_url" {
+  type = string
+  default = "/ping"
+}
+

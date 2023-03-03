@@ -34,6 +34,7 @@ jobs:
       vault_name: ${{ steps.variables.outputs.vault_name }}
       vault_rg: ${{ steps.variables.outputs.vault_rg }}
       cert_name: ${{ steps.variables.outputs.cert_name }}
+      probe_url: ${{ steps.variables.outputs.probe_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -463,6 +464,7 @@ jobs:
     env:
       project: ${{ needs.envs.outputs.project }}
       prefix: ${{ needs.envs.outputs.prefix }}
+      probe_url: ${{ needs.envs.outputs.probe_url }}
       base_domain: ${{ needs.envs.outputs.base_domain }}
       api_subdomain: ${{ needs.envs.outputs.api_subdomain }}
       app_names: ${{ needs.envs.outputs.app_names }}
@@ -494,6 +496,7 @@ jobs:
           cert_name: ${{steps.kvu-cloud-config.outputs.cert_name }}
           cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          probe_url: ${{ env.probe_url }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
