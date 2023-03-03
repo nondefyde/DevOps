@@ -116,6 +116,7 @@ locals {
   apim_http_setting      = "apim-http-listener"
   apim_backend_setting   = "apim-backend-setting"
   ping_backend_setting   = "ping-backend-setting"
+  apim_sink_pool         = "apim-sink-pool"
   apim_backend_pool      = "apim-pool"
   apim_url_path_map_name = "apim-url-path-map"
   apim_routing_rule      = "apim-rule"
@@ -241,11 +242,15 @@ resource "azurerm_application_gateway" "gw_network" {
     ]
   }
 
+  backend_address_pool {
+    name = local.apim_sink_pool
+  }
+
   request_routing_rule {
     name                       = local.apim_routing_rule
     rule_type                  = "PathBasedRouting"
     http_listener_name         = local.apim_http_setting
-    backend_address_pool_name  = local.ping_pool
+    backend_address_pool_name  = local.apim_sink_pool
     backend_http_settings_name = local.ping_backend_setting
     url_path_map_name          = local.apim_url_path_map_name
     priority                   = 10
@@ -253,8 +258,8 @@ resource "azurerm_application_gateway" "gw_network" {
 
   url_path_map {
     name                               = local.apim_url_path_map_name
-    default_backend_address_pool_name  = local.ping_pool
-    default_backend_http_settings_name = local.ping_backend_setting
+#    default_backend_address_pool_name  = local.ping_pool
+#    default_backend_http_settings_name = local.ping_backend_setting
     dynamic "path_rule" {
       for_each = local.api_suffixes
       content {
