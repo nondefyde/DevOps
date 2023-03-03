@@ -89,14 +89,14 @@ resource "azurerm_linux_virtual_machine_scale_set" "vm_set" {
 
 data "azurerm_private_dns_zone" "dns_zone" {
   name                = var.base_domain
-  resource_group_name = "${var.prefix}-group"
+  resource_group_name = var.group
 }
 
 resource "azurerm_private_dns_a_record" "api_dns_record" {
   count               = var.vm_count
   name                = "${var.name}-${count.index}"
   zone_name           = data.azurerm_private_dns_zone.dns_zone.name
-  resource_group_name = "${var.prefix}-group"
+  resource_group_name = var.group
   ttl                 = 3600
   records             = element(azurerm_linux_virtual_machine.vm.*.private_ip_addresses, count.index)
 }
