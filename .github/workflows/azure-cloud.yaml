@@ -109,6 +109,7 @@ jobs:
         id: rg
         with:
           project: ${{ env.project }}
+          prefix: ${{ env.prefix }}
           envFile: ${{ env.rgEnvFile }}
           key: ${{ env.project }}-rg
           working-directory: ${{ env.scriptPath}}/crg
@@ -147,7 +148,6 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.vnEnvFile }}
-          prefix: ${{ env.prefix }}
           group: ${{ needs.crg.outputs.rg_name }}
           base_domain: ${{ env.base_domain }}
 
@@ -164,6 +164,7 @@ jobs:
           envFile: ${{ env.vnEnvFile }}
           key: ${{ env.project }}-vn
           project: ${{ env.project }}
+          prefix: ${{ env.prefix }}
           working-directory: ${{ env.scriptPath}}/vnet
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
@@ -199,7 +200,6 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.vnEnvFile }}
-          prefix: ${{ env.prefix }}
           group: ${{ needs.crg.outputs.rg_name }}
 
       - name: Upload Artifact
@@ -213,6 +213,7 @@ jobs:
         id: vn
         with:
           project: ${{ env.project }}
+          prefix: ${{ env.prefix }}
           envFile: ${{ env.vnEnvFile }}
           key: ${{ env.project }}-bst
           working-directory: ${{ env.scriptPath}}/bst
