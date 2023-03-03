@@ -1,6 +1,11 @@
 variable "project" {
   type        = string
-  description = "The prefix for the resource group"
+  description = "The project name"
+}
+
+variable "prefix" {
+  type        = string
+  description = "The prefix for the project"
 }
 
 variable "location" {
