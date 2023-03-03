@@ -8,7 +8,7 @@ app.listen(port, () => {
 });
 
 app.get('/ping', (req, res) => {
-	res.status(200).send(`Ping Successful from ${process.env.NODE_ENV} }`);
+	res.status(200).send(`Ping Successful from ${process.env.NODE_ENV}`);
 });
 
 app.get('/', (req, res) => {

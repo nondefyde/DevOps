@@ -197,8 +197,8 @@ resource "azurerm_application_gateway" "gw_network" {
   backend_http_settings {
     name                                = local.ping_backend_setting
     cookie_based_affinity               = "Disabled"
-    port                                = 443
-    protocol                            = "Https"
+    port                                = 8000
+    protocol                            = "Http"
     request_timeout                     = 60
     path                                = "/ping"
     pick_host_name_from_backend_address = true
