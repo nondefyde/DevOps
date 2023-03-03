@@ -31,6 +31,9 @@ jobs:
       api_names: ${{ steps.variables.outputs.api_names }}
       app_names: ${{ steps.variables.outputs.app_names }}
       api_suffixes: ${{ steps.variables.outputs.api_suffixes }}
+      vault_name: ${{ steps.variables.outputs.vault_name }}
+      vault_rg: ${{ steps.variables.outputs.vault_rg }}
+      cert_name: ${{ steps.variables.outputs.cert_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -307,89 +310,79 @@ jobs:
         id: set-output
         run: |
           echo "vm_names=${{ env.vm_names }}" >> $GITHUB_OUTPUT
+  apim:
+    name: Api Management Service
+    needs: [ envs, crg, vn ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      base_domain: ${{ needs.envs.outputs.base_domain }}
+      api_subdomain: ${{ needs.envs.outputs.api_subdomain }}
+      vault_rg: ${{ needs.envs.outputs.vault_rg }}
+      vault_name: ${{ needs.envs.outputs.vault_name }}
+      cert_name: ${{ needs.envs.outputs.cert_name }}
+      apimEnvFile: "apim.tfvars"
+    outputs:
+      apim_id: ${{ steps.set-output.outputs.apim_id }}
+      gateway_url: ${{ steps.set-output.outputs.gateway_url }}
+      portal_url: ${{ steps.set-output.outputs.portal_url }}
+      developer_portal_url: ${{ steps.set-output.outputs.developer_portal_url }}
+      management_api_url: ${{ steps.set-output.outputs.management_api_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-#  apim:
-#    name: Api Management Service
-#    needs: [ envs, crg, vn ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    env:
-#      project: ${{ needs.envs.outputs.project }}
-#      location: ${{ needs.envs.outputs.location }}
-#      service_domain: ${{ needs.envs.outputs.service_domain }}
-#      api_subdomain: ${{ needs.envs.outputs.api_subdomain }}
-#      apimEnvFile: "apim.tfvars"
-#    outputs:
-#      apim_id: ${{ steps.set-output.outputs.apim_id }}
-#      gateway_url: ${{ steps.set-output.outputs.gateway_url }}
-#      portal_url: ${{ steps.set-output.outputs.portal_url }}
-#      developer_portal_url: ${{ steps.set-output.outputs.developer_portal_url }}
-#      management_api_url: ${{ steps.set-output.outputs.management_api_url }}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Vault cloud config
-#        id: kvu-cloud-config
-#        uses: ActionsTools/read-json-action@main
-#        with:
-#          file_path: ${{ env.configFile }}
-#          prop_path: "key-vault"
-#
-#      - name: Get cloud config
-#        id: apim-cloud-config
-#        uses: ActionsTools/read-json-action@main
-#        with:
-#          file_path: ${{ env.configFile }}
-#          prop_path: "api-management"
-#
-#      - name: convert to json
-#        id: apimjson
-#        uses: schdck/create-env-json@v1
-#        with:
-#          file-name: ${{ env.apimEnvFile }}
-#          prefix: ${{ env.project }}
-#          group: ${{ needs.crg.outputs.rg_name }}
-#          environment: ${{ needs.envs.outputs.environment }}
-#          capacity: ${{steps.apim-cloud-config.outputs.capacity }}
-#          sku: ${{steps.apim-cloud-config.outputs.sku }}
-#          apim_domain: ${{ env.service_domain }}
-#          api_subdomain: ${{ env.api_subdomain }}
-#          publisher_name: ${{steps.apim-cloud-config.outputs.publisher_name }}
-#          publisher_email: ${{steps.apim-cloud-config.outputs.publisher_email}}
-#          vault_name: ${{steps.kvu-cloud-config.outputs.vaultName }}
-#          vault_rg: ${{steps.kvu-cloud-config.outputs.vaultRg }}
-#          cert_name: ${{steps.kvu-cloud-config.outputs.certName }}
-#
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: ${{ env.apimEnvFile }}
-#          path: ${{ env.apimEnvFile }}
-#
-#      - name: Instantiate API Magt Services
-#        uses: ./.github/actions/tf-azure-script
-#        id: apim
-#        with:
-#          project: ${{ env.project }}
-#          envFile: ${{ env.apimEnvFile }}
-#          key: ${{ env.project }}-apim
-#          working-directory: "tf/azure/apim"
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#        continue-on-error: false
-#
-#      - name: Set output
-#        id: set-output
-#        run: |
-#          echo "apim_id=${{ env.apim_id }}" >> $GITHUB_OUTPUT
-#          echo "gateway_url=${{ env.gateway_url }}" >> $GITHUB_OUTPUT
-#          echo "management_api_url=${{ env.management_api_url }}" >> $GITHUB_OUTPUT
-#          echo "portal_url=${{ env.portal_url }}" >> $GITHUB_OUTPUT
-#          echo "developer_portal_url=${{ env.developer_portal_url }}" >> $GITHUB_OUTPUT
-#
+      - name: Get cloud config
+        id: apim-cloud-config
+        uses: ActionsTools/read-json-action@main
+        with:
+          file_path: ${{ env.configFile }}
+          prop_path: "api-management"
+
+      - name: convert to json
+        id: apimjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.apimEnvFile }}
+          prefix: ${{ env.project }}
+          group: ${{ needs.crg.outputs.rg_name }}
+          environment: ${{ needs.envs.outputs.environment }}
+          capacity: ${{steps.apim-cloud-config.outputs.capacity }}
+          sku: ${{steps.apim-cloud-config.outputs.sku }}
+          base_domain: ${{ env.base_domain }}
+          api_subdomain: ${{ env.api_subdomain }}
+          publisher_name: ${{steps.apim-cloud-config.outputs.publisher_name }}
+          publisher_email: ${{steps.apim-cloud-config.outputs.publisher_email}}
+          vault_name: ${{ env.vault_name }}
+          vault_rg: ${{ env.vault_rg }}
+          cert_name: ${{ env.cert_name }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.apimEnvFile }}
+          path: ${{ env.apimEnvFile }}
+
+      - name: Instantiate API Magt Services
+        uses: ./.github/actions/tf-azure-script
+        id: apim
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.apimEnvFile }}
+          key: ${{ env.project }}-apim
+          working-directory: "tf/azure/apim"
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "apim_id=${{ env.apim_id }}" >> $GITHUB_OUTPUT
+
 #  apimp:
 #    name: Api Services ${{ matrix.items }}
 #    needs: [ envs, crg, apim ]
