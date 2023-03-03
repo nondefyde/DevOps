@@ -258,7 +258,6 @@ jobs:
         uses: ActionsTools/read-json-action@main
         with:
           file_path: ${{ env.configFile }}
-          prefix: ${{ env.prefix }}
           prop_path: "virtual-machine"
 
       - name: Print VM Info
@@ -272,7 +271,7 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.vmEnvFile }}
-          project: ${{ env.project }}
+          prefix: ${{ env.prefix }}
           environment: ${{ env.environment }}
           base_domain: ${{ env.base_domain }}
           group: ${{ needs.crg.outputs.rg_name }}
