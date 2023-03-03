@@ -21,9 +21,6 @@ inputs:
   project:
     description: 'Entry project name'
     required: true
-  prefix:
-    description: 'Entry prefix name'
-    required: true
   key:
     description: 'Entry group name'
     required: true
@@ -97,7 +94,6 @@ runs:
           -var=tenant_id="${{ inputs.AZR_TENANT_ID }}" \
           -var=client_id="${{ inputs.AZR_CLIENT_ID }}" \
           -var=client_secret="${{ inputs.AZR_CLIENT_SECRET }}" \
-          -var=prefix="${{ inputs.prefix }}" \
           -var-file=env.tfvars \
           -out ./_state/${{ inputs.project }}.tfplan \
           -lock=false
