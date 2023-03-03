@@ -27,7 +27,7 @@ jobs:
       location: ${{ steps.variables.outputs.location }}
       base_domain: ${{ steps.variables.outputs.base_domain }}
       api_subdomain: ${{ steps.variables.outputs.api_subdomain }}
-      vm_names: ${{ steps.variables.outputs.vm_names }}
+#      vm_names: ${{ steps.variables.outputs.vm_names }}
 #      api_names: ${{ steps.variables.outputs.api_names }}
 #      app_names: ${{ steps.variables.outputs.app_names }}
 #      api_suffixes: ${{ steps.variables.outputs.api_suffixes }}
