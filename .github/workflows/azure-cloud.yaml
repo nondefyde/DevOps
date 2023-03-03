@@ -124,6 +124,7 @@ jobs:
           echo "rg_location=${{ env.rg_location }}" >> $GITHUB_OUTPUT
           echo "rg_name=${{ env.rg_name }}" >> $GITHUB_OUTPUT
 
+
   vn:
     name: 'VNet'
     needs: [ envs, crg ]
@@ -160,7 +161,6 @@ jobs:
         uses: ./.github/actions/tf-azure-script
         id: vn
         with:
-          prefix: ${{ env.prefix }}
           envFile: ${{ env.vnEnvFile }}
           key: ${{ env.project }}-vn
           project: ${{ env.project }}
