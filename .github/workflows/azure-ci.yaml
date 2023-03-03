@@ -203,7 +203,6 @@ jobs:
       vm: ${{ needs.envs.outputs.vm_names }}
       project: ${{ needs.envs.outputs.project }}
       prefix: ${{ needs.envs.outputs.prefix }}
-      service: ${{ needs.envs.outputs.service }}
       port: ${{ needs.envs.outputs.port }}
     strategy:
       matrix:
