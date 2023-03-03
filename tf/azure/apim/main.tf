@@ -14,7 +14,7 @@ data "azurerm_subnet" "apim_subnet" {
 }
 
 data "azurerm_private_dns_zone" "dns_zone" {
-  name                = var.apim_domain
+  name                = var.base_domain
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
@@ -122,12 +122,12 @@ resource "azurerm_api_management_custom_domain" "apim_custom_domain" {
   api_management_id = azurerm_api_management.apim.id
 
   gateway {
-    host_name    = "${var.gateway_subdomain}.${var.apim_domain}"
+    host_name    = "${var.gateway_subdomain}.${var.base_domain}"
     key_vault_id = data.azurerm_key_vault_certificate.ssl_certificate.secret_id
   }
 
   developer_portal {
-    host_name    = "${var.portal_subdomain}.${var.apim_domain}"
+    host_name    = "${var.portal_subdomain}.${var.base_domain}"
     key_vault_id = data.azurerm_key_vault_certificate.ssl_certificate.secret_id
   }
 

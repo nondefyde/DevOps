@@ -14,7 +14,7 @@ data "azurerm_subnet" "gw_subnet" {
 }
 
 data "azurerm_private_dns_zone" "dns_zone" {
-  name                = var.apim_domain
+  name                = var.base_domain
   resource_group_name = data.azurerm_resource_group.rg.name
 }
 
@@ -188,7 +188,7 @@ resource "azurerm_application_gateway" "gw_network" {
     frontend_ip_configuration_name = local.gw_public_ip
     frontend_port_name             = local.http_frontend_port_name
     protocol                       = "Http"
-    host_name                      = "${var.api_subdomain}.${var.apim_domain}"
+    host_name                      = "${var.api_subdomain}.${var.base_domain}"
   }
 
   backend_http_settings {
@@ -203,7 +203,7 @@ resource "azurerm_application_gateway" "gw_network" {
   backend_address_pool {
     name  = local.apim_backend_pool
     fqdns = [
-      "${var.gateway_subdomain}.${var.apim_domain}"
+      "${var.gateway_subdomain}.${var.base_domain}"
     ]
   }
 
@@ -242,7 +242,7 @@ resource "azurerm_application_gateway" "gw_network" {
     frontend_ip_configuration_name      = local.gw_public_ip
     frontend_port_name                  = local.http_frontend_port_name
     protocol                            = "Http"
-    host_name                           = "${var.portal_subdomain}.${var.apim_domain}"
+    host_name                           = "${var.portal_subdomain}.${var.base_domain}"
   }
 
   backend_http_settings {
@@ -257,7 +257,7 @@ resource "azurerm_application_gateway" "gw_network" {
   backend_address_pool {
     name  = local.portal_backend_pool
     fqdns = [
-      "${var.portal_subdomain}.${var.apim_domain}"
+      "${var.portal_subdomain}.${var.base_domain}"
     ]
   }
 
@@ -281,7 +281,7 @@ resource "azurerm_application_gateway" "gw_network" {
       frontend_ip_configuration_name = local.gw_private_ip
       frontend_port_name             = local.http_frontend_port_name_service
       protocol                       = "Http"
-      host_name                      = "${split(":", http_listener.value)[1]}.${var.apim_domain}"
+      host_name                      = "${split(":", http_listener.value)[1]}.${var.base_domain}"
     }
   }
 
@@ -333,7 +333,7 @@ resource "azurerm_private_dns_a_record" "api_dns_record" {
 
 resource "cloudflare_record" "cf_api_subdomain_a_record" {
   zone_id         = var.cloudflare_zone_id
-  name            = "${var.api_subdomain}.${var.apim_domain}"
+  name            = "${var.api_subdomain}.${var.base_domain}"
   value           = azurerm_public_ip.gw_ip.ip_address
   type            = "A"
   proxied         = true
@@ -342,7 +342,7 @@ resource "cloudflare_record" "cf_api_subdomain_a_record" {
 
 resource "cloudflare_record" "cf_portal_subdomain_a_record" {
   zone_id         = var.cloudflare_zone_id
-  name            = "${var.portal_subdomain}.${var.apim_domain}"
+  name            = "${var.portal_subdomain}.${var.base_domain}"
   value           = azurerm_public_ip.gw_ip.ip_address
   type            = "A"
   proxied         = true
@@ -351,7 +351,7 @@ resource "cloudflare_record" "cf_portal_subdomain_a_record" {
 
 resource "cloudflare_record" "cf_domain_a_record" {
   zone_id         = var.cloudflare_zone_id
-  name            = var.apim_domain
+  name            = var.base_domain
   value           = azurerm_public_ip.gw_ip.ip_address
   type            = "A"
   proxied         = true

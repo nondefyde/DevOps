@@ -89,7 +89,7 @@ jobs:
       project: ${{ needs.envs.outputs.project }}
       prefix: ${{ needs.envs.outputs.prefix }}
       location: ${{ needs.envs.outputs.location }}
-      service_domain: ${{ needs.envs.outputs.service_domain }}
+      base_domain: ${{ needs.envs.outputs.base_domain }}
       prevent_resource_deletion: ${{ needs.envs.outputs.prevent_resource_deletion }}
       rgEnvFile: "rg.tfvars"
     steps:
@@ -199,7 +199,7 @@ jobs:
       project: ${{ needs.envs.outputs.project }}
       prefix: ${{ needs.envs.outputs.prefix }}
       location: ${{ needs.envs.outputs.location }}
-      service_domain: ${{ needs.envs.outputs.service_domain }}
+      base_domain: ${{ needs.envs.outputs.base_domain }}
       environment: ${{ needs.envs.outputs.environment }}
       vnEnvFile: "vn.tfvars"
     steps:
@@ -393,7 +393,7 @@ jobs:
 #    env:
 #      project: ${{ needs.envs.outputs.project }}
 #      location: ${{ needs.envs.outputs.location }}
-#      service_domain: ${{ needs.envs.outputs.service_domain }}
+#      base_domain: ${{ needs.envs.outputs.base_domain }}
 #      api_subdomain: ${{ needs.envs.outputs.api_subdomain }}
 #      api_names: ${{ needs.envs.outputs.api_names }}
 #      apimpEnvFile: "apimp-${{ matrix.items }}.tfvars"
@@ -432,7 +432,7 @@ jobs:
 #          suffix: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['suffix'] }}
 #          port: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['port'] }}
 #          endpoints: ${{ fromJson(steps.apimp-cloud-config.outputs.apis)[matrix.items]['endpoints'] }}
-#          apim_domain: ${{ env.service_domain }}
+#          base_domain: ${{ env.base_domain }}
 #
 #      - name: Upload Artifact
 #        uses: actions/upload-artifact@v2
@@ -470,7 +470,7 @@ jobs:
 #    env:
 #      project: ${{ needs.envs.outputs.project }}
 #      location: ${{ needs.envs.outputs.location }}
-#      service_domain: ${{ needs.envs.outputs.service_domain }}
+#      base_domain: ${{ needs.envs.outputs.base_domain }}
 #      api_subdomain: ${{ needs.envs.outputs.api_subdomain }}
 #      app_names: ${{ needs.envs.outputs.app_names }}
 #      api_suffixes: ${{ needs.envs.outputs.api_suffixes }}
@@ -495,7 +495,7 @@ jobs:
 #          prefix: ${{ env.project }}
 #          group: ${{ needs.crg.outputs.rg_name }}
 #          api_suffixes: ${{ env.api_suffixes }}
-#          apim_domain: ${{ env.service_domain }}
+#          base_domain: ${{ env.base_domain }}
 #          api_subdomain: ${{ env.api_subdomain }}
 #          vault_name: ${{steps.kvu-cloud-config.outputs.vaultName }}
 #          vault_rg: ${{steps.kvu-cloud-config.outputs.vaultRg }}
@@ -538,7 +538,7 @@ jobs:
 #    env:
 #      project: ${{ needs.envs.outputs.project }}
 #      location: ${{ needs.envs.outputs.location }}
-#      service_domain: ${{ needs.envs.outputs.service_domain }}
+#      base_domain: ${{ needs.envs.outputs.base_domain }}
 #      vm: ${{ needs.envs.outputs.vm_names }}
 #      gwcEnvFile: "gwc-${{ matrix.items }}.tfvars"
 #    strategy:

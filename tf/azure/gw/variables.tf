@@ -63,7 +63,7 @@ variable "private_ip" {
   default = "10.0.3.10"
 }
 
-variable "apim_domain" {
+variable "base_domain" {
   type = string
 }
 

@@ -50,7 +50,7 @@ variable "capacity" {
   default = 1
 }
 
-variable "apim_domain" {
+variable "base_domain" {
   type = string
 }
 
