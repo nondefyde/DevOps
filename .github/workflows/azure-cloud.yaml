@@ -334,7 +334,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get cloud config
-        id: apim-cloud-config
+        id: config
         uses: ActionsTools/read-json-action@main
         with:
           file_path: ${{ env.configFile }}
@@ -348,12 +348,12 @@ jobs:
           prefix: ${{ env.project }}
           group: ${{ needs.crg.outputs.rg_name }}
           environment: ${{ needs.envs.outputs.environment }}
-          capacity: ${{steps.apim-cloud-config.outputs.capacity }}
-          sku: ${{steps.apim-cloud-config.outputs.sku }}
+          capacity: ${{steps.config.outputs.capacity }}
+          sku: ${{steps.config.outputs.sku }}
           base_domain: ${{ env.base_domain }}
           api_subdomain: ${{ env.api_subdomain }}
-          publisher_name: ${{steps.apim-cloud-config.outputs.publisher_name }}
-          publisher_email: ${{steps.apim-cloud-config.outputs.publisher_email}}
+          publisher_name: ${{steps.config.outputs.publisher_name }}
+          publisher_email: ${{steps.config.outputs.publisher_email}}
           vault_name: ${{ env.vault_name }}
           vault_rg: ${{ env.vault_rg }}
           cert_name: ${{ env.cert_name }}
