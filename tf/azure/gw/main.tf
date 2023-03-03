@@ -258,8 +258,8 @@ resource "azurerm_application_gateway" "gw_network" {
 
   url_path_map {
     name                               = local.apim_url_path_map_name
-#    default_backend_address_pool_name  = local.ping_pool
-#    default_backend_http_settings_name = local.ping_backend_setting
+    default_backend_address_pool_name  = local.apim_sink_pool
+    default_backend_http_settings_name = local.ping_backend_setting
     dynamic "path_rule" {
       for_each = local.api_suffixes
       content {
