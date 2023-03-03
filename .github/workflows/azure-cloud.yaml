@@ -28,10 +28,9 @@ jobs:
       base_domain: ${{ steps.variables.outputs.base_domain }}
       api_subdomain: ${{ steps.variables.outputs.api_subdomain }}
       vm_names: ${{ steps.variables.outputs.vm_names }}
-#      api_names: ${{ steps.variables.outputs.api_names }}
-#      app_names: ${{ steps.variables.outputs.app_names }}
-#      api_suffixes: ${{ steps.variables.outputs.api_suffixes }}
-#      prevent_resource_deletion: ${{ steps.variables.outputs.prevent_resource_deletion }}
+      api_names: ${{ steps.variables.outputs.api_names }}
+      app_names: ${{ steps.variables.outputs.app_names }}
+      api_suffixes: ${{ steps.variables.outputs.api_suffixes }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -48,6 +47,11 @@ jobs:
           for VAR in $(compgen -e); do
             echo "${VAR,,}=${!VAR}" >> $GITHUB_OUTPUT
           done
+          
+          echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
+          echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
+          echo "app_names=${{ env.app_names }}" >> $GITHUB_OUTPUT
+          echo "api_suffixes=${{ env.api_suffixes }}" >> $GITHUB_OUTPUT
 
   sa:
     name: 'Stg Acc'
@@ -124,7 +128,6 @@ jobs:
         run: |
           echo "rg_location=${{ env.rg_location }}" >> $GITHUB_OUTPUT
           echo "rg_name=${{ env.rg_name }}" >> $GITHUB_OUTPUT
-
 
   vn:
     name: 'VNet'
