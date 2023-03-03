@@ -86,9 +86,6 @@ jobs:
     outputs:
       project: ${{ steps.variables.outputs.project }}
       prefix: ${{ steps.variables.outputs.project }}
-      port: ${{ steps.variables.outputs.port }}
-      hostname-format: ${{ steps.variables.outputs.hostname-format }}
-      dockerfile: ${{ steps.variables.outputs.dockerfile }}
       vm_names: ${{ steps.variables.outputs.vm_names }}
       api_names: ${{ steps.variables.outputs.api_names }}
       environment: ${{ steps.variables.outputs.environment }}
@@ -120,9 +117,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      port: ${{ needs.envs.outputs.port }}
-      hostname-format: ${{ needs.envs.outputs.hostname-format }}
-      dockerfile: ${{ needs.envs.outputs.dockerfile }}
     outputs:
       hostname: ${{ steps.resolved.outputs.hostname }}
       git-sha: ${{ steps.resolved.outputs.git-sha }}
@@ -165,7 +159,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      port: ${{ needs.envs.outputs.port }}
       hostname: ${{ needs.config.outputs.hostname }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
@@ -203,7 +196,6 @@ jobs:
       vm: ${{ needs.envs.outputs.vm_names }}
       project: ${{ needs.envs.outputs.project }}
       prefix: ${{ needs.envs.outputs.prefix }}
-      port: ${{ needs.envs.outputs.port }}
     strategy:
       matrix:
         items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
