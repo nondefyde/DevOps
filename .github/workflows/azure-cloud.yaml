@@ -319,6 +319,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
+      prefix: ${{ needs.envs.outputs.prefix }}
       base_domain: ${{ needs.envs.outputs.base_domain }}
       api_subdomain: ${{ needs.envs.outputs.api_subdomain }}
       vault_rg: ${{ needs.envs.outputs.vault_rg }}
@@ -347,7 +348,7 @@ jobs:
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.apimEnvFile }}
-          prefix: ${{ env.project }}
+          prefix: ${{ env.prefix }}
           group: ${{ needs.crg.outputs.rg_name }}
           environment: ${{ needs.envs.outputs.environment }}
           capacity: ${{steps.config.outputs.capacity }}
