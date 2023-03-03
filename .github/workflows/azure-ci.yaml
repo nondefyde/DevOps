@@ -119,7 +119,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      service: ${{ needs.envs.outputs.service }}
       port: ${{ needs.envs.outputs.port }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
