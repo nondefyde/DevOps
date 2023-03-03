@@ -9,7 +9,7 @@ services:
     env_file:
       - ./.env
     ports:
-      - "8001-8400:{PORT}"
+      - "8000:{PORT}"
     networks:
       - app-network
 
