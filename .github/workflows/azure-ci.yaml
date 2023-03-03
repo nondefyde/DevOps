@@ -3,7 +3,7 @@ name: AZR VM TEST CI
 on:
   push:
     branches:
-      - 'mainaa'
+      - 'main'
   workflow_run:
     workflows: [ "AZR DEPLOY VMS" ]
     types:
