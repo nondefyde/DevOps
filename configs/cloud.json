@@ -1,5 +1,5 @@
 {
-  "prefix": "wxl",
+  "prefix": "yxl",
   "name": "stemxdev",
   "service": {
     "environment": "staging",
