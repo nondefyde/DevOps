@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - 'mainaa'
-#  workflow_run:
-#    workflows: [ "AZR DEPLOY VMS" ]
-#    types:
-#      - completed
+  workflow_run:
+    workflows: [ "AZR DEPLOY VMS" ]
+    types:
+      - completed
   workflow_call:
     secrets:
       AZR_CLIENT_ID:
