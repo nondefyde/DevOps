@@ -257,21 +257,35 @@ resource "azurerm_application_gateway" "gw_network" {
   /// <<<<>>>> APIM SETUPS <<<<>>>> ////////
 
   /// <<<<>>>> APIM PORTAL SETUPS  <<<<>>>> ////////
+  probe {
+    name                                      = local.apim_probe_name
+    interval                                  = 30
+    path                                      = "/"
+    protocol                                  = "Https"
+    timeout                                   = 30
+    unhealthy_threshold                       = 3
+    pick_host_name_from_backend_http_settings = true
+    match {
+      status_code = ["404", "200", "201"]
+    }
+  }
+
   http_listener {
-    name                                = local.portal_http_setting
-    frontend_ip_configuration_name      = local.gw_public_ip
-    frontend_port_name                  = local.http_frontend_port_name
-    protocol                            = "Http"
-    host_name                           = "${var.portal_subdomain}.${var.base_domain}"
+    name                           = local.portal_http_setting
+    frontend_ip_configuration_name = local.gw_public_ip
+    frontend_port_name             = local.http_frontend_port_name
+    protocol                       = "Http"
+    host_name                      = "${var.portal_subdomain}.${var.base_domain}"
   }
 
   backend_http_settings {
-    name                           = local.portal_backend_setting
-    cookie_based_affinity          = "Disabled"
-    port                           = 443
-    protocol                       = "Https"
-    request_timeout                = 60
+    name                                = local.portal_backend_setting
+    cookie_based_affinity               = "Disabled"
+    port                                = 443
+    protocol                            = "Https"
+    request_timeout                     = 60
     pick_host_name_from_backend_address = true
+    probe_name                          = local.apim_probe_name
   }
 
   backend_address_pool {
@@ -293,19 +307,6 @@ resource "azurerm_application_gateway" "gw_network" {
 
 
   ////////////////////////////////// BACKEND SETUPS /////////////////////////////////////////
-
-  probe {
-    name                                      = local.apim_probe_name
-    interval                                  = 30
-    path                                      = "/"
-    protocol                                  = "Https"
-    timeout                                   = 30
-    unhealthy_threshold                       = 3
-    pick_host_name_from_backend_http_settings = true
-    match {
-      status_code = ["404", "200", "201"]
-    }
-  }
 
   dynamic "http_listener" {
     for_each = local.api_suffixes
