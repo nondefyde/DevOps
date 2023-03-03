@@ -75,3 +75,8 @@ variable "header" {
 variable "base_domain" {
   type = string
 }
+
+variable "port" {
+  type = number
+  default = 8000
+}

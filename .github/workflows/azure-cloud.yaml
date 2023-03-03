@@ -424,6 +424,7 @@ jobs:
           display_name: ${{ fromJson(steps.config.outputs.apis)[matrix.items]['name'] }}
           suffix: ${{ fromJson(steps.config.outputs.apis)[matrix.items]['suffix'] }}
           endpoints: ${{ fromJson(steps.config.outputs.apis)[matrix.items]['endpoints'] }}
+          port: ${{ fromJson(steps.config.outputs.apis)[matrix.items]['port'] }}
           base_domain: ${{ env.base_domain }}
 
       - name: Upload Artifact

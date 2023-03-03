@@ -38,12 +38,14 @@
       "quest": {
         "name": "Quest API",
         "suffix": "qt",
-        "endpoints": "/*"
+        "endpoints": "/*",
+        "port": 8000
       },
       "room": {
         "name": "Room API",
         "suffix": "rm",
-        "endpoints": "/*"
+        "endpoints": "/*",
+        "port": 8000
       }
     }
   }
