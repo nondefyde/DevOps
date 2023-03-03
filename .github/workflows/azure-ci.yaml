@@ -159,9 +159,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      hostname: ${{ needs.config.outputs.hostname }}
-      hostname-format: ${{ needs.envs.outputs.hostname-format }}
-      dockerfile: ${{ needs.envs.outputs.dockerfile }}
     steps:
       - name: --- For debugging ---
         id: debug-context
