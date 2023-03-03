@@ -314,7 +314,7 @@ resource "azurerm_application_gateway" "gw_network" {
   dynamic "backend_http_settings" {
     for_each = local.api_suffixes
     content {
-      name                  = "${split(":", backend_http_settings.value)[0]}-backend-listener"
+      name                  = "${split(":", backend_http_settings.value)[0]}-backend-setting"
       cookie_based_affinity = "Disabled"
       port                  = split(":", backend_http_settings.value)[2]
       path                  = "/"
@@ -330,7 +330,7 @@ resource "azurerm_application_gateway" "gw_network" {
       rule_type                  = "Basic"
       http_listener_name         = "${split(":", request_routing_rule.value)[0]}-http-listener"
       backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
-      backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-backend-listener"
+      backend_http_settings_name = "${split(":", backend_http_settings.value)[0]}-backend-setting"
       priority                   = split(":", request_routing_rule.value)[3]
     }
   }
