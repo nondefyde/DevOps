@@ -119,6 +119,7 @@ locals {
   apim_backend_pool      = "apim-pool"
   apim_url_path_map_name = "apim-url-path-map"
   apim_routing_rule      = "apim-rule"
+  apim_probe_name        = "apim-probe"
 
   portal_http_setting    = "portal-http-setting"
   portal_backend_setting = "portal-backend-setting"
@@ -292,6 +293,19 @@ resource "azurerm_application_gateway" "gw_network" {
 
 
   ////////////////////////////////// BACKEND SETUPS /////////////////////////////////////////
+
+  probe {
+    name                                      = local.apim_probe_name
+    interval                                  = 30
+    path                                      = "/"
+    protocol                                  = "Https"
+    timeout                                   = 30
+    unhealthy_threshold                       = 3
+    pick_host_name_from_backend_http_settings = true
+    match {
+      status_code = ["404", "200", "201"]
+    }
+  }
 
   dynamic "http_listener" {
     for_each = local.api_suffixes
