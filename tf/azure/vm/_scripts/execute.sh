@@ -36,7 +36,7 @@ INSTANCE=${14}
 
 PREP_SCRIPT="https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/prep.sh"
 
-LOGIN_SERVER=$(az acr login -n ${PROJECT}acr --expose-token)
+LOGIN_SERVER=$(az acr login -n ${PREFIX}acr --expose-token)
 accessToken=$(jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
 server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
 echo "logged in to server > ${server}"

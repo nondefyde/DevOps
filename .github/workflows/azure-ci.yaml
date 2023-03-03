@@ -183,7 +183,7 @@ jobs:
           push: true
           platforms: linux/amd64
           file: ${{ env.dockerfile }}
-          tags: ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}
+          tags: ${{ env.prefix }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}
 
   deploy:
     name: 'Deploy Image - VM ${{ matrix.items }}'
@@ -254,6 +254,6 @@ jobs:
           echo "Run Deployment"
           chmod +x execute.sh
           ./execute.sh ${{secrets.AZR_CLIENT_ID}} ${{secrets.AZR_CLIENT_SECRET}} ${{secrets.AZR_TENANT_ID}} \
-          ${{ env.project }} ${{ env.prefix }} ${{ env.project }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest \
+          ${{ env.project }} ${{ env.prefix }} ${{ env.prefix }}acr.azurecr.io/${{ env.service }}/${{ needs.config.outputs.docker-tag }}:latest \
           ${{ secrets.AZR_VM_APP_SECRET }} $VM_NAME $VM_COUNT adminuser ${API_SUFFIX}.stardevs.xyz ${{ env.port }} \
           ${{ env.environment }}-$VM_NAME 1 $INSTANCE_COUNT
