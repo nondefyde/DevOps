@@ -112,6 +112,7 @@ jobs:
           echo "vm_names=${{ format('[{0}]', env.vm_names) }}" >> $GITHUB_OUTPUT
           echo "api_names=${{ format('[{0}]', env.api_names) }}" >> $GITHUB_OUTPUT
 
+
   config:
     name: 'Setup Config Variables'
     needs: [ envs ]
@@ -164,7 +165,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      service: ${{ needs.envs.outputs.service }}
       port: ${{ needs.envs.outputs.port }}
       hostname: ${{ needs.config.outputs.hostname }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
