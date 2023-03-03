@@ -205,7 +205,6 @@ resource "azurerm_application_gateway" "gw_network" {
   }
 
   backend_address_pool {
-    for_each = local.api_suffixes
     name     = local.ping_pool
     fqdns    = local.fqdns
   }
