@@ -73,6 +73,6 @@ variable "cloud_init_file" {
   description = "The File initialization file path"
 }
 
-variable "apim_domain" {
+variable "base_domain" {
   type = string
 }

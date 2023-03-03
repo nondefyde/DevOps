@@ -32,7 +32,7 @@ module "az_vm" {
   cloud_init_file = var.init_file
   admin_username  = var.admin_username
   admin_password  = var.admin_password
-  apim_domain  = var.apim_domain
+  base_domain  = var.base_domain
 
   environment = var.environment
 }

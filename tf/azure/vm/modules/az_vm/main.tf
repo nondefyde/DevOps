@@ -58,7 +58,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 }
 
 data "azurerm_private_dns_zone" "dns_zone" {
-  name                = var.apim_domain
+  name                = var.base_domain
   resource_group_name = "${var.prefix}-group"
 }
 

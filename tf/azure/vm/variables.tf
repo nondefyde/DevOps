@@ -58,6 +58,6 @@ variable "name" {
   type = string
 }
 
-variable "apim_domain" {
+variable "base_domain" {
   type = string
 }
