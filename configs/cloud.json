@@ -1,5 +1,5 @@
 {
-  "prefix": "vcl",
+  "prefix": "wxl",
   "name": "stemulidev",
   "service": {
     "environment": "staging",
