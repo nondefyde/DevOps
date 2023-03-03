@@ -423,7 +423,6 @@ jobs:
           name: ${{ matrix.items }}
           display_name: ${{ fromJson(steps.config.outputs.apis)[matrix.items]['name'] }}
           suffix: ${{ fromJson(steps.config.outputs.apis)[matrix.items]['suffix'] }}
-          port: ${{ fromJson(steps.config.outputs.apis)[matrix.items]['port'] }}
           endpoints: ${{ fromJson(steps.config.outputs.apis)[matrix.items]['endpoints'] }}
           base_domain: ${{ env.base_domain }}
 

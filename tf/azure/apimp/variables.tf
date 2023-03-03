@@ -37,11 +37,6 @@ variable "suffix" {
   default = "tst"
 }
 
-variable "port" {
-  type = number
-  default = 8000
-}
-
 variable "protocols" {
   type = list(string)
   default = ["http", "https"]
