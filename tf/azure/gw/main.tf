@@ -126,7 +126,7 @@ locals {
   portal_routing_rule    = "portal-rule"
 
   ping_pool = "apis-pool"
-  fqdns     = [for prefix in local.api_names : "${prefix}.${var.base_domain}"]
+  fqdns     = [for prefix in local.api_names : "${split(":", prefix)[1]}.${var.base_domain}"]
 }
 
 resource "azurerm_application_gateway" "gw_network" {
