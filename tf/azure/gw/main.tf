@@ -250,7 +250,7 @@ resource "azurerm_application_gateway" "gw_network" {
     name                       = local.apim_routing_rule
     rule_type                  = "PathBasedRouting"
     http_listener_name         = local.apim_http_setting
-    backend_address_pool_name  = local.apim_sink_pool
+    backend_address_pool_name  = local.ping_pool
     backend_http_settings_name = local.ping_backend_setting
     url_path_map_name          = local.apim_url_path_map_name
     priority                   = 10
