@@ -85,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       project: ${{ steps.variables.outputs.project }}
-      prefix: ${{ steps.variables.outputs.project }}
+      prefix: ${{ steps.variables.outputs.prefix }}
       vm_names: ${{ steps.variables.outputs.vm_names }}
       api_names: ${{ steps.variables.outputs.api_names }}
       environment: ${{ steps.variables.outputs.environment }}
