@@ -10,7 +10,7 @@ data "template_file" "vm_init" {
 resource "random_id" "random_id" {
   keepers = {
     # Generate a new ID only when a new resource group is defined
-    resource_group = "${var.prefix}-group"
+    resource_group = var.group
   }
   byte_length = 2
 }
@@ -19,7 +19,7 @@ resource "random_id" "random_id" {
 resource "azurerm_storage_account" "vm_storage_account" {
   name                     = "${var.prefix}diag${random_id.random_id.hex}"
   location                 = var.location
-  resource_group_name      = "${var.prefix}-group"
+  resource_group_name      = var.group
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
