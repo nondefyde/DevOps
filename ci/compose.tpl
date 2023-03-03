@@ -9,7 +9,7 @@ services:
     env_file:
       - ./.env
     ports:
-      - "8000:{PORT}"
+      - "8001-8400:${PORT}"
 
   nginx-proxy:
     image: jwilder/nginx-proxy:alpine

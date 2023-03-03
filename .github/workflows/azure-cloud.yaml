@@ -139,6 +139,7 @@ jobs:
       project: ${{ needs.envs.outputs.project }}
       prefix: ${{ needs.envs.outputs.prefix }}
       location: ${{ needs.envs.outputs.location }}
+      environment: ${{ needs.envs.outputs.environment }}
       base_domain: ${{ needs.envs.outputs.base_domain }}
       vnEnvFile: "vn.tfvars"
     steps:
@@ -151,6 +152,7 @@ jobs:
         with:
           file-name: ${{ env.vnEnvFile }}
           prefix: ${{ env.prefix }}
+          environment: ${{ env.environment }}
           group: ${{ needs.crg.outputs.rg_name }}
           base_domain: ${{ env.base_domain }}
 
@@ -193,6 +195,7 @@ jobs:
       prefix: ${{ needs.envs.outputs.prefix }}
       location: ${{ needs.envs.outputs.location }}
       service_domain: ${{ needs.envs.outputs.service_domain }}
+      environment: ${{ needs.envs.outputs.environment }}
       vnEnvFile: "vn.tfvars"
     steps:
       - name: Checkout
@@ -204,6 +207,7 @@ jobs:
         with:
           file-name: ${{ env.vnEnvFile }}
           prefix: ${{ env.prefix }}
+          environment: ${{ env.environment }}
           group: ${{ needs.crg.outputs.rg_name }}
 
       - name: Upload Artifact
@@ -241,7 +245,7 @@ jobs:
       prefix: ${{ needs.envs.outputs.prefix }}
       location: ${{ needs.envs.outputs.location }}
       environment: ${{ needs.envs.outputs.environment }}
-      service_domain: ${{ needs.envs.outputs.service_domain }}
+      base_domain: ${{ needs.envs.outputs.base_domain }}
       vm: ${{ needs.envs.outputs.vm_names }}
       vmEnvFile: "vms-${{ matrix.items }}.tfvars"
     strategy:
