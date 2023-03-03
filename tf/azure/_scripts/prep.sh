@@ -39,7 +39,7 @@ echo "Generate env file"
 rm -rf "/home/${7}/vm"
 mkdir "/home/${7}/vm"
 touch "/home/${7}/vm/.env"
-DECODED=$(echo "${2}" | base64 --decode > /home/adminuser/vm/.env)
+DECODED=$(echo "${2}" > /home/adminuser/vm/.env)
 
 echo "Copy deploy script"
 DEPLOY_FILE=https://raw.githubusercontent.com/nondefyde/DevOps/main/tf/azure/_scripts/deploy.sh

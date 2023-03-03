@@ -18,11 +18,3 @@ app.get('/', (req, res) => {
 		params: req.params,
 	});
 });
-
-app.get('/:url', (req, res) => {
-	res.status(200).json({
-		message: `Hello from url ${process.env.NODE_ENV}`,
-		headers: req.headers,
-		params: req.params,
-	});
-});
