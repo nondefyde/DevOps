@@ -319,10 +319,6 @@ resource "azurerm_application_gateway" "gw_network" {
     }
   }
 
-  backend_address_pool {
-    name  = local.sin
-  }
-
   dynamic "backend_address_pool" {
     for_each = local.api_suffixes
     content {
