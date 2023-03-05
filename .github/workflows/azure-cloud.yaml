@@ -287,6 +287,7 @@ jobs:
           group: ${{ needs.crg.outputs.rg_name }}
           name: ${{ fromJson(steps.config.outputs.vms)[matrix.items]['name'] }}
           vm_count: ${{ fromJson(steps.config.outputs.vms)[matrix.items]['vmCount'] }}
+          disk_size: ${{ fromJson(steps.config.outputs.vms)[matrix.items]['disk_size'] }}
           admin_password: ${{ secrets.VM_PASSWORD }}
 
       - name: Upload Artifact
@@ -491,6 +492,7 @@ jobs:
           group: ${{ needs.crg.outputs.rg_name }}
           api_suffixes: ${{ env.api_suffixes }}
           base_domain: ${{ env.base_domain }}
+          api_subdomain: ${{ env.api_subdomain }}
           vault_name: ${{steps.kvu-cloud-config.outputs.vault_name }}
           vault_rg: ${{steps.kvu-cloud-config.outputs.vault_rg }}
           cert_name: ${{steps.kvu-cloud-config.outputs.cert_name }}
