@@ -5,8 +5,8 @@
     "environment": "staging",
     "location": "centralus",
     "base_domain": "stardevs.xyz",
-    "api_subdomain": "stemuli",
-    "probe_url": "/ping",
+    "api_subdomain": "stapi",
+    "probe_url": "/",
     "prevent_resource_deletion": false
   },
   "key-vault": {
