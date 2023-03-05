@@ -20,13 +20,15 @@
         "name": "quest",
         "vmCount": "1",
         "port": 8000,
-        "priority": 100
+        "priority": 100,
+        "disk_size": "Standard_F2"
       },
       "room": {
         "name": "room",
         "vmCount": "1",
         "port": 8000,
-        "priority": 101
+        "priority": 101,
+        "disk_size": "Standard_F2"
       }
     }
   },
