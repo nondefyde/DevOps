@@ -367,25 +367,7 @@ resource "azurerm_private_dns_a_record" "api_dns_record" {
 
 resource "cloudflare_record" "cf_api_subdomain_a_record" {
   zone_id         = var.cloudflare_zone_id
-  name            = "${var.api_subdomain}.${var.base_domain}"
-  value           = azurerm_public_ip.gw_ip.ip_address
-  type            = "A"
-  proxied         = true
-  allow_overwrite = true
-}
-
-resource "cloudflare_record" "cf_portal_subdomain_a_record" {
-  zone_id         = var.cloudflare_zone_id
-  name            = "${var.portal_subdomain}.${var.base_domain}"
-  value           = azurerm_public_ip.gw_ip.ip_address
-  type            = "A"
-  proxied         = true
-  allow_overwrite = true
-}
-
-resource "cloudflare_record" "cf_domain_a_record" {
-  zone_id         = var.cloudflare_zone_id
-  name            = var.base_domain
+  name            = var.api_subdomain
   value           = azurerm_public_ip.gw_ip.ip_address
   type            = "A"
   proxied         = true
