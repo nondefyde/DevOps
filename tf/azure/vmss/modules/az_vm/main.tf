@@ -87,11 +87,11 @@ resource "azurerm_linux_virtual_machine_scale_set" "vm_set" {
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "vmss_nsg_association" {
-  count = length(azurerm_linux_virtual_machine_scale_set.vm_set.network_interface_ids)
-  network_interface_id = azurerm_linux_virtual_machine_scale_set.vm_set.network_interface_ids[count.index]
-  network_security_group_id = azurerm_network_security_group.vm_security_group.id
-}
+#resource "azurerm_network_interface_security_group_association" "vmss_nsg_association" {
+#  count = length(azurerm_linux_virtual_machine_scale_set.vm_set.network_interface)
+#  network_interface_id = azurerm_linux_virtual_machine_scale_set.vm_set.network_interface[count.index].id
+#  network_security_group_id = azurerm_network_security_group.vm_security_group.id
+#}
 
 
 data "azurerm_private_dns_zone" "dns_zone" {
