@@ -25,6 +25,7 @@ module "az_vm" {
   tenant_id       = var.tenant_id
   client_secret   = var.client_secret
   client_id       = var.client_id
+  base_domain       = var.base_domain
 
   location  = data.azurerm_resource_group.rg.location
   subnet_id = data.azurerm_subnet.subnets[0].id
