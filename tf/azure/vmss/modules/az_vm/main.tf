@@ -87,6 +87,13 @@ resource "azurerm_linux_virtual_machine_scale_set" "vm_set" {
   }
 }
 
+resource "azurerm_network_interface_security_group_association" "vmss_nsg_association" {
+  count = length(data.azurerm_virtual_machine_scale_set_vm.vmss_vm.network_interface_ids)
+  network_interface_id = data.azurerm_virtual_machine_scale_set_vm.vmss_vm.network_interface_ids[count.index]
+  network_security_group_id = azurerm_network_security_group.vm_security_group.id
+}
+
+
 data "azurerm_private_dns_zone" "dns_zone" {
   name                = var.base_domain
   resource_group_name = var.group
