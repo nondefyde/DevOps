@@ -25,7 +25,7 @@
       },
       "room": {
         "name": "room",
-        "vmCount": 0,
+        "vmCount": 1,
         "port": 8000,
         "priority": 101,
         "disk_size": "Standard_F2"
