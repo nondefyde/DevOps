@@ -100,6 +100,6 @@ resource "azurerm_private_dns_a_record" "api_dns_record" {
   resource_group_name = var.group
   ttl                 = 3600
   records             = [
-    azurerm_linux_virtual_machine_scale_set.vm_set[var.vm_count].network_interface[0].ip_configuration[0].private_ip_address
+    azurerm_linux_virtual_machine_scale_set.vm_set.virtual_machine_scale_set_instances[var.vm_count].network_interface[0].ip_configuration[0].private_ip_address
   ]
 }
