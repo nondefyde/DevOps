@@ -79,6 +79,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vm_set" {
       name                          = "${var.prefix}-${var.name}-internal"
       subnet_id                     = var.subnet_id
       primary                       = true
+      private_ip_address_allocation = "Dynamic"
     }
   }
 
@@ -86,12 +87,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "vm_set" {
     environment = var.environment
   }
 }
-
-#resource "azurerm_network_interface_security_group_association" "vmss_nsg_association" {
-#  count = length(azurerm_linux_virtual_machine_scale_set.vm_set.network_interface)
-#  network_interface_id = azurerm_linux_virtual_machine_scale_set.vm_set.network_interface[count.index].id
-#  network_security_group_id = azurerm_network_security_group.vm_security_group.id
-#}
 
 
 data "azurerm_private_dns_zone" "dns_zone" {
@@ -105,5 +100,7 @@ resource "azurerm_private_dns_a_record" "api_dns_record" {
   zone_name           = data.azurerm_private_dns_zone.dns_zone.name
   resource_group_name = var.group
   ttl                 = 3600
-  records             = element(azurerm_linux_virtual_machine_scale_set.vm_set.network_interface.*.private_ip_addresses, count.index)
+  records             = [
+    azurerm_linux_virtual_machine_scale_set.vm_set.virtual_machine_scale_set_instances[count.index].network_interface[0].ip_configuration[0].private_ip_address
+  ]
 }
