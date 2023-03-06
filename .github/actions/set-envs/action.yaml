@@ -50,11 +50,6 @@ runs:
           echo "$property=$value" >> "$GITHUB_ENV"
         done
 
-    #        ES="${{inputs.service}}"
-    #        PROJECT="${EP:-$CONFIG_PROJECT}"
-    #        echo "prefix=${{ steps.config.outputs.prefix }}}" >> "$GITHUB_ENV"
-    #
-
     - name: Output api and app names
       id: set-apis
       shell: bash
@@ -92,20 +87,13 @@ runs:
       id: set-api-suffixes
       shell: bash
       run: |
-        data_vm=${{ toJson(steps.config.outputs.virtual-machine) }}
         data_api=${{ toJson(steps.config.outputs.api-management) }}
-        vmdata=$(echo $data_vm | jq '.vms')
-        apidata=$(echo $data_api | jq '.apis')
-        
-        port=($(echo $vmdata | jq -r '.[] | .port'))
-        priority=($(echo $vmdata | jq -r '.[] | .priority'))
-        suffixes=($(echo $apidata | jq -r '.[] | .suffix'))
-        names=($(echo $apidata | jq -r 'keys[]'))
+        arr=($(echo $data_api | jq -r '.apis | to_entries[] | "\(.key):\(.value.suffix):\(.value.port):\(.value.priority):\(.value.endpoints)"'))    
         output=""
-        for i in ${!suffixes[@]}; do
+        for i in ${!arr[@]}; do
           if [[ -n "$output" ]]; then
             output="$output,"
           fi
-          output="$output${names[$i]}:${suffixes[$i]}:${port[$i]}:${priority[$i]}"
+          output="$output${arr[$i]}"
         done
         echo "api_suffixes=$output" >> "$GITHUB_ENV"
