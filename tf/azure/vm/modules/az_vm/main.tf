@@ -24,6 +24,15 @@ resource "azurerm_storage_account" "vm_storage_account" {
   account_replication_type = "LRS"
 }
 
+resource "azurerm_availability_set" "vm_avset" {
+  name                         = "${var.prefix}_${var.name}_avset"
+  location                     = var.location
+  resource_group_name          = var.group
+  platform_fault_domain_count  = 2
+  platform_update_domain_count = 5
+  managed                      = true
+}
+
 resource "azurerm_linux_virtual_machine" "vm" {
   count                           = var.vm_count
   name                            = "${var.prefix}-${var.name}-vm-${count.index}"
