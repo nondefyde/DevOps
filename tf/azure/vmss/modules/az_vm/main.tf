@@ -79,7 +79,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "vm_set" {
       name                          = "${var.prefix}-${var.name}-internal"
       subnet_id                     = var.subnet_id
       primary                       = true
-      private_ip_address_allocation = "Dynamic"
     }
   }
 
