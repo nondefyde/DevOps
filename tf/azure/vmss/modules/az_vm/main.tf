@@ -93,13 +93,13 @@ data "azurerm_private_dns_zone" "dns_zone" {
   resource_group_name = var.group
 }
 
-resource "azurerm_private_dns_a_record" "api_dns_record" {
-  count               = var.vm_count
-  name                = "${var.name}-${count.index}"
-  zone_name           = data.azurerm_private_dns_zone.dns_zone.name
-  resource_group_name = var.group
-  ttl                 = 3600
-  records             = [
-    azurerm_linux_virtual_machine_scale_set.vm_set.virtual_machine_scale_set_instances[var.vm_count].network_interface[0].ip_configuration[0].private_ip_address
-  ]
-}
+#resource "azurerm_private_dns_a_record" "api_dns_record" {
+#  count               = var.vm_count
+#  name                = "${var.name}-${count.index}"
+#  zone_name           = data.azurerm_private_dns_zone.dns_zone.name
+#  resource_group_name = var.group
+#  ttl                 = 3600
+#  records             = [
+#    azurerm_linux_virtual_machine_scale_set.vm_set.network_interface[var.vm_count].ip_configuration[0].private_ip_address
+#  ]
+#}
