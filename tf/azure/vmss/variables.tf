@@ -8,7 +8,6 @@ variable "group" {
   description = "The name of the vm"
 }
 
-
 variable "subscription_id" {
   type        = string
   description = "Azure Resource Manager Subscription ID"
