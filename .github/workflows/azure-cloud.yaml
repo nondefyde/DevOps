@@ -188,59 +188,59 @@ jobs:
           echo "virtual_network_id=${{ env.virtual_network_id }}" >> $GITHUB_OUTPUT
           echo "virtual_network_name=${{ env.virtual_network_name }}" >> $GITHUB_OUTPUT
 
-#  bst:
-#    name: 'Baston Host'
-#    needs: [ envs, crg, vn ]
-#    permissions: write-all
-#    runs-on: ubuntu-latest
-#    outputs:
-#      baston_dns: ${{ steps.set-output.outputs.baston_dns }}
-#      baston_id: ${{ steps.set-output.outputs.baston_id }}
-#    env:
-#      project: ${{ needs.envs.outputs.project }}
-#      prefix: ${{ needs.envs.outputs.prefix }}
-#      location: ${{ needs.envs.outputs.location }}
-#      base_domain: ${{ needs.envs.outputs.base_domain }}
-#      environment: ${{ needs.envs.outputs.environment }}
-#      vnEnvFile: "vn.tfvars"
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: convert to json
-#        id: vmjson
-#        uses: schdck/create-env-json@v1
-#        with:
-#          file-name: ${{ env.vnEnvFile }}
-#          prefix: ${{ env.prefix }}
-#          environment: ${{ env.environment }}
-#          group: ${{ needs.crg.outputs.rg_name }}
-#
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: ${{ env.vnEnvFile }}
-#          path: ${{ env.vnEnvFile }}
-#
-#      - name: Instantiate Baston
-#        uses: ./.github/actions/tf-azure-script
-#        id: vn
-#        with:
-#          project: ${{ env.project }}
-#          envFile: ${{ env.vnEnvFile }}
-#          key: ${{ env.project }}-bst
-#          working-directory: ${{ env.scriptPath}}/bst
-#          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
-#          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
-#          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
-#          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
-#        continue-on-error: false
-#
-#      - name: Set output
-#        id: set-output
-#        run: |
-#          echo "baston_dns=${{ env.baston_dns }}" >> $GITHUB_OUTPUT
-#          echo "baston_id=${{ env.baston_id }}" >> $GITHUB_OUTPUT
+  bst:
+    name: 'Baston Host'
+    needs: [ envs, crg, vn ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      baston_dns: ${{ steps.set-output.outputs.baston_dns }}
+      baston_id: ${{ steps.set-output.outputs.baston_id }}
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      prefix: ${{ needs.envs.outputs.prefix }}
+      location: ${{ needs.envs.outputs.location }}
+      base_domain: ${{ needs.envs.outputs.base_domain }}
+      environment: ${{ needs.envs.outputs.environment }}
+      vnEnvFile: "vn.tfvars"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: convert to json
+        id: vmjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.vnEnvFile }}
+          prefix: ${{ env.prefix }}
+          environment: ${{ env.environment }}
+          group: ${{ needs.crg.outputs.rg_name }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.vnEnvFile }}
+          path: ${{ env.vnEnvFile }}
+
+      - name: Instantiate Baston
+        uses: ./.github/actions/tf-azure-script
+        id: vn
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.vnEnvFile }}
+          key: ${{ env.project }}-bst
+          working-directory: ${{ env.scriptPath}}/bst
+          AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
+          AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
+          AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
+          AZR_TENANT_ID: ${{secrets.AZR_TENANT_ID}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "baston_dns=${{ env.baston_dns }}" >> $GITHUB_OUTPUT
+          echo "baston_id=${{ env.baston_id }}" >> $GITHUB_OUTPUT
   vms:
     name: VM ${{ matrix.items }}
     needs: [ envs, crg, vn ]
@@ -253,7 +253,7 @@ jobs:
       environment: ${{ needs.envs.outputs.environment }}
       base_domain: ${{ needs.envs.outputs.base_domain }}
       vm: ${{ needs.envs.outputs.vm_names }}
-      vmEnvFile: "vmss-${{ matrix.items }}.tfvars"
+      vmEnvFile: "vm-${{ matrix.items }}.tfvars"
     strategy:
       matrix:
         items: ${{ fromJSON(needs.envs.outputs.vm_names) }}
@@ -302,8 +302,8 @@ jobs:
         with:
           project: ${{ env.project }}
           envFile: ${{ env.vmEnvFile }}
-          key: ${{ env.project }}-${{ matrix.items }}-vmss
-          working-directory: ${{ env.scriptPath}}/vmss
+          key: ${{ env.project }}-${{ matrix.items }}-vm
+          working-directory: ${{ env.scriptPath}}/vm
           AZR_CLIENT_ID: ${{secrets.AZR_CLIENT_ID}}
           AZR_CLIENT_SECRET: ${{secrets.AZR_CLIENT_SECRET}}
           AZR_SUBSCRIPTION_ID: ${{secrets.AZR_SUBSCRIPTION_ID}}
