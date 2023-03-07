@@ -20,15 +20,15 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 sudo apt update
 sudo apt install -y docker-ce
 
-#sudo docker pull jwilder/nginx-proxy:latest
-#sudo docker volume create app-volume
-#sudo docker run -d --name reverse_proxy -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
-
 #Install Docker compose
 sudo mkdir -p /usr/local/lib/docker/cli-plugins
 sudo curl -SL https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
 sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 sudo docker compose version
+
+sudo docker pull jwilder/nginx-proxy:latest
+sudo docker network create nginx-proxy
+sudo docker volume create app-volume
 
 sudo groupadd docker
 sudo usermod -aG docker adminuser
@@ -36,3 +36,5 @@ newgrp docker
 
 sudo curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 sudo apt-get install jq --yes
+
+

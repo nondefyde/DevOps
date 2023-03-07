@@ -1,24 +1,13 @@
-variable "app_project_prefix" {
+variable "prefix" {
   type        = string
-  description = "The prefix for deployment"
-  default     = "stmx"
+  description = "The prefix for the resource group"
 }
 
-variable "cloudflare_api_token" {
-  type = string
-  description = "Cloudflare api token"
-}
-
-variable "cloudflare_zone_id" {
-  type = string
-  description = "Cloudflare zone id"
-}
-
-variable "location" {
+variable "group" {
   type        = string
-  default     = "Central US"
-  description = "Server location"
+  description = "The name of the vm"
 }
+
 
 variable "subscription_id" {
   type        = string
@@ -40,17 +29,18 @@ variable "client_secret" {
   description = "Client ID"
 }
 
+variable "environment" {
+  type = string
+  default = "development"
+}
 
 variable "admin_username" {
-  type        = string
-  description = "Admin username"
-  default     = "adminuser"
+  type = string
+  default = "adminuser"
 }
 
 variable "admin_password" {
-  type        = string
-  description = "Admin password"
-  default = "Stemuli_1@###"
+  type = string
 }
 
 variable "init_file" {
@@ -59,18 +49,15 @@ variable "init_file" {
   default     = "./vm.sh"
 }
 
-variable "environment" {
+variable "vm_count" {
   type = string
-  default = "staging"
-  description = "The development environment"
+  default = 1
 }
 
-variable "dns_domain" {
+variable "name" {
   type = string
-  default = "dev.stemuli.net"
-  description = "The dns domain"
 }
 
-variable "service" {
+variable "base_domain" {
   type = string
 }

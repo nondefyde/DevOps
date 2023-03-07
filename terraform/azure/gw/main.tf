@@ -1,129 +1,375 @@
-module "gw_dep" {
-  source = "modules/gw_dep"
-
-  client      = var.app_project_prefix
-  azr_region  = var.azr_region
-  environment = var.environment
-  stack       = var.stack
-  tenant_id   = var.tenant_id
+data "azurerm_resource_group" "rg" {
+  name = var.group
 }
 
+data "azurerm_virtual_network" "vnet" {
+  name                = "${var.prefix}-network"
+  resource_group_name = data.azurerm_resource_group.rg.name
+}
 
+data "azurerm_subnet" "gw_subnet" {
+  name                 = "${var.prefix}-gway-subnet"
+  virtual_network_name = data.azurerm_virtual_network.vnet.name
+  resource_group_name  = data.azurerm_virtual_network.vnet.resource_group_name
+}
+
+data "azurerm_private_dns_zone" "dns_zone" {
+  name                = var.base_domain
+  resource_group_name = data.azurerm_resource_group.rg.name
+}
+
+data "azurerm_key_vault" "keyvault" {
+  name                = var.vault_name
+  resource_group_name = var.vault_rg
+}
+
+data "azurerm_key_vault_certificate" "ssl_certificate" {
+  name         = var.cert_name
+  key_vault_id = data.azurerm_key_vault.keyvault.id
+}
+
+data "azurerm_api_management" "apim" {
+  name                = "${var.prefix}-api"
+  resource_group_name = data.azurerm_resource_group.rg.name
+}
+
+resource "azurerm_public_ip" "gw_ip" {
+  name                = "${var.prefix}-gw-pip"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+resource "azurerm_user_assigned_identity" "appgw_identity" {
+  name                = "${var.prefix}-gw-identity"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location = data.azurerm_resource_group.rg.location
+}
+
+resource "azurerm_key_vault_access_policy" "vault_policy" {
+  key_vault_id = data.azurerm_key_vault.keyvault.id
+
+  tenant_id = azurerm_user_assigned_identity.appgw_identity.tenant_id
+  object_id = azurerm_user_assigned_identity.appgw_identity.principal_id
+
+  certificate_permissions = [
+    "Create",
+    "Delete",
+    "DeleteIssuers",
+    "Get",
+    "GetIssuers",
+    "Import",
+    "List",
+    "ListIssuers",
+    "ManageContacts",
+    "ManageIssuers",
+    "SetIssuers",
+    "Update"
+  ]
+
+  key_permissions = [
+    "Backup",
+    "Create",
+    "Decrypt",
+    "Delete",
+    "Encrypt",
+    "Get",
+    "Import",
+    "List",
+    "Purge",
+    "Recover",
+    "Restore",
+    "Sign",
+    "UnwrapKey",
+    "Update",
+    "Verify",
+    "WrapKey"
+  ]
+
+  secret_permissions = [
+    "Backup",
+    "Delete",
+    "Get",
+    "List",
+    "Purge",
+    "Recover",
+    "Restore",
+    "Set"
+  ]
+}
+
+# since these variables are re-used - a locals block makes this more maintainable
 locals {
-  base_name = "${var.stack}-${var.app_project_prefix}-${module.gw_dep.az_location_short}-${var.environment}"
+  api_suffixes                   = toset(split(",", var.api_suffixes))
+  api_names                      = split(",", var.api_suffixes)
+  frontend_port_name             = "gw-feport"
+  frontend_ip_configuration_name = "gw-feip"
+
+  http_frontend_port_name         = "port-80"
+  http_frontend_port_name_service = "port-8000"
+  https_frontend_port_name        = "port-443"
+
+  gw_public_ip  = "${var.prefix}-gw-public-ip"
+  gw_private_ip = "${var.prefix}-gw-private-ip"
+
+  apim_http_setting      = "apim-http-listener"
+  apim_backend_setting   = "apim-backend-setting"
+  ping_backend_setting   = "ping-backend-setting"
+  apim_backend_pool      = "apim-pool"
+  apim_url_path_map_name = "apim-url-path-map"
+  apim_routing_rule      = "apim-rule"
+  apim_probe_name        = "apim-probe"
+
+  portal_http_setting    = "portal-http-setting"
+  portal_backend_setting = "portal-backend-setting"
+  portal_backend_pool    = "portal-pool"
+  portal_routing_rule    = "portal-rule"
+
+  ping_pool = "apis-pool"
+  fqdns     = [for prefix in local.api_names : "${split(":", prefix)[1]}.${var.base_domain}"]
 }
 
-module "appgw_v2" {
-  source  = "claranet/app-gateway/azurerm"
-  version = "7.4.2"
+resource "azurerm_application_gateway" "gw_network" {
+  name                = "${var.prefix}-app-gateway"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
 
-  stack               = var.stack
-  environment         = var.environment
-  location            = module.gw_dep.az_location
-  location_short      = module.gw_dep.az_location_short
-  client_name         = var.app_project_prefix
-  resource_group_name = module.gw_dep.gw_resource_group_name
+  sku {
+    name     = var.sku_name
+    tier     = var.sku_tier
+    capacity = var.sku_capacity
+  }
 
-  virtual_network_name = module.gw_dep.virtual_network_name
-  subnet_cidr          = "10.10.1.0/24"
+  identity {
+    type               = "UserAssigned"
+    identity_ids       = [azurerm_user_assigned_identity.appgw_identity.id]
+  }
 
-  appgw_backend_http_settings = [{
-    name                  = "${local.base_name}-backhttpsettings"
-    cookie_based_affinity = "Disabled"
-    path                  = "/"
-    port                  = 443
-    protocol              = "Https"
-    request_timeout       = 300
-  }]
+  gateway_ip_configuration {
+    name      = "gw-ip-configuration"
+    subnet_id = data.azurerm_subnet.gw_subnet.id
+  }
 
-  appgw_backend_pools = [{
-    name  = "${local.base_name}-backendpool"
-    fqdns = ["example.com"]
-  }]
+  frontend_port {
+    name = local.http_frontend_port_name
+    port = 80
+  }
 
-  appgw_routings = [{
-    name                       = "${local.base_name}-routing-https"
-    rule_type                  = "Basic"
-    http_listener_name         = "${local.base_name}-listener-https"
-    backend_address_pool_name  = "${local.base_name}-backendpool"
-    backend_http_settings_name = "${local.base_name}-backhttpsettings"
-  }]
-
-  custom_frontend_ip_configuration_name = "${local.base_name}-frontipconfig"
-
-  appgw_http_listeners = [{
-    name                           = "${local.base_name}-listener-https"
-    frontend_ip_configuration_name = "${local.base_name}-frontipconfig"
-    frontend_port_name             = "frontend-https-port"
-    protocol                       = "Https"
-    ssl_certificate_name           = "${local.base_name}-example-com-sslcert"
-    require_sni                    = true
-    host_name                      = "example.com"
-    custom_error_configuration = [
-      {
-        custom_error_page_url = "https://example.com/custom_error_403_page.html"
-        status_code           = "HttpStatus403"
-      },
-      {
-        custom_error_page_url = "https://example.com/custom_error_502_page.html"
-        status_code           = "HttpStatus502"
-      }
-    ]
-  }]
-
-  custom_error_configuration = [
-    {
-      custom_error_page_url = "https://example.com/custom_error_403_page.html"
-      status_code           = "HttpStatus403"
-    },
-    {
-      custom_error_page_url = "https://example.com/custom_error_502_page.html"
-      status_code           = "HttpStatus502"
-    }
-  ]
-
-  frontend_port_settings = [{
-    name = "frontend-https-port"
+  frontend_port {
+    name = local.https_frontend_port_name
     port = 443
-  }]
-
-  ssl_certificates_configs = [{
-    name     = "${local.base_name}-example-com-sslcert"
-    data     = var.certificate_example_com_filebase64
-    password = var.certificate_example_com_password
-  }]
-
-  ssl_policy = {
-    policy_type = "Predefined"
-    policy_name = "AppGwSslPolicy20170401S"
   }
 
-  appgw_url_path_map = [{
-    name                               = "${local.base_name}-example-url-path-map"
-    default_backend_http_settings_name = "${local.base_name}-backhttpsettings"
-    default_backend_address_pool_name  = "${local.base_name}-backendpool"
-    default_rewrite_rule_set_name      = "${local.base_name}-example-rewrite-rule-set"
-    # default_redirect_configuration_name = "${local.base_name}-redirect"
-    path_rules = [
-      {
-        name                       = "${local.base_name}-example-url-path-rule"
-        backend_address_pool_name  = "${local.base_name}-backendpool"
-        backend_http_settings_name = "${local.base_name}-backhttpsettings"
-        rewrite_rule_set_name      = "${local.base_name}-example-rewrite-rule-set"
-        paths                      = ["/demo/"]
-      }
+  frontend_port {
+    name = local.http_frontend_port_name_service
+    port = 8000
+  }
+
+  frontend_ip_configuration {
+    name                          = local.gw_private_ip
+    private_ip_address_allocation = "Static"
+    private_ip_address            = var.private_ip
+    subnet_id                     = data.azurerm_subnet.gw_subnet.id
+  }
+
+  frontend_ip_configuration {
+    name                 = local.gw_public_ip
+    public_ip_address_id = azurerm_public_ip.gw_ip.id
+  }
+
+  ssl_certificate {
+    name                = data.azurerm_key_vault_certificate.ssl_certificate.name
+    key_vault_secret_id = data.azurerm_key_vault_certificate.ssl_certificate.secret_id
+  }
+
+  ////////////////////////////////// APIM SETUPS ////////////////////////////////
+
+  /// <<<<>>>> APIM SETUPS <<<<>>>> ////////
+  http_listener {
+    name                           = local.apim_http_setting
+    frontend_ip_configuration_name = local.gw_public_ip
+    frontend_port_name             = local.http_frontend_port_name
+    protocol                       = "Http"
+    host_name                      = "${var.api_subdomain}.${var.base_domain}"
+  }
+
+  /////////////////// Ping settings /////////////////////
+  backend_http_settings {
+    name                                = local.ping_backend_setting
+    cookie_based_affinity               = "Disabled"
+    port                                = 8000
+    protocol                            = "Http"
+    request_timeout                     = 60
+    path                                = var.probe_url
+    pick_host_name_from_backend_address = true
+  }
+
+  backend_address_pool {
+    name     = local.ping_pool
+    fqdns    = local.fqdns
+  }
+  //////////////////// Ping settings ///////////////////////
+
+  probe {
+    name                                      = local.apim_probe_name
+    interval                                  = 30
+    path                                      = "/"
+    protocol                                  = "Https"
+    timeout                                   = 30
+    unhealthy_threshold                       = 3
+    pick_host_name_from_backend_http_settings = true
+    match {
+      status_code = ["404", "200", "201"]
+    }
+  }
+
+  backend_http_settings {
+    name                                = local.apim_backend_setting
+    cookie_based_affinity               = "Disabled"
+    port                                = 443
+    protocol                            = "Https"
+    request_timeout                     = 60
+    pick_host_name_from_backend_address = true
+    probe_name                          = local.apim_probe_name
+  }
+
+  backend_address_pool {
+    name  = local.apim_backend_pool
+    fqdns = [
+      "${var.gateway_subdomain}.${var.base_domain}"
     ]
-  }]
-
-  autoscaling_parameters = {
-    min_capacity = 2
-    max_capacity = 15
   }
 
-  logs_destinations_ids = [
-    module.gw_dep.log_analytics_workspace_id,
-    module.gw_dep.logs_storage_account_id,
-  ]
+  request_routing_rule {
+    name                       = local.apim_routing_rule
+    rule_type                  = "PathBasedRouting"
+    http_listener_name         = local.apim_http_setting
+    backend_address_pool_name  = local.ping_pool
+    backend_http_settings_name = local.ping_backend_setting
+    url_path_map_name          = local.apim_url_path_map_name
+    priority                   = 10
+  }
+
+  url_path_map {
+    name                               = local.apim_url_path_map_name
+    default_backend_address_pool_name  = local.ping_pool
+    default_backend_http_settings_name = local.ping_backend_setting
+    dynamic "path_rule" {
+      for_each = local.api_suffixes
+      content {
+        name                       = "${split(":", path_rule.value)[0]}-path-rule"
+        backend_address_pool_name  = local.apim_backend_pool
+        backend_http_settings_name = local.apim_backend_setting
+        paths                      = [
+          "/${split(":", path_rule.value)[1]}/*"
+        ]
+      }
+    }
+  }
+
+  /// <<<<>>>> APIM SETUPS <<<<>>>> ////////
+
+  /// <<<<>>>> APIM PORTAL SETUPS  <<<<>>>> ////////
+  http_listener {
+    name                           = local.portal_http_setting
+    frontend_ip_configuration_name = local.gw_public_ip
+    frontend_port_name             = local.http_frontend_port_name
+    protocol                       = "Http"
+    host_name                      = "${var.portal_subdomain}.${var.base_domain}"
+  }
+
+  backend_http_settings {
+    name                                = local.portal_backend_setting
+    cookie_based_affinity               = "Disabled"
+    port                                = 443
+    protocol                            = "Https"
+    request_timeout                     = 60
+    pick_host_name_from_backend_address = true
+  }
+
+  backend_address_pool {
+    name  = local.portal_backend_pool
+    fqdns = [
+      "${var.portal_subdomain}.${var.base_domain}"
+    ]
+  }
+
+  request_routing_rule {
+    name                       = local.portal_routing_rule
+    rule_type                  = "Basic"
+    http_listener_name         = local.portal_http_setting
+    backend_address_pool_name  = local.portal_backend_pool
+    backend_http_settings_name = local.portal_backend_setting
+    priority                   = 11
+  }
+  ////////////////////////////////// APIM SETUPS ENDS /////////////////////////////////////////
+
+
+  ////////////////////////////////// BACKEND SETUPS /////////////////////////////////////////
+
+  dynamic "http_listener" {
+    for_each = local.api_suffixes
+    content {
+      name                           = "${split(":", http_listener.value)[0]}-http-listener"
+      frontend_ip_configuration_name = local.gw_private_ip
+      frontend_port_name             = local.http_frontend_port_name_service
+      protocol                       = "Http"
+      host_name                      = "${split(":", http_listener.value)[1]}.${var.base_domain}"
+    }
+  }
+
+  dynamic "backend_address_pool" {
+    for_each = local.api_suffixes
+    content {
+      name = "${split(":", backend_address_pool.value)[0]}-pool"
+    }
+  }
+
+  dynamic "backend_http_settings" {
+    for_each = local.api_suffixes
+    content {
+      name                  = "${split(":", backend_http_settings.value)[0]}-backend-setting"
+      cookie_based_affinity = "Disabled"
+      port                  = split(":", backend_http_settings.value)[2]
+      path                  = "/"
+      protocol              = "Http"
+      request_timeout       = 60
+    }
+  }
+
+  dynamic "request_routing_rule" {
+    for_each = local.api_suffixes
+    content {
+      name                       = "${split(":", request_routing_rule.value)[0]}-routing-tb"
+      rule_type                  = "Basic"
+      http_listener_name         = "${split(":", request_routing_rule.value)[0]}-http-listener"
+      backend_address_pool_name  = "${split(":", request_routing_rule.value)[0]}-pool"
+      backend_http_settings_name = "${split(":", request_routing_rule.value)[0]}-backend-setting"
+      priority                   = split(":", request_routing_rule.value)[3]
+    }
+  }
+
+  ////////////////////////////////// END BACKEND SETUPS /////////////////////////////////////////
+}
+
+resource "azurerm_private_dns_a_record" "api_dns_record" {
+  count               = length(local.api_names)
+  name                = "${split(":", local.api_names[count.index])[1]}"
+  zone_name           = data.azurerm_private_dns_zone.dns_zone.name
+  resource_group_name = data.azurerm_resource_group.rg.name
+  ttl                 = 3600
+  records             = [var.private_ip]
+
+  depends_on = [azurerm_application_gateway.gw_network]
 }
 
 
+resource "cloudflare_record" "cf_api_subdomain_a_record" {
+  zone_id         = var.cloudflare_zone_id
+  name            = var.api_subdomain
+  value           = azurerm_public_ip.gw_ip.ip_address
+  type            = "A"
+  proxied         = true
+  allow_overwrite = true
+}

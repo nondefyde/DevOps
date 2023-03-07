@@ -1,60 +1,25 @@
 #! /bin/bash
 
-echo "Deploy image to container"
+echo "Project     : $1"
+echo "image       : $2"
+echo "App alias   : $3"
 
-RESOURCE_GROUP_NAME=${1}-group
-RESOURCE_LOCATION=centralus
-VM_NAME=${1}-vm
-IMAGE=${2}
-HOST=${3}
-CONTAINER_NAME=${4}
-PORT=${5}
+echo "Deploy App $1"
 
-echo "Login to container registry ${1}acr"
+echo "Remove unused images as part of cleaning up"
+docker image prune -a -f
 
-LOGIN_SERVER=$(az acr login -n ${1}acr --expose-token)
+APP_ALIAS=$3
 
-accessToken=$( jq -r  '.accessToken' <<< "${LOGIN_SERVER}" )
-server=$( jq -r  '.loginServer' <<< "${LOGIN_SERVER}" )
-
-echo "logged in to server > ${server}"
-
-echo "Login to docker"
-az vm run-command invoke \
-  -g ${RESOURCE_GROUP_NAME} \
-  -n ${VM_NAME} \
-  --command-id RunShellScript \
-  --scripts 'sudo docker login $1 --username 00000000-0000-0000-0000-000000000000 --password $2' \
-  --parameters ${server} ${accessToken}
-
-
-echo "Cleanup previous deployment"
-az vm run-command invoke \
-  -g ${RESOURCE_GROUP_NAME} \
-  -n ${VM_NAME} \
-  --command-id RunShellScript \
-  --scripts '
-       sudo docker stop $1
-       sudo docker rmi $1
-       sudo docker container stop $1
-       sudo docker container rm $1
-    ' \
-  --parameters ${CONTAINER_NAME}
-
-echo "Pull latest image from docker"
-az vm run-command invoke \
-  -g ${RESOURCE_GROUP_NAME} \
-  -n ${VM_NAME} \
-  --command-id RunShellScript \
-  --scripts 'sudo docker pull $1' \
-  --parameters ${IMAGE}
-
-echo "Deploy latest image to docker"
-az vm run-command invoke \
-  -g ${RESOURCE_GROUP_NAME} \
-  -n ${VM_NAME} \
-  --command-id RunShellScript \
-  --scripts 'sudo docker run --name=$3 --restart=always -p $4 -e VIRTUAL_HOST=$1 -d $2' \
-  --parameters ${HOST} ${IMAGE} ${CONTAINER_NAME} ${PORT}
-
-echo "Successfully Deployed"
+IMAGE_COUNT=$(docker ps --filter="name=${APP_ALIAS}*" | grep "${APP_ALIAS}" | wc -l)
+IDS=$(docker ps --filter ancestor=$2 --format '{{.ID}}')
+ZERO=0
+echo "Number of container running image is ${IMAGE_COUNT}"
+if [ $IMAGE_COUNT -gt 0 ]; then
+  docker compose pull app
+  docker compose up -d
+else
+  echo "Spin up new container instance"
+  docker compose version
+  docker compose up -d
+fi

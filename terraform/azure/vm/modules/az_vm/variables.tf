@@ -1,12 +1,22 @@
 variable "prefix" {
   type        = string
-  description = "The prefix for deployment"
+  description = "The prefix for the resource group"
 }
 
-variable "client_id" {
-  type        = string
-  description = "Azure Resource Manager Client ID"
-  default     = "none"
+variable "name" {
+  type = string
+}
+
+variable "vm_count" {
+  type = number
+}
+
+variable "location" {
+  type = string
+}
+
+variable "group" {
+  type = string
 }
 
 variable "subscription_id" {
@@ -19,9 +29,28 @@ variable "tenant_id" {
   description = "Azure Resource Manager Tenant ID"
 }
 
-variable "cloud_init_file" {
+variable "client_id" {
   type        = string
-  description = "The File initialization file path"
+  description = "Client ID"
+}
+
+variable "client_secret" {
+  type        = string
+  description = "Client ID"
+}
+
+variable "address_prefix" {
+  type = string
+  default = "10.0.2.0/24"
+}
+
+variable "environment" {
+  type = string
+  default = "development"
+}
+
+variable "subnet_id" {
+  type = string
 }
 
 variable "disk_size" {
@@ -30,32 +59,20 @@ variable "disk_size" {
   description = "Disk size/type"
 }
 
-variable "location" {
-  type        = string
-  description = "Server location"
-}
-
-variable "client_secret" {
-  type = string
-  default = "Client secreet"
-}
-
 variable "admin_username" {
   type = string
-  description = "Admin user name"
+  default = "adminuser"
 }
 
 variable "admin_password" {
   type = string
-  default = "Admin password"
 }
 
-variable "environment" {
-  type = string
-  description = "Development environment"
+variable "cloud_init_file" {
+  type        = string
+  description = "The File initialization file path"
 }
 
-variable "dns_domain" {
+variable "base_domain" {
   type = string
-  description = "DNS domain"
 }
