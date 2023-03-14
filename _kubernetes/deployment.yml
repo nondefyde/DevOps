@@ -31,7 +31,7 @@ spec:
               protocol: TCP
           envFrom:
             - secretRef:
-                name: ${APP_NAME}-${NAMESPACE}
+                name: app-secret
           readinessProbe:
             initialDelaySeconds: 15
             httpGet:

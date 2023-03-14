@@ -252,10 +252,6 @@ jobs:
           echo "aws eks update-kubeconfig --name ${{ env.project }}-cluster --region ${{ secrets.AWS_REGION }}"
           aws eks update-kubeconfig --name ${{ env.project }}-cluster --region ${{ secrets.AWS_REGION }}
 
-      - name: Decode Secret
-        if: ${{ env.appSecret }}
-        run: DECODED=$(echo ${{ secrets.AWS_K8_APP_SECRET }} | base64 --decode > env.yml)
-
       - name: Deploy image to kubernetes cluster
         env:
           APP_NAME:  ${{ env.service }}
@@ -270,12 +266,6 @@ jobs:
           cat ./_kubernetes/service.yml | envsubst | kubectl apply -f -
           cat ./_kubernetes/deployment.yml | envsubst | kubectl apply -f -
           cat ./_kubernetes/ingress.yml | envsubst | kubectl apply -f -
-          cat env.yml
-          FILE=./env.yml
-          if [ -f "$FILE" ]; then
-            cat ./env.yml | envsubst | kubectl apply -f -
-            echo secret file uploaded
-          fi
 
       - name: Restart Pods
         id: restart-pods
@@ -283,10 +273,4 @@ jobs:
         continue-on-error: true # will fail on first deploy
 
       - name: Cleanups
-        run: |
-          FILE=./env.yml
-          if [ -f "$FILE" ]; then
-            echo secret file removed
-             rm -r env.yml
-          fi
-          rm -r /home/runner/.kube/config
+        run: rm -r /home/runner/.kube/config
