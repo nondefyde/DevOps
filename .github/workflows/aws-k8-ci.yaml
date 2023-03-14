@@ -114,6 +114,7 @@ jobs:
           echo "dockerfile=${{ env.dockerfile }}" >> $GITHUB_OUTPUT
           echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
           echo "probe_url=${{ env.probe_url }}" >> $GITHUB_OUTPUT
+          echo "namespace=${{ env.namespace }}" >> $GITHUB_OUTPUT
 
   config:
     if: ${{ inputs.TFAction == false && github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
