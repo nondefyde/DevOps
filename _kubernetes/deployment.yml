@@ -33,14 +33,14 @@ spec:
             - secretRef:
                 name: app-secret
           readinessProbe:
-            initialDelaySeconds: 15
+            initialDelaySeconds: 5
             httpGet:
               path: ${PROBE_URL}
               port: ${PORT}
-            periodSeconds: 30
+            periodSeconds: 5
           livenessProbe:
-            initialDelaySeconds: 15
+            initialDelaySeconds: 5
             httpGet:
               path: ${PROBE_URL}
               port: ${PORT}
-            periodSeconds: 30
+            periodSeconds: 5
