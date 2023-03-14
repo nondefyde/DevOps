@@ -16,9 +16,6 @@ on:
       AWS_REGION:
         description: 'AWS region'
         required: true
-      AWS_K8_APP_SECRET:
-        description: 'APP Secret'
-        required: true
     inputs:
       TFAction:
         description: "Destroy Infrastructure"
@@ -62,7 +59,6 @@ env:
   image-name: stmx
   current_dockerfile: './app/Dockerfile'
   current_probe_url: '/v1/ping'
-  appSecret: ${{ secrets.AWS_K8_APP_SECRET }}
 
 jobs:
   envs:
