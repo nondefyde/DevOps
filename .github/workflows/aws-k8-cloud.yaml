@@ -35,6 +35,9 @@ on:
       project:
         required: true
         type: string
+      namespace:
+        required: true
+        type: string
       repository:
         required: true
         type: string
@@ -48,7 +51,7 @@ permissions:
 
 env:
   current_project: cloudstgdev
-  namespace: stg
+  current_namespace: stg
   current_instance_type: "t3.medium"
 
 jobs:
@@ -58,15 +61,19 @@ jobs:
     outputs:
       project: ${{ steps.variables.outputs.project }}
       instance_type: ${{ steps.variables.outputs.instance_type }}
+      namespace: ${{ steps.variables.outputs.namespace }}
     steps:
       - name: Initialize environments
         run: |
           EP="${{inputs.project}}"          
           CIT="${{inputs.instance_type}}"          
+          NSP="${{inputs.namespace}}"          
           PROJECT="${EP:-${{ env.current_project }}}"
+          NAMESPACE="${NSP:-${{ env.current_namespace }}}"
           instance_type="${CIT:-${{ env.current_instance_type }}}"
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
           echo "instance_type=${instance_type}" >> "$GITHUB_ENV"
+          echo "namespace=${namespace}" >> "$GITHUB_ENV"
       - name: Set Env
         id: variables
         run: |

@@ -28,6 +28,9 @@ on:
       project:
         required: true
         type: string
+      namespace:
+        required: true
+        type: string
       service:
         required: true
         type: string
@@ -54,7 +57,7 @@ env:
   current_project: cloudstgdev
   current_port: 8000
   current_hostname_format: "app-{0}.voomsway.com"
-  namespace: stg
+  current_namespace: stg
   current_service: cloud-app
   image-name: stmx
   current_dockerfile: './app/Dockerfile'
@@ -67,6 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       project: ${{ steps.variables.outputs.project }}
+      namespace: ${{ steps.variables.outputs.namespace }}
       port: ${{ steps.variables.outputs.port }}
       dockerfile: ${{ steps.variables.outputs.dockerfile }}
       service: ${{ steps.variables.outputs.service }}
@@ -81,6 +85,7 @@ jobs:
           DOCFILE="${{ inputs.dockerfile }}"
           PBURL="${{ inputs.probe_url }}"
           SRV="${{ inputs.service }}"
+          NSP="${{inputs.namespace}}"          
           
           ENV_HOST_FMT="${{env.current_hostname_format}}"
 
@@ -90,9 +95,11 @@ jobs:
           DOCKER_FILE="${DOCFILE:-${{ env.current_dockerfile }}}"
           SERVICE="${SRV:-${{ env.current_service }}}"
           PROBE_URL="${PBURL:-${{env.current_probe_url}}}"
+          NAMESPACE="${NSP:-${{ env.current_namespace }}}"
     
 
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
+          echo "namespace=${NAMESPACE}" >> "$GITHUB_ENV"
           echo "port=${PORT}" >> "$GITHUB_ENV"
           echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
           echo "service=${SERVICE}" >> "$GITHUB_ENV"
@@ -117,6 +124,7 @@ jobs:
     env:
       project: ${{ needs.envs.outputs.project }}
       port: ${{ needs.envs.outputs.port }}
+      namespace: ${{ needs.envs.outputs.namespace }}
       hostname-format: ${{ needs.envs.outputs.hostname-format }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
       service: ${{ needs.envs.outputs.service }}
@@ -167,6 +175,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
+      namespace: ${{ needs.envs.outputs.namespace }}
       port: ${{ needs.envs.outputs.port }}
       hostname: ${{ needs.config.outputs.hostname }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
@@ -210,6 +219,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
+      namespace: ${{ needs.envs.outputs.namespace }}
       port: ${{ needs.envs.outputs.port }}
       hostname: ${{ needs.config.outputs.hostname }}
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
