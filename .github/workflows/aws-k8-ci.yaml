@@ -48,6 +48,9 @@ on:
         type: string
       probe_url:
         type: string
+      replica:
+        type: string
+        default: 1
 
 permissions:
   id-token: write
@@ -62,6 +65,7 @@ env:
   image-name: stmx
   current_dockerfile: './app/Dockerfile'
   current_probe_url: '/v1/ping'
+  current_replica: 1
 
 jobs:
   envs:
@@ -75,6 +79,7 @@ jobs:
       dockerfile: ${{ steps.variables.outputs.dockerfile }}
       service: ${{ steps.variables.outputs.service }}
       probe_url: ${{ steps.variables.outputs.probe_url }}
+      replica: ${{ steps.variables.outputs.replica }}
       hostname-format: ${{ steps.variables.outputs.hostname-format }}
     steps:
       - name: Initialize environments
@@ -86,6 +91,7 @@ jobs:
           PBURL="${{ inputs.probe_url }}"
           SRV="${{ inputs.service }}"
           NSP="${{inputs.namespace}}"          
+          REP="${{inputs.replica}}"          
           
           ENV_HOST_FMT="${{env.current_hostname_format}}"
 
@@ -96,6 +102,7 @@ jobs:
           SERVICE="${SRV:-${{ env.current_service }}}"
           PROBE_URL="${PBURL:-${{env.current_probe_url}}}"
           NAMESPACE="${NSP:-${{ env.current_namespace }}}"
+          REPLICA="${REP:-${{ env.current_replica }}}"
     
 
           echo "project=${PROJECT}" >> "$GITHUB_ENV"
@@ -105,6 +112,7 @@ jobs:
           echo "service=${SERVICE}" >> "$GITHUB_ENV"
           echo "probe_url=${PROBE_URL}" >> "$GITHUB_ENV"
           echo "dockerfile=${DOCKER_FILE}" >> "$GITHUB_ENV"
+          echo "replica=${REPLICA}" >> "$GITHUB_ENV"
       - name: Set Env
         id: variables
         run: |
@@ -115,6 +123,7 @@ jobs:
           echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
           echo "probe_url=${{ env.probe_url }}" >> $GITHUB_OUTPUT
           echo "namespace=${{ env.namespace }}" >> $GITHUB_OUTPUT
+          echo "replica=${{ env.replica }}" >> $GITHUB_OUTPUT
 
   config:
     if: ${{ inputs.TFAction == false && github.event.workflow_run.conclusion == 'success' || inputs.is_workflow == true || github.event_name == 'push' }}
@@ -226,6 +235,7 @@ jobs:
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
       service: ${{ needs.envs.outputs.service }}
       probe_url: ${{ needs.envs.outputs.probe_url }}
+      replica: ${{ needs.envs.outputs.replica }}
     steps:
       - uses: actions/checkout@v2
       - name: Download Repo to Artifact
@@ -266,6 +276,7 @@ jobs:
           NAMESPACE: ${{ env.namespace }}
           INGRESS_HOSTNAME: ${{ env.hostname }}
           PROBE_URL: ${{ env.probe_url }}
+          REPLICA: ${{ env.replica }}
           REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
           PORT: ${{ env.port }}
         run: |

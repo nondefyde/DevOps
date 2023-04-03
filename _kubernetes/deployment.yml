@@ -8,7 +8,7 @@ metadata:
     app: ${APP_NAME}
 spec:
   #Run one instances of our application
-  replicas: 1
+  replicas: ${REPLICA}
   selector:
     matchLabels:
       app: ${APP_NAME}-pod
