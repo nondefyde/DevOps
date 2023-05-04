@@ -68,6 +68,7 @@ env:
   image-name: stmx
   current_dockerfile: './app/Dockerfile'
   current_probe_url: '/v1/ping'
+  current_app_secret: 'app-secret'
   current_replica: 1
 
 jobs:
