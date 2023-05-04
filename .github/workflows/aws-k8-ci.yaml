@@ -48,6 +48,9 @@ on:
         type: string
       probe_url:
         type: string
+      app_secret:
+        type: string
+        default: 'app-secret'
       replica:
         type: string
         default: 1
@@ -79,6 +82,7 @@ jobs:
       dockerfile: ${{ steps.variables.outputs.dockerfile }}
       service: ${{ steps.variables.outputs.service }}
       probe_url: ${{ steps.variables.outputs.probe_url }}
+      app_secret: ${{ steps.variables.outputs.app_secret }}
       replica: ${{ steps.variables.outputs.replica }}
       hostname-format: ${{ steps.variables.outputs.hostname-format }}
     steps:
@@ -89,6 +93,7 @@ jobs:
           HOST_FMT="${{inputs.hostname-format}}"
           DOCFILE="${{ inputs.dockerfile }}"
           PBURL="${{ inputs.probe_url }}"
+          APSCRT="${{ inputs.app_secret }}"
           SRV="${{ inputs.service }}"
           NSP="${{inputs.namespace}}"          
           REP="${{inputs.replica}}"          
@@ -101,6 +106,7 @@ jobs:
           DOCKER_FILE="${DOCFILE:-${{ env.current_dockerfile }}}"
           SERVICE="${SRV:-${{ env.current_service }}}"
           PROBE_URL="${PBURL:-${{env.current_probe_url}}}"
+          APP_SECRET="${APSCRT:-${{env.current_app_secret}}}"
           NAMESPACE="${NSP:-${{ env.current_namespace }}}"
           REPLICA="${REP:-${{ env.current_replica }}}"
     
@@ -111,6 +117,7 @@ jobs:
           echo "hostname-format=${HOST_FORMAT}" >> "$GITHUB_ENV"
           echo "service=${SERVICE}" >> "$GITHUB_ENV"
           echo "probe_url=${PROBE_URL}" >> "$GITHUB_ENV"
+          echo "app_secret=${APP_SECRET}" >> "$GITHUB_ENV"
           echo "dockerfile=${DOCKER_FILE}" >> "$GITHUB_ENV"
           echo "replica=${REPLICA}" >> "$GITHUB_ENV"
       - name: Set Env
@@ -235,6 +242,7 @@ jobs:
       dockerfile: ${{ needs.envs.outputs.dockerfile }}
       service: ${{ needs.envs.outputs.service }}
       probe_url: ${{ needs.envs.outputs.probe_url }}
+      app_secret: ${{ needs.envs.outputs.app_secret }}
       replica: ${{ needs.envs.outputs.replica }}
     steps:
       - uses: actions/checkout@v2
@@ -276,6 +284,7 @@ jobs:
           NAMESPACE: ${{ env.namespace }}
           INGRESS_HOSTNAME: ${{ env.hostname }}
           PROBE_URL: ${{ env.probe_url }}
+          APP_SECRET: ${{ env.app_secret }}
           REPLICA: ${{ env.replica }}
           REPOSITORY: ${{ steps.login-ecr.outputs.registry }}/${{ env.project }}
           PORT: ${{ env.port }}
