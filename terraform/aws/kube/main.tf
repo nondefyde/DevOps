@@ -43,22 +43,22 @@ resource "aws_ecr_repository" "app_registry" {
   ]
 }
 
-#module "nginx-controller" {
-#  source  = "terraform-iaac/nginx-controller/helm"
-#  additional_set = [
-#    {
-#      name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
-#      value = "nlb"
-#      type  = "string"
-#    },
-#    {
-#      name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-cross-zone-load-balancing-enabled"
-#      value = "true"
-#      type  = "string"
-#    }
-#  ]
-#
-#  depends_on = [
-#    aws_ecr_repository.app_registry
-#  ]
-#}
+module "nginx-controller" {
+  source  = "terraform-iaac/nginx-controller/helm"
+  additional_set = [
+    {
+      name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
+      value = "nlb"
+      type  = "string"
+    },
+    {
+      name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-cross-zone-load-balancing-enabled"
+      value = "true"
+      type  = "string"
+    }
+  ]
+
+  depends_on = [
+    aws_ecr_repository.app_registry
+  ]
+}
