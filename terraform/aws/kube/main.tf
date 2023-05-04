@@ -59,6 +59,7 @@ module "nginx-controller" {
   ]
 
   depends_on = [
+    module.elb,
     aws_ecr_repository.app_registry
   ]
 }
