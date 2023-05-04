@@ -130,6 +130,7 @@ jobs:
           echo "service=${{ env.service }}" >> $GITHUB_OUTPUT
           echo "probe_url=${{ env.probe_url }}" >> $GITHUB_OUTPUT
           echo "namespace=${{ env.namespace }}" >> $GITHUB_OUTPUT
+          echo "app_secret=${{ env.app_secret }}" >> $GITHUB_OUTPUT
           echo "replica=${{ env.replica }}" >> $GITHUB_OUTPUT
 
   config:
