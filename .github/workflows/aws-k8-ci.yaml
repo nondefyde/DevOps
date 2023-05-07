@@ -1,6 +1,10 @@
 name: AWS K8 CI
 
 on:
+  push:
+    branches:
+      - 'main'
+
   workflow_run:
     workflows: [ "AWS K8 Cloud BUILD" ]
     types:
