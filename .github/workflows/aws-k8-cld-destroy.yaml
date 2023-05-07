@@ -113,7 +113,7 @@ jobs:
           name: ${{ env.eksEnvFile }}
           path: ${{ env.eksEnvFile }}
 
-      - name: Instantiate EKS Cluster
+      - name: Destroy EKS Cluster
         uses: ./.github/actions/tf-aws-destroy-script
         id: eks
         with:
@@ -121,7 +121,7 @@ jobs:
           project: ${{ env.project }}
           bucketRegion: ${{ env.bucket_region }}
           key: ${{ env.project }}-eks
-          working-directory: ${{ env.scriptPath}}/eks
+          working-directory: ${{ env.scriptPath }}/eks
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
