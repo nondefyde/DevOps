@@ -34,8 +34,7 @@ runs:
     - name: Initialize environments
       shell: bash
       run: |
-        echo "project=${{ steps.config.outputs.prefix }}${{ steps.config.outputs.name }}" >> "$GITHUB_ENV"
-        echo "prefix=${{ steps.config.outputs.prefix }}" >> "$GITHUB_ENV"
+        echo "project=${{ steps.config.outputs.project }}" >> "$GITHUB_ENV"
         
         json_string=${{ toJson(steps.config.outputs.backend) }}
         for property in $(echo $json_string | jq -r 'keys[]'); do
