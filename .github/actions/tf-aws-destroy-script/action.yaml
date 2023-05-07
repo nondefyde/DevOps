@@ -1,0 +1,85 @@
+name: tf-azure-destroy-script
+author: Emmanuel Okafor
+description: A generic action to destroy terraform cloud in aws
+
+inputs:
+  AWS_ACCESS_KEY_ID:
+    description: 'Aws Key ID'
+    required: true
+  AWS_SECRET_ACCESS_KEY:
+    description: 'Aws Secret key'
+    required: true
+  AWS_REGION:
+    description: 'Aws Region'
+    required: true
+  envFile:
+    description: 'Environment'
+    required: true
+  bucketRegion:
+    description: 'Entry bucket region name'
+    required: true
+  project:
+    description: 'Entry project name'
+    required: true
+  key:
+    description: 'Entry group name'
+    required: true
+    default: 'key'
+  working-directory:
+    description: 'Default working directory'
+    default: 'tf'
+  variable-path:
+    description: 'The Path to variable'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Echo env for debug
+      shell: bash
+      run: TFDestroy >>>>> ${{ inputs.TFDestroy }}
+
+    - name: Restore cache
+      uses: actions/cache@v2
+      with:
+        key: file-${{ runner.os }}-${{ github.run_id }}
+        path: ${{ inputs.envFile }}
+        restore: true
+
+    - name: Copy env to working directory
+      shell: bash
+      run: mv "${{ inputs.envFile }}" ./${{ inputs.working-directory }}
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ inputs.AWS_REGION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
+
+    - name: Terraform Destroy
+      id: destroy
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "Terraform Destruction in progress ${{ inputs.project }}"
+        terraform -destroy -no-color -input=false \
+          -backend-config="bucket=${{ inputs.project }}-tfstate" \
+          -backend-config="region=${{ inputs.bucketRegion }}" \
+          -backend-config="key=${{ inputs.key }}.terraform.tfstate" \
+          -var=aws_region="${{ inputs.AWS_REGION }}" \
+          -var=aws_key_id="${{ inputs.AWS_ACCESS_KEY_ID }}" \
+          -var=aws_key_secret="${{ inputs.AWS_SECRET_ACCESS_KEY }}"
+          -var-file=./${{ inputs.envFile }} \
+          -out ./_state/${{ inputs.project }}.destroy.tfplan \
+          -lock=false
+        terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.destroy.tfplan
+        echo "Terraform Destruction in successful ${{ inputs.project }}"
+      continue-on-error: false
