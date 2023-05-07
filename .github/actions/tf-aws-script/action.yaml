@@ -54,6 +54,13 @@ runs:
       shell: bash
       run: mv env.tfvars ./${{ inputs.working-directory }}
 
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ inputs.AWS_REGION }}
+
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
