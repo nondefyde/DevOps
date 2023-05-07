@@ -43,7 +43,7 @@ jobs:
             echo "${VAR,,}=${!VAR}" >> $GITHUB_OUTPUT
           done
 
-  tfbucket:
+  buc:
     name: 'TF Bucket'
     needs: [ envs ]
     permissions: write-all
@@ -68,7 +68,7 @@ jobs:
 
   eks:
     name: 'Eks Cluster'
-    needs: [ envs, sa ]
+    needs: [ envs, buc ]
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
