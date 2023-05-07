@@ -300,6 +300,17 @@ resource "kubernetes_secret_v1" "service_account_token" {
   ]
 }
 
+
+resource "null_resource" "update-kubeconfig" {
+  provisioner "local-exec" {
+    command = "aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.aws_region}"
+  }
+
+  depends_on = [
+    aws_iam_policy.elb-policy
+  ]
+}
+
 data "aws_eks_cluster" "eks" {
   name = var.cluster_name
 }
@@ -312,4 +323,8 @@ resource "aws_iam_openid_connect_provider" "oidc" {
   client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = [data.tls_certificate.tls.certificates.0.sha1_fingerprint]
   url             = data.aws_eks_cluster.eks.identity.0.oidc.0.issuer
+
+  depends_on = [
+    null_resource.update-kubeconfig
+  ]
 }
