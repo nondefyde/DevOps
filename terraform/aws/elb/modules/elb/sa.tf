@@ -327,6 +327,10 @@ resource "aws_iam_openid_connect_provider" "oidc" {
   thumbprint_list = [data.tls_certificate.tls.certificates.0.sha1_fingerprint]
   url             = data.aws_eks_cluster.eks.identity.0.oidc.0.issuer
 
+  tags = {
+    Cluster        = var.cluster_name
+  }
+
   depends_on = [
     null_resource.update-kubeconfig
   ]

@@ -64,13 +64,13 @@ permissions:
   contents: read
 
 env:
-  current_project: cloudstgdev
+  current_project: cloudstgtest
   current_port: 8000
-  current_hostname_format: "app-{0}.voomsway.com"
+  current_hostname_format: "app-{0}.stardev.xyz"
   current_namespace: stg
   current_service: cloud-app
   image-name: stmx
-  current_dockerfile: './app/Dockerfile'
+  current_dockerfile: './ci/Dockerfile'
   current_probe_url: '/v1/ping'
   current_app_secret: 'app-secret'
   current_replica: 1
