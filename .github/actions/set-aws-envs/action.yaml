@@ -43,7 +43,7 @@ runs:
           echo "$property=$value" >> "$GITHUB_ENV"
         done
         
-        json_string=${{ toJson(steps.config.outputs.key-vault) }}
+        json_string=${{ toJson(steps.config.outputs.cluster) }}
         for property in $(echo $json_string | jq -r 'keys[]'); do
           value=$(echo $json_string | jq -r ".$property")
           echo "$property=$value" >> "$GITHUB_ENV"

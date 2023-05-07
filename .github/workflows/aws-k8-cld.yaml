@@ -22,8 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       project: ${{ steps.variables.outputs.project }}
-      prefix: ${{ steps.variables.outputs.prefix }}
-      bucketRegion: ${{ steps.variables.outputs.bucketRegion }}
+      bucket_region: ${{ steps.variables.outputs.bucket_region }}
+      instance_type: ${{ steps.variables.outputs.instance_type }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      bucketRegion: ${{ needs.envs.outputs.bucketRegion }}
+      bucket_region: ${{ needs.envs.outputs.bucket_region }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -59,7 +59,7 @@ jobs:
         id: sa
         with:
           bucketName: ${{ env.project }}
-          bucketRegion: ${{ env.bucketRegion }}
+          bucketRegion: ${{ env.bucket_region }}
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           AWS_REGION: ${{secrets.AWS_REGION}}
@@ -97,7 +97,7 @@ jobs:
 
       - name: Instantiate EKS Cluster
         uses: ./.github/actions/tf-aws-script
-        id: rg
+        id: eks
         with:
           project: ${{ env.project }}
           envFile: ${{ env.eksEnvFile }}
