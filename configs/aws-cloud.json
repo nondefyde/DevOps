@@ -1,5 +1,5 @@
 {
-  "project": "cloudstgtest",
+  "project": "cloudstgtestextra",
   "backend": {
     "bucket_region": "us-west-1"
   },

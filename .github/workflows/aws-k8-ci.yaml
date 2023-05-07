@@ -64,7 +64,7 @@ permissions:
   contents: read
 
 env:
-  current_project: cloudstgtest
+  current_project: cloudstgtestextra
   current_port: 7000
   current_hostname_format: "app-{0}.stardev.xyz"
   current_namespace: stg
