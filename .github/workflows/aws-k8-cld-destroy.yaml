@@ -1,16 +1,13 @@
-name: AWS K8 Cloud BUILD
+name: AWS K8 Cloud Destroy
 
 on:
-  push:
-    branches:
-      - 'main'
-
   workflow_dispatch:
     inputs:
       TFAction:
         description: "Destroy Infrastructure"
         type: boolean
         default: false
+
 permissions:
   id-token: write
   contents: read
@@ -26,6 +23,7 @@ env:
 jobs:
   envs:
     name: 'Set Envs'
+    if: ${{ inputs.TFAction == true}}
     runs-on: ubuntu-latest
     outputs:
       project: ${{ steps.variables.outputs.project }}
@@ -48,28 +46,44 @@ jobs:
           for VAR in $(compgen -e); do
             echo "${VAR,,}=${!VAR}" >> $GITHUB_OUTPUT
           done
-
-  buc:
-    name: 'Bucket'
-    needs: [ envs ]
+  elb:
+    name: 'EL Balancer'
+    needs: [ envs, eks ]
     permissions: write-all
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
       bucket_region: ${{ needs.envs.outputs.bucket_region }}
+      elbEnvFile: "elb.tfvars"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Instantiate Bucket
-        uses: ./.github/actions/create-aws-bucket
-        id: sa
+      - name: convert to json
+        id: elbjson
+        uses: schdck/create-env-json@v1
         with:
-          bucketName: ${{ env.project }}
+          file-name: ${{ env.elbEnvFile }}
+          project: ${{ env.project }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.elbEnvFile }}
+          path: ${{ env.elbEnvFile }}
+
+      - name: Instantiate EL Balancer
+        uses: ./.github/actions/tf-aws-destroy-script
+        id: elb
+        with:
+          envFile: ${{ env.elbEnvFile }}
+          project: ${{ env.project }}
           bucketRegion: ${{ env.bucket_region }}
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          AWS_REGION: ${{secrets.AWS_REGION}}
+          key: ${{ env.project }}-elb
+          working-directory: ${{ env.scriptPath}}/elb
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         continue-on-error: false
 
   eks:
@@ -77,9 +91,6 @@ jobs:
     needs: [ envs, buc ]
     permissions: write-all
     runs-on: ubuntu-latest
-    outputs:
-      cluster_name: ${{ steps.set-output.outputs.cluster_name }}
-      account_id: ${{ steps.set-output.outputs.account_id }}
     env:
       project: ${{ needs.envs.outputs.project }}
       bucket_region: ${{ needs.envs.outputs.bucket_region }}
@@ -103,7 +114,7 @@ jobs:
           path: ${{ env.eksEnvFile }}
 
       - name: Instantiate EKS Cluster
-        uses: ./.github/actions/tf-aws-script
+        uses: ./.github/actions/tf-aws-destroy-script
         id: eks
         with:
           envFile: ${{ env.eksEnvFile }}
@@ -115,61 +126,3 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
         continue-on-error: false
-
-      - name: Set output
-        id: set-output
-        run: |
-          echo "cluster_name=${{ env.cluster_name }}" >> $GITHUB_OUTPUT
-          echo "account_id=${{ env.account_id }}" >> $GITHUB_OUTPUT
-
-  elb:
-    name: 'EL Balancer'
-    needs: [ envs, eks ]
-    permissions: write-all
-    runs-on: ubuntu-latest
-    outputs:
-      cluster_name: ${{ steps.set-output.outputs.cluster_name }}
-      issuer: ${{ steps.set-output.outputs.issuer }}
-      vpc_id: ${{ steps.set-output.outputs.vpc_id }}
-    env:
-      project: ${{ needs.envs.outputs.project }}
-      bucket_region: ${{ needs.envs.outputs.bucket_region }}
-      elbEnvFile: "elb.tfvars"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: convert to json
-        id: elbjson
-        uses: schdck/create-env-json@v1
-        with:
-          file-name: ${{ env.elbEnvFile }}
-          project: ${{ env.project }}
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.elbEnvFile }}
-          path: ${{ env.elbEnvFile }}
-
-      - name: Instantiate EL Balancer
-        uses: ./.github/actions/tf-aws-script
-        id: elb
-        with:
-          envFile: ${{ env.elbEnvFile }}
-          project: ${{ env.project }}
-          bucketRegion: ${{ env.bucket_region }}
-          key: ${{ env.project }}-elb
-          working-directory: ${{ env.scriptPath}}/elb
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-        continue-on-error: false
-
-      - name: Set output
-        id: set-output
-        run: |
-          echo "cluster_name=${{ env.cluster_name }}" >> $GITHUB_OUTPUT
-          echo "issuer=${{ env.issuer }}" >> $GITHUB_OUTPUT
-          echo "vpc_id=${{ env.vpc_id }}" >> $GITHUB_OUTPUT
-
