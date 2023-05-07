@@ -37,16 +37,21 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Restore cache
-      uses: actions/cache@v2
+    - name: Download Env File
+      uses: actions/download-artifact@master
       with:
-        key: file-${{ runner.os }}-${{ github.run_id }}
-        path: ${{ inputs.envFile }}
-        restore: true
+        name: ${{ inputs.envFile }}
+        path: ${{ inputs.repository }}
+
+    - name: Convert JSON to Terraform Variables
+      shell: bash
+      run: |
+        # Convert JSON to Terraform Variables
+        cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key | ascii_downcase) = \"\(.value)\""' > env.tfvars
 
     - name: Copy env to working directory
       shell: bash
-      run: mv "${{ inputs.envFile }}" ./${{ inputs.working-directory }}
+      run: mv env.tfvars ./${{ inputs.working-directory }}
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
