@@ -1,7 +1,7 @@
 {
   "project": "testdevcloudstg",
   "backend": {
-    "bucket_region": "testdevcloudstg"
+    "bucket_region": "us-west-1"
   },
   "cluster": {
     "instance_type": "t3.medium"

@@ -11,10 +11,10 @@ inputs:
     required: true
 
   bucketName:
-    description: 'Entry project name'
+    description: 'Entry bucket name'
     required: true
   bucketRegion:
-    description: 'storage account location'
+    description: 'Entry bucket region'
     required: true
 
 runs:

@@ -54,7 +54,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Instantiate SA
+      - name: Instantiate Bucket
         uses: ./.github/actions/create-aws-bucket
         id: sa
         with:
