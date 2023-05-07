@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  configFile: "configs/awscloud.json"
+  configFile: "configs/aws-cloud.json"
   scriptPath: "terraform/aws"
 
 jobs:
