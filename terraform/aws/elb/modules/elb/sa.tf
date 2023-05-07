@@ -255,12 +255,12 @@ resource "aws_iam_role_policy_attachment" "policy_attachment_service_account" {
 
 resource "kubernetes_service_account" "service_account" {
   metadata {
-    name = "aws-load-balancer-controller"
+    name = "aws-load-balancer-sa"
     namespace = var.sa_namespace
 
     annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.role_service_account.arn
-      "eks.amazonaws.com/role-arn" = aws_iam_role_policy_attachment.policy_attachment_service_account.policy_arn
+      "eks.amazonaws.com/role-arn" = aws_iam_role.role_service_account.arn,
+      "eks.amazonaws.com/policy-arn" = aws_iam_role_policy_attachment.policy_attachment_service_account.policy_arn
     }
 
     labels = {
@@ -274,6 +274,18 @@ resource "kubernetes_service_account" "service_account" {
   depends_on = [
     aws_iam_role_policy_attachment.policy_attachment_service_account
   ]
+}
+
+resource "kubernetes_secret_v1" "service_account_token" {
+  metadata {
+    name = "aws-load-balancer-sa"
+    namespace = var.sa_namespace
+    annotations = {
+      "kubernetes.io/service-account.name" = "aws-load-balancer-sa"
+    }
+  }
+
+  type = "kubernetes.io/service-account-token"
 }
 
 resource "null_resource" "update-kubeconfig" {

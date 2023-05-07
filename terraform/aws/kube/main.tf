@@ -45,6 +45,8 @@ resource "aws_ecr_repository" "app_registry" {
 
 module "nginx-controller" {
   source  = "terraform-iaac/nginx-controller/helm"
+  atomic = true
+  version = "2.2.0"
   additional_set = [
     {
       name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
