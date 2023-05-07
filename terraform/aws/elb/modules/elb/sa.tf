@@ -254,10 +254,24 @@ resource "aws_iam_role_policy_attachment" "policy_attachment_service_account" {
   role = aws_iam_role.role_service_account.name
 }
 
+resource "null_resource" "update-kubeconfig" {
+  provisioner "local-exec" {
+    command = "aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.aws_region}"
+  }
+
+  depends_on = [
+    aws_iam_policy.elb-policy
+  ]
+}
+
 resource "kubernetes_secret" "elb_secret" {
   metadata {
     name = var.sa_name
   }
+
+  depends_on = [
+    null_resource.update-kubeconfig
+  ]
 }
 
 resource "kubernetes_service_account" "service_account" {
@@ -297,17 +311,6 @@ resource "kubernetes_secret_v1" "service_account_token" {
 
   depends_on = [
     kubernetes_service_account.service_account
-  ]
-}
-
-
-resource "null_resource" "update-kubeconfig" {
-  provisioner "local-exec" {
-    command = "aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.aws_region}"
-  }
-
-  depends_on = [
-    aws_iam_policy.elb-policy
   ]
 }
 
