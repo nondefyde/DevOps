@@ -72,7 +72,7 @@ jobs:
           name: ${{ env.elbEnvFile }}
           path: ${{ env.elbEnvFile }}
 
-      - name: Instantiate EL Balancer
+      - name: Destroy EL Balancer
         uses: ./.github/actions/tf-aws-destroy-script
         id: elb
         with:
