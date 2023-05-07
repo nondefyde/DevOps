@@ -1,6 +1,5 @@
 {
-  "backend": {
-    "bucketName": "testdevcloudstg",
-    "bucketRegion": "us-west-1"
-  }
+  "project": "testdevcloudstg",
+  "instance_type": "t3.medium",
+  "bucketRegion": "us-west-1"
 }

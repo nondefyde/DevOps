@@ -23,7 +23,6 @@ jobs:
     outputs:
       project: ${{ steps.variables.outputs.project }}
       prefix: ${{ steps.variables.outputs.prefix }}
-      buketName: ${{ steps.variables.outputs.buketName }}
       bucketRegion: ${{ steps.variables.outputs.bucketRegion }}
     steps:
       - name: Checkout
@@ -60,7 +59,7 @@ jobs:
         id: sa
         with:
           bucketName: ${{ env.project }}
-          region: ${{ env.bucketRegion }}
+          bucketRegion: ${{ env.bucketRegion }}
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           AWS_REGION: ${{secrets.AWS_REGION}}
@@ -83,12 +82,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: convert to json
-        id: rgjson
+        id: eksjson
         uses: schdck/create-env-json@v1
         with:
           file-name: ${{ env.eksEnvFile }}
-          prefix: ${{ env.prefix }}
           project: ${{ env.project }}
+          instance_type: ${{ env.instance_type }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
