@@ -48,7 +48,7 @@ jobs:
           done
   elb:
     name: 'EL Balancer'
-    needs: [ envs, eks ]
+    needs: [ envs ]
     permissions: write-all
     runs-on: ubuntu-latest
     env:
@@ -88,7 +88,7 @@ jobs:
 
   eks:
     name: 'EK Cluster'
-    needs: [ envs, buc ]
+    needs: [ envs, elb ]
     permissions: write-all
     runs-on: ubuntu-latest
     env:
