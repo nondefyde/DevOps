@@ -13,7 +13,7 @@ inputs:
     description: 'Environment'
     required: true
   bucketRegion:
-    description: 'Entry project name'
+    description: 'Entry bucket region name'
     required: true
   project:
     description: 'Entry project name'
@@ -70,6 +70,9 @@ runs:
           -backend-config="bucket=${{ inputs.project }}-tfstate" \
           -backend-config="region=${{ inputs.bucketRegion }}" \
           -backend-config="key=${{ inputs.key }}.terraform.tfstate" \
+          -var=aws_region="${{ inputs.AWS_REGION }}" \
+          -var=aws_key_id="${{ inputs.AWS_ACCESS_KEY_ID }}" \
+          -var=aws_key_secret="${{ inputs.AWS_SECRET_ACCESS_KEY }}" \
       continue-on-error: false
 
     - name: Terraform Plan
