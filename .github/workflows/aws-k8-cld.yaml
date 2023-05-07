@@ -43,7 +43,7 @@ jobs:
           done
 
   buc:
-    name: 'TF Bucket'
+    name: 'Bucket'
     needs: [ envs ]
     permissions: write-all
     runs-on: ubuntu-latest
@@ -75,7 +75,7 @@ jobs:
       account_id: ${{ steps.set-output.outputs.account_id }}
     env:
       project: ${{ needs.envs.outputs.project }}
-      prefix: ${{ needs.envs.outputs.prefix }}
+      bucket_region: ${{ needs.envs.outputs.bucket_region }}
       eksEnvFile: "eks.tfvars"
     steps:
       - name: Checkout
