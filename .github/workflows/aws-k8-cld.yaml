@@ -3,7 +3,8 @@ name: AWS K8 Cloud BUILD
 on:
   push:
     branches:
-      - 'mains'
+      - 'main'
+
 permissions:
   id-token: write
   contents: read
