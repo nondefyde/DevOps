@@ -99,8 +99,9 @@ jobs:
         uses: ./.github/actions/tf-aws-script
         id: eks
         with:
-          project: ${{ env.project }}
           envFile: ${{ env.eksEnvFile }}
+          project: ${{ env.project }}
+          bucketRegion: ${{ env.bucket_region }}
           key: ${{ env.project }}-eks
           working-directory: ${{ env.scriptPath}}/eks
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
