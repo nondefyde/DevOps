@@ -93,7 +93,7 @@ runs:
           -backend-config="key=${{ inputs.key }}.terraform.tfstate" \
           -var=aws_region="${{ inputs.AWS_REGION }}" \
           -var=aws_key_id="${{ inputs.AWS_ACCESS_KEY_ID }}" \
-          -var=aws_key_secret="${{ inputs.AWS_SECRET_ACCESS_KEY }}"
+          -var=aws_key_secret="${{ inputs.AWS_SECRET_ACCESS_KEY }}" \
           -var-file=./${{ inputs.envFile }} \
           -out ./_state/${{ inputs.project }}.destroy.tfplan \
           -lock=false
