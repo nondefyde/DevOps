@@ -12,6 +12,9 @@ inputs:
   envFile:
     description: 'Environment'
     required: true
+  bucketRegion:
+    description: 'Entry project name'
+    required: true
   project:
     description: 'Entry project name'
     required: true
@@ -65,7 +68,7 @@ runs:
         mkdir -p _state
         terraform init \
           -backend-config="bucket=${{ inputs.project }}-tfstate" \
-          -backend-config="region=${{ inputs.project }}" \
+          -backend-config="region=${{ inputs.bucketRegion }}" \
           -backend-config="key=${{ inputs.key }}.terraform.tfstate" \
       continue-on-error: false
 
