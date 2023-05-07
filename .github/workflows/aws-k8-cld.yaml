@@ -117,7 +117,7 @@ jobs:
 
   elb:
     name: 'EL Balancer'
-    needs: [ envs, buc ]
+    needs: [ envs, eks ]
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
