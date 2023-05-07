@@ -2,7 +2,7 @@ name: AWS K8 CI
 
 on:
   workflow_run:
-    workflows: [ "AWS K8 Cloud" ]
+    workflows: [ "AWS K8 Cloud BUILD" ]
     types:
       - completed
   workflow_call:

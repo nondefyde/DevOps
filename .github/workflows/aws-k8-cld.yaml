@@ -1,4 +1,4 @@
-name: AZR DEPLOY VMS
+name: AWS K8 Cloud BUILD
 
 on:
   push:
