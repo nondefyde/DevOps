@@ -87,6 +87,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         echo "Terraform Destruction in progress ${{ inputs.project }}"
+        mkdir -p _state
         terraform plan -destroy -no-color -input=false \
           -backend-config="bucket=${{ inputs.project }}-tfstate" \
           -backend-config="region=${{ inputs.bucketRegion }}" \
