@@ -47,7 +47,6 @@
     "azure:setup": "cd ./terraform/azure/_scripts && ./setup.sh testdevcloudstg centralus",
     "azure:destroy": "azure:destroy:vm && azure:destroy:mysql",
 
-
     "azure:prepare:vm": "cd ./terraform/azure/_scripts && ./prepare.sh vm testdevcloudstg",
     "azure:apply:vm": "cd ./terraform/azure/_scripts && ./apply.sh vm testdevcloudstg",
     "azure:destroy:vm": "cd ./terraform/azure/_scripts && ./destroy.sh vm testdevcloudstg",

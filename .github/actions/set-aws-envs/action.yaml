@@ -1,0 +1,50 @@
+name: set-aws-envs
+author: Emmanuel Okafor
+decription: A generic action to get app global based envs
+
+inputs:
+  config-file:
+    required: true
+    default: "configs/cloud.json"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Cloud Config
+      id: env-config
+      uses: ActionsTools/read-json-action@main
+      with:
+        file_path: ${{ inputs.config-file }}
+
+    - name: Check file existence
+      id: check_files
+      uses: andstor/file-existence-action@v1
+      with:
+        files: ${{ inputs.config-file }}
+
+    - name: APP config
+      id: config
+      uses: ActionsTools/read-json-action@main
+      with:
+        file_path: ${{ inputs.config-file }}
+
+    - name: Initialize environments
+      shell: bash
+      run: |
+        echo "project=${{ steps.config.outputs.prefix }}${{ steps.config.outputs.name }}" >> "$GITHUB_ENV"
+        echo "prefix=${{ steps.config.outputs.prefix }}" >> "$GITHUB_ENV"
+        
+        json_string=${{ toJson(steps.config.outputs.backend) }}
+        for property in $(echo $json_string | jq -r 'keys[]'); do
+          value=$(echo $json_string | jq -r ".$property")
+          echo "$property=$value" >> "$GITHUB_ENV"
+        done
+        
+        json_string=${{ toJson(steps.config.outputs.key-vault) }}
+        for property in $(echo $json_string | jq -r 'keys[]'); do
+          value=$(echo $json_string | jq -r ".$property")
+          echo "$property=$value" >> "$GITHUB_ENV"
+        done

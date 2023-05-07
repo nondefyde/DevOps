@@ -1,0 +1,6 @@
+{
+  "backend": {
+    "bucketName": "testdevcloudstg",
+    "bucketRegion": "us-west-1"
+  }
+}

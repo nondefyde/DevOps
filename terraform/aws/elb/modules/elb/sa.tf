@@ -1,3 +1,4 @@
+
 resource "aws_iam_role" "role_service_account" {
   name = "${var.project}-aws-elb-role"
   assume_role_policy = jsonencode({
@@ -253,9 +254,15 @@ resource "aws_iam_role_policy_attachment" "policy_attachment_service_account" {
   role = aws_iam_role.role_service_account.name
 }
 
+resource "kubernetes_secret" "elb_secret" {
+  metadata {
+    name = var.sa_name
+  }
+}
+
 resource "kubernetes_service_account" "service_account" {
   metadata {
-    name = "aws-load-balancer-sa"
+    name = var.sa_name
     namespace = var.sa_namespace
 
     annotations = {
@@ -264,7 +271,7 @@ resource "kubernetes_service_account" "service_account" {
     }
 
     labels = {
-      "app.kubernetes.io/name" = "aws-load-balancer-controller"
+      "app.kubernetes.io/name" = var.sa_name
       "app.kubernetes.io/component" = "controller"
     }
   }
@@ -272,39 +279,37 @@ resource "kubernetes_service_account" "service_account" {
   automount_service_account_token = true
 
   depends_on = [
+    kubernetes_secret.elb_secret,
     aws_iam_role_policy_attachment.policy_attachment_service_account
   ]
 }
 
 resource "kubernetes_secret_v1" "service_account_token" {
   metadata {
-    name = "aws-load-balancer-sa"
+    name = var.sa_name
     namespace = var.sa_namespace
     annotations = {
-      "kubernetes.io/service-account.name" = "aws-load-balancer-sa"
+      "kubernetes.io/service-account.name" = var.sa_name
     }
   }
 
   type = "kubernetes.io/service-account-token"
-}
-
-resource "null_resource" "update-kubeconfig" {
-  provisioner "local-exec" {
-    command = "aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.aws_region}"
-  }
 
   depends_on = [
-    aws_iam_policy.elb-policy
+    kubernetes_service_account.service_account
   ]
 }
 
-resource "null_resource" "associate_iam_oidc_provider" {
-  provisioner "local-exec" {
-    command = "eksctl utils associate-iam-oidc-provider --region=${var.aws_region} --cluster=${var.cluster_name} --approve"
-  }
+data "aws_eks_cluster" "eks" {
+  name = var.cluster_name
+}
 
-  depends_on = [
-    null_resource.update-kubeconfig,
-    aws_iam_policy.elb-policy
-  ]
+data "tls_certificate" "tls" {
+  url = data.aws_eks_cluster.eks.identity.0.oidc.0.issuer
+}
+
+resource "aws_iam_openid_connect_provider" "oidc" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.tls.certificates.0.sha1_fingerprint]
+  url             = data.aws_eks_cluster.eks.identity.0.oidc.0.issuer
 }

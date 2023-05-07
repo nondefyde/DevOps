@@ -1,4 +1,4 @@
-output "public_ip_address" {
+output "app_project_prefix" {
   value = var.app_project_prefix
 }
 

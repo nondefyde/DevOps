@@ -1,0 +1,116 @@
+name: AZR DEPLOY VMS
+
+on:
+  push:
+    branches:
+      - 'main'
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  configFile: "configs/awscloud.json"
+  scriptPath: "terraform/aws"
+
+jobs:
+  envs:
+    name: 'Set Envs'
+    runs-on: ubuntu-latest
+    outputs:
+      project: ${{ steps.variables.outputs.project }}
+      prefix: ${{ steps.variables.outputs.prefix }}
+      buketName: ${{ steps.variables.outputs.buketName }}
+      bucketRegion: ${{ steps.variables.outputs.bucketRegion }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set App Envs
+        id: get-envs
+        uses: ./.github/actions/set-aws-envs
+        with:
+          config-file: ${{ env.configFile }}
+
+      - name: Set Outputs
+        id: variables
+        shell: bash
+        run: |
+          for VAR in $(compgen -e); do
+            echo "${VAR,,}=${!VAR}" >> $GITHUB_OUTPUT
+          done
+
+  tfbucket:
+    name: 'TF Bucket'
+    needs: [ envs ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      bucketRegion: ${{ needs.envs.outputs.bucketRegion }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Instantiate SA
+        uses: ./.github/actions/create-aws-bucket
+        id: sa
+        with:
+          bucketName: ${{ env.project }}
+          region: ${{ env.bucketRegion }}
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          AWS_REGION: ${{secrets.AWS_REGION}}
+        continue-on-error: false
+
+  eks:
+    name: 'Eks Cluster'
+    needs: [ envs, sa ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      cluster_name: ${{ steps.set-output.outputs.cluster_name }}
+      account_id: ${{ steps.set-output.outputs.account_id }}
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      prefix: ${{ needs.envs.outputs.prefix }}
+      eksEnvFile: "eks.tfvars"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: convert to json
+        id: rgjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.eksEnvFile }}
+          prefix: ${{ env.prefix }}
+          project: ${{ env.project }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.eksEnvFile }}
+          path: ${{ env.eksEnvFile }}
+
+      - name: Instantiate EKS Cluster
+        uses: ./.github/actions/tf-aws-script
+        id: rg
+        with:
+          project: ${{ env.project }}
+          envFile: ${{ env.eksEnvFile }}
+          key: ${{ env.project }}-eks
+          working-directory: ${{ env.scriptPath}}/eks
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          AWS_REGION: ${{secrets.AWS_REGION}}
+        continue-on-error: false
+
+      - name: Set output
+        id: set-output
+        run: |
+          echo "cluster_name=${{ env.cluster_name }}" >> $GITHUB_OUTPUT
+          echo "account_id=${{ env.account_id }}" >> $GITHUB_OUTPUT

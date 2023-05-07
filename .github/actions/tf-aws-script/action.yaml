@@ -1,0 +1,115 @@
+name: tf-aws-script
+author: Emmanuel Okafor
+decription: A generic action to run terraform script in aws
+
+inputs:
+  AWS_ACCESS_KEY_ID:
+    required: true
+  AWS_SECRET_ACCESS_KEY:
+    required: true
+  AWS_REGION:
+    required: true
+  envFile:
+    description: 'Environment'
+    required: true
+  project:
+    description: 'Entry project name'
+    required: true
+  key:
+    description: 'Entry group name'
+    required: true
+    default: 'key'
+  working-directory:
+    description: 'Default working directory'
+    default: 'tf'
+  variable-path:
+    description: 'The Path to variable'
+
+#outputs:
+#  output-value:
+#    description: The output value
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Download Env File
+      uses: actions/download-artifact@master
+      with:
+        name: ${{ inputs.envFile }}
+        path: ${{ inputs.repository }}
+
+    - name: Convert JSON to Terraform Variables
+      shell: bash
+      run: |
+        # Convert JSON to Terraform Variables
+        cat ${{ inputs.envFile }} | jq -r 'to_entries[] | "\(.key | ascii_downcase) = \"\(.value)\""' > env.tfvars
+
+    - name: Copy env to working directory
+      shell: bash
+      run: mv env.tfvars ./${{ inputs.working-directory }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
+
+    - name: Terraform Init
+      id: init
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: |
+        echo "Execute Terraform Init : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
+        mkdir -p _state
+        terraform init \
+          -backend-config="bucket=${{ inputs.project }}-tfstate" \
+          -backend-config="region=${{ inputs.project }}" \
+          -backend-config="key=${{ inputs.key }}.terraform.tfstate" \
+      continue-on-error: false
+
+    - name: Terraform Plan
+      id: plan
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+      run: |
+        ls -a
+        cat env.tfvars
+        echo "Execute Terraform Plan : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
+        mkdir -p _state
+        terraform plan -no-color -input=false \
+          -var=app_project_prefix="${{ env.project}}" \
+          -var=aws_region="${{ inputs.AWS_REGION }}" \
+          -var=aws_key_id="${{ inputs.AWS_ACCESS_KEY_ID }}" \
+          -var=aws_key_secret="${{ inputs.AWS_SECRET_ACCESS_KEY }}" \
+          -var-file=env.tfvars \
+          -out ./_state/${{ inputs.project }}.tfplan \
+          -lock=false
+      continue-on-error: false
+
+    - name: Terraform Apply
+      id: apply
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "Execute Terraform Apply : ${{ inputs.working-directory }} - ${{ inputs.project }} ${{ inputs.key }}"
+        terraform apply -auto-approve -input=false ./_state/${{ inputs.project }}.tfplan
+        echo "Terraform Application was successful ${{ inputs.project }}"
+      continue-on-error: false
+
+    - name: Export Output to environments
+      id: tf_output
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        outputs=$(terraform output -json)
+        for key in $(echo $outputs | jq -r 'keys[]'); do
+          KEY=$(echo "${key}")
+          VALUE=$(echo "${outputs}" | jq -r ".${key}.value")
+          if [ $(echo "$VALUE" | jq type) == '"array"' ]; then
+            VALUE=$(echo "$VALUE" | jq -r 'join(",")')
+          fi
+          echo "Value :::: $VALUE"
+          echo "$KEY=$VALUE" >> "$GITHUB_ENV"
+        done

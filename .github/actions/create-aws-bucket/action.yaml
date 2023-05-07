@@ -1,0 +1,48 @@
+name: create-aws-bucket
+author: Emmanuel Okafor
+decription: A generic action to create backend bucket for terraform in aws
+
+inputs:
+  AWS_ACCESS_KEY_ID:
+    required: true
+  AWS_SECRET_ACCESS_KEY:
+    required: true
+  AWS_REGION:
+    required: true
+
+  bucketName:
+    description: 'Entry project name'
+    required: true
+  bucketRegion:
+    description: 'storage account location'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ inputs.AWS_REGION }}
+
+    - name: Setup TF Backend Bucket
+      shell: bash
+      run: |
+        BUCKET_NAME=${{ inputs.bucketName }}-tfstate
+        REGION=${{ inputs.bucketRegion }}
+        
+        echo "Setting up bucket ${BUCKET_NAME} within region ${REGION}"
+        
+        if aws s3api head-bucket --bucket ${BUCKET_NAME} --region ${REGION} 2>/dev/null;
+        then
+          echo "${BUCKET_NAME} bucket already created by user"
+        else
+          echo "Creating ${BUCKET_NAME} bucket"
+          aws s3api create-bucket --bucket ${BUCKET_NAME} --region ${REGION} --create-bucket-configuration LocationConstraint=${REGION}
+          echo "${BUCKET_NAME} bucket created successfully"
+        fi

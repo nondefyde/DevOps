@@ -12,19 +12,21 @@ module "elb" {
   aws_region   = var.aws_region
 }
 
-resource "kubernetes_service_account" "nginx_controller" {
-  metadata {
-    name = "nginx-controller"
-    namespace = "kube-system"
-  }
-}
-
-
 module "nginx-controller" {
-  source  = "terraform-iaac/nginx-controller/helm"
+  source         = "terraform-iaac/nginx-controller/helm"
 #  atomic = true
-  wait = false
+    wait         = false
   additional_set = [
+    {
+      name  = "region"
+      value = var.aws_region
+      type  = "string"
+    },
+    {
+      name  = "vpcId"
+      value = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
+      type  = "string"
+    },
     {
       name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
       value = "nlb"
@@ -42,13 +44,12 @@ module "nginx-controller" {
     },
     {
       name  = "controller.serviceAccountName"
-      value = "nginx-controller"
+      value = "aws-load-balancer-controller"
       type  = "string"
     }
   ]
 
   depends_on = [
-    kubernetes_service_account.nginx_controller,
     module.elb
   ]
 }
