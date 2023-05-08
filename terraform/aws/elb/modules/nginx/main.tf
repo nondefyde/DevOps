@@ -1,7 +1,6 @@
 module "nginx-controller" {
   source         = "terraform-iaac/nginx-controller/helm"
-  #  atomic = true
-  #    wait         = false
+  atomic         = true
   additional_set = [
     {
       name  = "region"
@@ -10,7 +9,7 @@ module "nginx-controller" {
     },
     {
       name  = "vpcId"
-      value =  var.vpc_id
+      value = var.vpc_id
       type  = "string"
     },
     {

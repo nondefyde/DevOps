@@ -42,6 +42,10 @@ module "elb" {
   issuer       = data.aws_eks_cluster.eks.identity.0.oidc.0.issuer
   account_id   = data.aws_caller_identity.current.account_id
   aws_region   = var.aws_region
+
+  depends_on = [
+    null_resource.associate_iam_oidc_provider
+  ]
 }
 
 #
