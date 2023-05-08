@@ -36,6 +36,7 @@ resource "aws_eks_node_group" "eks-node_group" {
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.eks-iam-role-1-EC2InstanceProfileForImageBuilderECRContainerBuilds,
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonSSMManagedInstanceCore,
+    aws_iam_role_policy_attachment.nginx-controller-policy-attachment
   ]
 }
 
@@ -121,6 +122,27 @@ resource "aws_iam_role" "eks-node-group-iam-role" {
       }
     ]
   })
+}
+
+resource "aws_iam_policy" "nginx-controller-policy" {
+  name        = "nginx-controller-policy"
+  description = "Allows the nginx-controller to assume a role with web identity"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": "sts:AssumeRoleWithWebIdentity",
+        "Resource": "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "nginx-controller-policy-attachment" {
+  policy_arn = aws_iam_policy.nginx-controller-policy.arn
+  role       = aws_iam_role.eks-node-group-iam-role.name
 }
 
 resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonSSMManagedInstanceCore" {
