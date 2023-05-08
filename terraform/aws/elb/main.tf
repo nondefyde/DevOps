@@ -15,7 +15,7 @@ module "elb" {
 module "nginx-controller" {
   source         = "terraform-iaac/nginx-controller/helm"
 #  atomic = true
-    wait         = false
+#    wait         = false
   additional_set = [
     {
       name  = "region"
@@ -53,6 +53,7 @@ module "nginx-controller" {
     module.elb
   ]
 }
+
 #
 #module "nginx-controller" {
 #  source  = "terraform-iaac/nginx-controller/helm"
