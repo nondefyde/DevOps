@@ -1,7 +1,6 @@
 resource "aws_eks_cluster" "eks" {
   name     = var.cluster_name
   role_arn = aws_iam_role.eks-iam-role.arn
-  version  = "1.24"
 
   vpc_config {
     subnet_ids              = var.subnet_ids
@@ -35,7 +34,8 @@ resource "aws_eks_node_group" "eks-node_group" {
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEC2ContainerRegistryReadOnly,
-    aws_iam_role_policy_attachment.eks-iam-role-1-EC2InstanceProfileForImageBuilderECRContainerBuilds
+    aws_iam_role_policy_attachment.eks-iam-role-1-EC2InstanceProfileForImageBuilderECRContainerBuilds,
+    aws_iam_role_policy_attachment.eks-iam-role-1-AmazonSSMManagedInstanceCore,
   ]
 }
 
@@ -114,6 +114,11 @@ resource "aws_iam_role" "eks-node-group-iam-role" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonSSMManagedInstanceCore" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  role       = aws_iam_role.eks-node-group-iam-role.name
 }
 
 resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEKSWorkerNodePolicy" {
