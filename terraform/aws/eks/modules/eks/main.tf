@@ -93,13 +93,21 @@ resource "aws_iam_role" "eks-node-group-iam-role" {
   name = "${var.cluster_name}-node-iam_role"
 
   assume_role_policy = jsonencode({
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "ec2.amazonaws.com"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+      {
+        "Sid" : "AllowAssumeRoleWithWebIdentity",
+        "Effect" : "Allow",
+        "Action" : "sts:AssumeRoleWithWebIdentity",
+        "Resource" : "*"
       }
-    }]
+    ]
     Version = "2012-10-17"
   })
 }
