@@ -85,6 +85,11 @@ resource "aws_iam_role" "eks-iam-role" {
           "Service": "eks.amazonaws.com"
         },
         "Action": "sts:AssumeRoleWithWebIdentity"
+      },
+      {
+        Effect = "Allow"
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Resource = "*"
       }
     ]
   })
@@ -119,6 +124,11 @@ resource "aws_iam_role" "eks-node-group-iam-role" {
           "Service": "eks.amazonaws.com"
         },
         "Action": "sts:AssumeRoleWithWebIdentity"
+      },
+      {
+        Effect = "Allow"
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Resource = "*"
       }
     ]
   })
