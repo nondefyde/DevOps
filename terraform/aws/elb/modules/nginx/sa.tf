@@ -1,6 +1,6 @@
 
 resource "aws_iam_role" "role_service_account" {
-  name = "${var.project}-aws-elb-role"
+  name = "${var.project}-aws-nginx-role"
   assume_role_policy = jsonencode({
     "Version": "2012-10-17",
     "Statement" : [
@@ -47,7 +47,7 @@ resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonSSMManagedInstan
   role       = aws_iam_role.role_service_account.name
 }
 
-resource "kubernetes_secret" "elb_secret" {
+resource "kubernetes_secret" "nginx_secret" {
   metadata {
     name = var.sa_name
   }
@@ -71,7 +71,7 @@ resource "kubernetes_service_account" "service_account" {
   automount_service_account_token = true
 
   depends_on = [
-    kubernetes_secret.elb_secret,
+    kubernetes_secret.nginx_secret,
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonSSMManagedInstanceCore,
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEKS_CNI_Policy,
