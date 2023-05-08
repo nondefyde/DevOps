@@ -58,6 +58,7 @@ resource "aws_security_group" "node_group_one" {
 
 resource "aws_iam_role" "eks-iam-role" {
   name = "${var.cluster_name}-iam_role"
+
   assume_role_policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -67,13 +68,6 @@ resource "aws_iam_role" "eks-iam-role" {
           "Service": "eks.amazonaws.com"
         },
         "Action": "sts:AssumeRole"
-      },
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "eks.amazonaws.com"
-        },
-        "Action": "sts:AssumeRoleWithWebIdentity"
       }
     ]
   })
@@ -93,20 +87,13 @@ resource "aws_iam_role" "eks-node-group-iam-role" {
   name = "${var.cluster_name}-node-iam_role"
 
   assume_role_policy = jsonencode({
-    Statement = [
-      {
-        Action    = "sts:AssumeRole"
-        Effect    = "Allow"
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      },
-      {
-        "Sid" : "AllowAssumeRoleWithWebIdentity",
-        "Effect" : "Allow",
-        "Action" : "sts:AssumeRoleWithWebIdentity"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
       }
-    ]
+    }]
     Version = "2012-10-17"
   })
 }

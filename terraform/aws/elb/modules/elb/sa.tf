@@ -9,7 +9,7 @@ resource "aws_iam_role" "role_service_account" {
         "Principal": {
           "Federated": "arn:aws:iam::${var.account_id}:oidc-provider/${var.issuer}"
         },
-        "Action": "sts:AssumeRoleWithWebIdentity",
+        "Action": "sts:AssumeRole",
         "Condition": {
           "StringEquals": {
             "${var.issuer}:aud": "sts.amazonaws.com",
