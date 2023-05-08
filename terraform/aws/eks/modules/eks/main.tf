@@ -34,6 +34,7 @@ resource "aws_eks_node_group" "eks-node_group" {
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.eks-iam-role-1-EC2InstanceProfileForImageBuilderECRContainerBuilds
   ]
 }
 
@@ -106,6 +107,11 @@ resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEKSWorkerNodePol
 resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.eks-node-group-iam-role.name
+}
+
+resource "aws_iam_role_policy_attachment" "eks-iam-role-1-EC2InstanceProfileForImageBuilderECRContainerBuilds" {
+  policy_arn = "arn:aws:iam::aws:policy/EC2InstanceProfileForImageBuilderECRContainerBuilds"
+  role    = aws_iam_role.eks-node-group-iam-role.name
 }
 
 resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEC2ContainerRegistryReadOnly" {
