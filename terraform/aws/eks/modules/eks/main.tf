@@ -126,10 +126,12 @@ resource "aws_iam_role" "eks-node-group-iam-role" {
         "Action": "sts:AssumeRoleWithWebIdentity"
       },
       {
-        Effect = "Allow"
-        Action = "sts:AssumeRoleWithWebIdentity"
-        Resource = "*"
-      }
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "ec2.amazonaws.com"
+        },
+        "Action": "sts:AssumeRoleWithWebIdentity"
+      },
     ]
   })
 }
