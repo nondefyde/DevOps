@@ -54,6 +54,14 @@ runs:
       shell: bash
       run: mv env.tfvars ./${{ inputs.working-directory }}
 
+    - name: Install eksctl
+      shell: bash
+      run: |
+        curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+        sudo mv /tmp/eksctl /usr/local/bin
+        echo "--- eksctl version ----"
+        eksctl version
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
