@@ -362,7 +362,7 @@ data "aws_iam_policy_document" "elb-policy" {
 }
 
 resource "aws_iam_role" "role_service_account" {
-  assume_role_policy = data.aws_iam_policy_document.example_assume_role_policy.json
+  assume_role_policy = data.aws_iam_policy_document.elb-policy.json
   name = "${var.project}-aws-elb-role"
 }
 
