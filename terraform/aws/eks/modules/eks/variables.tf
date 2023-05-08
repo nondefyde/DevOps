@@ -47,3 +47,13 @@ variable "scaling_min_size" {
 variable "instance_types" {
   type = list(string)
 }
+
+variable "sa_namespace" {
+  type = string
+  default = "kube-system"
+}
+
+variable "sa_name" {
+  type = string
+  default = "aws-load-balancer-controller"
+}
