@@ -49,7 +49,7 @@ resource "aws_iam_role_policy_attachment" "nginx-controller-iam-role-AmazonEC2Co
 
 module "nginx-controller" {
   source         = "terraform-iaac/nginx-controller/helm"
-  atomic = true
+#  atomic = true
 #    wait         = false
   additional_set = [
 #    {
