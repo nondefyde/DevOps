@@ -59,20 +59,25 @@ resource "aws_security_group" "node_group_one" {
 resource "aws_iam_role" "eks-iam-role" {
   name = "${var.cluster_name}-iam_role"
 
-  assume_role_policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "eks.amazonaws.com"
+        },
+        "Action": "sts:AssumeRole"
       },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-POLICY
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "eks.amazonaws.com"
+        },
+        "Action": "sts:AssumeRoleWithWebIdentity"
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEKSClusterPolicy" {
