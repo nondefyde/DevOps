@@ -41,11 +41,6 @@ resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEC2ContainerRegi
   role       = aws_iam_role.role_service_account.name
 }
 
-resource "aws_iam_role_policy_attachment" "eks-iam-role-1-EC2InstanceProfileForImageBuilderECRContainerBuilds" {
-  policy_arn = "arn:aws:iam::aws:policy/EC2InstanceProfileForImageBuilderECRContainerBuilds"
-  role       = aws_iam_role.role_service_account.name
-}
-
 resource "aws_iam_policy" "elb-policy" {
   name        = "${var.project}-aws-elb-policy"
   path        = "/"
