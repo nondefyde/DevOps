@@ -55,6 +55,6 @@ module "nginx" {
   account_id   = data.aws_caller_identity.current.account_id
   aws_region   = var.aws_region
   depends_on = [
-    module.elb
+    module.alb
   ]
 }
