@@ -12,6 +12,40 @@ module "elb" {
   aws_region   = var.aws_region
 }
 
+#resource "aws_iam_role" "nginx-controller-iam-role" {
+#  name = "nginx-controller-iam-role"
+#
+#  assume_role_policy = jsonencode({
+#    Version = "2012-10-17"
+#    Statement = [
+#      {
+#        Effect    = "Allow"
+#        Principal = { Service = "ec2.amazonaws.com" }
+#        Action    = "sts:AssumeRole"
+#      },
+#      {
+#        Effect    = "Allow"
+#        Principal = { Service = "eks.amazonaws.com" }
+#        Action    = "sts:AssumeRole"
+#      }
+#    ]
+#  })
+#}
+#
+#resource "aws_iam_role_policy_attachment" "nginx-controller-iam-role-AmazonEKSClusterPolicy" {
+#  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+#  role       = aws_iam_role.nginx-controller-iam-role.name
+#}
+#
+#resource "aws_iam_role_policy_attachment" "nginx-controller-iam-role-AmazonEKSServicePolicy" {
+#  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+#  role       = aws_iam_role.nginx-controller-iam-role.name
+#}
+#
+#resource "aws_iam_role_policy_attachment" "nginx-controller-iam-role-AmazonEC2ContainerRegistryReadOnly" {
+#  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+#  role       = aws_iam_role.nginx-controller-iam-role.name
+#}
 
 module "nginx-controller" {
   source         = "terraform-iaac/nginx-controller/helm"
@@ -49,7 +83,7 @@ module "nginx-controller" {
       type  = "string"
     },
     {
-      name  = "controller.serviceAccountName"
+      name  = "controller.serviceAccount.name"
       value = "aws-load-balancer-controller"
       type  = "string"
     }
