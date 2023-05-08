@@ -37,16 +37,16 @@ module "nginx-controller" {
       value = "true"
       type  = "string"
     },
-    {
-      name  = "controller.serviceAccount.create"
-      value = "false"
-      type  = "string"
-    },
-    {
-      name  = "controller.serviceAccountName"
-      value = "aws-load-balancer-controller"
-      type  = "string"
-    }
+#    {
+#      name  = "controller.serviceAccount.create"
+#      value = "false"
+#      type  = "string"
+#    },
+#    {
+#      name  = "controller.serviceAccountName"
+#      value = "aws-load-balancer-controller"
+#      type  = "string"
+#    }
   ]
 
   depends_on = [

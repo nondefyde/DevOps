@@ -112,7 +112,6 @@ resource "aws_iam_role" "eks-node-group-iam-role" {
         "Action": "sts:AssumeRoleWithWebIdentity"
       }
     ]
-    Version = "2012-10-17"
   })
 }
 
