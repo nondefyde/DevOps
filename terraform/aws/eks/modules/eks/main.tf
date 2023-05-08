@@ -104,8 +104,7 @@ resource "aws_iam_role" "eks-node-group-iam-role" {
       {
         "Sid" : "AllowAssumeRoleWithWebIdentity",
         "Effect" : "Allow",
-        "Action" : "sts:AssumeRoleWithWebIdentity",
-        "Resource" : "*"
+        "Action" : "sts:AssumeRoleWithWebIdentity"
       }
     ]
     Version = "2012-10-17"
