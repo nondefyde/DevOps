@@ -32,8 +32,8 @@ resource "null_resource" "associate_iam_oidc_provider" {
   ]
 }
 
-module "alb" {
-  source       = "modules/alb"
+module "elb" {
+  source       = "modules/elb"
   project      = var.app_project_prefix
   vpc_id       = data.aws_eks_cluster.eks.vpc_config[0].vpc_id
   cluster_name = data.aws_eks_cluster.eks.name
@@ -55,6 +55,6 @@ module "nginx" {
   account_id   = data.aws_caller_identity.current.account_id
   aws_region   = var.aws_region
   depends_on = [
-    module.alb
+    module.elb
   ]
 }
