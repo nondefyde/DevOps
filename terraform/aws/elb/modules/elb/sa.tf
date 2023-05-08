@@ -259,20 +259,16 @@
 #    ]
 #  })
 #}
-
-resource "aws_iam_role_policy_attachment" "policy_attachment_service_account" {
-  policy_arn = aws_iam_policy.elb-policy.arn
-  role = aws_iam_role.role_service_account.name
-}
+#
+#resource "aws_iam_role_policy_attachment" "policy_attachment_service_account" {
+#  policy_arn = aws_iam_policy.elb-policy.arn
+#  role = aws_iam_role.role_service_account.name
+#}
 
 resource "null_resource" "update-kubeconfig" {
   provisioner "local-exec" {
     command = "aws eks update-kubeconfig --name ${var.cluster_name} --region ${var.aws_region}"
   }
-
-  depends_on = [
-    aws_iam_policy.elb-policy
-  ]
 }
 
 resource "kubernetes_secret" "elb_secret" {
@@ -304,7 +300,7 @@ resource "kubernetes_service_account" "service_account" {
 
   depends_on = [
     kubernetes_secret.elb_secret,
-    aws_iam_role_policy_attachment.policy_attachment_service_account
+#    aws_iam_role_policy_attachment.policy_attachment_service_account
   ]
 }
 
