@@ -58,7 +58,7 @@ jobs:
 
       - name: Set App Envs
         id: get-envs
-        uses: /.github/actions/set-aws-envs
+        uses: ./.github/actions/set-aws-envs
         with:
           config-file: ${{ env.configFile }}
 
