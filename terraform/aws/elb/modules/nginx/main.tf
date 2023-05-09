@@ -34,7 +34,7 @@ module "nginx-controller" {
     },
     {
       name  = "controller.serviceAccount.name"
-      value = "aws-load-balancer-controller"
+      value = "nginx-controller"
       type  = "string"
     }
   ]
