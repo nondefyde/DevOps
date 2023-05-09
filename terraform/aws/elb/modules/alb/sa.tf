@@ -260,7 +260,6 @@ resource "kubernetes_service_account" "service_account" {
 
     annotations = {
       "eks.amazonaws.com/role-arn" = aws_iam_role.role_service_account.arn
-      "eks.amazonaws.com/role-arn" = aws_iam_role_policy_attachment.policy_attachment_service_account.policy_arn
     }
 
     labels = {

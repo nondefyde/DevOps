@@ -3,21 +3,6 @@ module "nginx-controller" {
 #  atomic         = true
   additional_set = [
     {
-      name  = "region"
-      value = var.aws_region
-      type  = "string"
-    },
-    {
-      name  = "vpcId"
-      value = var.vpc_id
-      type  = "string"
-    },
-    {
-      name  = "clusterName"
-      value = var.cluster_name
-      type  = "string"
-    },
-    {
       name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"
       value = "nlb"
       type  = "string"
@@ -36,10 +21,15 @@ module "nginx-controller" {
       name  = "controller.serviceAccount.name"
       value = "nginx-controller"
       type  = "string"
+    },
+    {
+      name  = "controller.serviceAccount.namespace"
+      value = "kube-system"
+      type  = "string"
     }
   ]
 
   depends_on = [
-    kubernetes_service_account.service_account
+    kubernetes_service_account.nginx-controller
   ]
 }
