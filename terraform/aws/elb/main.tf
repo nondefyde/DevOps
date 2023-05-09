@@ -1,5 +1,5 @@
 locals {
-  eks_cluster_name = "${var.app_project_prefix}-cluster",
+  eks_cluster_name = "${var.app_project_prefix}-cluster"
   issuer = trimprefix (data.aws_eks_cluster.eks.identity.0.oidc.0.issuer, "https://")
 }
 
