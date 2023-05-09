@@ -65,7 +65,11 @@ resource "kubernetes_service_account" "service_account" {
   automount_service_account_token = true
 
   depends_on = [
-    aws_iam_role.role_service_account
+    aws_iam_role_policy_attachment.eks-iam-role-1-AmazonSSMManagedInstanceCore,
+    aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.eks-iam-role-1-EC2InstanceProfileForImageBuilderECRContainerBuilds,
   ]
 }
 
