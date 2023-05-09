@@ -275,9 +275,7 @@ resource "kubernetes_secret_v1" "service_account_token" {
       "kubernetes.io/service-account.name" = var.sa_name
     }
   }
-
   type = "kubernetes.io/service-account-token"
-
   depends_on = [
     kubernetes_service_account.nginx-controller
   ]
