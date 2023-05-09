@@ -43,6 +43,6 @@ module "nginx-controller" {
   ]
 
   depends_on = [
-    kubernetes_service_account.nginx-controller
+    module.alb
   ]
 }
