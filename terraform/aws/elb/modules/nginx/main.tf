@@ -1,6 +1,6 @@
 module "nginx-controller" {
   source         = "terraform-iaac/nginx-controller/helm"
-  atomic         = true
+#  atomic         = true
   additional_set = [
     {
       name  = "region"
