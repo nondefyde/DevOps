@@ -148,7 +148,6 @@ jobs:
   elb:
     name: 'EL Balancer'
     needs: [ envs, eks ]
-    permissions: write-all
     runs-on: ubuntu-latest
     outputs:
       cluster_name: ${{ steps.set-output.outputs.cluster_name }}
