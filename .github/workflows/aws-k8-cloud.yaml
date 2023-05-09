@@ -1,4 +1,4 @@
-name: AWS K8 Cloud
+name: AWS K8 Cloud BUILD
 
 on:
   push:
@@ -6,12 +6,7 @@ on:
       - 'main'
     paths:
       - '.github/workflows/.**-k8-cloud.yaml'
-  workflow_dispatch:
-    inputs:
-      TFAction:
-        description: "Destroy Infrastructure"
-        type: boolean
-        default: false
+
   workflow_call:
     secrets:
       AWS_ACCESS_KEY_ID:
@@ -24,10 +19,6 @@ on:
         description: 'AWS region'
         required: true
     inputs:
-      TFAction:
-        description: "Destroy Infrastructure"
-        type: boolean
-        default: false
       is_workflow:
         required: true
         type: boolean
@@ -49,172 +40,161 @@ permissions:
   id-token: write
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
-  current_project: cloudstgdev
-  current_namespace: stg
-  current_instance_type: "t3.medium"
+  configFile: "configs/aws-cloud.json"
+  scriptPath: "terraform/aws"
 
 jobs:
   envs:
-    name: 'Validate Env Variables'
+    name: 'Set Envs'
     runs-on: ubuntu-latest
     outputs:
       project: ${{ steps.variables.outputs.project }}
+      bucket_region: ${{ steps.variables.outputs.bucket_region }}
       instance_type: ${{ steps.variables.outputs.instance_type }}
-      namespace: ${{ steps.variables.outputs.namespace }}
     steps:
-      - name: Initialize environments
-        run: |
-          EP="${{inputs.project}}"          
-          CIT="${{inputs.instance_type}}"          
-          NSP="${{inputs.namespace}}"          
-          PROJECT="${EP:-${{ env.current_project }}}"
-          NAMESPACE="${NSP:-${{ env.current_namespace }}}"
-          instance_type="${CIT:-${{ env.current_instance_type }}}"
-          echo "project=${PROJECT}" >> "$GITHUB_ENV"
-          echo "instance_type=${instance_type}" >> "$GITHUB_ENV"
-          echo "namespace=${namespace}" >> "$GITHUB_ENV"
-      - name: Set Env
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set App Envs
+        id: get-envs
+        uses: ./.github/actions/set-aws-envs
+        with:
+          config-file: ${{ env.configFile }}
+
+      - name: Set Outputs
         id: variables
-        run: |
-          echo "project=${{ env.project }}" >> $GITHUB_OUTPUT
-          echo "instance_type=${{ env.instance_type }}" >> $GITHUB_OUTPUT
-
-  setups:
-    name: 'Setup dependencies'
-    needs: [envs]
-    runs-on: ubuntu-latest
-    env:
-      project: ${{ needs.envs.outputs.project }}
-      instance_type: ${{ needs.envs.outputs.instance_type }}
-    outputs:
-      HAS_VM: ${{ steps.variables.outputs.HAS_VM }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Download Repo to Artifact
-        if: ${{ inputs.is_workflow == true }}
-        uses: actions/download-artifact@master
-        with:
-          name: cloud-scripts
-          path: ${{ inputs.repository }}
-      - name: Copy Script files to context
-        if: ${{ inputs.is_workflow == true }}
-        run: |
-          ls
-          cp -a ${{ inputs.repository }}/. ./
-          rm -r ${{ inputs.repository }}
-          ls -a
-      - name: Install AWS Cli
-        uses: unfor19/install-aws-cli-action@v1
-      - run: aws --version
         shell: bash
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-      - name: Setup Dependencies
         run: |
-          cd terraform/aws/_scripts
-          chmod +x setup.sh
-          ./setup.sh ${{ env.project }} ${{ secrets.AWS_REGION }}
+          for VAR in $(compgen -e); do
+            echo "${VAR,,}=${!VAR}" >> $GITHUB_OUTPUT
+          done
 
-  setup-cloud:
-    name: 'Build Cloud Infrastructure'
-    needs: [ envs, setups ]
-#    if: needs.setups.outputs.HAS_VM == false || inputs.TFAction == 'apply'
+  buc:
+    name: 'Bucket'
+    needs: [ envs ]
+    permissions: write-all
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
-      instance_type: ${{ needs.envs.outputs.instance_type }}
-      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      aws-region: ${{ secrets.AWS_REGION }}
+      bucket_region: ${{ needs.envs.outputs.bucket_region }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Download Repo to Artifact
-        if: ${{ inputs.is_workflow == true }}
-        uses: actions/download-artifact@master
+
+      - name: Instantiate Bucket
+        uses: ./.github/actions/create-aws-bucket
+        id: sa
         with:
-          name: cloud-scripts
-          path: ${{ inputs.repository }}
+          bucketName: ${{ env.project }}
+          bucketRegion: ${{ env.bucket_region }}
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          AWS_REGION: ${{secrets.AWS_REGION}}
+        continue-on-error: false
+  eks:
+    name: 'EK Cluster'
+    needs: [ envs, buc ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      cluster_name: ${{ steps.set-output.outputs.cluster_name }}
+      account_id: ${{ steps.set-output.outputs.account_id }}
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      bucket_region: ${{ needs.envs.outputs.bucket_region }}
+      instance_type: ${{ needs.envs.outputs.instance_type }}
+      eksEnvFile: "eks.tfvars"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Copy Script files to context
-        if: ${{ inputs.is_workflow == true }}
-        run: |
-          ls
-          cp -a "${{ inputs.repository }}/." ./
-          rm -r "${{ inputs.repository }}"
-          ls -a
-
-      - name: Install eksctl
-        run: |
-          curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-          sudo mv /tmp/eksctl /usr/local/bin
-          echo "--- eksctl version ----"
-          eksctl version
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: convert to json
+        id: eksjson
+        uses: schdck/create-env-json@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          file-name: ${{ env.eksEnvFile }}
+          project: ${{ env.project }}
+          instance_type: ${{ env.instance_type }}
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.eksEnvFile }}
+          path: ${{ env.eksEnvFile }}
 
-      - name: Terraform Init
-        id: init
-        run: |
-          echo "Environment AWS: kube - ${{ env.project}}"
-          mkdir -p terraform/aws/kube/_state
-          terraform -chdir=terraform/aws/kube init \
-            -backend-config="bucket=${{ env.project }}-tfstate" \
-            -backend-config="region=${{ secrets.AWS_REGION }}" \
-            -backend-config="key=${{ env.project }}.terraform.tfstate"
+      - name: Instantiate EKS Cluster
+        uses: ./.github/actions/tf-aws-script
+        id: eks
+        with:
+          envFile: ${{ env.eksEnvFile }}
+          project: ${{ env.project }}
+          bucketRegion: ${{ env.bucket_region }}
+          key: ${{ env.project }}-eks
+          working-directory: ${{ env.scriptPath}}/eks
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         continue-on-error: false
 
-      - name: Terraform Plan
-        id: plan
+      - name: Set output
+        id: set-output
         run: |
-          echo "Environment AWS: kube - ${{ env.project}}"
-          mkdir -p terraform/aws/kube/_state
-          terraform -chdir=terraform/aws/kube plan -no-color -input=false \
-            -var=app_project_prefix="${{ env.project}}" \
-            -var=aws_region="${{ secrets.AWS_REGION }}" \
-            -var=aws_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
-            -var=aws_key_secret="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-            -var=instance_type="${{ env.instance_type }}" \
-            -out ./_state/${{ env.project }}.tfplan \
-            -lock=false
+          echo "cluster_name=${{ env.cluster_name }}" >> $GITHUB_OUTPUT
+          echo "account_id=${{ env.account_id }}" >> $GITHUB_OUTPUT
+
+  elb:
+    name: 'EL Balancer'
+    needs: [ envs, eks ]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs:
+      cluster_name: ${{ steps.set-output.outputs.cluster_name }}
+      issuer: ${{ steps.set-output.outputs.issuer }}
+      vpc_id: ${{ steps.set-output.outputs.vpc_id }}
+    env:
+      project: ${{ needs.envs.outputs.project }}
+      bucket_region: ${{ needs.envs.outputs.bucket_region }}
+      elbEnvFile: "elb.tfvars"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: convert to json
+        id: elbjson
+        uses: schdck/create-env-json@v1
+        with:
+          file-name: ${{ env.elbEnvFile }}
+          project: ${{ env.project }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.elbEnvFile }}
+          path: ${{ env.elbEnvFile }}
+
+      - name: Instantiate EL Balancer
+        uses: ./.github/actions/tf-aws-script
+        id: elb
+        with:
+          envFile: ${{ env.elbEnvFile }}
+          project: ${{ env.project }}
+          bucketRegion: ${{ env.bucket_region }}
+          key: ${{ env.project }}-elb
+          working-directory: ${{ env.scriptPath}}/elb
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         continue-on-error: false
 
-      - name: Terraform Apply
-        if: ${{ inputs.TFAction == false}}
-        id: apply
+      - name: Set output
+        id: set-output
         run: |
-          echo "Terraform Application in progress ${{ env.project }}"
-          terraform -chdir=terraform/aws/kube apply -auto-approve -input=false ./_state/${{ env.project }}.tfplan
-          echo "Terraform Application was successful ${{ env.project }}"
-        continue-on-error: false
+          echo "cluster_name=${{ env.cluster_name }}" >> $GITHUB_OUTPUT
+          echo "issuer=${{ env.issuer }}" >> $GITHUB_OUTPUT
+          echo "vpc_id=${{ env.vpc_id }}" >> $GITHUB_OUTPUT
 
-      - name: Terraform Destroy
-        if: ${{ inputs.TFAction == true}}
-        id: destroy
-        run: |
-          echo "Terraform Destruction in progress ${{ env.project }}"
-          terraform -chdir=terraform/aws/kube plan -destroy -no-color -input=false \
-            -var=app_project_prefix="${{ env.project}}" \
-            -var=aws_region="${{ secrets.AWS_REGION }}" \
-            -var=aws_key_id="${{ secrets.AWS_ACCESS_KEY_ID }}" \
-            -var=aws_key_secret="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-            -var=instance_type="${{ env.instance_type }}" \
-            -out ./_state/${{ env.project }}.destroy.tfplan \
-            -lock=false
-          terraform -chdir=terraform/aws/kube apply -auto-approve -input=false ./_state/${{ env.project }}.destroy.tfplan
-          echo "Terraform Destruction in successful ${{ env.project }}"
-        continue-on-error: false
