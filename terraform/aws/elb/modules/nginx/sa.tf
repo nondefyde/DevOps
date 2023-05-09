@@ -21,8 +21,8 @@ resource "aws_iam_role" "role_service_account" {
   })
 }
 
-resource "aws_iam_policy" "elb-policy" {
-  name        = "${var.project}-aws-elb-policy"
+resource "aws_iam_policy" "nginx-policy" {
+  name        = "${var.project}-aws-nginx-policy"
   path        = "/"
   description = "ALB eks iam policy"
 
@@ -250,7 +250,7 @@ resource "aws_iam_policy" "elb-policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "policy_attachment_service_account" {
-  policy_arn = aws_iam_policy.elb-policy.arn
+  policy_arn = aws_iam_policy.nginx-policy.arn
   role = aws_iam_role.role_service_account.name
 }
 
