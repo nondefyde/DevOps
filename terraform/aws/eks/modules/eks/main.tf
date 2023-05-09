@@ -34,9 +34,6 @@ resource "aws_eks_node_group" "eks-node_group" {
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.eks-iam-role-1-AmazonEC2ContainerRegistryReadOnly,
-    aws_iam_role_policy_attachment.eks-iam-role-1-EC2InstanceProfileForImageBuilderECRContainerBuilds,
-    aws_iam_role_policy_attachment.eks-iam-role-1-AmazonSSMManagedInstanceCore,
-    aws_iam_role_policy_attachment.nginx-controller-policy-attachment
   ]
 }
 
@@ -62,39 +59,20 @@ resource "aws_security_group" "node_group_one" {
 resource "aws_iam_role" "eks-iam-role" {
   name = "${var.cluster_name}-iam_role"
 
-  assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Action": "sts:AssumeRole",
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "ec2.amazonaws.com"
-        }
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "eks.amazonaws.com"
       },
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "eks.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
-      },
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "eks.amazonaws.com"
-        },
-        "Action": "sts:AssumeRoleWithWebIdentity"
-      },
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "ec2.amazonaws.com"
-        },
-        "Action": "sts:AssumeRoleWithWebIdentity"
-      },
-    ]
-  })
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+POLICY
 }
 
 resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEKSClusterPolicy" {
@@ -111,57 +89,15 @@ resource "aws_iam_role" "eks-node-group-iam-role" {
   name = "${var.cluster_name}-node-iam_role"
 
   assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "ec2.amazonaws.com"
-        },
-        "Action": "sts:AssumeRole"
-      },
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "eks.amazonaws.com"
-        },
-        "Action": "sts:AssumeRoleWithWebIdentity"
-      },
-      {
-        "Effect": "Allow",
-        "Principal": {
-          "Service": "ec2.amazonaws.com"
-        },
-        "Action": "sts:AssumeRoleWithWebIdentity"
-      },
-    ]
-  })
-}
-
-resource "aws_iam_policy" "nginx-controller-policy" {
-  name        = "nginx-controller-policy"
-  description = "Allows the nginx-controller to assume a role with web identity"
-
-  policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Action": "sts:AssumeRoleWithWebIdentity",
-        "Resource": "*"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
       }
-    ]
+    }]
+    Version = "2012-10-17"
   })
-}
-
-resource "aws_iam_role_policy_attachment" "nginx-controller-policy-attachment" {
-  policy_arn = aws_iam_policy.nginx-controller-policy.arn
-  role       = aws_iam_role.eks-node-group-iam-role.name
-}
-
-resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonSSMManagedInstanceCore" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-  role       = aws_iam_role.eks-node-group-iam-role.name
 }
 
 resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEKSWorkerNodePolicy" {
@@ -172,11 +108,6 @@ resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEKSWorkerNodePol
 resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.eks-node-group-iam-role.name
-}
-
-resource "aws_iam_role_policy_attachment" "eks-iam-role-1-EC2InstanceProfileForImageBuilderECRContainerBuilds" {
-  policy_arn = "arn:aws:iam::aws:policy/EC2InstanceProfileForImageBuilderECRContainerBuilds"
-  role    = aws_iam_role.eks-node-group-iam-role.name
 }
 
 resource "aws_iam_role_policy_attachment" "eks-iam-role-1-AmazonEC2ContainerRegistryReadOnly" {
