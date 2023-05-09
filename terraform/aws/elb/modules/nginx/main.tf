@@ -1,6 +1,6 @@
 module "nginx-controller" {
   source         = "terraform-iaac/nginx-controller/helm"
-#  atomic         = true
+  atomic         = true
   additional_set = [
     {
       name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-type"

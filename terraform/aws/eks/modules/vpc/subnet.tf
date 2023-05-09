@@ -10,6 +10,8 @@ resource "aws_subnet" "public_subnet" {
     Name        = "${var.project}-public-subnet"
     Environment = var.environment
     Type        = "public_subnet"
+    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb" = 1
   }
 }
 
