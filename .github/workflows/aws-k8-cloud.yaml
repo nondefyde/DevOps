@@ -58,7 +58,7 @@ jobs:
 
       - name: Set App Envs
         id: get-envs
-        uses: nondefyde/devops/.github/actions/set-aws-envs
+        uses: /.github/actions/set-aws-envs
         with:
           config-file: ${{ env.configFile }}
 
@@ -82,7 +82,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Instantiate Bucket
-        uses: nondefyde/devops/.github/actions/create-aws-bucket
+        uses: ./.github/actions/create-aws-bucket
         id: sa
         with:
           bucketName: ${{ env.project }}
@@ -122,7 +122,7 @@ jobs:
           path: ${{ env.eksEnvFile }}
 
       - name: Instantiate EKS Cluster
-        uses: nondefyde/devops/.github/actions/tf-aws-script
+        uses: ./.github/actions/tf-aws-script
         id: eks
         with:
           envFile: ${{ env.eksEnvFile }}
