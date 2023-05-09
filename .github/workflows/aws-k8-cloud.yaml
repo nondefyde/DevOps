@@ -40,10 +40,6 @@ permissions:
   id-token: write
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 env:
   configFile: "configs/aws-cloud.json"
   scriptPath: "terraform/aws"
