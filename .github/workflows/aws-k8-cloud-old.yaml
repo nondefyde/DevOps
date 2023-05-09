@@ -3,7 +3,7 @@ name: AWS K8 Cloud
 on:
   push:
     branches:
-      - 'main'
+      - 'mains'
     paths:
       - '.github/workflows/.**-k8-cloud.yaml'
   workflow_dispatch:
