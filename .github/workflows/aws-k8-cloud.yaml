@@ -77,7 +77,6 @@ jobs:
   buc:
     name: 'Bucket'
     needs: [ envs ]
-    permissions: write-all
     runs-on: ubuntu-latest
     env:
       project: ${{ needs.envs.outputs.project }}
@@ -99,7 +98,6 @@ jobs:
   eks:
     name: 'EK Cluster'
     needs: [ envs, buc ]
-    permissions: write-all
     runs-on: ubuntu-latest
     outputs:
       cluster_name: ${{ steps.set-output.outputs.cluster_name }}
